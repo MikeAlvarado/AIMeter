@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Xcode user state
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# Build artifacts
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Local configuration (per-developer signing, etc.)
+*.local.xcconfig
+
+# Never commit credentials or tokens
+*.credentials.json
+.env
+
+# Local design references (copyrighted app screenshots, do not commit)
+docs/design/reference/

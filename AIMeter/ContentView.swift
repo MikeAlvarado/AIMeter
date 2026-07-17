@@ -1,24 +1,30 @@
-//
-//  ContentView.swift
-//  AIMeter
-//
-//  Created by Seiya on 16/7/26.
-//
-
 import SwiftUI
+import UsageKit
 
 struct ContentView: View {
+    @Environment(UsageModel.self) private var model
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            DashboardView()
+                .toolbar(.hidden, for: .automatic)
         }
-        .padding()
+        #if os(iOS)
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background {
+                BackgroundRefresh.scheduleNext()
+            }
+        }
+        #endif
+        .task {
+            await model.refresh()
+        }
     }
 }
 
 #Preview {
     ContentView()
+        .environment(UsageModel())
+        .environment(PreferencesModel())
 }
