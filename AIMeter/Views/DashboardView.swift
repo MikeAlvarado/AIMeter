@@ -18,6 +18,10 @@ struct DashboardView: View {
             .padding(20)
         }
         .background(Theme.background)
+        // Soft tap when a refresh kicks off — pull gesture or button alike.
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: model.isRefreshing) { _, isRefreshing in
+            isRefreshing
+        }
         .navigationDestination(for: String.self) { _ in
             ProviderDetailView()
         }
@@ -142,29 +146,40 @@ struct DashboardView: View {
     }
 }
 
-/// Floating circular icon button (dashboard header).
+/// Floating circular icon button (dashboard header). While busy, the icon
+/// plays exactly one full rotation as feedback that a refresh started.
+///
+/// The spin is a single fixed-duration animation, not tied to how long the
+/// actual fetch takes — most refreshes finish well under a second, so
+/// animating continuously until `isBusy` goes false (via `TimelineView` or
+/// `repeatForever`) gets cut off mid-turn far more often than not, which
+/// reads as a stutter rather than a spin. Firing one clean 360° turn on
+/// the rising edge of `isBusy` always completes, and a one-shot animation
+/// has no repeating object that can leak or stack on a second tap — the
+/// bug class that made the previous approach stick.
 struct RoundIconButton: View {
     let systemName: String
     var isBusy = false
     let action: () -> Void
+    @State private var rotation = 0.0
 
     var body: some View {
         Button(action: action) {
-            Group {
-                if isBusy {
-                    ProgressView()
-                        .controlSize(.small)
-                } else {
-                    Image(systemName: systemName)
-                        .font(.body.weight(.medium))
-                        .foregroundStyle(Theme.ink)
-                }
-            }
-            .frame(width: 40, height: 40)
-            .background(Theme.card, in: Circle())
-            .shadow(color: Theme.shadowSoft, radius: 10, x: 0, y: 4)
+            Image(systemName: systemName)
+                .font(.body.weight(.medium))
+                .foregroundStyle(Theme.ink)
+                .rotationEffect(.degrees(rotation))
+                .frame(width: 40, height: 40)
+                .background(Theme.card, in: Circle())
+                .shadow(color: Theme.shadowSoft, radius: 10, x: 0, y: 4)
         }
         .buttonStyle(.plain)
         .disabled(isBusy)
+        .onChange(of: isBusy) { wasBusy, busy in
+            guard busy, !wasBusy else { return }
+            withAnimation(.easeInOut(duration: 0.5)) {
+                rotation += 360
+            }
+        }
     }
 }

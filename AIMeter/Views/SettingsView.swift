@@ -1,9 +1,13 @@
 import SwiftUI
 import UsageKit
 
+/// Public repo — shown in the "Open Source" settings row.
+private let githubRepoURL = URL(string: "https://github.com/MikeAlvarado/AIMeter")!
+
 struct SettingsView: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         @Bindable var prefs = prefs
@@ -62,6 +66,55 @@ struct SettingsView: View {
                 SectionHeader(title: String(localized: "Notifications"))
                 NotificationTogglesCard()
                 SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
+
+                sectionGap
+                Card {
+                    NavigationLink {
+                        PrivacyView()
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "lock.shield")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(Theme.accent)
+                                .frame(width: 28, height: 28)
+                                .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            Text("Privacy & data")
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(Theme.ink)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Theme.inkSecondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+                SectionFootnote(text: String(localized: "How connecting works, what the app can access, and where your data lives."))
+
+                sectionGap
+                Card {
+                    Button {
+                        openURL(githubRepoURL)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image("GitHubIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                                .frame(width: 28, height: 28)
+                                .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            Text("Open Source")
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(Theme.ink)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Theme.inkSecondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+                SectionFootnote(text: String(localized: "AIMeter is free and open source. Visit the repository to read the code, file an issue, or contribute."))
             }
             .padding(20)
         }

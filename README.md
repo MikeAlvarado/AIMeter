@@ -8,13 +8,22 @@ First supported provider: **Claude Pro/Max** (session, weekly, and top-model
 weekly windows). The architecture is provider-agnostic, so more AI providers
 can be added later.
 
-- **iOS 17+ / macOS 14+**, pure SwiftUI, no dependencies, no server.
-- Widgets: `systemSmall`, `systemMedium`, and Lock Screen accessories
-  (circular, rectangular, inline) always showing the three Claude windows.
+- **iOS 17+ / macOS 14+**, pure SwiftUI, no dependencies, no server, no
+  analytics.
+- Widgets: `systemSmall` and `systemMedium` show all three Claude windows
+  with grouped reset countdowns; Lock Screen accessories (circular,
+  rectangular, inline). On iOS the widget refreshes itself in the
+  background — you don't need to open the app.
+- Dashboard with your plan badge (Pro/Max), per-window reset countdowns,
+  and a fullscreen landscape mode on iPhone.
+- Detail screen with the raw provider data: spend cap and extra-usage
+  credits, exactly as the endpoint reports them.
 - macOS menu bar extra with session usage at a glance.
-- Optional local notifications when a usage window resets.
-- Background refresh every ~15 minutes; widgets keep the last known data
-  (with a staleness indicator) when a fetch fails.
+- Optional local notifications when a usage window resets (with honest
+  permission handling — no silent failures).
+- Background refresh at a configurable cadence (15/30/60 min); widgets
+  keep the last known data (with a staleness hint) when a fetch fails.
+- English and Spanish, following the device language.
 
 ## ⚠️ Disclaimer
 
@@ -30,6 +39,37 @@ and in accordance with Anthropic's terms of service.
 
 Your token never leaves your device: it is read from (macOS) or stored in
 (iOS) the Keychain, and requests go directly to Anthropic's API.
+
+## Privacy & data transparency
+
+AIMeter is designed so you can verify every claim in this section by
+reading the code (it's small) or probing the endpoints yourself.
+
+**What leaves your device** — HTTPS requests to `api.anthropic.com` only
+(`/api/oauth/usage` for the windows/spend data, `/api/oauth/profile` once
+to resolve your plan name) and, for the iOS sign-in flow, the standard
+OAuth exchange with `claude.ai` / `console.anthropic.com`. Nothing else:
+no analytics, no crash reporting, no third-party SDKs, no server of ours.
+
+**What is stored, and where**
+- OAuth tokens: device Keychain only (`AfterFirstUnlock`; on iOS in the
+  App Group keychain access group so the widget can refresh usage itself).
+- The last usage snapshot (percentages, reset dates, spend numbers) and
+  your display preferences: the App Group container, so widgets can render
+  without fetching.
+- Nothing is ever written to UserDefaults outside the App Group, to disk
+  unencrypted, or to the repo.
+
+**Notifications** are generated locally on the device
+(`UNUserNotificationCenter`) from the reset dates already in the snapshot
+— no push service involved.
+
+**Disconnecting** (iOS button, or macOS just uses Claude Code's login)
+deletes the stored token and the cached snapshot.
+
+**Audit it**: `Scripts/probe-usage-endpoint.sh` prints the exact raw JSON
+the app consumes, using your own local login; the token is never printed
+or written to disk. `Scripts/sample-response.json` is a captured example.
 
 ## How it gets your usage
 

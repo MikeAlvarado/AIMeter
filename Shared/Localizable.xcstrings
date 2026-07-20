@@ -1,12 +1,7 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
-    },
-    "—" : {
-
-    },
+    "" : {},
     "%@ limit reset" : {
       "localizations" : {
         "es" : {
@@ -45,12 +40,32 @@
         }
       }
     },
-    "Absolute" : {
+    "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Absoluto"
+            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de Anthropic y se guarda en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro lado."
+          }
+        }
+      }
+    },
+    "AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic. \"Claude\" is a trademark of Anthropic, PBC." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter es un proyecto independiente de código abierto (MIT). No está afiliado, respaldado ni patrocinado por Anthropic. \"Claude\" es una marca registrada de Anthropic, PBC."
+          }
+        }
+      }
+    },
+    "AIMeter is free and open source. Visit the repository to read the code, file an issue, or contribute." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter es gratis y de código abierto. Visita el repositorio para leer el código, reportar un problema o contribuir."
           }
         }
       }
@@ -81,6 +96,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AIMeter abrirá la página de inicio de sesión de Claude en tu navegador. Cuando apruebes, copia el código que aparece y pégalo aquí para terminar. Funciona cualquier método de inicio de sesión."
+          }
+        }
+      }
+    },
+    "Absolute" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absoluto"
           }
         }
       }
@@ -218,12 +243,52 @@
         }
       }
     },
+    "Everything stays on your device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo se queda en tu dispositivo"
+          }
+        }
+      }
+    },
     "Extra usage" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uso extra"
+          }
+        }
+      }
+    },
+    "How connecting works" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo funciona la conexión"
+          }
+        }
+      }
+    },
+    "How connecting works, what the app can access, and where your data lives." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo funciona la conexión, a qué puede acceder la app y dónde viven tus datos."
+          }
+        }
+      }
+    },
+    "It is the same OAuth flow Claude Code itself uses; AIMeter only receives the token Claude hands back." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es el mismo flujo OAuth que usa el propio Claude Code; AIMeter solo recibe el token que Claude entrega."
           }
         }
       }
@@ -268,6 +333,26 @@
         }
       }
     },
+    "No analytics SDKs, no ad networks, no crash reporting. The app collects no data at all." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin SDKs de analíticas, sin redes de anuncios, sin reportes de fallos. La app no recopila ningún dato."
+          }
+        }
+      }
+    },
+    "No tracking, no analytics" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin rastreo ni analíticas"
+          }
+        }
+      }
+    },
     "Notifications" : {
       "localizations" : {
         "es" : {
@@ -288,12 +373,12 @@
         }
       }
     },
-    "now" : {
+    "On the Mac, AIMeter reads the login Claude Code already keeps on this computer — read-only. It never modifies or rotates those tokens; Claude Code stays in charge of its own session." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ahora"
+            "value" : "En la Mac, AIMeter lee la sesión que Claude Code ya mantiene en esta computadora — solo lectura. Nunca modifica ni rota esos tokens; Claude Code sigue a cargo de su propia sesión."
           }
         }
       }
@@ -328,6 +413,16 @@
         }
       }
     },
+    "Open Source" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código abierto"
+          }
+        }
+      }
+    },
     "Paste" : {
       "localizations" : {
         "es" : {
@@ -354,6 +449,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Porcentaje"
+          }
+        }
+      }
+    },
+    "Privacy & data" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad y datos"
+          }
+        }
+      }
+    },
+    "Private by default" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privado por diseño"
           }
         }
       }
@@ -424,6 +539,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restante"
+          }
+        }
+      }
+    },
+    "Requested OAuth scopes:" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopes de OAuth solicitados:"
           }
         }
       }
@@ -558,6 +683,16 @@
         }
       }
     },
+    "Tokens live in the Keychain" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los tokens viven en el llavero"
+          }
+        }
+      }
+    },
     "Updated %lld min ago" : {
       "localizations" : {
         "es" : {
@@ -658,6 +793,26 @@
         }
       }
     },
+    "What the connection can access" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A qué puede acceder la conexión"
+          }
+        }
+      }
+    },
+    "Whatever the token could technically do, AIMeter only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). It never sends prompts, never generates code, and never spends usage on your behalf — the source is open if you want to verify." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin importar lo que el token pudiera hacer técnicamente, AIMeter solo llama a dos endpoints de solo lectura: tus ventanas de uso y tu perfil (para mostrar el plan). Nunca envía prompts, nunca genera código y nunca gasta uso en tu nombre — el código es abierto por si quieres verificarlo."
+          }
+        }
+      }
+    },
     "Whether bars and percentages show how much you have left or how much you've used." : {
       "localizations" : {
         "es" : {
@@ -688,6 +843,16 @@
         }
       }
     },
+    "You sign in on Claude's own page in your browser — never an embedded web view — so AIMeter can't see your password. You only paste back the code Claude shows after you approve." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicias sesión en la propia página de Claude en tu navegador — nunca en un web view incrustado — así que AIMeter no puede ver tu contraseña. Solo pegas de vuelta el código que Claude muestra cuando apruebas."
+          }
+        }
+      }
+    },
     "Your %@ usage window has reset. Full capacity available." : {
       "localizations" : {
         "es" : {
@@ -697,7 +862,28 @@
           }
         }
       }
-    }
+    },
+    "Your sign-in token is stored encrypted in the system Keychain, shared only with the widget so it can refresh usage by itself. It is used exclusively to read your usage." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu token de inicio de sesión se guarda cifrado en el llavero del sistema y se comparte solo con el widget para que pueda actualizar el uso por sí mismo. Se usa exclusivamente para leer tu uso."
+          }
+        }
+      }
+    },
+    "now" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ahora"
+          }
+        }
+      }
+    },
+    "—" : {}
   },
   "version" : "1.1"
 }
