@@ -31,6 +31,24 @@ enum NotificationScheduler {
         return (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
     }
 
+    static func authorizationStatus() async -> UNAuthorizationStatus {
+        await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+    }
+
+    /// True when notifications can actually be delivered, prompting the
+    /// first time. A previous denial returns false without re-prompting
+    /// (the system would ignore the request anyway).
+    static func ensureAuthorization() async -> Bool {
+        switch await authorizationStatus() {
+        case .notDetermined:
+            return await requestAuthorization()
+        case .denied:
+            return false
+        default:
+            return true
+        }
+    }
+
     static func reschedule(for snapshot: UsageSnapshot?, preferences: NotificationPreferences) async {
         let center = UNUserNotificationCenter.current()
 
@@ -40,6 +58,15 @@ enum NotificationScheduler {
         center.removePendingNotificationRequests(withIdentifiers: stale)
 
         guard let snapshot else { return }
+
+        // Without authorization iOS silently drops the requests; skip the
+        // scheduling work entirely.
+        switch await authorizationStatus() {
+        case .authorized, .provisional, .ephemeral:
+            break
+        default:
+            return
+        }
 
         for window in snapshot.windows {
             guard preferences.isEnabled(for: window.kind),

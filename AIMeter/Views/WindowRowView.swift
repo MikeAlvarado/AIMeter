@@ -9,6 +9,7 @@ struct WindowRowView: View {
     @Environment(PreferencesModel.self) private var prefs
     let kind: UsageWindow.Kind
     let window: UsageWindow?
+    var showsReset = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
@@ -27,7 +28,7 @@ struct WindowRowView: View {
                 tint: window?.tint ?? Theme.accent
             )
 
-            if let resetsAt = window?.resetsAt {
+            if showsReset, let resetsAt = window?.resetsAt {
                 Button {
                     prefs.toggleResetStyle()
                 } label: {
@@ -41,6 +42,8 @@ struct WindowRowView: View {
                 .buttonStyle(.plain)
             }
         }
+        // One VoiceOver element per row: "5-hour session, 45%, Resets in…".
+        .accessibilityElement(children: .combine)
     }
 
     private var percentText: String {
@@ -60,7 +63,11 @@ struct WindowRowsList: View {
                 if index > 0 {
                     Divider().overlay(Theme.track)
                 }
-                WindowRowView(kind: slot.kind, window: slot.window)
+                WindowRowView(
+                    kind: slot.kind,
+                    window: slot.window,
+                    showsReset: WindowSlots.showsReset(at: index, in: slots)
+                )
             }
         }
     }

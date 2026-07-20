@@ -23,6 +23,18 @@ struct ProviderDetailView: View {
                     }
                 }
 
+                if let spend = model.snapshot?.spend {
+                    SectionHeader(title: String(localized: "Spend"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    DetailRowsCard(rows: spendRows(spend))
+                }
+
+                if let extra = model.snapshot?.extraUsage {
+                    SectionHeader(title: String(localized: "Extra usage"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    DetailRowsCard(rows: extraUsageRows(extra))
+                }
+
                 SectionHeader(title: String(localized: "Notifications"))
                     .padding(.top, Theme.sectionSpacing - 10)
                 NotificationTogglesCard()
@@ -50,11 +62,81 @@ struct ProviderDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         #endif
     }
+
+    private func spendRows(_ spend: SpendStatus) -> [(String, String)] {
+        var rows = [(String(localized: "Enabled"), yesNo(spend.enabled))]
+        if let percent = spend.percent {
+            rows.append((String(localized: "Percent"), "\(Int(percent))%"))
+        }
+        if let severity = spend.severity {
+            rows.append((String(localized: "Severity"), severity.rawValue))
+        }
+        if let used = spend.usedAmount {
+            rows.append((String(localized: "Used"), money(used, spend.currency)))
+        }
+        if let limit = spend.limitAmount {
+            rows.append((String(localized: "Limit"), money(limit, spend.currency)))
+        }
+        return rows
+    }
+
+    private func extraUsageRows(_ extra: ExtraUsageStatus) -> [(String, String)] {
+        var rows = [(String(localized: "Enabled"), yesNo(extra.enabled))]
+        if let used = extra.usedCredits {
+            rows.append((String(localized: "Used credits"), money(used, extra.currency)))
+        }
+        if let limit = extra.monthlyLimit {
+            rows.append((String(localized: "Monthly limit"), money(limit, extra.currency)))
+        }
+        if let utilization = extra.utilization {
+            rows.append((String(localized: "Utilization"), "\(Int(utilization))%"))
+        }
+        return rows
+    }
+
+    private func yesNo(_ value: Bool) -> String {
+        value ? String(localized: "Yes") : String(localized: "No")
+    }
+
+    private func money(_ amount: Double, _ currency: String?) -> String {
+        amount.formatted(.currency(code: currency ?? "USD"))
+    }
 }
 
-/// Per-window notification toggles over the three fixed slots.
+/// Plain label/value rows with hairline dividers — the raw provider
+/// details (Spend, Extra usage) mirroring the reference design.
+private struct DetailRowsCard: View {
+    let rows: [(String, String)]
+
+    var body: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
+                    if index > 0 {
+                        Divider().overlay(Theme.track)
+                    }
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(row.0)
+                            .font(Theme.rowTitle)
+                            .foregroundStyle(Theme.ink)
+                        Spacer()
+                        Text(row.1)
+                            .font(.body)
+                            .foregroundStyle(Theme.inkSecondary)
+                            .multilineTextAlignment(.trailing)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Per-window notification toggles over the three fixed slots. When the
+/// system permission is denied, a warning row with a settings shortcut
+/// replaces the silent no-op.
 struct NotificationTogglesCard: View {
     @Environment(UsageModel.self) private var model
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         Card {
@@ -72,8 +154,39 @@ struct NotificationTogglesCard: View {
                     .tint(Theme.accent)
                     .disabled(slot.window == nil)
                 }
+                if model.notificationsBlocked {
+                    Divider().overlay(Theme.track)
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Label(
+                            String(localized: "Notifications are off in system Settings."),
+                            systemImage: "bell.slash"
+                        )
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                        Spacer()
+                        Button(String(localized: "Open Settings")) {
+                            if let url = notificationSettingsURL {
+                                openURL(url)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .font(Theme.caption.weight(.semibold))
+                        .foregroundStyle(Theme.accent)
+                    }
+                }
             }
         }
+        .task {
+            await model.refreshNotificationAuthorization()
+        }
+    }
+
+    private var notificationSettingsURL: URL? {
+        #if os(iOS)
+        URL(string: UIApplication.openNotificationSettingsURLString)
+        #else
+        URL(string: "x-apple.systempreferences:com.apple.preference.notifications")
+        #endif
     }
 
     private func binding(for kind: UsageWindow.Kind) -> Binding<Bool> {

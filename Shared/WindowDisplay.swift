@@ -17,7 +17,7 @@ extension UsageWindow.Kind {
     /// Compact label for widgets and the menu bar.
     var shortName: String {
         switch self {
-        case .session: return String(localized: "5h")
+        case .session: return String(localized: "Session")
         case .weekly: return String(localized: "Week")
         case .modelSpecific(let model): return model
         }

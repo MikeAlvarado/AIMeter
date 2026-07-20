@@ -70,7 +70,7 @@ public struct ClaudeOAuth: Sendable {
             if (400...499).contains(response.statusCode) {
                 throw UsageError.notAuthenticated
             }
-            throw UsageError.httpError(statusCode: response.statusCode)
+            throw UsageError.httpError(statusCode: response.statusCode, body: String(data: data, encoding: .utf8))
         }
 
         let token: TokenResponse
@@ -84,7 +84,8 @@ public struct ClaudeOAuth: Sendable {
             accessToken: token.accessToken,
             refreshToken: token.refreshToken,
             expiresAt: token.expiresIn.map { Date(timeIntervalSinceNow: $0) },
-            scopes: token.scope?.components(separatedBy: " ") ?? []
+            scopes: token.scope?.components(separatedBy: " ") ?? [],
+            subscriptionType: token.subscriptionType ?? token.account?.subscriptionType
         )
     }
 
@@ -120,12 +121,25 @@ private struct TokenResponse: Decodable {
     let refreshToken: String?
     let expiresIn: Double?
     let scope: String?
+    /// Plan name ("pro", "max"), reported top-level or inside `account`
+    /// depending on server version; both are optional so absence is fine.
+    let subscriptionType: String?
+    let account: Account?
+
+    struct Account: Decodable {
+        let subscriptionType: String?
+
+        enum CodingKeys: String, CodingKey {
+            case subscriptionType = "subscription_type"
+        }
+    }
 
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
         case refreshToken = "refresh_token"
         case expiresIn = "expires_in"
-        case scope
+        case subscriptionType = "subscription_type"
+        case scope, account
     }
 }
 

@@ -13,9 +13,6 @@ struct DashboardView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
                 header
-                Text("AIMeter")
-                    .font(Theme.displayTitle)
-                    .foregroundStyle(Theme.ink)
                 providerSection
             }
             .padding(20)
@@ -36,6 +33,19 @@ struct DashboardView: View {
     }
 
     private var header: some View {
+        ZStack {
+            // Small centered app title — present but never competing with
+            // the usage content below.
+            Text(verbatim: "AIMeter")
+                .font(.system(.headline, design: .serif).weight(.semibold))
+                .foregroundStyle(Theme.ink)
+            HStack {
+                headerButtons
+            }
+        }
+    }
+
+    private var headerButtons: some View {
         HStack {
             RoundIconButton(systemName: "gearshape") {
                 #if os(macOS)
@@ -45,10 +55,12 @@ struct DashboardView: View {
                 showingSettings = true
                 #endif
             }
+            .accessibilityLabel(Text("Settings"))
             Spacer()
             RoundIconButton(systemName: "arrow.clockwise", isBusy: model.isRefreshing) {
                 Task { await model.refresh() }
             }
+            .accessibilityLabel(Text("Refresh"))
         }
     }
 
@@ -79,12 +91,13 @@ struct DashboardView: View {
             } else {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                        WindowRowsList(snapshot: model.snapshot)
                         if let error = model.lastError {
+                            Divider().overlay(Theme.track)
                             Label(error, systemImage: "exclamationmark.triangle")
                                 .font(Theme.caption)
                                 .foregroundStyle(Theme.danger)
                         }
-                        WindowRowsList(snapshot: model.snapshot)
                         if let snapshot = model.snapshot {
                             Divider().overlay(Theme.track)
                             Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
@@ -100,23 +113,23 @@ struct DashboardView: View {
     private var providerHeader: some View {
         NavigationLink(value: "claude") {
             HStack(spacing: 8) {
-                Image(systemName: "sparkles")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Theme.accent)
-                    .frame(width: 24, height: 24)
-                    .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                Image("ClaudeIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 Text("Claude")
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(Theme.ink)
+                    .font(Theme.sectionHeader)
+                    .foregroundStyle(Theme.inkSecondary)
+                Spacer()
                 if let plan = model.snapshot?.planName {
                     Text(plan.capitalized)
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(Theme.accent)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 2)
-                        .background(Theme.accentWash, in: Capsule())
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.inkSecondary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 3)
+                        .background(Theme.track.opacity(0.7), in: Capsule())
                 }
-                Spacer()
                 if !model.needsConnection {
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
@@ -149,6 +162,7 @@ struct RoundIconButton: View {
             }
             .frame(width: 40, height: 40)
             .background(Theme.card, in: Circle())
+            .shadow(color: Theme.shadowSoft, radius: 10, x: 0, y: 4)
         }
         .buttonStyle(.plain)
         .disabled(isBusy)

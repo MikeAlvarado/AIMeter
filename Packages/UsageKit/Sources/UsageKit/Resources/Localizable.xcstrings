@@ -1,0 +1,51 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "No credentials found: %@" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se encontraron credenciales: %@" } }
+      }
+    },
+    "The access token has expired." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "El token de acceso ha expirado." } }
+      }
+    },
+    "The provider rejected the credentials." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "El proveedor rechazó las credenciales." } }
+      }
+    },
+    "Rate limited; retry after %lld seconds." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Límite de peticiones alcanzado; reintenta en %lld segundos." } }
+      }
+    },
+    "Rate limited by the provider." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Límite de peticiones alcanzado por el proveedor." } }
+      }
+    },
+    "The provider returned HTTP %lld: %@" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "El proveedor devolvió HTTP %lld: %@" } }
+      }
+    },
+    "The provider returned HTTP %lld." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "El proveedor devolvió HTTP %lld." } }
+      }
+    },
+    "Unexpected response: %@" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Respuesta inesperada: %@" } }
+      }
+    },
+    "Storage error: %@" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error de almacenamiento: %@" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

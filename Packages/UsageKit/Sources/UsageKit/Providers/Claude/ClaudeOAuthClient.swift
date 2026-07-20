@@ -29,7 +29,7 @@ struct ClaudeOAuthClient: Sendable {
             if (400...499).contains(response.statusCode) {
                 throw UsageError.notAuthenticated
             }
-            throw UsageError.httpError(statusCode: response.statusCode)
+            throw UsageError.httpError(statusCode: response.statusCode, body: String(data: data, encoding: .utf8))
         }
 
         let refreshed: RefreshResponse

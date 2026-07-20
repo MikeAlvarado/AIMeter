@@ -18,6 +18,8 @@ struct UsageBarView: View {
             }
         }
         .frame(height: Theme.barHeight)
+        // Decorative: the row already exposes the name and percentage.
+        .accessibilityHidden(true)
     }
 }
 
@@ -47,6 +49,7 @@ struct SegmentedPill<Option: Hashable>: View {
                         }
                 }
                 .buttonStyle(.plain)
+                .accessibilityAddTraits(selection == option.value ? .isSelected : [])
             }
         }
         .padding(4)
@@ -66,6 +69,8 @@ struct Card<Content: View>: View {
                 Theme.card,
                 in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous)
             )
+            .shadow(color: Theme.shadowSoft, radius: 16, x: 0, y: 8)
+            .shadow(color: Theme.shadowTight, radius: 2, x: 0, y: 1)
     }
 }
 

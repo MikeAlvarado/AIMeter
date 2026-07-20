@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import UserNotifications
 import UsageKit
 
 /// UI-facing state. Wraps RefreshService and keeps the last known snapshot
@@ -49,9 +50,26 @@ final class UsageModel {
             } else {
                 lastError = error.errorDescription
             }
+        } catch is CancellationError {
+            // A superseded refresh (pull-to-refresh released, scene change)
+            // is not an error worth showing.
+        } catch let error as URLError where error.code == .cancelled {
+            // Same: the URL task was cancelled by a newer refresh.
         } catch {
             lastError = error.localizedDescription
         }
+    }
+
+    /// Foreground-activation refresh: skips the network when the snapshot
+    /// is still fresh, so quick app switches don't refetch, but returning
+    /// after a while updates the dashboard — and, via the refresh flow,
+    /// pushes the new snapshot to the widgets immediately.
+    func refreshIfStale(maxAge: TimeInterval = 60) async {
+        if let fetchedAt = snapshot?.fetchedAt,
+           Date().timeIntervalSince(fetchedAt) < maxAge {
+            return
+        }
+        await refresh()
     }
 
     /// Called by the connect sheet after a successful OAuth exchange.
@@ -79,17 +97,39 @@ final class UsageModel {
 
     // MARK: - Notification preferences
 
+    /// True when the user denied notification permission in the system
+    /// settings — the toggles card shows a warning with a shortcut there
+    /// instead of silently doing nothing.
+    private(set) var notificationsBlocked = false
+    /// Bumped whenever a toggle's stored value changes, so bindings that
+    /// read UserDefaults through `notificationsEnabled` re-evaluate.
+    private var notificationsRevision = 0
+
+    func refreshNotificationAuthorization() async {
+        let status = await NotificationScheduler.authorizationStatus()
+        await MainActor.run { notificationsBlocked = status == .denied }
+    }
+
     func notificationsEnabled(for kind: UsageWindow.Kind) -> Bool {
-        preferences.isEnabled(for: kind)
+        _ = notificationsRevision
+        return preferences.isEnabled(for: kind)
     }
 
     func setNotificationsEnabled(_ enabled: Bool, for kind: UsageWindow.Kind) {
-        preferences.setEnabled(enabled, for: kind)
         let snapshot = self.snapshot
-        Task {
+        Task { @MainActor in
             if enabled {
-                _ = await NotificationScheduler.requestAuthorization()
+                guard await NotificationScheduler.ensureAuthorization() else {
+                    // Denied: don't persist the toggle — snap it back off
+                    // and surface the blocked state.
+                    notificationsBlocked = true
+                    notificationsRevision += 1
+                    return
+                }
+                notificationsBlocked = false
             }
+            preferences.setEnabled(enabled, for: kind)
+            notificationsRevision += 1
             await NotificationScheduler.reschedule(for: snapshot, preferences: preferences)
         }
     }

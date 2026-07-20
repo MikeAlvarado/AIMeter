@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "UsageKit",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14),
@@ -11,7 +12,10 @@ let package = Package(
         .library(name: "UsageKit", targets: ["UsageKit"]),
     ],
     targets: [
-        .target(name: "UsageKit"),
+        .target(
+            name: "UsageKit",
+            resources: [.process("Resources")]
+        ),
         .testTarget(
             name: "UsageKitTests",
             dependencies: ["UsageKit"],

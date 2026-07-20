@@ -16,11 +16,10 @@ struct ConnectClaudeSheet: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 34, weight: .semibold))
-                .foregroundStyle(Theme.accent)
-                .frame(width: 76, height: 76)
-                .background(Theme.accentWash, in: Circle())
+            Image("ClaudeCodeIcon")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 72, height: 72)
                 .padding(.top, 8)
 
             Text("Connect Claude Code")
@@ -58,6 +57,7 @@ struct ConnectClaudeSheet: View {
 
                 Button(action: pasteFromClipboard) {
                     Image(systemName: "doc.on.clipboard")
+                        .accessibilityLabel(Text("Paste"))
                         .font(.body.weight(.medium))
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 44)
@@ -84,6 +84,11 @@ struct ConnectClaudeSheet: View {
                 (canConnect ? Theme.accent : Theme.track) , in: Capsule()
             )
             .disabled(!canConnect)
+
+            Text("You can also paste the full credentials JSON from ~/.claude/.credentials.json.")
+                .font(Theme.caption)
+                .foregroundStyle(Theme.inkSecondary)
+                .multilineTextAlignment(.center)
 
             if let errorText {
                 Text(errorText)
@@ -129,12 +134,24 @@ struct ConnectClaudeSheet: View {
         Task {
             defer { isExchanging = false }
             do {
-                let credentials = try await ClaudeOAuth().exchange(pastedCode: code, session: session)
+                let credentials = try await obtainCredentials()
                 await model.completeConnection(credentials)
                 dismiss()
             } catch {
                 errorText = (error as? UsageError)?.errorDescription ?? error.localizedDescription
             }
         }
+    }
+
+    /// The field accepts either the OAuth code from the sign-in page or a
+    /// full credentials JSON copied from another device
+    /// (`~/.claude/.credentials.json`) — a fallback if the sign-in flow
+    /// ever breaks.
+    private func obtainCredentials() async throws -> ClaudeCredentials {
+        let trimmed = code.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasPrefix("{") {
+            return try ClaudeCredentials.fromClaudeCodeJSON(Data(trimmed.utf8))
+        }
+        return try await ClaudeOAuth().exchange(pastedCode: trimmed, session: session)
     }
 }

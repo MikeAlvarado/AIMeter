@@ -2,9 +2,9 @@ import SwiftUI
 import WidgetKit
 import UsageKit
 
-/// All widget families render the three fixed Claude slots (session,
-/// weekly, top model) and honor the Remaining/Used and Relative/Absolute
-/// preferences from the App Group.
+/// System families show a "Claude" header plus capsule bars with reset
+/// times, mirroring the dashboard rows. All views honor the
+/// Remaining/Used and Relative/Absolute preferences from the App Group.
 struct UsageWidgetView: View {
     @Environment(\.widgetFamily) private var family
     let entry: UsageEntry
@@ -41,111 +41,118 @@ struct UsageWidgetView: View {
 
 // MARK: - System families
 
+/// "Claude" title with the logo; shows a staleness hint on the trailing
+/// edge so it never costs an extra row. Widget fonts are fixed sizes on
+/// purpose: text styles scale with the device's Dynamic Type and overflow
+/// the fixed widget height on real hardware.
+private struct WidgetHeader: View {
+    let snapshot: UsageSnapshot
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image("ClaudeIcon")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 15, height: 15)
+                .clipShape(RoundedRectangle(cornerRadius: 3.5, style: .continuous))
+            Text("Claude")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Theme.ink)
+            Spacer(minLength: 0)
+            if snapshot.isStale {
+                HStack(spacing: 2) {
+                    Image(systemName: "clock.arrow.circlepath")
+                    Text(snapshot.fetchedAt, format: .relative(presentation: .numeric, unitsStyle: .narrow))
+                }
+                .font(.system(size: 8))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.8))
+            }
+        }
+    }
+}
+
+/// One usage window as a labeled bar with its reset line under it, like
+/// the dashboard rows: name + percent, capsule bar, "Resets in 4h 10m".
+private struct WindowBarRow: View {
+    let kind: UsageWindow.Kind
+    let window: UsageWindow?
+    let prefs: Preferences
+    var showsReset = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2.5) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(kind.shortName)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.inkSecondary)
+                Spacer(minLength: 4)
+                Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—")
+                    .font(.system(size: 11, weight: .semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(Theme.ink)
+            }
+            UsageBarView(
+                value: window?.displayedPct(prefs.displayMode),
+                tint: window?.tint ?? Theme.accent
+            )
+            if showsReset, let resetsAt = window?.resetsAt {
+                HStack(spacing: 3) {
+                    Image(systemName: "arrow.circlepath")
+                    Text(UsageFormatting.resetLabel(for: resetsAt, style: prefs.resetStyle))
+                }
+                .font(.system(size: 9))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.9))
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Header at the top, then each window row in an equal flexible slice of
+/// the remaining height — the content spreads to fill the family instead
+/// of clumping at the top (small) or leaving a gap below (medium).
+/// Consecutive windows sharing one reset date (Weekly and Weekly·Fable)
+/// show the "Resets in" line once, under the last bar of the group.
+private struct WindowBarList: View {
+    let snapshot: UsageSnapshot
+    let prefs: Preferences
+    let count: Int
+
+    var body: some View {
+        let slots = Array(WindowSlots(snapshot: snapshot).slots.prefix(count))
+        VStack(alignment: .leading, spacing: 0) {
+            WidgetHeader(snapshot: snapshot)
+            ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
+                WindowBarRow(
+                    kind: slot.kind,
+                    window: slot.window,
+                    prefs: prefs,
+                    showsReset: WindowSlots.showsReset(at: index, in: slots)
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+
+/// Small: header plus all three windows, same as medium but narrow.
 struct SmallUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            ForEach(WindowSlots(snapshot: snapshot).slots, id: \.kind) { slot in
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack {
-                        Text(slot.kind.shortName)
-                            .font(.caption2)
-                            .foregroundStyle(Theme.inkSecondary)
-                        Spacer()
-                        Text(percentText(slot.window))
-                            .font(.caption.monospacedDigit().weight(.semibold))
-                            .foregroundStyle(Theme.ink)
-                    }
-                    UsageBarView(
-                        value: slot.window?.displayedPct(prefs.displayMode),
-                        tint: slot.window?.tint ?? Theme.accent
-                    )
-                }
-            }
-            if snapshot.isStale {
-                StaleFooter(fetchedAt: snapshot.fetchedAt)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-    }
-
-    private func percentText(_ window: UsageWindow?) -> String {
-        window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—"
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3)
     }
 }
 
+/// Medium: header plus all three windows as bars.
 struct MediumUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
 
     var body: some View {
-        VStack(spacing: 6) {
-            HStack(alignment: .top, spacing: 0) {
-                ForEach(WindowSlots(snapshot: snapshot).slots, id: \.kind) { slot in
-                    RingColumn(kind: slot.kind, window: slot.window, prefs: prefs)
-                        .frame(maxWidth: .infinity)
-                }
-            }
-            if snapshot.isStale {
-                StaleFooter(fetchedAt: snapshot.fetchedAt)
-            }
-        }
-    }
-}
-
-private struct RingColumn: View {
-    let kind: UsageWindow.Kind
-    let window: UsageWindow?
-    let prefs: Preferences
-
-    var body: some View {
-        VStack(spacing: 4) {
-            Gauge(value: min(window?.displayedPct(prefs.displayMode) ?? 0, 100), in: 0...100) {
-                EmptyView()
-            } currentValueLabel: {
-                Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—")
-                    .font(.footnote.monospacedDigit().weight(.semibold))
-                    .foregroundStyle(Theme.ink)
-            }
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(window?.tint ?? Theme.track)
-            .scaleEffect(0.9)
-
-            Text(kind.shortName)
-                .font(.caption2)
-                .foregroundStyle(Theme.inkSecondary)
-
-            if let resetsAt = window?.resetsAt {
-                Text(resetText(resetsAt))
-                    .font(.system(size: 9))
-                    .foregroundStyle(Theme.inkSecondary.opacity(0.8))
-            }
-        }
-    }
-
-    private func resetText(_ date: Date) -> String {
-        switch prefs.resetStyle {
-        case .relative:
-            return UsageFormatting.relativeString(from: Date(), to: date)
-        case .absolute:
-            return date.formatted(date: .omitted, time: .shortened)
-        }
-    }
-}
-
-private struct StaleFooter: View {
-    let fetchedAt: Date
-
-    var body: some View {
-        HStack(spacing: 3) {
-            Image(systemName: "clock.arrow.circlepath")
-            Text(fetchedAt, format: .relative(presentation: .numeric, unitsStyle: .narrow))
-        }
-        .font(.system(size: 9))
-        .foregroundStyle(Theme.inkSecondary.opacity(0.8))
-        .frame(maxWidth: .infinity, alignment: .trailing)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3)
     }
 }
 

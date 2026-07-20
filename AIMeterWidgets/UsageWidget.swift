@@ -8,9 +8,11 @@ struct UsageEntry: TimelineEntry {
     let prefs: Preferences
 }
 
-/// Reads the last snapshot and display preferences from the App Group;
-/// never fetches. The app (or its background task) refreshes data and
-/// reloads timelines. Entries only re-render so staleness stays current.
+/// Serves the last snapshot from the App Group. On iOS, when that snapshot
+/// is older than the refresh cadence, the widget fetches fresh usage itself
+/// (shared keychain credentials) so it keeps updating without the app;
+/// on macOS the menu bar app feeds it. Timeline policy re-runs this at the
+/// user-selected cadence, subject to WidgetKit's refresh budget.
 struct UsageTimelineProvider: TimelineProvider {
     func placeholder(in context: Context) -> UsageEntry {
         UsageEntry(date: .now, snapshot: .sample, prefs: Preferences())
@@ -25,9 +27,19 @@ struct UsageTimelineProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<UsageEntry>) -> Void) {
-        let entry = entry()
-        let next = Date(timeIntervalSinceNow: entry.prefs.refreshCadence.interval)
-        completion(Timeline(entries: [entry], policy: .after(next)))
+        Task {
+            var entry = entry()
+            #if os(iOS)
+            if let fresh = await WidgetRefresher.fetchIfStale(
+                current: entry.snapshot,
+                cadence: entry.prefs.refreshCadence.interval
+            ) {
+                entry = UsageEntry(date: .now, snapshot: fresh, prefs: entry.prefs)
+            }
+            #endif
+            let next = Date(timeIntervalSinceNow: entry.prefs.refreshCadence.interval)
+            completion(Timeline(entries: [entry], policy: .after(next)))
+        }
     }
 
     private func entry() -> UsageEntry {
@@ -44,7 +56,7 @@ struct UsageWidget: Widget {
         StaticConfiguration(kind: AppConfig.widgetKind, provider: UsageTimelineProvider()) { entry in
             UsageWidgetView(entry: entry)
         }
-        .configurationDisplayName("Claude Usage")
+        .configurationDisplayName("Claude")
         .description("Session, weekly, and top-model usage windows.")
         .supportedFamilies(Self.families)
     }

@@ -52,6 +52,7 @@ struct SettingsView: View {
                             }
                         }
                         .labelsHidden()
+                        .fixedSize()
                         .tint(Theme.accent)
                     }
                 }

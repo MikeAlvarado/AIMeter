@@ -23,6 +23,8 @@ final class ClaudeResponseMappingTests: XCTestCase {
         let model = try XCTUnwrap(windows.first { $0.kind == .modelSpecific("Fable") })
         XCTAssertEqual(model.usedPct, 5)
         XCTAssertEqual(model.severity, .normal)
+        // Scoped weekly windows share the weekly reset date exactly.
+        XCTAssertEqual(model.resetsAt, weekly.resetsAt)
     }
 
     func testResetsAtParsesFractionalSecondsUTC() throws {
@@ -74,6 +76,34 @@ final class ClaudeResponseMappingTests: XCTestCase {
 
         XCTAssertEqual(windows.count, 1)
         XCTAssertEqual(windows[0].kind, .session)
+    }
+
+    func testDecodesSpendAndExtraUsageFromFixture() throws {
+        let response = try decodeFixture()
+
+        let spend = try XCTUnwrap(response.spendStatus())
+        XCTAssertTrue(spend.enabled)
+        XCTAssertEqual(spend.percent, 36)
+        XCTAssertEqual(spend.severity, .normal)
+        XCTAssertEqual(spend.usedAmount, 10.76)
+        XCTAssertEqual(spend.limitAmount, 30.0)
+        XCTAssertEqual(spend.currency, "USD")
+
+        let extra = try XCTUnwrap(response.extraUsageStatus())
+        XCTAssertTrue(extra.enabled)
+        XCTAssertEqual(extra.usedCredits, 10.76)
+        XCTAssertEqual(extra.monthlyLimit, 30.0)
+        XCTAssertEqual(try XCTUnwrap(extra.utilization), 35.87, accuracy: 0.01)
+        XCTAssertEqual(extra.currency, "USD")
+    }
+
+    func testMissingSpendAndExtraUsageMapToNil() throws {
+        let json = """
+        {"limits": [{"kind": "session", "percent": 10, "resets_at": null}]}
+        """
+        let response = try JSONDecoder().decode(ClaudeUsageResponse.self, from: Data(json.utf8))
+        XCTAssertNil(response.spendStatus())
+        XCTAssertNil(response.extraUsageStatus())
     }
 
     private func decodeFixture() throws -> ClaudeUsageResponse {

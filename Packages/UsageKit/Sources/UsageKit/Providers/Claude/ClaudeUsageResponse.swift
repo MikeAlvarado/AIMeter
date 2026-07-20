@@ -44,14 +44,58 @@ struct ClaudeUsageResponse: Decodable {
         }
     }
 
+    /// `{"amount_minor": 1076, "currency": "USD", "exponent": 2}` → 10.76.
+    struct Money: Decodable {
+        let amountMinor: Double?
+        let currency: String?
+        let exponent: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case amountMinor = "amount_minor"
+            case currency, exponent
+        }
+
+        var majorAmount: Double? {
+            amountMinor.map { $0 / pow(10, Double(exponent ?? 2)) }
+        }
+    }
+
+    struct Spend: Decodable {
+        let used: Money?
+        let limit: Money?
+        let percent: Double?
+        let severity: String?
+        let enabled: Bool?
+    }
+
+    struct ExtraUsage: Decodable {
+        let isEnabled: Bool?
+        let monthlyLimit: Double?
+        let usedCredits: Double?
+        let utilization: Double?
+        let currency: String?
+        let decimalPlaces: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case isEnabled = "is_enabled"
+            case monthlyLimit = "monthly_limit"
+            case usedCredits = "used_credits"
+            case decimalPlaces = "decimal_places"
+            case utilization, currency
+        }
+    }
+
     let fiveHour: LegacyWindow?
     let sevenDay: LegacyWindow?
     let limits: [Limit]?
+    let spend: Spend?
+    let extraUsage: ExtraUsage?
 
     enum CodingKeys: String, CodingKey {
         case fiveHour = "five_hour"
         case sevenDay = "seven_day"
-        case limits
+        case extraUsage = "extra_usage"
+        case limits, spend
     }
 }
 
@@ -60,8 +104,9 @@ extension ClaudeUsageResponse {
     /// are skipped so future server-side additions never break parsing.
     func usageWindows() -> [UsageWindow] {
         if let limits, !limits.isEmpty {
-            let mapped = limits.compactMap { $0.usageWindow() }
+            var mapped = limits.compactMap { $0.usageWindow() }
             if !mapped.isEmpty {
+                alignScopedWeeklyResets(&mapped)
                 return mapped
             }
         }
@@ -82,6 +127,48 @@ extension ClaudeUsageResponse {
             ))
         }
         return windows
+    }
+
+    /// The scoped weekly windows (per-model) reset together with the
+    /// overall weekly window, but the endpoint reports timestamps a few
+    /// microseconds apart. Share the weekly date so every surface shows
+    /// the identical "resets in".
+    private func alignScopedWeeklyResets(_ windows: inout [UsageWindow]) {
+        guard let weeklyReset = windows.first(where: { $0.kind == .weekly })?.resetsAt else {
+            return
+        }
+        for index in windows.indices {
+            if case .modelSpecific = windows[index].kind {
+                windows[index].resetsAt = weeklyReset
+            }
+        }
+    }
+
+    /// Maps the wire `spend` object; nil when the endpoint omits it.
+    func spendStatus() -> SpendStatus? {
+        guard let spend else { return nil }
+        return SpendStatus(
+            enabled: spend.enabled ?? false,
+            percent: spend.percent,
+            severity: spend.severity.flatMap(UsageWindow.Severity.init(rawValue:)),
+            usedAmount: spend.used?.majorAmount,
+            limitAmount: spend.limit?.majorAmount,
+            currency: spend.used?.currency ?? spend.limit?.currency
+        )
+    }
+
+    /// Maps the wire `extra_usage` object; credit amounts arrive in minor
+    /// units scaled by `decimal_places`.
+    func extraUsageStatus() -> ExtraUsageStatus? {
+        guard let extraUsage else { return nil }
+        let scale = pow(10, Double(extraUsage.decimalPlaces ?? 2))
+        return ExtraUsageStatus(
+            enabled: extraUsage.isEnabled ?? false,
+            usedCredits: extraUsage.usedCredits.map { $0 / scale },
+            monthlyLimit: extraUsage.monthlyLimit.map { $0 / scale },
+            utilization: extraUsage.utilization,
+            currency: extraUsage.currency
+        )
     }
 
     /// resets_at is ISO 8601, usually with fractional seconds.

@@ -30,8 +30,6 @@ enum Theme {
 
     // MARK: - Typography
 
-    /// App title on the dashboard ("AIMeter") — serif, the signature touch.
-    static let displayTitle = Font.system(.largeTitle, design: .serif).weight(.semibold)
     /// Section headers ("Claude", "Display", "Rate limits").
     static let sectionHeader = Font.subheadline.weight(.medium)
     /// Window name in a usage row ("5-hour session").
@@ -40,6 +38,14 @@ enum Theme {
     static let percent = Font.body.monospacedDigit().weight(.semibold)
     /// Reset line, "Updated X ago", footnotes.
     static let caption = Font.footnote
+
+    // MARK: - Elevation
+
+    /// Wide, diffuse drop shadow under cards — the soft "glass float"
+    /// elevation. Pair with `shadowTight` for a grounded edge.
+    static let shadowSoft = Color.black.opacity(0.07)
+    /// Tight contact shadow that grounds the card edge.
+    static let shadowTight = Color.black.opacity(0.04)
 
     // MARK: - Metrics
 

@@ -19,8 +19,11 @@ Claude Pro/Max. Architecture must support adding other AI providers later.
 - `UsageSnapshot` holds `[UsageWindow]`. `UsageWindow.kind` is an extensible
   enum: `.session`, `.weekly`, `.modelSpecific(String)`. Widgets render any
   combination of windows; they never hardcode provider or window names.
-- App and Widget extension communicate only through the App Group store.
-  Widgets never fetch directly; they read the last snapshot + timestamp.
+- App and Widget extension share data only through the App Group store.
+  Widgets render the last snapshot + timestamp. On iOS the widget may fetch
+  for itself when the snapshot is older than the refresh cadence (it reads
+  credentials via the shared keychain access group — the App Group — and
+  writes the result back to the store). On macOS the menu bar app feeds it.
 - OAuth tokens live in Keychain only. Never in UserDefaults, never in the repo.
 
 ## Data source (Claude)

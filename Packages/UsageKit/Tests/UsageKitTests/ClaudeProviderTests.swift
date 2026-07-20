@@ -96,7 +96,7 @@ final class ClaudeProviderTests: XCTestCase {
         let source = StubCredentialSource(credentials: .valid, allowsRefresh: false)
         let provider = ClaudeProvider(credentialSource: source, transport: transport)
 
-        await assertThrows(UsageError.rateLimited(retryAfter: 30)) {
+        await assertThrows(UsageError.rateLimited(retryAfter: 30, body: "{}")) {
             _ = try await provider.fetchUsage()
         }
     }
@@ -137,6 +137,38 @@ final class ClaudeProviderTests: XCTestCase {
         }
     }
 
+    func testMissingSubscriptionResolvedFromProfileAndPersisted() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        transport.route(url: ClaudeProvider.profileEndpoint, responses: [
+            (200, #"{"account": {"has_claude_pro": false, "has_claude_max": true}}"#),
+        ])
+        let source = StubCredentialSource(credentials: .withoutSubscription, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let snapshot = try await provider.fetchUsage()
+
+        XCTAssertEqual(snapshot.planName, "max")
+        // Persisted so the next fetch skips the profile call.
+        XCTAssertEqual(source.saved.last?.subscriptionType, "max")
+    }
+
+    func testStoredSubscriptionSkipsProfileCall() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        let source = StubCredentialSource(credentials: .valid, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let snapshot = try await provider.fetchUsage()
+
+        XCTAssertEqual(snapshot.planName, "pro")
+        XCTAssertFalse(transport.requests.contains { $0.url == ClaudeProvider.profileEndpoint })
+    }
+
     private static let usageBody = """
     {
       "limits": [
@@ -166,6 +198,14 @@ private extension ClaudeCredentials {
         refreshToken: "refresh-token",
         expiresAt: Date(timeIntervalSinceNow: -60),
         subscriptionType: "pro"
+    )
+
+    /// An in-app OAuth connection made before the exchange captured the
+    /// subscription — the case the profile fallback exists for.
+    static let withoutSubscription = ClaudeCredentials(
+        accessToken: "valid-token",
+        refreshToken: "refresh-token",
+        expiresAt: Date(timeIntervalSinceNow: 3600)
     )
 }
 

@@ -11,6 +11,7 @@ struct RefreshService {
     private let store: SnapshotStore?
 
     init() {
+        Self.migrateCredentialsToSharedGroup()
         #if os(macOS)
         credentialSource = ClaudeAutoCredentialSource(store: Self.keychainStore)
         #else
@@ -21,7 +22,19 @@ struct RefreshService {
     }
 
     private static var keychainStore: KeychainStore {
-        KeychainStore(service: AppConfig.keychainService)
+        KeychainStore(service: AppConfig.keychainService, accessGroup: AppConfig.keychainAccessGroup)
+    }
+
+    /// One-time move of credentials saved before keychain sharing into the
+    /// shared access group, so the widget extension can read them too.
+    private static func migrateCredentialsToSharedGroup() {
+        guard AppConfig.keychainAccessGroup != nil else { return }
+        let legacy = KeychainStore(service: AppConfig.keychainService)
+        let key = ClaudeKeychainCredentialSource.defaultKey
+        guard (try? keychainStore.data(for: key)) == nil,
+              let data = try? legacy.data(for: key), !data.isEmpty else { return }
+        try? legacy.delete(key)
+        try? keychainStore.set(data, for: key)
     }
 
     func lastSnapshot() -> UsageSnapshot? {
@@ -31,6 +44,7 @@ struct RefreshService {
     @discardableResult
     func refresh() async throws -> UsageSnapshot {
         let snapshot = try await provider.fetchUsage()
+            .fillingMissingResets(from: store?.snapshot(for: provider.id))
         try store?.save(snapshot)
         WidgetCenter.shared.reloadAllTimelines()
         await NotificationScheduler.reschedule(for: snapshot, preferences: NotificationPreferences())

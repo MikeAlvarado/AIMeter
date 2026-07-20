@@ -38,20 +38,14 @@ Your token never leaves your device: it is read from (macOS) or stored in
   back to `~/.claude/.credentials.json`). It never modifies them: Claude
   Code keeps owning the token refresh cycle. Requires Claude Code installed
   and logged in.
-- **iOS** — paste once. Copy your credentials on your computer and paste
-  them into the app:
-
-  ```sh
-  # Linux, or macOS installs that use the file:
-  cat ~/.claude/.credentials.json | pbcopy
-
-  # macOS installs that use the Keychain:
-  security find-generic-password -s "Claude Code-credentials" -w | pbcopy
-  ```
-
-  Pasting the full JSON (including the refresh token) lets the app renew the
-  access token on its own. A bare access token also works but expires within
-  hours. Credentials are stored only in the device Keychain.
+- **iOS** — sign in once, in the app. Tap **Connect**: AIMeter opens
+  Claude's sign-in page in your browser (same PKCE flow Claude Code uses,
+  any sign-in method works), you copy the code it shows and paste it back.
+  The app then owns its token copy — including automatic refresh — stored
+  only in the device Keychain, shared with the widget through the App Group
+  keychain access group so widgets can update themselves in the background.
+  As a fallback, the same field also accepts the full credentials JSON
+  copied from another device (`~/.claude/.credentials.json`).
 
 ## Building
 
@@ -91,8 +85,8 @@ Packages/UsageKit     provider-agnostic Swift Package (no UI imports)
   Providers/Claude/   all endpoint- and OAuth-specific code, isolated
   Storage/            Keychain wrapper + App Group snapshot store
 AIMeter/              multiplatform SwiftUI app (iOS + macOS)
-AIMeterWidgets/       widget extension; reads snapshots from the App Group,
-                      never fetches
+AIMeterWidgets/       widget extension; renders App Group snapshots and, on
+                      iOS, refreshes them itself when they go stale
 Shared/               config + presentation helpers used by app and widgets
 ```
 

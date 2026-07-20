@@ -15,6 +15,19 @@ struct WindowSlots {
             (model?.kind ?? .modelSpecific("Fable"), model),
         ]
     }
+
+    /// Whether the slot at `index` should render its reset line.
+    /// Consecutive windows sharing one reset date (Weekly and
+    /// Weekly·Fable) show it once, under the last of the group — every
+    /// surface applies the same rule.
+    static func showsReset(
+        at index: Int,
+        in slots: [(kind: UsageWindow.Kind, window: UsageWindow?)]
+    ) -> Bool {
+        guard let reset = slots[index].window?.resetsAt else { return false }
+        guard index + 1 < slots.count else { return true }
+        return slots[index + 1].window?.resetsAt != reset
+    }
 }
 
 extension UsageWindow {

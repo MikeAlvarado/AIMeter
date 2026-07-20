@@ -5,6 +5,7 @@ import Foundation
 /// `ClaudeUsageResponse` so a breaking change touches one place.
 public struct ClaudeProvider: UsageProvider {
     static let usageEndpoint = URL(string: "https://api.anthropic.com/api/oauth/usage")!
+    static let profileEndpoint = URL(string: "https://api.anthropic.com/api/oauth/profile")!
 
     public let id = "claude"
     public let displayName = "Claude"
@@ -48,9 +49,9 @@ public struct ClaudeProvider: UsageProvider {
         case 429:
             let retryAfter = response.value(forHTTPHeaderField: "Retry-After")
                 .flatMap(TimeInterval.init)
-            throw UsageError.rateLimited(retryAfter: retryAfter)
+            throw UsageError.rateLimited(retryAfter: retryAfter, body: Self.errorBody(data))
         default:
-            throw UsageError.httpError(statusCode: response.statusCode)
+            throw UsageError.httpError(statusCode: response.statusCode, body: Self.errorBody(data))
         }
 
         let decoded: ClaudeUsageResponse
@@ -67,19 +68,60 @@ public struct ClaudeProvider: UsageProvider {
 
         return UsageSnapshot(
             providerID: id,
-            planName: credentials.subscriptionType,
+            planName: await planName(for: credentials),
             fetchedAt: Date(),
-            windows: windows
+            windows: windows,
+            spend: decoded.spendStatus(),
+            extraUsage: decoded.extraUsageStatus()
         )
     }
 
+    /// The stored subscription when present; otherwise resolved once from
+    /// the profile endpoint and persisted so later fetches skip the extra
+    /// call. Best-effort: a profile failure just leaves the plan unknown.
+    private func planName(for credentials: ClaudeCredentials) async -> String? {
+        if let subscription = credentials.subscriptionType {
+            return subscription
+        }
+        guard let plan = try? await fetchProfilePlan(with: credentials) else {
+            return nil
+        }
+        if credentialSource.allowsRefresh {
+            var updated = credentials
+            updated.subscriptionType = plan
+            try? await credentialSource.save(updated)
+        }
+        return plan
+    }
+
+    private func fetchProfilePlan(with credentials: ClaudeCredentials) async throws -> String? {
+        let (data, response) = try await transport.send(
+            request(for: Self.profileEndpoint, credentials: credentials)
+        )
+        guard response.statusCode == 200 else { return nil }
+        return try JSONDecoder().decode(ClaudeProfileResponse.self, from: data).subscriptionType
+    }
+
+    /// Raw response body attached to HTTP errors so the UI can show what
+    /// the endpoint actually said; trimmed to keep error text bounded.
+    private static func errorBody(_ data: Data) -> String? {
+        guard let text = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+              !text.isEmpty else { return nil }
+        return String(text.prefix(400))
+    }
+
     private func send(with credentials: ClaudeCredentials) async throws -> (Data, HTTPURLResponse) {
-        var request = URLRequest(url: Self.usageEndpoint)
+        try await transport.send(request(for: Self.usageEndpoint, credentials: credentials))
+    }
+
+    private func request(for url: URL, credentials: ClaudeCredentials) -> URLRequest {
+        var request = URLRequest(url: url)
         request.setValue("Bearer \(credentials.accessToken)", forHTTPHeaderField: "Authorization")
         request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-        return try await transport.send(request)
+        return request
     }
 
     private func refreshed(_ credentials: ClaudeCredentials) async throws -> ClaudeCredentials {
