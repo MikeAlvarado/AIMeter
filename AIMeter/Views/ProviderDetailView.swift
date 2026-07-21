@@ -34,7 +34,7 @@ struct ProviderDetailView: View {
                         selection: $prefs.modelSlotFallback
                     )
                 }
-                SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Hide the row, or show your spend/credits there instead."))
+                SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on."))
 
                 if let spend = model.snapshot?.spend {
                     SectionHeader(title: String(localized: "Spend"))

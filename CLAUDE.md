@@ -151,11 +151,13 @@ Credential sources:
   real per-model window when the plan reports one (e.g. Max/Team
   Premium's Fable 5 allowance). When it doesn't — most Claude Pro accounts,
   since Fable moved to usage credits — `ModelSlotFallback` (Provider
-  Detail → "Third usage row": Hidden/Credits) decides: `.hidden` drops the
-  slot (two rows total), `.credits` keeps three rows and fills it with a
-  synthesized `.credits` window from `spend` instead of a dead
-  placeholder. The credits row's notification toggle is always disabled
-  (no reset date to schedule against).
+  Detail → "Third usage row": Auto/Hidden/Credits, default Auto) decides:
+  `.hidden` drops the slot (two rows total), `.credits` keeps three rows
+  and fills it with a synthesized `.credits` window from `spend` instead
+  of a dead placeholder, `.auto` picks between those two on its own —
+  showing the credits row exactly when `spend.enabled` is true, hiding it
+  otherwise, no manual choice needed. The credits row's notification
+  toggle is always disabled (no reset date to schedule against).
 - Reset lines: consecutive windows sharing one reset date show
   "Resets in …" once, under the last of the group (`WindowSlots.showsReset`)
   — applies to dashboard, detail, menu bar, widgets, landscape.
@@ -175,9 +177,10 @@ Credential sources:
   → card with the three windows, error, "Updated X ago". Disconnected state
   shows a Connect card.
 - **Provider detail** (push): rate-limit rows, a "Third usage row"
-  Hidden/Credits toggle (governs the third-slot fallback above) directly
-  under the rate-limits card, Spend and Extra usage cards (label/value
-  rows, currency formatted), notification toggles, iOS disconnect button.
+  Auto/Hidden/Credits toggle (governs the third-slot fallback above,
+  defaults to Auto) directly under the rate-limits card, Spend and Extra
+  usage cards (label/value rows, currency formatted), notification
+  toggles, iOS disconnect button.
 - **Settings**: appearance / display mode / reset style pills, refresh
   cadence menu, notification toggles, a "Privacy & data" link, and an
   "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet with

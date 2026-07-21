@@ -61,9 +61,10 @@ struct UsageWindowOptionQuery: EntityQuery {
     /// Only "claude" is implemented today; the store lookup still drives
     /// the option list so it reflects whatever windows the account
     /// currently has rather than assuming a fixed set. When there's no
-    /// per-model window and the user has opted into the credits fallback
-    /// (Settings), "Credits" is offered too — same rule `WindowSlots` uses
-    /// for the dashboard's third slot.
+    /// per-model window and the credits fallback would actually show
+    /// (Settings: Credits, or Auto with credits enabled), "Credits" is
+    /// offered too — same rule `WindowSlots` uses for the dashboard's
+    /// third slot.
     private func currentOptions() -> [UsageWindowOption] {
         let providerID = "claude"
         let providerName = UsageWindowOption.providerName(for: providerID)
@@ -75,7 +76,8 @@ struct UsageWindowOptionQuery: EntityQuery {
             if case .modelSpecific = $0 { return true }
             return false
         }
-        if !hasModelWindow, Preferences.load().modelSlotFallback == .credits, snapshot?.creditsWindow != nil {
+        let fallback = Preferences.load().modelSlotFallback
+        if !hasModelWindow, fallback != .hidden, snapshot?.creditsWindow != nil {
             resolvedKinds.append(.credits)
         }
 

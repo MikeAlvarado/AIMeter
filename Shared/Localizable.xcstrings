@@ -940,6 +940,16 @@
         }
       }
     },
+    "Auto": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto"
+          }
+        }
+      }
+    },
     "Credits": {
       "localizations": {
         "es": {
@@ -970,12 +980,12 @@
         }
       }
     },
-    "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Hide the row, or show your spend/credits there instead.": {
+    "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Algunos planes no incluyen un límite propio por modelo (por ejemplo, Fable 5 en Claude Pro). Oculta la fila o muestra ahí tu gasto/créditos."
+            "value": "Algunos planes no incluyen un límite propio por modelo (por ejemplo, Fable 5 en Claude Pro). Auto muestra ahí tu gasto/créditos solo si tu cuenta lo tiene habilitado; Oculto y Créditos lo desactivan o activan de forma forzada."
           }
         }
       }

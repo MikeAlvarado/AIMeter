@@ -10,7 +10,9 @@ import UsageKit
 /// doesn't — most Claude Pro accounts, since Fable moved to usage credits —
 /// `modelSlotFallback` decides what happens: `.hidden` drops the slot
 /// entirely (two rows), `.credits` keeps three rows and fills it with the
-/// account's spend/credit status instead of a dead placeholder.
+/// account's spend/credit status instead of a dead placeholder, and `.auto`
+/// (the default) picks between those two by itself — the row appears
+/// exactly when the account's spend/credits status is enabled.
 struct WindowSlots {
     let slots: [(kind: UsageWindow.Kind, window: UsageWindow?)]
 
@@ -28,6 +30,10 @@ struct WindowSlots {
                 break
             case .credits:
                 built.append((.credits, snapshot?.creditsWindow))
+            case .auto:
+                if let creditsWindow = snapshot?.creditsWindow {
+                    built.append((.credits, creditsWindow))
+                }
             }
         }
         slots = built

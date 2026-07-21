@@ -48,10 +48,13 @@ enum AppearanceMode: String, CaseIterable {
 /// What the third usage slot shows when the plan reports no per-model
 /// window (e.g. Claude Pro without Fable 5's own weekly limit).
 enum ModelSlotFallback: String, CaseIterable {
-    case hidden, credits
+    /// Shows the credits row exactly when the account's spend/credits
+    /// status is enabled, hides it otherwise — no manual choice needed.
+    case auto, hidden, credits
 
     var label: String {
         switch self {
+        case .auto: return String(localized: "Auto")
         case .hidden: return String(localized: "Hidden")
         case .credits: return String(localized: "Credits")
         }
@@ -82,7 +85,7 @@ struct Preferences: Sendable {
     var resetStyle: ResetStyle = .relative
     var refreshCadence: RefreshCadence = .minutes15
     var appearance: AppearanceMode = .system
-    var modelSlotFallback: ModelSlotFallback = .hidden
+    var modelSlotFallback: ModelSlotFallback = .auto
     var lastScheduledAt: Date?
 
     enum Keys {
