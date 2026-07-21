@@ -52,13 +52,16 @@ public struct ClaudeOAuth: Sendable {
             throw UsageError.invalidResponse("empty authentication code")
         }
         let parts = trimmed.split(separator: "#", maxSplits: 1).map(String.init)
+        guard let code = parts.first, !code.isEmpty else {
+            throw UsageError.invalidResponse("invalid authentication code")
+        }
 
         var request = URLRequest(url: ClaudeOAuthClient.tokenEndpoint)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONEncoder().encode(ExchangeRequest(
             grantType: "authorization_code",
-            code: parts[0],
+            code: code,
             state: parts.count > 1 ? parts[1] : session.state,
             clientId: ClaudeOAuthClient.clientID,
             redirectUri: Self.redirectURI,

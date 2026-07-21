@@ -20,7 +20,7 @@ struct PrivacyView: View {
                         PrivacyRow(
                             systemName: "key.fill",
                             title: String(localized: "Tokens live in the Keychain"),
-                            text: String(localized: "Your sign-in token is stored encrypted in the system Keychain, shared only with the widget so it can refresh usage by itself. It is used exclusively to read your usage.")
+                            text: keychainRowText
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(
@@ -93,6 +93,18 @@ struct PrivacyView: View {
 
     private var sectionGap: some View {
         Spacer().frame(height: Theme.sectionSpacing - 16)
+    }
+
+    /// The widget's Keychain access differs by platform (App Group access
+    /// group on iOS; the menu bar app feeds it on macOS instead, since a
+    /// sandboxed widget there can't read Claude Code's own credential
+    /// file) — this row must say the true thing for whichever one is running.
+    private var keychainRowText: String {
+        #if os(macOS)
+        String(localized: "Your sign-in token is read from the Keychain item Claude Code already keeps on this Mac — read-only, and never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead.")
+        #else
+        String(localized: "Your sign-in token is stored encrypted in the system Keychain, shared only with the widget (through the App Group's keychain access group) so it can refresh usage by itself. It is used exclusively to read your usage.")
+        #endif
     }
 }
 

@@ -29,14 +29,14 @@ struct SingleUsageWidgetView: View {
 
     private var header: some View {
         HStack(spacing: 5) {
-            Image("ClaudeIcon")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 15, height: 15)
-                .clipShape(RoundedRectangle(cornerRadius: 3.5, style: .continuous))
-            Text(entry.providerName)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Theme.ink)
+            ProviderIdentityView(
+                name: entry.providerName,
+                iconSize: 15,
+                iconCornerRadius: 3.5,
+                font: .system(size: 12, weight: .semibold),
+                nameColor: Theme.ink,
+                planName: nil
+            )
             Spacer(minLength: 4)
             Text(entry.kind.shortName)
                 .font(.system(size: 11))

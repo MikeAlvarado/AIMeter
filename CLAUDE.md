@@ -15,9 +15,17 @@ system, and behaviors. It should be enough to rebuild the app from zero.
 - Widget extension: `com.mikealvarado.aimeter.widgets`
 - App Group: `group.com.mikealvarado.aimeter` — must match exactly in both
   targets' entitlements and `Shared/AppConfig.swift`. On iOS it doubles as
-  the **keychain access group** so the widget can read credentials.
+  the **keychain access group** so the widget can read credentials — this
+  needs BOTH the `com.apple.security.application-groups` entitlement AND a
+  `keychain-access-groups` entitlement (`$(AppIdentifierPrefix)` + the same
+  group string) in both targets. The App Group entitlement alone only
+  shares `UserDefaults`/files, not Keychain items — a common trap, since it
+  builds and even codesigns fine without the Keychain entitlement; it only
+  fails at runtime on a real device (the Simulator is lenient about it).
 - Background task ID: `com.mikealvarado.aimeter.refresh`
-- Widget kind: `AIMeterUsage`
+- Widget kinds: `AIMeterUsage` (the three-window widget) and
+  `AIMeterSingleUsage` (single-window widget, user-configurable via
+  WidgetKit's `AppIntentConfiguration`).
 
 ## Layout of the repo
 
@@ -29,8 +37,11 @@ Packages/UsageKit     local Swift Package, provider-agnostic, pure logic
   Storage/            KeychainStore (accessGroup-aware) + SnapshotStore
   Sources/UsageKit/Resources/Localizable.xcstrings   (package strings)
 AIMeter/              multiplatform SwiftUI app (views + services)
-AIMeterWidgets/       widget extension (renders snapshots; iOS: self-fetch)
+AIMeterWidgets/       both widgets — AIMeterUsage (3-window) and
+                      AIMeterSingleUsage (single window, AppIntents
+                      configuration); renders snapshots; iOS: self-fetch
 Shared/               AppConfig, Theme, components, formatting, preferences,
+                      ProviderIdentityView (shared header), PrivacyInfo.xcprivacy,
                       Media.xcassets (Claude logos), Localizable.xcstrings
 Scripts/              probe-usage-endpoint.sh + sample-response.json
 docs/design/reference/  local-only reference screenshots (gitignored)
@@ -46,9 +57,12 @@ assets and string catalog from there.
   `func fetchUsage() async throws -> UsageSnapshot`.
 - `UsageSnapshot` holds `[UsageWindow]` plus optional `spend: SpendStatus`
   and `extraUsage: ExtraUsageStatus`. `UsageWindow.kind` is extensible:
-  `.session`, `.weekly`, `.modelSpecific(String)`. Widgets and views render
-  whatever windows a snapshot contains; provider names are never hardcoded
-  in rendering logic.
+  `.session`, `.weekly`, `.modelSpecific(String)`, and `.credits` — the
+  last one is a display-only pseudo-window the Shared presentation layer
+  synthesizes from `spend` (`UsageSnapshot.creditsWindow`); provider
+  mapping code never produces it and it's never part of a persisted
+  snapshot's `windows`. Widgets and views render whatever windows a
+  snapshot contains; provider names are never hardcoded in rendering logic.
 - App ↔ widget data flows only through the App Group `SnapshotStore`
   (JSON-encoded snapshot per provider ID). Widgets render the last
   snapshot; on iOS the widget may fetch for itself when the snapshot is
@@ -85,8 +99,10 @@ captured response) before changing the model.
   rate-limited bucket (persistent 429s).
 - OAuth: PKCE against `https://claude.ai/oauth/authorize` (client ID
   `9d1c250a-e61b-44d9-88ed-5944d1962f5e`, scope
-  `user:profile user:inference`); the user pastes back `<code>#<state>`;
-  exchange/refresh at `https://console.anthropic.com/v1/oauth/token`.
+  `user:profile user:inference`); the user pastes back `<code>#<state>`
+  (an empty or malformed paste, e.g. just `"#"`, throws a typed error
+  instead of indexing a possibly-empty split result); exchange/refresh at
+  `https://console.anthropic.com/v1/oauth/token`.
 
 Credential sources:
 - macOS: `ClaudeAutoCredentialSource` — read-only mirror of Claude Code's
@@ -130,8 +146,16 @@ Credential sources:
 
 ## Presentation rules
 
-- Three fixed slots everywhere (`WindowSlots`): session, weekly, top model
-  — a missing window keeps its slot (em dash + empty bar).
+- Session and weekly slots are always present (`WindowSlots`); a missing
+  window keeps its slot (em dash + empty bar). The third slot shows the
+  real per-model window when the plan reports one (e.g. Max/Team
+  Premium's Fable 5 allowance). When it doesn't — most Claude Pro accounts,
+  since Fable moved to usage credits — `ModelSlotFallback` (Provider
+  Detail → "Third usage row": Hidden/Credits) decides: `.hidden` drops the
+  slot (two rows total), `.credits` keeps three rows and fills it with a
+  synthesized `.credits` window from `spend` instead of a dead
+  placeholder. The credits row's notification toggle is always disabled
+  (no reset date to schedule against).
 - Reset lines: consecutive windows sharing one reset date show
   "Resets in …" once, under the last of the group (`WindowSlots.showsReset`)
   — applies to dashboard, detail, menu bar, widgets, landscape.
@@ -150,9 +174,10 @@ Credential sources:
   title, then a section per provider: logo + name + Pro/Max pill (trailing)
   → card with the three windows, error, "Updated X ago". Disconnected state
   shows a Connect card.
-- **Provider detail** (push): rate-limit rows, Spend and Extra usage cards
-  (label/value rows, currency formatted), notification toggles, iOS
-  disconnect button.
+- **Provider detail** (push): rate-limit rows, a "Third usage row"
+  Hidden/Credits toggle (governs the third-slot fallback above) directly
+  under the rate-limits card, Spend and Extra usage cards (label/value
+  rows, currency formatted), notification toggles, iOS disconnect button.
 - **Settings**: appearance / display mode / reset style pills, refresh
   cadence menu, notification toggles, a "Privacy & data" link, and an
   "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet with
@@ -172,17 +197,28 @@ Credential sources:
   pre-colored RGBA source always compiles to a plain ARGB rendition (same
   as `ClaudeIcon`) and just displays as-is — no template step to trust.
 - **Connect sheet**: pixel-Claude icon, explainer, "Open Claude Sign-In",
-  paste field (accepts OAuth code or full credentials JSON), Connect.
+  paste field (accepts OAuth code or full credentials JSON), Connect —
+  surfaces the connection error inline instead of dismissing on failure.
 - **Landscape (iPhone)**: `verticalSizeClass == .compact` swaps the
   dashboard for a fullscreen card with the same stacked rows.
-- **Widgets**: small & medium show header (logo + "Claude") + all three
-  bars with reset lines; Lock Screen accessories (circular gauge,
-  rectangular list, inline). Widget fonts are fixed sizes (12/11/9 pt) on
-  purpose — text styles scale with Dynamic Type and overflow the fixed
-  widget height on real devices. Rows sit in equal flexible slices so the
-  layout fills any family height.
-- **macOS menu bar**: session % as the label; popover with the same rows,
-  refresh/settings/quit.
+- **Widgets**:
+  - `AIMeterUsage` (small & medium): header (logo + "Claude") + all three
+    bars with reset lines; Lock Screen accessories (circular gauge,
+    rectangular list, inline). Widget fonts are fixed sizes (12/11/9 pt) on
+    purpose — text styles scale with Dynamic Type and overflow the fixed
+    widget height on real devices. Rows sit in equal flexible slices so the
+    layout fills any family height.
+  - `AIMeterSingleUsage` (small only): shows exactly one window the user
+    picks from the widget's own Edit Widget UI
+    (`SingleUsageConfigurationIntent`, `AppIntentConfiguration`) —
+    provider/window options are read live from the last stored snapshot
+    (`UsageWindowOptionQuery`), including "Credits" when the fallback
+    above is on and there's no real model window, so the list always
+    matches what the account actually has instead of a name baked in at
+    build time.
+- **macOS menu bar**: header (logo + "Claude" + plan pill, via
+  `ProviderIdentityView`) + divider, session % as the menu bar label,
+  popover with the same rows, refresh/settings/quit.
 
 ## Design system (Shared/Theme.swift)
 
@@ -196,6 +232,13 @@ wide shadow (black 7 %, r16 y8) + tight contact shadow (4 %, r2 y1) on
 cards and floating buttons. Assets: `ClaudeIcon` (starburst) for headers,
 `ClaudeCodeIcon` (pixel creature) for the connect sheet; app icon has
 light/dark/tinted iOS variants + rounded-rect macOS sizes.
+
+`Shared/ProviderIdentityView.swift` is the one place that draws "icon +
+name + optional plan pill" — parametrized by icon size/corner radius,
+font, and name color so it fits the dashboard, landscape header, menu bar,
+and both widgets without re-typing the composition per surface; each
+caller still wraps it in its own `HStack` for whatever trailing content
+(chevron, "Updated X ago", a staleness hint, or nothing) that surface needs.
 
 ## Localization
 
@@ -223,6 +266,16 @@ region to the project's `knownRegions`.
 - MIT license. README includes: undocumented-endpoint disclaimer, privacy
   /data-transparency section, build instructions with the user's own team
   ID, no affiliation with Anthropic.
+- `DEVELOPMENT_TEAM` is not hardcoded in `project.pbxproj`: both targets'
+  build configs read it from a `baseConfigurationReference` to
+  `Config.local.xcconfig` (gitignored, matches the `*.local.xcconfig`
+  pattern). `Config.local.xcconfig.example` is the tracked template new
+  clones copy and fill in with their own Team ID.
+- `Shared/PrivacyInfo.xcprivacy` (bundled into both targets via the
+  file-system-synchronized `Shared/` group) declares no tracking and the
+  one required-reason API category actually used — `UserDefaults`, reason
+  `1C8F.1` (App Group only). Update it if a new required-reason API is
+  ever introduced.
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 

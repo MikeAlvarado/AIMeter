@@ -50,14 +50,14 @@ private struct WidgetHeader: View {
 
     var body: some View {
         HStack(spacing: 5) {
-            Image("ClaudeIcon")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 15, height: 15)
-                .clipShape(RoundedRectangle(cornerRadius: 3.5, style: .continuous))
-            Text("Claude")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Theme.ink)
+            ProviderIdentityView(
+                name: "Claude",
+                iconSize: 15,
+                iconCornerRadius: 3.5,
+                font: .system(size: 12, weight: .semibold),
+                nameColor: Theme.ink,
+                planName: nil
+            )
             Spacer(minLength: 0)
             if snapshot.isStale {
                 HStack(spacing: 2) {
