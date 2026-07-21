@@ -14,11 +14,17 @@ can be added later.
   with grouped reset countdowns; Lock Screen accessories (circular,
   rectangular, inline). On iOS the widget refreshes itself in the
   background — you don't need to open the app.
+- A second, single-window widget ("Single Limit") for when you only care
+  about one number — pick the provider/window (session, weekly, or a
+  per-model limit) from the widget's own Edit Widget configuration.
 - Dashboard with your plan badge (Pro/Max), per-window reset countdowns,
   and a fullscreen landscape mode on iPhone.
 - Detail screen with the raw provider data: spend cap and extra-usage
-  credits, exactly as the endpoint reports them.
-- macOS menu bar extra with session usage at a glance.
+  credits, exactly as the endpoint reports them. When a plan bills a model
+  via usage credits instead of its own weekly limit (e.g. Fable 5 on
+  Claude Pro), the third usage row can be hidden or repurposed to show
+  that spend/credit status instead of a dead placeholder — your choice.
+- macOS menu bar extra with session usage and your plan badge at a glance.
 - Optional local notifications when a usage window resets (with honest
   permission handling — no silent failures).
 - Background refresh at a configurable cadence (15/30/60 min); widgets
@@ -93,8 +99,10 @@ You need Xcode 16+ and an Apple Developer account (a free one works for
 running on your own devices).
 
 1. Clone the repo and open `AIMeter.xcodeproj`.
-2. Select the **AIMeter** target → Signing & Capabilities → set your own
-   **Team**. Repeat for **AIMeterWidgetsExtension**.
+2. Copy `Config.local.xcconfig.example` to `Config.local.xcconfig` (already
+   gitignored — never committed) and set `DEVELOPMENT_TEAM` to your own
+   Apple Developer Team ID. Both targets read it from there, so you don't
+   need to touch Signing & Capabilities for this.
 3. If your team can't use the bundle identifiers as-is, change
    `com.mikealvarado.aimeter` / `com.mikealvarado.aimeter.widgets` and the
    App Group `group.com.mikealvarado.aimeter` to your own — the App Group
@@ -125,9 +133,12 @@ Packages/UsageKit     provider-agnostic Swift Package (no UI imports)
   Providers/Claude/   all endpoint- and OAuth-specific code, isolated
   Storage/            Keychain wrapper + App Group snapshot store
 AIMeter/              multiplatform SwiftUI app (iOS + macOS)
-AIMeterWidgets/       widget extension; renders App Group snapshots and, on
-                      iOS, refreshes them itself when they go stale
-Shared/               config + presentation helpers used by app and widgets
+AIMeterWidgets/       both widgets (the 3-window widget and Single Limit);
+                      renders App Group snapshots and, on iOS, refreshes
+                      them itself when they go stale
+Shared/               config + presentation helpers used by app and widgets,
+                      including PrivacyInfo.xcprivacy (bundled into both
+                      targets) and the shared provider header component
 ```
 
 Adding a provider = implementing `UsageProvider` (one folder under

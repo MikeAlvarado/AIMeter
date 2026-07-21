@@ -33,22 +33,14 @@ struct LandscapeUsageView: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            Image("ClaudeIcon")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 22, height: 22)
-                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-            Text("Claude")
-                .font(Theme.sectionHeader)
-                .foregroundStyle(Theme.inkSecondary)
-            if let plan = model.snapshot?.planName {
-                Text(plan.capitalized)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.inkSecondary)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 3)
-                    .background(Theme.track.opacity(0.7), in: Capsule())
-            }
+            ProviderIdentityView(
+                name: "Claude",
+                iconSize: 22,
+                iconCornerRadius: 6,
+                font: Theme.sectionHeader,
+                nameColor: Theme.inkSecondary,
+                planName: model.snapshot?.planName
+            )
             Spacer()
             if let snapshot = model.snapshot {
                 Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))

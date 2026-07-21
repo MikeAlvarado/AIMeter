@@ -136,7 +136,11 @@ struct ConnectClaudeSheet: View {
             do {
                 let credentials = try await obtainCredentials()
                 await model.completeConnection(credentials)
-                dismiss()
+                if let connectionError = model.lastError {
+                    errorText = connectionError
+                } else {
+                    dismiss()
+                }
             } catch {
                 errorText = (error as? UsageError)?.errorDescription ?? error.localizedDescription
             }

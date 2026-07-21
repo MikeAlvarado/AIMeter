@@ -940,16 +940,6 @@
         }
       }
     },
-    "Your sign-in token is stored encrypted in the system Keychain, shared only with the widget so it can refresh usage by itself. It is used exclusively to read your usage.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu token de inicio de sesión se guarda cifrado en el llavero del sistema y se comparte solo con el widget para que pueda actualizar el uso por sí mismo. Se usa exclusivamente para leer tu uso."
-          }
-        }
-      }
-    },
     "Credits": {
       "localizations": {
         "es": {
@@ -986,6 +976,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Algunos planes no incluyen un límite propio por modelo (por ejemplo, Fable 5 en Claude Pro). Oculta la fila o muestra ahí tu gasto/créditos."
+          }
+        }
+      }
+    },
+    "Your sign-in token is stored encrypted in the system Keychain, shared only with the widget (through the App Group's keychain access group) so it can refresh usage by itself. It is used exclusively to read your usage.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu token de inicio de sesión se guarda cifrado en el llavero del sistema y se comparte solo con el widget (a través del grupo de acceso al llavero de tu App Group) para que pueda actualizar el uso por sí mismo. Se usa exclusivamente para leer tu uso."
+          }
+        }
+      }
+    },
+    "Your sign-in token is read from the Keychain item Claude Code already keeps on this Mac — read-only, and never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu token de inicio de sesión se lee del llavero que Claude Code ya mantiene en esta Mac — de solo lectura, y nunca sale de este dispositivo. El widget no accede al llavero directamente; la app de la barra de menú le pasa tu uso."
           }
         }
       }

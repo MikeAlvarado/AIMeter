@@ -24,6 +24,9 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+            header
+            Divider().overlay(Theme.track)
+
             if model.needsConnection {
                 Text("Sign in to see your usage.")
                     .font(.callout)
@@ -81,6 +84,20 @@ struct MenuBarView: View {
         .background(Theme.background)
         .sheet(isPresented: $showingConnect) {
             ConnectClaudeSheet()
+        }
+    }
+
+    private var header: some View {
+        HStack(spacing: 8) {
+            ProviderIdentityView(
+                name: "Claude",
+                iconSize: 20,
+                iconCornerRadius: 5,
+                font: Theme.sectionHeader,
+                nameColor: Theme.inkSecondary,
+                planName: model.snapshot?.planName
+            )
+            Spacer()
         }
     }
 }

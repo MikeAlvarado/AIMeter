@@ -1,0 +1,10 @@
+// Copy this file to Config.local.xcconfig (already gitignored — never
+// committed) and set your own Apple Developer Team ID below. Find it at
+// https://developer.apple.com/account under Membership, or in Xcode:
+// any target → Signing & Capabilities → Team.
+//
+// AIMeter.xcodeproj reads DEVELOPMENT_TEAM from Config.local.xcconfig for
+// both the AIMeter and AIMeterWidgetsExtension targets, so forks build
+// with your own signing identity instead of the original author's.
+
+DEVELOPMENT_TEAM = YOUR_TEAM_ID

@@ -6,5 +6,9 @@
 	<array>
 		<string>group.com.mikealvarado.aimeter</string>
 	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)group.com.mikealvarado.aimeter</string>
+	</array>
 </dict>
 </plist>
