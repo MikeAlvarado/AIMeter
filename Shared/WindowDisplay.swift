@@ -11,6 +11,7 @@ extension UsageWindow.Kind {
         case .session: return String(localized: "5-hour session")
         case .weekly: return String(localized: "Weekly")
         case .modelSpecific(let model): return String(localized: "Weekly · \(model)")
+        case .credits: return String(localized: "Credits")
         }
     }
 
@@ -20,6 +21,7 @@ extension UsageWindow.Kind {
         case .session: return String(localized: "Session")
         case .weekly: return String(localized: "Week")
         case .modelSpecific(let model): return model
+        case .credits: return String(localized: "Credits")
         }
     }
 
@@ -28,6 +30,7 @@ extension UsageWindow.Kind {
         case .session: return "clock"
         case .weekly: return "calendar"
         case .modelSpecific: return "sparkles"
+        case .credits: return "creditcard"
         }
     }
 
@@ -37,6 +40,20 @@ extension UsageWindow.Kind {
         case .session: return "session"
         case .weekly: return "weekly"
         case .modelSpecific(let model): return "model.\(model)"
+        case .credits: return "credits"
+        }
+    }
+
+    /// Reverses `storageKey`, e.g. for widget configuration options
+    /// persisted as strings.
+    init?(storageKey: String) {
+        switch storageKey {
+        case "session": self = .session
+        case "weekly": self = .weekly
+        case "credits": self = .credits
+        default:
+            guard storageKey.hasPrefix("model.") else { return nil }
+            self = .modelSpecific(String(storageKey.dropFirst("model.".count)))
         }
     }
 }

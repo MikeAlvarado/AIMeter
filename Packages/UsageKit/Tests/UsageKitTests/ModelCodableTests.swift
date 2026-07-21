@@ -57,7 +57,7 @@ final class ResetCarryForwardTests: XCTestCase {
 
 final class ModelCodableTests: XCTestCase {
     func testWindowKindRoundtrip() throws {
-        let kinds: [UsageWindow.Kind] = [.session, .weekly, .modelSpecific("Fable")]
+        let kinds: [UsageWindow.Kind] = [.session, .weekly, .modelSpecific("Fable"), .credits]
         for kind in kinds {
             let data = try JSONEncoder().encode(kind)
             let decoded = try JSONDecoder().decode(UsageWindow.Kind.self, from: data)

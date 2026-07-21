@@ -10,6 +10,12 @@ public struct UsageWindow: Codable, Hashable, Sendable {
         case session
         case weekly
         case modelSpecific(String)
+        /// Display-only pseudo-window synthesized by the presentation layer
+        /// from `SpendStatus` (e.g. when a plan bills a model via usage
+        /// credits instead of its own rate-limit window). Never produced by
+        /// provider mapping code and never appears in a persisted
+        /// `UsageSnapshot.windows` array.
+        case credits
     }
 
     /// Provider-reported urgency of the window, when available.
@@ -59,6 +65,7 @@ extension UsageWindow.Kind: Codable {
         case session
         case weekly
         case modelSpecific
+        case credits
     }
 
     public init(from decoder: Decoder) throws {
@@ -70,6 +77,8 @@ extension UsageWindow.Kind: Codable {
             self = .weekly
         case .modelSpecific:
             self = .modelSpecific(try container.decode(String.self, forKey: .model))
+        case .credits:
+            self = .credits
         }
     }
 
@@ -83,6 +92,8 @@ extension UsageWindow.Kind: Codable {
         case .modelSpecific(let model):
             try container.encode(KindType.modelSpecific, forKey: .type)
             try container.encode(model, forKey: .model)
+        case .credits:
+            try container.encode(KindType.credits, forKey: .type)
         }
     }
 }
