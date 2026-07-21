@@ -5,9 +5,12 @@ import UsageKit
 /// notifications and (iOS) disconnect.
 struct ProviderDetailView: View {
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
+        @Bindable var prefs = prefs
+
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 SectionHeader(title: String(localized: "Rate limits"))
@@ -22,6 +25,16 @@ struct ProviderDetailView: View {
                         }
                     }
                 }
+
+                SectionHeader(title: String(localized: "Third usage row"))
+                    .padding(.top, Theme.sectionSpacing - 10)
+                Card {
+                    SegmentedPill(
+                        options: ModelSlotFallback.allCases.map { ($0, $0.label) },
+                        selection: $prefs.modelSlotFallback
+                    )
+                }
+                SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Hide the row, or show your spend/credits there instead."))
 
                 if let spend = model.snapshot?.spend {
                     SectionHeader(title: String(localized: "Spend"))
@@ -136,23 +149,28 @@ private struct DetailRowsCard: View {
 /// replaces the silent no-op.
 struct NotificationTogglesCard: View {
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @Environment(\.openURL) private var openURL
 
     var body: some View {
         Card {
             VStack(spacing: Theme.rowSpacing) {
-                let slots = WindowSlots(snapshot: model.snapshot).slots
+                let slots = WindowSlots(snapshot: model.snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
                 ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                     if index > 0 {
                         Divider().overlay(Theme.track)
                     }
+                    // Credits has no reset date to schedule a notification
+                    // against — nothing to toggle, so it stays disabled like
+                    // any other slot with no data.
+                    let disabled = slot.window == nil || slot.kind == .credits
                     Toggle(isOn: binding(for: slot.kind)) {
                         Text(slot.kind.displayName)
                             .font(Theme.rowTitle)
-                            .foregroundStyle(slot.window == nil ? Theme.inkSecondary : Theme.ink)
+                            .foregroundStyle(disabled ? Theme.inkSecondary : Theme.ink)
                     }
                     .tint(Theme.accent)
-                    .disabled(slot.window == nil)
+                    .disabled(disabled)
                 }
                 if model.notificationsBlocked {
                     Divider().overlay(Theme.track)

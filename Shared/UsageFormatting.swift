@@ -4,16 +4,33 @@ import UsageKit
 /// Fixed three-slot presentation used across dashboard, detail, and
 /// widgets: session, weekly, top model — always visible; a missing window
 /// keeps its slot so the composition never shifts.
+///
+/// The third slot only ever shows a real per-model window when the plan
+/// actually reports one (e.g. Max/Team Premium's Fable 5 allowance). When it
+/// doesn't — most Claude Pro accounts, since Fable moved to usage credits —
+/// `modelSlotFallback` decides what happens: `.hidden` drops the slot
+/// entirely (two rows), `.credits` keeps three rows and fills it with the
+/// account's spend/credit status instead of a dead placeholder.
 struct WindowSlots {
     let slots: [(kind: UsageWindow.Kind, window: UsageWindow?)]
 
-    init(snapshot: UsageSnapshot?) {
+    init(snapshot: UsageSnapshot?, modelSlotFallback: ModelSlotFallback) {
         let model = snapshot?.modelWindows.first
-        slots = [
+        var built: [(kind: UsageWindow.Kind, window: UsageWindow?)] = [
             (.session, snapshot?.sessionWindow),
             (.weekly, snapshot?.weeklyWindow),
-            (model?.kind ?? .modelSpecific("Fable"), model),
         ]
+        if let model {
+            built.append((model.kind, model))
+        } else {
+            switch modelSlotFallback {
+            case .hidden:
+                break
+            case .credits:
+                built.append((.credits, snapshot?.creditsWindow))
+            }
+        }
+        slots = built
     }
 
     /// Whether the slot at `index` should render its reset line.
@@ -27,6 +44,18 @@ struct WindowSlots {
         guard let reset = slots[index].window?.resetsAt else { return false }
         guard index + 1 < slots.count else { return true }
         return slots[index + 1].window?.resetsAt != reset
+    }
+}
+
+extension UsageSnapshot {
+    /// Synthesizes a display-only window from the account's spend cap, for
+    /// `WindowSlots`'s `.credits` fallback. Not a provider-reported window
+    /// (no `resetsAt` — a spend cap has no rollover boundary) and never
+    /// saved back into `windows`. `spend` over `extraUsage`: only `spend`
+    /// carries a `severity`, which is what `UsageWindow.tint` keys off.
+    var creditsWindow: UsageWindow? {
+        guard let spend, spend.enabled, let percent = spend.percent else { return nil }
+        return UsageWindow(kind: .credits, usedPct: percent, severity: spend.severity)
     }
 }
 

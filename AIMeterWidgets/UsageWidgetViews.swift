@@ -119,7 +119,7 @@ private struct WindowBarList: View {
     let count: Int
 
     var body: some View {
-        let slots = Array(WindowSlots(snapshot: snapshot).slots.prefix(count))
+        let slots = Array(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.prefix(count))
         VStack(alignment: .leading, spacing: 0) {
             WidgetHeader(snapshot: snapshot)
             ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
@@ -180,7 +180,7 @@ struct RectangularUsageView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 1) {
-            ForEach(WindowSlots(snapshot: snapshot).slots, id: \.kind) { slot in
+            ForEach(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots, id: \.kind) { slot in
                 HStack {
                     Text(slot.kind.shortName)
                         .font(.caption2)
@@ -199,7 +199,7 @@ struct InlineUsageView: View {
     let prefs: Preferences
 
     var body: some View {
-        let parts = WindowSlots(snapshot: snapshot).slots.compactMap { slot in
+        let parts = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.compactMap { slot in
             slot.window.map { "\(slot.kind.shortName) \(Int($0.displayedPct(prefs.displayMode)))%" }
         }
         Text(parts.joined(separator: " · "))

@@ -45,6 +45,19 @@ enum AppearanceMode: String, CaseIterable {
     }
 }
 
+/// What the third usage slot shows when the plan reports no per-model
+/// window (e.g. Claude Pro without Fable 5's own weekly limit).
+enum ModelSlotFallback: String, CaseIterable {
+    case hidden, credits
+
+    var label: String {
+        switch self {
+        case .hidden: return String(localized: "Hidden")
+        case .credits: return String(localized: "Credits")
+        }
+    }
+}
+
 enum RefreshCadence: Int, CaseIterable {
     case minutes15 = 900
     case minutes30 = 1800
@@ -69,6 +82,7 @@ struct Preferences: Sendable {
     var resetStyle: ResetStyle = .relative
     var refreshCadence: RefreshCadence = .minutes15
     var appearance: AppearanceMode = .system
+    var modelSlotFallback: ModelSlotFallback = .hidden
     var lastScheduledAt: Date?
 
     enum Keys {
@@ -76,6 +90,7 @@ struct Preferences: Sendable {
         static let resetStyle = "pref.resetStyle"
         static let refreshCadence = "pref.refreshCadence"
         static let appearance = "pref.appearance"
+        static let modelSlotFallback = "pref.modelSlotFallback"
         static let lastScheduledAt = "pref.lastScheduledAt"
     }
 
@@ -96,6 +111,9 @@ struct Preferences: Sendable {
         }
         if let raw = defaults.string(forKey: Keys.appearance), let value = AppearanceMode(rawValue: raw) {
             prefs.appearance = value
+        }
+        if let raw = defaults.string(forKey: Keys.modelSlotFallback), let value = ModelSlotFallback(rawValue: raw) {
+            prefs.modelSlotFallback = value
         }
         if let timestamp = defaults.object(forKey: Keys.lastScheduledAt) as? Date {
             prefs.lastScheduledAt = timestamp
@@ -124,6 +142,9 @@ final class PreferencesModel {
     var appearance: AppearanceMode {
         didSet { defaults.set(appearance.rawValue, forKey: Preferences.Keys.appearance) }
     }
+    var modelSlotFallback: ModelSlotFallback {
+        didSet { defaults.set(modelSlotFallback.rawValue, forKey: Preferences.Keys.modelSlotFallback) }
+    }
 
     @ObservationIgnored private let defaults: UserDefaults
 
@@ -134,6 +155,7 @@ final class PreferencesModel {
         resetStyle = loaded.resetStyle
         refreshCadence = loaded.refreshCadence
         appearance = loaded.appearance
+        modelSlotFallback = loaded.modelSlotFallback
     }
 
     var lastScheduledAt: Date? {
@@ -150,6 +172,7 @@ final class PreferencesModel {
         prefs.resetStyle = resetStyle
         prefs.refreshCadence = refreshCadence
         prefs.appearance = appearance
+        prefs.modelSlotFallback = modelSlotFallback
         prefs.lastScheduledAt = lastScheduledAt
         return prefs
     }

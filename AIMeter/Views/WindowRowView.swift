@@ -54,11 +54,12 @@ struct WindowRowView: View {
 /// The three fixed window rows separated by hairlines — shared between the
 /// dashboard card and the provider detail card.
 struct WindowRowsList: View {
+    @Environment(PreferencesModel.self) private var prefs
     let snapshot: UsageSnapshot?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-            let slots = WindowSlots(snapshot: snapshot).slots
+            let slots = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
             ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                 if index > 0 {
                     Divider().overlay(Theme.track)

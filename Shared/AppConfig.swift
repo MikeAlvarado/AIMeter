@@ -16,6 +16,9 @@ enum AppConfig {
     #endif
     static let refreshTaskID = "com.mikealvarado.aimeter.refresh"
     static let widgetKind = "AIMeterUsage"
+    /// Single-window widget: shows one provider/window the user picks from
+    /// the widget's own Edit Widget configuration.
+    static let singleWidgetKind = "AIMeterSingleUsage"
     static let refreshInterval: TimeInterval = 15 * 60
     /// A snapshot older than this is flagged as stale in widgets.
     static let staleAfter: TimeInterval = 30 * 60

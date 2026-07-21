@@ -85,7 +85,7 @@ extension UsageWindow.Kind {
         switch self {
         case .weekly, .modelSpecific:
             return 7 * 86400
-        case .session:
+        case .session, .credits:
             return nil
         }
     }
