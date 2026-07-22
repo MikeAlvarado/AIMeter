@@ -130,8 +130,96 @@ final class UsageModel {
             }
             preferences.setEnabled(enabled, for: kind)
             notificationsRevision += 1
-            await NotificationScheduler.reschedule(for: snapshot, preferences: preferences)
+            await NotificationScheduler.rescheduleResets(for: snapshot, preferences: preferences)
         }
+    }
+
+    // MARK: Smart notifications (global run-out / early-reset)
+
+    var runOutWarningsEnabled: Bool {
+        _ = notificationsRevision
+        return preferences.runOutWarningsEnabled
+    }
+
+    var earlyResetAlertsEnabled: Bool {
+        _ = notificationsRevision
+        return preferences.earlyResetAlertsEnabled
+    }
+
+    func setRunOutWarningsEnabled(_ enabled: Bool) {
+        let snapshot = self.snapshot
+        Task { @MainActor in
+            guard await authorizeIfEnabling(enabled) else { return }
+            preferences.runOutWarningsEnabled = enabled
+            notificationsRevision += 1
+            // Immediate scheduling uses the average rate (no history needed);
+            // the next fetch refines it with the recent rate.
+            let projections = snapshot.map {
+                RunOutPredictor.averageProjections(for: $0, minimumUsedPct: RunOutPredictor.alertMinimumUsedPct)
+            } ?? [:]
+            await NotificationScheduler.rescheduleRunOuts(projections, preferences: preferences)
+        }
+    }
+
+    func setEarlyResetAlertsEnabled(_ enabled: Bool) {
+        Task { @MainActor in
+            guard await authorizeIfEnabling(enabled) else { return }
+            preferences.earlyResetAlertsEnabled = enabled
+            notificationsRevision += 1
+            // Nothing to schedule now — these fire on detection at fetch time.
+        }
+    }
+
+    var nearLimitEnabled: Bool {
+        _ = notificationsRevision
+        return preferences.nearLimitEnabled
+    }
+
+    var nearLimitThreshold: Double {
+        _ = notificationsRevision
+        return preferences.nearLimitThreshold
+    }
+
+    var limitReachedEnabled: Bool {
+        _ = notificationsRevision
+        return preferences.limitReachedEnabled
+    }
+
+    func setNearLimitEnabled(_ enabled: Bool) {
+        Task { @MainActor in
+            guard await authorizeIfEnabling(enabled) else { return }
+            preferences.nearLimitEnabled = enabled
+            notificationsRevision += 1
+            // Detection-based: fires on the next crossing at fetch time.
+        }
+    }
+
+    func setNearLimitThreshold(_ threshold: Double) {
+        preferences.nearLimitThreshold = threshold
+        notificationsRevision += 1
+    }
+
+    func setLimitReachedEnabled(_ enabled: Bool) {
+        Task { @MainActor in
+            guard await authorizeIfEnabling(enabled) else { return }
+            preferences.limitReachedEnabled = enabled
+            notificationsRevision += 1
+        }
+    }
+
+    /// Shared permission gate for enabling a notification toggle: a denied
+    /// system permission snaps the toggle back off and surfaces the blocked
+    /// state. Returns whether the caller should proceed to persist.
+    private func authorizeIfEnabling(_ enabled: Bool) async -> Bool {
+        if enabled {
+            guard await NotificationScheduler.ensureAuthorization() else {
+                notificationsBlocked = true
+                notificationsRevision += 1
+                return false
+            }
+            notificationsBlocked = false
+        }
+        return true
     }
 
     // MARK: - macOS refresh timer

@@ -21,6 +21,13 @@ struct ProviderDetailView: View {
                     }
                 }
 
+                if let snapshot = model.snapshot, !snapshot.windows.isEmpty {
+                    SectionHeader(title: String(localized: "Forecast"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    ForecastCard(snapshot: snapshot)
+                    SectionFootnote(text: String(localized: "Projected from your average pace so far this window. It refines as you use more."))
+                }
+
                 SectionHeader(title: String(localized: "Third usage row"))
                     .padding(.top, Theme.sectionSpacing - 10)
                 Card {
@@ -67,6 +74,11 @@ struct ProviderDetailView: View {
                 NotificationTogglesCard()
                 SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
 
+                SectionHeader(title: String(localized: "Smart notifications"))
+                    .padding(.top, Theme.sectionSpacing - 10)
+                SmartNotificationTogglesCard()
+                SectionFootnote(text: SmartNotificationTogglesCard.footnote)
+
                 #if os(iOS)
                 Button(role: .destructive) {
                     model.disconnect()
@@ -109,16 +121,16 @@ struct ProviderDetailView: View {
     private func spendRows(_ spend: SpendStatus) -> [(String, String)] {
         var rows = [(String(localized: "Enabled"), yesNo(spend.enabled))]
         if let percent = spend.percent {
-            rows.append((String(localized: "Percent"), "\(Int(percent))%"))
+            rows.append((String(localized: "Percent"), spend.enabled ? "\(Int(percent))%" : placeholder))
         }
         if let severity = spend.severity {
-            rows.append((String(localized: "Severity"), severity.rawValue))
+            rows.append((String(localized: "Severity"), spend.enabled ? severity.rawValue : placeholder))
         }
         if let used = spend.usedAmount {
-            rows.append((String(localized: "Used"), money(used, spend.currency)))
+            rows.append((String(localized: "Used"), spend.enabled ? money(used, spend.currency) : placeholder))
         }
         if let limit = spend.limitAmount {
-            rows.append((String(localized: "Limit"), money(limit, spend.currency)))
+            rows.append((String(localized: "Limit"), spend.enabled ? money(limit, spend.currency) : placeholder))
         }
         return rows
     }
@@ -126,13 +138,13 @@ struct ProviderDetailView: View {
     private func extraUsageRows(_ extra: ExtraUsageStatus) -> [(String, String)] {
         var rows = [(String(localized: "Enabled"), yesNo(extra.enabled))]
         if let used = extra.usedCredits {
-            rows.append((String(localized: "Used credits"), money(used, extra.currency)))
+            rows.append((String(localized: "Used credits"), extra.enabled ? money(used, extra.currency) : placeholder))
         }
         if let limit = extra.monthlyLimit {
-            rows.append((String(localized: "Monthly limit"), money(limit, extra.currency)))
+            rows.append((String(localized: "Monthly limit"), extra.enabled ? money(limit, extra.currency) : placeholder))
         }
         if let utilization = extra.utilization {
-            rows.append((String(localized: "Utilization"), "\(Int(utilization))%"))
+            rows.append((String(localized: "Utilization"), extra.enabled ? "\(Int(utilization))%" : placeholder))
         }
         return rows
     }
@@ -141,8 +153,146 @@ struct ProviderDetailView: View {
         value ? String(localized: "Yes") : String(localized: "No")
     }
 
+    /// Shown instead of a figure when the account has this feature off —
+    /// the endpoint still reports stale percent/used/limit values even
+    /// then, and this is the same "no live data" placeholder every other
+    /// row in the app uses instead of a misleading number.
+    private var placeholder: String { "—" }
+
     private func money(_ amount: Double, _ currency: String?) -> String {
         amount.formatted(.currency(code: currency ?? "USD"))
+    }
+}
+
+/// Per-window run-out forecast from the average pace so far — a warning
+/// row for each window projected to hit its limit before it resets, or a
+/// single reassuring row when none are. Uses the stable average-rate
+/// projection (works from a single snapshot); the recent-rate refinement
+/// is what drives the alerts, not this display.
+private struct ForecastCard: View {
+    let snapshot: UsageSnapshot
+
+    var body: some View {
+        // Gate on the Phase-1 pace status so the forecast and the row's
+        // "Ahead of pace" caption never disagree — a window only "runs out
+        // early" here when it's genuinely ahead (beyond the pace tolerance),
+        // not by a trivial fraction.
+        let atRisk: [(UsageWindow.Kind, RunOutProjection)] = snapshot.windows.compactMap { window in
+            guard PaceCalculator.pace(for: window)?.status == .ahead,
+                  let projection = RunOutPredictor.averageProjection(for: window),
+                  projection.runsOutEarly else { return nil }
+            return (window.kind, projection)
+        }
+
+        Card {
+            if atRisk.isEmpty {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(Theme.accent)
+                    Text("Every limit is on track to last its window.")
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                    Spacer(minLength: 0)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                    ForEach(Array(atRisk.enumerated()), id: \.offset) { index, item in
+                        if index > 0 {
+                            Divider().overlay(Theme.track)
+                        }
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(item.0.displayName)
+                                .font(Theme.rowTitle)
+                                .foregroundStyle(Theme.ink)
+                            Spacer()
+                            Text(runsOutText(item.1))
+                                .font(.body)
+                                .foregroundStyle(Theme.danger)
+                                .multilineTextAlignment(.trailing)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func runsOutText(_ projection: RunOutProjection) -> String {
+        let early = UsageFormatting.relativeString(from: projection.projectedExhaustion, to: projection.resetsAt)
+        return String(localized: "Runs out ~\(early) early")
+    }
+}
+
+/// The global "smart" notification toggles. All gate permission through
+/// `UsageModel` and fire on detection at fetch time (near-limit /
+/// limit-reached / early-reset) or are scheduled ahead (run-out). Near-limit
+/// reveals a threshold slider when on.
+struct SmartNotificationTogglesCard: View {
+    @Environment(UsageModel.self) private var model
+
+    /// Shared caption for the section, used by both Provider Detail and
+    /// Settings so the four alerts are described in one place.
+    static var footnote: String {
+        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule.")
+    }
+
+    var body: some View {
+        Card {
+            VStack(spacing: Theme.rowSpacing) {
+                toggle(String(localized: "Near-limit warnings"),
+                       isOn: model.nearLimitEnabled,
+                       set: model.setNearLimitEnabled)
+                if model.nearLimitEnabled {
+                    thresholdRow
+                }
+
+                divider
+                toggle(String(localized: "Limit reached"),
+                       isOn: model.limitReachedEnabled,
+                       set: model.setLimitReachedEnabled)
+
+                divider
+                toggle(String(localized: "Run-out warnings"),
+                       isOn: model.runOutWarningsEnabled,
+                       set: model.setRunOutWarningsEnabled)
+
+                divider
+                toggle(String(localized: "Early-reset alerts"),
+                       isOn: model.earlyResetAlertsEnabled,
+                       set: model.setEarlyResetAlertsEnabled)
+            }
+        }
+        .task {
+            await model.refreshNotificationAuthorization()
+        }
+    }
+
+    private var divider: some View { Divider().overlay(Theme.track) }
+
+    private func toggle(_ title: String, isOn: Bool, set: @escaping (Bool) -> Void) -> some View {
+        Toggle(isOn: Binding(get: { isOn }, set: set)) {
+            Text(title)
+                .font(Theme.rowTitle)
+                .foregroundStyle(Theme.ink)
+        }
+        .tint(Theme.accent)
+    }
+
+    private var thresholdRow: some View {
+        HStack(spacing: 10) {
+            Text("Warn at")
+                .font(Theme.caption)
+                .foregroundStyle(Theme.inkSecondary)
+            Slider(
+                value: Binding(get: { model.nearLimitThreshold }, set: { model.setNearLimitThreshold($0) }),
+                in: 50...95,
+                step: 5
+            )
+            .tint(Theme.accent)
+            Text("\(Int(model.nearLimitThreshold))%")
+                .font(Theme.caption.monospacedDigit())
+                .foregroundStyle(Theme.ink)
+                .frame(width: 42, alignment: .trailing)
+        }
     }
 }
 

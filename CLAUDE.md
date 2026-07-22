@@ -32,9 +32,12 @@ system, and behaviors. It should be enough to rebuild the app from zero.
 ```
 Packages/UsageKit     local Swift Package, provider-agnostic, pure logic
   Core/               UsageProvider, UsageSnapshot, UsageWindow, SpendStatus,
-                      UsageError (localized via bundle: .module)
+                      UsagePace/PaceCalculator, UsageSample/RunOutPredictor/
+                      ResetDetector/ThresholdDetector, UsageError (localized
+                      via bundle: .module)
   Providers/Claude/   ALL Claude endpoint/OAuth specifics, isolated here
-  Storage/            KeychainStore (accessGroup-aware) + SnapshotStore
+  Storage/            KeychainStore (accessGroup-aware) + SnapshotStore +
+                      UsageHistoryStore (bounded per-window sample ring)
   Sources/UsageKit/Resources/Localizable.xcstrings   (package strings)
 AIMeter/              multiplatform SwiftUI app (views + services)
 AIMeterWidgets/       both widgets — AIMeterUsage (3-window) and
@@ -127,8 +130,9 @@ Credential sources:
 
 ## Refresh & notification behavior
 
-- `RefreshService.refresh()`: fetch → shape → save to store → 
-  `WidgetCenter.reloadAllTimelines()` → reschedule notifications.
+- `RefreshService.refresh()`: fetch → shape → save to store → record
+  history → `WidgetCenter.reloadAllTimelines()` → reschedule notifications
+  (resets + run-outs) → fire any early-reset alerts.
 - iOS app: refresh on cold launch; on foreground, always reload widget
   timelines (covers WidgetKit's archived-render cache after app updates)
   and refresh if the snapshot is >60 s old; `BGAppRefreshTask` at the
@@ -136,13 +140,37 @@ Credential sources:
 - macOS: repeating timer at the cadence while the menu bar app runs.
 - Widget timeline: single entry, `.after(cadence)`; on iOS `getTimeline`
   self-fetches when the stored snapshot is older than the cadence.
-- Notifications are local only (`UNCalendarNotificationTrigger` at each
-  window's `resetsAt`), rescheduled from scratch after every successful
-  fetch, per-window opt-in toggles stored in the App Group. Permission is
-  handled honestly: a denied system permission snaps the toggle back off
-  and shows a warning row with an "Open Settings" shortcut; authorization
-  is re-checked on foreground. Cancelled URL tasks are not surfaced as
-  errors.
+- Usage history: `UsageHistoryStore` (App Group) keeps a bounded,
+  reset-aware ring of `(timestamp, usedPct)` samples per window — the
+  extra data (beyond the single latest snapshot) the recent-rate run-out
+  predictor needs. Recorded wherever a fetch persists a snapshot (the app
+  refresh *and* the iOS widget self-fetch, so it stays continuous when
+  only the widget runs); a used%-drop discards a kind's prior samples so a
+  rate never spans a reset. Cleared on disconnect.
+- Notifications are local only, all rescheduled/re-evaluated from scratch
+  after every successful fetch, keyed by identifier prefix
+  (`NotificationScheduler`). Two are *scheduled* to a future trigger:
+  `reset.` (per-window `UNCalendarNotificationTrigger` at each window's
+  `resetsAt`, the free baseline, per-window opt-in toggles) and `runout.`
+  (per-window run-out warnings fired a lead time before a projected early
+  exhaustion — recent-rate projection when history exists, else
+  average-rate). Three are *immediate, detection-based* (nil trigger,
+  fired when comparing the previous stored snapshot to the new one, so
+  they can't be scheduled — the trigger level/time isn't known ahead):
+  `earlyreset.` (`ResetDetector` — a window refilled before its scheduled
+  reset), `limitreached.` (`ThresholdDetector.crossedUp` at ~100%, message
+  adapts to whether `spend.enabled` — "draws on credits" vs "blocked until
+  reset"), and `nearlimit.` (`crossedUp` at the user's threshold, a
+  slider; a single big jump that also hits the limit yields only the more
+  severe limit-reached, not both). All fire once per upward crossing (not
+  on every refresh while above) and re-arm after a reset. Each `smart`
+  alert has one global toggle (near-limit adds a threshold); all off by
+  default; toggles live in the App Group. Permission is handled honestly:
+  a denied system permission snaps the toggle back off and shows a warning
+  row with an "Open Settings" shortcut; authorization is re-checked on
+  foreground. Detection-based alerts share the widget-self-fetch gap noted
+  for history — a crossing the widget applies before the app refreshes is
+  missed. Cancelled URL tasks are not surfaced as errors.
 
 ## Presentation rules
 
@@ -164,6 +192,31 @@ Credential sources:
   no reset date, so `showCreditsAmount` (off by default, Provider Detail)
   optionally fills that same line with `SpendStatus.amountLabel`
   ("$14.27 of $25.00") instead of leaving it blank.
+- Pace: `PaceCalculator.pace(for:now:)` (UsageKit core, pure, no history)
+  compares a window's used% against where a steady burn to `resetsAt`
+  would put it — `expectedPct` (0–100) plus on/ahead/behind `status`
+  within a ±5 pt tolerance. Needs `resetsAt` and the kind's
+  `windowDuration` (session 5h, weekly/model 7d, credits none — distinct
+  from `nominalPeriod`), so idle sessions and credits have no pace. It
+  renders two ways: a thin tick in `UsageBarView` (optional `marker`, at
+  `expectedPct` — flipped to `100 − expectedPct` in Remaining mode so the
+  tick and fill share one coordinate space) everywhere including widgets,
+  and a per-row status caption ("On pace"/"Ahead of pace"/"Behind pace",
+  `UsagePace.Status.label`) alongside the reset line in the app rows only.
+  Pace is per-window (each window's own used% vs the same expected line),
+  so — unlike the grouped reset line — every row shows its own.
+- Run-out prediction (the other half of "predictions & pace"):
+  `RunOutPredictor` projects when a window hits 100% two ways (the "hybrid"
+  model). `averageProjection` uses the average rate since the window began
+  — stable, works from a single snapshot, no history — and drives the
+  Provider Detail **Forecast** card (per-window "Runs out ~1h early", or an
+  all-clear row). `recentProjection` fits the recent slope of the
+  `UsageHistoryStore` samples — reactive to a burst — and drives the
+  run-out *alert* (falling back to average when history is thin). Both
+  suppress under `alertMinimumUsedPct` and when the trend isn't rising.
+  `ResetDetector.earlyResets` compares consecutive snapshots for an early
+  refill (used% dropped well before the known reset) to fire the
+  early-reset alert.
 - Display prefs (App Group, shared with widgets): Remaining/Used,
   Relative/Absolute reset style (tap any reset line to toggle), appearance
   System/Light/Dark, refresh cadence, and `glanceMetric` — the one window
@@ -188,21 +241,26 @@ Credential sources:
   title, then a section per provider: logo + name + Pro/Max pill (trailing)
   → card with the three windows, error, "Updated X ago". Disconnected state
   shows a Connect card.
-- **Provider detail** (push): rate-limit rows; a "Third usage row" card
-  with the Auto/Hidden/Credits pill (governs the third-slot fallback
-  above, defaults to Auto) plus a "Show credit amounts" toggle (off by
-  default) for the Credits row's money subtitle; a "Menu bar" pill on
-  macOS / "Lock Screen widget" pill on iOS for `glanceMetric`, options
-  read live from the snapshot; Spend and Extra usage cards (label/value
-  rows, currency formatted); notification toggles; iOS disconnect button.
-  All of these are Claude-specific display prefs, so they live here rather
-  than in the app-wide Settings screen — a future provider's own detail
-  view would carry its own equivalents instead of sharing these.
+- **Provider detail** (push): rate-limit rows; a **Forecast** card
+  (`ForecastCard`) listing any window projected to run out early or an
+  all-clear row; a "Third usage row" card with the Auto/Hidden/Credits
+  pill (governs the third-slot fallback above, defaults to Auto) plus a
+  "Show credit amounts" toggle (off by default) for the Credits row's
+  money subtitle; a "Menu bar" pill on macOS / "Lock Screen widget" pill
+  on iOS for `glanceMetric`, options read live from the snapshot; Spend
+  and Extra usage cards (label/value rows, currency formatted); per-window
+  reset notification toggles plus a **Smart notifications** card
+  (`SmartNotificationTogglesCard`: global Near-limit warnings with a
+  threshold slider, Limit reached, Run-out warnings, Early-reset alerts);
+  iOS disconnect button. All of these are Claude-specific display
+  prefs, so they live here rather than in the app-wide Settings screen — a
+  future provider's own detail view would carry its own equivalents
+  instead of sharing these.
 - **Settings**: appearance / display mode / reset style pills, refresh
-  cadence menu, notification toggles, a "Privacy & data" link, and an
-  "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet with
-  Done; macOS: Settings scene (wrapped in a NavigationStack so the link
-  can push).
+  cadence menu, per-window reset notification toggles + the Smart
+  notifications card, a "Privacy & data" link, and an "Open Source" row
+  (GitHub mark, opens the repo URL). iOS: sheet with Done; macOS: Settings
+  scene (wrapped in a NavigationStack so the link can push).
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
   Keychain, no tracking), how connecting works (per platform), the exact
   OAuth scopes as chips + the two read-only endpoints called, and the

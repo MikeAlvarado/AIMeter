@@ -6,6 +6,10 @@ struct UsageBarView: View {
     /// 0–100; nil renders an empty track (missing window slot).
     let value: Double?
     let tint: Color
+    /// 0–100: optional "pace" marker — where a steady burn to the reset
+    /// would put usage right now. A thin tick; only drawn strictly inside
+    /// the bar (a marker at the very start or end carries no information).
+    var marker: Double? = nil
 
     var body: some View {
         GeometryReader { proxy in
@@ -15,6 +19,12 @@ struct UsageBarView: View {
                     Capsule()
                         .fill(tint)
                         .frame(width: proxy.size.width * min(max(value, 0), 100) / 100)
+                }
+                if let marker, marker > 0, marker < 100 {
+                    Rectangle()
+                        .fill(Theme.ink.opacity(0.4))
+                        .frame(width: 1.5)
+                        .offset(x: proxy.size.width * marker / 100 - 0.75)
                 }
             }
         }

@@ -68,6 +68,11 @@ struct SettingsView: View {
                 SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
 
                 sectionGap
+                SectionHeader(title: String(localized: "Smart notifications"))
+                SmartNotificationTogglesCard()
+                SectionFootnote(text: SmartNotificationTogglesCard.footnote)
+
+                sectionGap
                 Card {
                     NavigationLink {
                         PrivacyView()

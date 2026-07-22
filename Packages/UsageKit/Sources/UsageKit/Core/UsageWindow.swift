@@ -55,6 +55,33 @@ public struct UsageWindow: Codable, Hashable, Sendable {
     }
 }
 
+extension UsageWindow.Kind {
+    /// Stable string identifier for a kind, used as a persistence key for
+    /// per-window state: notification toggles, widget configuration option
+    /// IDs, and usage-history buckets. Round-trips through `init?(storageKey:)`.
+    public var storageKey: String {
+        switch self {
+        case .session: return "session"
+        case .weekly: return "weekly"
+        case .modelSpecific(let model): return "model.\(model)"
+        case .credits: return "credits"
+        }
+    }
+
+    /// Reverses `storageKey`, e.g. for widget configuration options
+    /// persisted as strings.
+    public init?(storageKey: String) {
+        switch storageKey {
+        case "session": self = .session
+        case "weekly": self = .weekly
+        case "credits": self = .credits
+        default:
+            guard storageKey.hasPrefix("model.") else { return nil }
+            self = .modelSpecific(String(storageKey.dropFirst("model.".count)))
+        }
+    }
+}
+
 extension UsageWindow.Kind: Codable {
     private enum CodingKeys: String, CodingKey {
         case type

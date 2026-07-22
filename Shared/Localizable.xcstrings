@@ -105,6 +105,206 @@
         }
       }
     },
+    "Forecast": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pronóstico"
+          }
+        }
+      }
+    },
+    "Projected from your average pace so far this window. It refines as you use more.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proyectado según tu ritmo promedio en esta ventana. Se ajusta a medida que usas más."
+          }
+        }
+      }
+    },
+    "Every limit is on track to last its window.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada límite va en camino de durar toda su ventana."
+          }
+        }
+      }
+    },
+    "Runs out ~%@ early": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se agota ~%@ antes"
+          }
+        }
+      }
+    },
+    "Smart notifications": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notificaciones inteligentes"
+          }
+        }
+      }
+    },
+    "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota — e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto."
+          }
+        }
+      }
+    },
+    "Near-limit warnings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avisos de cercanía al límite"
+          }
+        }
+      }
+    },
+    "Limit reached": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Límite alcanzado"
+          }
+        }
+      }
+    },
+    "Warn at": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avisar al"
+          }
+        }
+      }
+    },
+    "%@ nearing its limit": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ cerca de su límite"
+          }
+        }
+      }
+    },
+    "You're at %lld%% of this window.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vas en %lld%% de esta ventana."
+          }
+        }
+      }
+    },
+    "%@ limit reached": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcanzaste el límite de %@"
+          }
+        }
+      }
+    },
+    "Further usage now draws on your usage credits.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguir usando ahora consume tus créditos de uso."
+          }
+        }
+      }
+    },
+    "You're blocked on this limit until it resets.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estás bloqueado en este límite hasta que se reinicie."
+          }
+        }
+      }
+    },
+    "Run-out warnings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avisos de agotamiento"
+          }
+        }
+      }
+    },
+    "Early-reset alerts": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avisos de reinicio temprano"
+          }
+        }
+      }
+    },
+    "%@ running low": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ por agotarse"
+          }
+        }
+      }
+    },
+    "At this rate it runs out about %@ before it resets.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A este ritmo se agota unos %@ antes de reiniciarse."
+          }
+        }
+      }
+    },
+    "%@ refilled early": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ se recargó antes"
+          }
+        }
+      }
+    },
+    "Your %@ limit reset ahead of schedule — full capacity available.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu límite de %@ se reinició antes de lo previsto — capacidad completa disponible."
+          }
+        }
+      }
+    },
     "Absolute": {
       "localizations": {
         "es": {
@@ -436,6 +636,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notificaciones"
+          }
+        }
+      }
+    },
+    "On pace": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En ritmo"
+          }
+        }
+      }
+    },
+    "Ahead of pace": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adelantado"
+          }
+        }
+      }
+    },
+    "Behind pace": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atrasado"
           }
         }
       }

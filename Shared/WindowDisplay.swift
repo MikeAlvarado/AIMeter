@@ -33,29 +33,6 @@ extension UsageWindow.Kind {
         case .credits: return "creditcard"
         }
     }
-
-    /// Stable key for per-window settings (e.g. notification toggles).
-    var storageKey: String {
-        switch self {
-        case .session: return "session"
-        case .weekly: return "weekly"
-        case .modelSpecific(let model): return "model.\(model)"
-        case .credits: return "credits"
-        }
-    }
-
-    /// Reverses `storageKey`, e.g. for widget configuration options
-    /// persisted as strings.
-    init?(storageKey: String) {
-        switch storageKey {
-        case "session": self = .session
-        case "weekly": self = .weekly
-        case "credits": self = .credits
-        default:
-            guard storageKey.hasPrefix("model.") else { return nil }
-            self = .modelSpecific(String(storageKey.dropFirst("model.".count)))
-        }
-    }
 }
 
 extension UsageWindow {
@@ -72,5 +49,17 @@ extension UsageWindow {
 extension UsageSnapshot {
     var isStale: Bool {
         Date().timeIntervalSince(fetchedAt) > AppConfig.staleAfter
+    }
+}
+
+extension UsagePace.Status {
+    /// Short caption shown next to the reset line. Localized in the app's
+    /// catalog (UsageKit core carries no UI strings beyond errors).
+    var label: String {
+        switch self {
+        case .onPace: return String(localized: "On pace")
+        case .ahead: return String(localized: "Ahead of pace")
+        case .behind: return String(localized: "Behind pace")
+        }
     }
 }
