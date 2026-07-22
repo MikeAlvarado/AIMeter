@@ -29,7 +29,7 @@ struct AIMeterApp: App {
                 .tint(Theme.accent)
                 .preferredColorScheme(prefs.appearance.colorScheme)
         } label: {
-            MenuBarLabel(snapshot: model.snapshot, displayMode: prefs.displayMode)
+            MenuBarLabel(snapshot: model.snapshot, displayMode: prefs.displayMode, metric: prefs.glanceMetric)
         }
         .menuBarExtraStyle(.window)
 

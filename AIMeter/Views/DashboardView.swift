@@ -75,20 +75,9 @@ struct DashboardView: View {
             if model.needsConnection {
                 Card {
                     VStack(spacing: 14) {
-                        Text("Sign in to see your usage.")
-                            .font(.callout)
-                            .foregroundStyle(Theme.inkSecondary)
-                        Button {
+                        DisconnectedPrompt(buttonLabel: "Connect", verticalPadding: 12) {
                             showingConnect = true
-                        } label: {
-                            Label("Connect", systemImage: "link")
-                                .font(.body.weight(.semibold))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
                         }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(.white)
-                        .background(Theme.accent, in: Capsule())
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -96,18 +85,7 @@ struct DashboardView: View {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                         WindowRowsList(snapshot: model.snapshot)
-                        if let error = model.lastError {
-                            Divider().overlay(Theme.track)
-                            Label(error, systemImage: "exclamationmark.triangle")
-                                .font(Theme.caption)
-                                .foregroundStyle(Theme.danger)
-                        }
-                        if let snapshot = model.snapshot {
-                            Divider().overlay(Theme.track)
-                            Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
-                                .font(Theme.caption)
-                                .foregroundStyle(Theme.inkSecondary)
-                        }
+                        UsageStatusFooter(snapshot: model.snapshot, error: model.lastError)
                     }
                 }
             }

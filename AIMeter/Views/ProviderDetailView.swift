@@ -17,24 +17,38 @@ struct ProviderDetailView: View {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                         WindowRowsList(snapshot: model.snapshot)
-                        if let snapshot = model.snapshot {
-                            Divider().overlay(Theme.track)
-                            Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
-                                .font(Theme.caption)
-                                .foregroundStyle(Theme.inkSecondary)
-                        }
+                        UsageStatusFooter(snapshot: model.snapshot, error: model.lastError)
                     }
                 }
 
                 SectionHeader(title: String(localized: "Third usage row"))
                     .padding(.top, Theme.sectionSpacing - 10)
                 Card {
+                    VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                        SegmentedPill(
+                            options: ModelSlotFallback.allCases.map { ($0, $0.label) },
+                            selection: $prefs.modelSlotFallback
+                        )
+                        Divider().overlay(Theme.track)
+                        Toggle(isOn: $prefs.showCreditsAmount) {
+                            Text("Show credit amounts")
+                                .font(Theme.rowTitle)
+                                .foregroundStyle(Theme.ink)
+                        }
+                        .tint(Theme.accent)
+                    }
+                }
+                SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line."))
+
+                SectionHeader(title: glanceSectionTitle)
+                    .padding(.top, Theme.sectionSpacing - 10)
+                Card {
                     SegmentedPill(
-                        options: ModelSlotFallback.allCases.map { ($0, $0.label) },
-                        selection: $prefs.modelSlotFallback
+                        options: UsageSnapshot.glanceOptions(for: model.snapshot, modelSlotFallback: prefs.modelSlotFallback).map { ($0, $0.shortName) },
+                        selection: $prefs.glanceMetric
                     )
                 }
-                SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on."))
+                SectionFootnote(text: glanceFootnote)
 
                 if let spend = model.snapshot?.spend {
                     SectionHeader(title: String(localized: "Spend"))
@@ -73,6 +87,22 @@ struct ProviderDetailView: View {
         .navigationTitle("Claude")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
+    }
+
+    private var glanceSectionTitle: String {
+        #if os(macOS)
+        String(localized: "Menu bar")
+        #else
+        String(localized: "Lock Screen widget")
+        #endif
+    }
+
+    private var glanceFootnote: String {
+        #if os(macOS)
+        String(localized: "Which usage window shows as the percentage in the menu bar. Options match what this account actually reports.")
+        #else
+        String(localized: "Which usage window the Lock Screen circular widget shows. Options match what this account actually reports.")
         #endif
     }
 

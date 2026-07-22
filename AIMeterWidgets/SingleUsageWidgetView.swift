@@ -74,6 +74,15 @@ struct SingleUsageWidgetView: View {
             .font(.system(size: 9))
             .foregroundStyle(Theme.inkSecondary.opacity(0.9))
             .padding(.top, 4)
+        } else if let amount = entry.prefs.creditsAmountSubtitle(for: entry.kind, snapshot: entry.snapshot) {
+            HStack(spacing: 3) {
+                Image(systemName: "dollarsign.circle")
+                Text(amount)
+            }
+            .font(.system(size: 9))
+            .foregroundStyle(Theme.inkSecondary.opacity(0.9))
+            .lineLimit(1)
+            .padding(.top, 4)
         }
     }
 }

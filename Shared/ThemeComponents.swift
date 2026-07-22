@@ -1,4 +1,5 @@
 import SwiftUI
+import UsageKit
 
 /// Thin capsule progress bar — the same bar in app and widgets.
 struct UsageBarView: View {
@@ -95,5 +96,59 @@ struct SectionFootnote: View {
             .font(Theme.caption)
             .foregroundStyle(Theme.inkSecondary)
             .padding(.horizontal, 4)
+    }
+}
+
+/// Error label (if the last fetch failed) and "Updated X ago" caption (if
+/// there's a snapshot) — the shared tail of the rate-limit rows on the
+/// dashboard, provider detail, and the menu bar popover. The dashboard and
+/// provider detail cards precede each with a hairline divider;
+/// `showsDividers: false` skips those for the menu bar popover, which
+/// already has its own dividers bracketing this whole section.
+struct UsageStatusFooter: View {
+    let snapshot: UsageSnapshot?
+    let error: String?
+    var showsDividers = true
+
+    var body: some View {
+        if let error {
+            if showsDividers { Divider().overlay(Theme.track) }
+            Label(error, systemImage: "exclamationmark.triangle")
+                .font(Theme.caption)
+                .foregroundStyle(Theme.danger)
+        }
+        if let snapshot {
+            if showsDividers { Divider().overlay(Theme.track) }
+            Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
+                .font(Theme.caption)
+                .foregroundStyle(Theme.inkSecondary)
+        }
+    }
+}
+
+/// "Sign in to see your usage" text + Connect button, shown when a
+/// provider has no stored credentials yet. Holds only the content that's
+/// identical everywhere — callers still wrap it in their own container
+/// for whatever alignment/spacing their surface needs (a centered card on
+/// the dashboard, a left-aligned list in the menu bar popover), same as
+/// `ProviderIdentityView`.
+struct DisconnectedPrompt: View {
+    let buttonLabel: LocalizedStringKey
+    var verticalPadding: CGFloat = 12
+    let action: () -> Void
+
+    var body: some View {
+        Text("Sign in to see your usage.")
+            .font(.callout)
+            .foregroundStyle(Theme.inkSecondary)
+        Button(action: action) {
+            Label(buttonLabel, systemImage: "link")
+                .font(.body.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, verticalPadding)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.white)
+        .background(Theme.accent, in: Capsule())
     }
 }

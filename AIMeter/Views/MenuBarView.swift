@@ -2,15 +2,19 @@
 import SwiftUI
 import UsageKit
 
-/// Label shown in the macOS menu bar: session usage at a glance, honoring
-/// the Remaining/Used display preference.
+/// Label shown in the macOS menu bar: one window's usage at a glance —
+/// Session by default, or whichever window the user picked as
+/// `glanceMetric` in Claude's Provider Detail (e.g. Credits, or a
+/// per-model window on Max) — honoring the Remaining/Used display
+/// preference.
 struct MenuBarLabel: View {
     let snapshot: UsageSnapshot?
     let displayMode: DisplayMode
+    let metric: UsageWindow.Kind
 
     var body: some View {
-        if let session = snapshot?.sessionWindow {
-            Text("\(Int(session.displayedPct(displayMode)))%")
+        if let window = snapshot?.window(for: metric) {
+            Text("\(Int(window.displayedPct(displayMode)))%")
         } else {
             Image(systemName: "gauge.with.needle")
         }
@@ -28,32 +32,12 @@ struct MenuBarView: View {
             Divider().overlay(Theme.track)
 
             if model.needsConnection {
-                Text("Sign in to see your usage.")
-                    .font(.callout)
-                    .foregroundStyle(Theme.inkSecondary)
-                Button {
+                DisconnectedPrompt(buttonLabel: "Connect Claude Code", verticalPadding: 10) {
                     showingConnect = true
-                } label: {
-                    Label("Connect Claude Code", systemImage: "link")
-                        .font(.body.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
-                .background(Theme.accent, in: Capsule())
             } else {
                 WindowRowsList(snapshot: model.snapshot)
-                if let error = model.lastError {
-                    Label(error, systemImage: "exclamationmark.triangle")
-                        .font(Theme.caption)
-                        .foregroundStyle(Theme.danger)
-                }
-                if let snapshot = model.snapshot {
-                    Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
-                        .font(Theme.caption)
-                        .foregroundStyle(Theme.inkSecondary)
-                }
+                UsageStatusFooter(snapshot: model.snapshot, error: model.lastError, showsDividers: false)
             }
 
             Divider().overlay(Theme.track)

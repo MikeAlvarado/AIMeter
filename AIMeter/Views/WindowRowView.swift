@@ -10,6 +10,9 @@ struct WindowRowView: View {
     let kind: UsageWindow.Kind
     let window: UsageWindow?
     var showsReset = true
+    /// "$14.27 of $25.00" — Credits has no reset date, so this optionally
+    /// fills the same line instead (`Preferences.showCreditsAmount`).
+    var moneySubtitle: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
@@ -40,6 +43,13 @@ struct WindowRowView: View {
                     .foregroundStyle(Theme.inkSecondary)
                 }
                 .buttonStyle(.plain)
+            } else if let moneySubtitle {
+                HStack(spacing: 4) {
+                    Image(systemName: "dollarsign.circle")
+                    Text(moneySubtitle)
+                }
+                .font(Theme.caption)
+                .foregroundStyle(Theme.inkSecondary)
             }
         }
         // One VoiceOver element per row: "5-hour session, 45%, Resets in…".
@@ -67,7 +77,8 @@ struct WindowRowsList: View {
                 WindowRowView(
                     kind: slot.kind,
                     window: slot.window,
-                    showsReset: WindowSlots.showsReset(at: index, in: slots)
+                    showsReset: WindowSlots.showsReset(at: index, in: slots),
+                    moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
                 )
             }
         }

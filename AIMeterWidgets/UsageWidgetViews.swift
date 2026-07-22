@@ -78,6 +78,9 @@ private struct WindowBarRow: View {
     let window: UsageWindow?
     let prefs: Preferences
     var showsReset = true
+    /// "$14.27 of $25.00" — Credits has no reset date, so this optionally
+    /// fills the same line instead (`Preferences.showCreditsAmount`).
+    var moneySubtitle: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2.5) {
@@ -102,6 +105,14 @@ private struct WindowBarRow: View {
                 }
                 .font(.system(size: 9))
                 .foregroundStyle(Theme.inkSecondary.opacity(0.9))
+            } else if let moneySubtitle {
+                HStack(spacing: 3) {
+                    Image(systemName: "dollarsign.circle")
+                    Text(moneySubtitle)
+                }
+                .font(.system(size: 9))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.9))
+                .lineLimit(1)
             }
         }
         .accessibilityElement(children: .combine)
@@ -127,7 +138,8 @@ private struct WindowBarList: View {
                     kind: slot.kind,
                     window: slot.window,
                     prefs: prefs,
-                    showsReset: WindowSlots.showsReset(at: index, in: slots)
+                    showsReset: WindowSlots.showsReset(at: index, in: slots),
+                    moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
@@ -164,13 +176,27 @@ struct CircularUsageView: View {
     let prefs: Preferences
 
     var body: some View {
-        let session = snapshot.sessionWindow
-        Gauge(value: min(session?.displayedPct(prefs.displayMode) ?? 0, 100), in: 0...100) {
-            Text("5h")
+        let window = snapshot.window(for: prefs.glanceMetric)
+        Gauge(value: min(window?.displayedPct(prefs.displayMode) ?? 0, 100), in: 0...100) {
+            Text(caption)
         } currentValueLabel: {
-            Text(session.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—")
+            Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—")
         }
         .gaugeStyle(.accessoryCircularCapacity)
+    }
+
+    /// Compact subtitle under the ring — a rollover hint for the two rate
+    /// windows (matching the space "5h"/"7d" fit), a currency glyph for
+    /// Credits since that one has no fixed period, and the provider's own
+    /// short name for a per-model window (e.g. "Fable" on Max) since
+    /// there's no generic hint that fits every plan's model name.
+    private var caption: String {
+        switch prefs.glanceMetric {
+        case .session: return String(localized: "5h")
+        case .weekly: return String(localized: "7d")
+        case .credits: return String(localized: "$")
+        case .modelSpecific: return prefs.glanceMetric.shortName
+        }
     }
 }
 

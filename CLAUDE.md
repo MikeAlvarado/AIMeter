@@ -160,10 +160,22 @@ Credential sources:
   toggle is always disabled (no reset date to schedule against).
 - Reset lines: consecutive windows sharing one reset date show
   "Resets in …" once, under the last of the group (`WindowSlots.showsReset`)
-  — applies to dashboard, detail, menu bar, widgets, landscape.
+  — applies to dashboard, detail, menu bar, widgets, landscape. Credits has
+  no reset date, so `showCreditsAmount` (off by default, Provider Detail)
+  optionally fills that same line with `SpendStatus.amountLabel`
+  ("$14.27 of $25.00") instead of leaving it blank.
 - Display prefs (App Group, shared with widgets): Remaining/Used,
   Relative/Absolute reset style (tap any reset line to toggle), appearance
-  System/Light/Dark, refresh cadence.
+  System/Light/Dark, refresh cadence, and `glanceMetric` — the one window
+  shown by the two single-number surfaces with no room for a fixed
+  three-slot layout: the macOS menu bar label and iOS's Lock Screen
+  circular gauge. One shared preference drives both. Stored as a plain
+  `UsageWindow.Kind` (not a fixed enum) so its option list scales with the
+  account: Session and Weekly always, the per-model window (e.g. Fable on
+  Max) whenever the account reports one, and Credits whenever the account
+  has it enabled *and* `modelSlotFallback` isn't Hidden
+  (`UsageSnapshot.glanceOptions`) — 2 to 4 choices, same live-options
+  principle `UsageWindowOptionQuery` uses for the single-window widget.
 - Stale snapshot (>30 min): widgets show a small "last updated" hint in the
   header trailing edge.
 - Errors render inside the provider card, below the rows: raw endpoint body
@@ -176,11 +188,16 @@ Credential sources:
   title, then a section per provider: logo + name + Pro/Max pill (trailing)
   → card with the three windows, error, "Updated X ago". Disconnected state
   shows a Connect card.
-- **Provider detail** (push): rate-limit rows, a "Third usage row"
-  Auto/Hidden/Credits toggle (governs the third-slot fallback above,
-  defaults to Auto) directly under the rate-limits card, Spend and Extra
-  usage cards (label/value rows, currency formatted), notification
-  toggles, iOS disconnect button.
+- **Provider detail** (push): rate-limit rows; a "Third usage row" card
+  with the Auto/Hidden/Credits pill (governs the third-slot fallback
+  above, defaults to Auto) plus a "Show credit amounts" toggle (off by
+  default) for the Credits row's money subtitle; a "Menu bar" pill on
+  macOS / "Lock Screen widget" pill on iOS for `glanceMetric`, options
+  read live from the snapshot; Spend and Extra usage cards (label/value
+  rows, currency formatted); notification toggles; iOS disconnect button.
+  All of these are Claude-specific display prefs, so they live here rather
+  than in the app-wide Settings screen — a future provider's own detail
+  view would carry its own equivalents instead of sharing these.
 - **Settings**: appearance / display mode / reset style pills, refresh
   cadence menu, notification toggles, a "Privacy & data" link, and an
   "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet with
@@ -207,10 +224,13 @@ Credential sources:
 - **Widgets**:
   - `AIMeterUsage` (small & medium): header (logo + "Claude") + all three
     bars with reset lines; Lock Screen accessories (circular gauge,
-    rectangular list, inline). Widget fonts are fixed sizes (12/11/9 pt) on
-    purpose — text styles scale with Dynamic Type and overflow the fixed
-    widget height on real devices. Rows sit in equal flexible slices so the
-    layout fills any family height.
+    rectangular list, inline). Rectangular and inline show all three
+    `WindowSlots`, credits included under the third-row fallback; the
+    circular gauge has room for one number, so it shows whichever window
+    `glanceMetric` points at (Provider Detail). Widget fonts are fixed
+    sizes (12/11/9 pt) on purpose — text styles scale with Dynamic Type
+    and overflow the fixed widget height on real devices. Rows sit in
+    equal flexible slices so the layout fills any family height.
   - `AIMeterSingleUsage` (small only): shows exactly one window the user
     picks from the widget's own Edit Widget UI
     (`SingleUsageConfigurationIntent`, `AppIntentConfiguration`) —
@@ -220,8 +240,9 @@ Credential sources:
     matches what the account actually has instead of a name baked in at
     build time.
 - **macOS menu bar**: header (logo + "Claude" + plan pill, via
-  `ProviderIdentityView`) + divider, session % as the menu bar label,
-  popover with the same rows, refresh/settings/quit.
+  `ProviderIdentityView`) + divider, `glanceMetric` window's % as the menu
+  bar label (Provider Detail, default Session), popover with the same
+  rows, refresh/settings/quit.
 
 ## Design system (Shared/Theme.swift)
 
@@ -242,6 +263,14 @@ font, and name color so it fits the dashboard, landscape header, menu bar,
 and both widgets without re-typing the composition per surface; each
 caller still wraps it in its own `HStack` for whatever trailing content
 (chevron, "Updated X ago", a staleness hint, or nothing) that surface needs.
+Two more `Shared/ThemeComponents.swift` views follow the same rule for
+other repeated pieces: `UsageStatusFooter` (the error label + "Updated X
+ago" caption under the rate-limit rows — dashboard, provider detail, menu
+bar popover; `showsDividers` defaults on for the two card surfaces, off
+for the menu bar which already brackets the section with its own) and
+`DisconnectedPrompt` (the "Sign in to see your usage" text + Connect
+button — dashboard and menu bar, `buttonLabel`/`verticalPadding`
+parametrized per surface, caller still owns the wrapping container).
 
 ## Localization
 

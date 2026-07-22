@@ -63,6 +63,74 @@ extension UsageSnapshot {
         guard let spend, spend.enabled, let percent = spend.percent else { return nil }
         return UsageWindow(kind: .credits, usedPct: percent, severity: spend.severity)
     }
+
+    /// Resolves the one window a `glanceMetric` preference points at, for
+    /// the macOS menu bar label and iOS's Lock Screen circular gauge —
+    /// both single-number surfaces with no room for a fixed three-slot
+    /// layout. Missing data (e.g. Credits picked but spend disabled, or a
+    /// per-model window from a plan the account no longer has) renders as
+    /// the surface's own placeholder, same as any other slot.
+    func window(for kind: UsageWindow.Kind) -> UsageWindow? {
+        switch kind {
+        case .session: return sessionWindow
+        case .weekly: return weeklyWindow
+        case .modelSpecific: return modelWindows.first { $0.kind == kind }
+        case .credits: return creditsWindow
+        }
+    }
+
+    /// The window kinds this account currently reports, for pickers that
+    /// need a live list instead of a hardcoded one — session and weekly
+    /// are always offered; the per-model window (e.g. Fable on Max) is
+    /// offered whenever the account has one; Credits only when the
+    /// account has it enabled *and* the user hasn't turned the third-row
+    /// fallback fully off — the same `modelSlotFallback` rule
+    /// `UsageWindowOptionQuery` applies for the single-window widget, so
+    /// setting "Third usage row" to Hidden also removes Credits from this
+    /// picker's options.
+    static func glanceOptions(for snapshot: UsageSnapshot?, modelSlotFallback: ModelSlotFallback) -> [UsageWindow.Kind] {
+        var kinds: [UsageWindow.Kind] = [.session, .weekly]
+        if let model = snapshot?.modelWindows.first {
+            kinds.append(model.kind)
+        }
+        if modelSlotFallback != .hidden, snapshot?.creditsWindow != nil {
+            kinds.append(.credits)
+        }
+        return kinds
+    }
+}
+
+extension Preferences {
+    /// The Credits row's optional "$14.27 of $25.00" subtitle, shared by
+    /// every surface that renders `WindowSlots`'s credits slot (dashboard,
+    /// provider detail, menu bar, widgets) — nil unless the slot actually
+    /// is Credits, the toggle is on, and the account has spend data.
+    func creditsAmountSubtitle(for kind: UsageWindow.Kind, snapshot: UsageSnapshot?) -> String? {
+        guard kind == .credits, showCreditsAmount else { return nil }
+        return snapshot?.spend?.amountLabel
+    }
+}
+
+extension PreferencesModel {
+    /// Same rule as `Preferences.creditsAmountSubtitle`, for call sites
+    /// (the app's own views) that hold the observable model instead of a
+    /// plain `Preferences` value.
+    func creditsAmountSubtitle(for kind: UsageWindow.Kind, snapshot usageSnapshot: UsageSnapshot?) -> String? {
+        snapshot.creditsAmountSubtitle(for: kind, snapshot: usageSnapshot)
+    }
+}
+
+extension SpendStatus {
+    /// "$14.27 of $25.00" — the optional money subtitle shown under the
+    /// Credits row instead of a reset line, since a spend cap has no
+    /// rollover date. Opt-in via `Preferences.showCreditsAmount`.
+    var amountLabel: String? {
+        guard let used = usedAmount, let limit = limitAmount else { return nil }
+        let code = currency ?? "USD"
+        let usedText = used.formatted(.currency(code: code))
+        let limitText = limit.formatted(.currency(code: code))
+        return String(localized: "\(usedText) of \(limitText)")
+    }
 }
 
 extension UsageWindow {

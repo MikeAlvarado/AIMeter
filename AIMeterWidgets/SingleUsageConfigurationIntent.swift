@@ -69,8 +69,8 @@ struct UsageWindowOptionQuery: EntityQuery {
         let providerID = "claude"
         let providerName = UsageWindowOption.providerName(for: providerID)
         let snapshot = SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: providerID)
-        let kinds = snapshot?.windows.map(\.kind)
-        var resolvedKinds = (kinds?.isEmpty == false) ? kinds! : [.session, .weekly]
+        let kinds = snapshot?.windows.map(\.kind) ?? []
+        var resolvedKinds = kinds.isEmpty ? [.session, .weekly] : kinds
 
         let hasModelWindow = resolvedKinds.contains {
             if case .modelSpecific = $0 { return true }

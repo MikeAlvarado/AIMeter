@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import SwiftUI
+import UsageKit
 
 enum DisplayMode: String, CaseIterable {
     case used, remaining
@@ -86,6 +87,18 @@ struct Preferences: Sendable {
     var refreshCadence: RefreshCadence = .minutes15
     var appearance: AppearanceMode = .system
     var modelSlotFallback: ModelSlotFallback = .auto
+    /// Which single window the compact "at a glance" surfaces show: the
+    /// macOS menu bar label and iOS's Lock Screen circular gauge (both
+    /// have room for exactly one number). Stored as a plain `UsageWindow.Kind`
+    /// rather than a fixed enum so it scales to whatever the account
+    /// actually reports — a per-model window (e.g. Fable on Max) or
+    /// Credits, not just Session/Weekly.
+    var glanceMetric: UsageWindow.Kind = .session
+    /// Shows the Credits row's used/limit amounts in place of a reset
+    /// line (a spend cap has no rollover date to show one). Off by
+    /// default — opt-in extra detail, only visible when a Credits row is
+    /// actually showing.
+    var showCreditsAmount: Bool = false
     var lastScheduledAt: Date?
 
     enum Keys {
@@ -94,6 +107,8 @@ struct Preferences: Sendable {
         static let refreshCadence = "pref.refreshCadence"
         static let appearance = "pref.appearance"
         static let modelSlotFallback = "pref.modelSlotFallback"
+        static let glanceMetric = "pref.glanceMetric"
+        static let showCreditsAmount = "pref.showCreditsAmount"
         static let lastScheduledAt = "pref.lastScheduledAt"
     }
 
@@ -118,6 +133,10 @@ struct Preferences: Sendable {
         if let raw = defaults.string(forKey: Keys.modelSlotFallback), let value = ModelSlotFallback(rawValue: raw) {
             prefs.modelSlotFallback = value
         }
+        if let raw = defaults.string(forKey: Keys.glanceMetric), let value = UsageWindow.Kind(storageKey: raw) {
+            prefs.glanceMetric = value
+        }
+        prefs.showCreditsAmount = defaults.bool(forKey: Keys.showCreditsAmount)
         if let timestamp = defaults.object(forKey: Keys.lastScheduledAt) as? Date {
             prefs.lastScheduledAt = timestamp
         }
@@ -148,6 +167,12 @@ final class PreferencesModel {
     var modelSlotFallback: ModelSlotFallback {
         didSet { defaults.set(modelSlotFallback.rawValue, forKey: Preferences.Keys.modelSlotFallback) }
     }
+    var glanceMetric: UsageWindow.Kind {
+        didSet { defaults.set(glanceMetric.storageKey, forKey: Preferences.Keys.glanceMetric) }
+    }
+    var showCreditsAmount: Bool {
+        didSet { defaults.set(showCreditsAmount, forKey: Preferences.Keys.showCreditsAmount) }
+    }
 
     @ObservationIgnored private let defaults: UserDefaults
 
@@ -159,6 +184,8 @@ final class PreferencesModel {
         refreshCadence = loaded.refreshCadence
         appearance = loaded.appearance
         modelSlotFallback = loaded.modelSlotFallback
+        glanceMetric = loaded.glanceMetric
+        showCreditsAmount = loaded.showCreditsAmount
     }
 
     var lastScheduledAt: Date? {
@@ -176,6 +203,8 @@ final class PreferencesModel {
         prefs.refreshCadence = refreshCadence
         prefs.appearance = appearance
         prefs.modelSlotFallback = modelSlotFallback
+        prefs.glanceMetric = glanceMetric
+        prefs.showCreditsAmount = showCreditsAmount
         prefs.lastScheduledAt = lastScheduledAt
         return prefs
     }
