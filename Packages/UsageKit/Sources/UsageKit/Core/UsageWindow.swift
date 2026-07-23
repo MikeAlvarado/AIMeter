@@ -34,19 +34,27 @@ public struct UsageWindow: Codable, Hashable, Sendable {
     public var severity: Severity?
     /// Whether the provider considers this window currently active.
     public var isActive: Bool?
+    /// The window's nominal length (e.g. 5 hours for a session), for pace
+    /// and run-out math — where a steady burn would put you now = elapsed
+    /// / duration. Set by the provider's own mapping code, since only the
+    /// provider knows its own window lengths; nil for windows with no
+    /// meaningful duration (e.g. a spend cap).
+    public var duration: TimeInterval?
 
     public init(
         kind: Kind,
         usedPct: Double,
         resetsAt: Date? = nil,
         severity: Severity? = nil,
-        isActive: Bool? = nil
+        isActive: Bool? = nil,
+        duration: TimeInterval? = nil
     ) {
         self.kind = kind
         self.usedPct = usedPct
         self.resetsAt = resetsAt
         self.severity = severity
         self.isActive = isActive
+        self.duration = duration
     }
 
     /// Remaining percentage of the window's limit, 0–100.

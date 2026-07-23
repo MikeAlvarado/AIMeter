@@ -58,7 +58,7 @@ public enum RunOutPredictor {
         minimumUsedPct: Double = 0
     ) -> RunOutProjection? {
         guard let resetsAt = window.resetsAt,
-              let duration = window.kind.windowDuration, duration > 0 else { return nil }
+              let duration = window.duration, duration > 0 else { return nil }
         let windowStart = resetsAt.addingTimeInterval(-duration)
         let elapsed = now.timeIntervalSince(windowStart)
         guard elapsed > 0, window.usedPct > minimumUsedPct, window.usedPct < 100 else { return nil }
