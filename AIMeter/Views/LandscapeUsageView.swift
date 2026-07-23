@@ -13,7 +13,7 @@ struct LandscapeUsageView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 header
-                if model.needsConnection {
+                if model.needsConnection(for: "claude") {
                     Text("Sign in to see your usage.")
                         .font(.callout)
                         .foregroundStyle(Theme.inkSecondary)
@@ -21,7 +21,7 @@ struct LandscapeUsageView: View {
                         .padding(.top, 40)
                 } else {
                     Card {
-                        WindowRowsList(snapshot: model.snapshot)
+                        WindowRowsList(snapshot: model.snapshot(for: "claude"))
                     }
                 }
             }
@@ -39,10 +39,10 @@ struct LandscapeUsageView: View {
                 iconCornerRadius: 6,
                 font: Theme.sectionHeader,
                 nameColor: Theme.inkSecondary,
-                planName: model.snapshot?.planName
+                planName: model.snapshot(for: "claude")?.planName
             )
             Spacer()
-            if let snapshot = model.snapshot {
+            if let snapshot = model.snapshot(for: "claude") {
                 Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
                     .font(Theme.caption)
                     .foregroundStyle(Theme.inkSecondary)

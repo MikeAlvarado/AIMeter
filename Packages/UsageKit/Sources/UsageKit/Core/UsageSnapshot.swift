@@ -89,24 +89,4 @@ extension UsageWindow.Kind {
             return nil
         }
     }
-
-    /// The nominal *length* of the window, for pace math (where a steady
-    /// burn would put you now = elapsed / duration). Distinct from
-    /// `nominalPeriod`: a session has no fixed rollover anchor (nil period)
-    /// yet is still exactly 5 hours long. `.credits` is a spend cap, not a
-    /// time window, so it has no duration.
-    ///
-    /// These lengths (5h / 7d) are Claude's today. With a single provider
-    /// and Claude-shaped kinds this lives on `Kind` like `nominalPeriod`;
-    /// revisit if a provider with different window lengths is added.
-    var windowDuration: TimeInterval? {
-        switch self {
-        case .session:
-            return 5 * 3600
-        case .weekly, .modelSpecific:
-            return 7 * 86400
-        case .credits:
-            return nil
-        }
-    }
 }

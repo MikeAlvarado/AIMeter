@@ -103,7 +103,7 @@ struct WindowRowsList: View {
                     window: slot.window,
                     showsReset: WindowSlots.showsReset(at: index, in: slots),
                     moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot),
-                    showsPace: showsPace && model.paceReady
+                    showsPace: showsPace && model.paceReady(for: "claude")
                 )
             }
         }
