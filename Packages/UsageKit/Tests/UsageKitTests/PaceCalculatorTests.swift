@@ -14,7 +14,8 @@ final class PaceCalculatorTests: XCTestCase {
         let window = UsageWindow(
             kind: .session,
             usedPct: 50,
-            resetsAt: now.addingTimeInterval(2.5 * 3600)
+            resetsAt: now.addingTimeInterval(2.5 * 3600),
+            duration: 5 * 3600
         )
         let pace = try XCTUnwrap(PaceCalculator.pace(for: window, now: now))
         XCTAssertEqual(pace.expectedPct, 50, accuracy: 0.001)
@@ -26,7 +27,8 @@ final class PaceCalculatorTests: XCTestCase {
         let window = UsageWindow(
             kind: .weekly,
             usedPct: 50,
-            resetsAt: now.addingTimeInterval(3.5 * 86400)
+            resetsAt: now.addingTimeInterval(3.5 * 86400),
+            duration: 7 * 86400
         )
         let pace = try XCTUnwrap(PaceCalculator.pace(for: window, now: now))
         XCTAssertEqual(pace.expectedPct, 50, accuracy: 0.001)
@@ -36,7 +38,8 @@ final class PaceCalculatorTests: XCTestCase {
         let window = UsageWindow(
             kind: .modelSpecific("Fable"),
             usedPct: 10,
-            resetsAt: now.addingTimeInterval(3.5 * 86400)
+            resetsAt: now.addingTimeInterval(3.5 * 86400),
+            duration: 7 * 86400
         )
         let pace = try XCTUnwrap(PaceCalculator.pace(for: window, now: now))
         XCTAssertEqual(pace.expectedPct, 50, accuracy: 0.001)
@@ -47,23 +50,23 @@ final class PaceCalculatorTests: XCTestCase {
 
     func testAheadWhenUsedExceedsExpectedBeyondTolerance() throws {
         // Halfway (expected 50), used 70 → 20pp over → ahead.
-        let window = UsageWindow(kind: .session, usedPct: 70, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        let window = UsageWindow(kind: .session, usedPct: 70, resetsAt: now.addingTimeInterval(2.5 * 3600), duration: 5 * 3600)
         let pace = try XCTUnwrap(PaceCalculator.pace(for: window, now: now))
         XCTAssertEqual(pace.status, .ahead)
     }
 
     func testBehindWhenUsedTrailsExpectedBeyondTolerance() throws {
-        let window = UsageWindow(kind: .session, usedPct: 30, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        let window = UsageWindow(kind: .session, usedPct: 30, resetsAt: now.addingTimeInterval(2.5 * 3600), duration: 5 * 3600)
         let pace = try XCTUnwrap(PaceCalculator.pace(for: window, now: now))
         XCTAssertEqual(pace.status, .behind)
     }
 
     func testWithinToleranceIsOnPace() throws {
         // expected 50, tolerance 5 → 54 counts as on pace, 56 does not.
-        let onEdge = UsageWindow(kind: .session, usedPct: 54, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        let onEdge = UsageWindow(kind: .session, usedPct: 54, resetsAt: now.addingTimeInterval(2.5 * 3600), duration: 5 * 3600)
         XCTAssertEqual(try XCTUnwrap(PaceCalculator.pace(for: onEdge, now: now)).status, .onPace)
 
-        let over = UsageWindow(kind: .session, usedPct: 56, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        let over = UsageWindow(kind: .session, usedPct: 56, resetsAt: now.addingTimeInterval(2.5 * 3600), duration: 5 * 3600)
         XCTAssertEqual(try XCTUnwrap(PaceCalculator.pace(for: over, now: now)).status, .ahead)
     }
 
@@ -71,7 +74,7 @@ final class PaceCalculatorTests: XCTestCase {
 
     func testElapsedPastResetClampsExpectedToHundred() throws {
         // resetsAt already in the past (stale snapshot) → expected 100.
-        let window = UsageWindow(kind: .session, usedPct: 90, resetsAt: now.addingTimeInterval(-600))
+        let window = UsageWindow(kind: .session, usedPct: 90, resetsAt: now.addingTimeInterval(-600), duration: 5 * 3600)
         let pace = try XCTUnwrap(PaceCalculator.pace(for: window, now: now))
         XCTAssertEqual(pace.expectedPct, 100, accuracy: 0.001)
         XCTAssertEqual(pace.status, .behind) // 90 < 100
@@ -80,7 +83,7 @@ final class PaceCalculatorTests: XCTestCase {
     func testResetAtFullDurationAwayClampsExpectedToZero() throws {
         // resetsAt a full duration in the future → window hasn't started →
         // expected 0.
-        let window = UsageWindow(kind: .session, usedPct: 0, resetsAt: now.addingTimeInterval(5 * 3600))
+        let window = UsageWindow(kind: .session, usedPct: 0, resetsAt: now.addingTimeInterval(5 * 3600), duration: 5 * 3600)
         let pace = try XCTUnwrap(PaceCalculator.pace(for: window, now: now))
         XCTAssertEqual(pace.expectedPct, 0, accuracy: 0.001)
         XCTAssertEqual(pace.status, .onPace)
@@ -89,13 +92,22 @@ final class PaceCalculatorTests: XCTestCase {
     // MARK: - No pace available
 
     func testNilWhenNoResetDate() {
-        let window = UsageWindow(kind: .session, usedPct: 40, resetsAt: nil)
+        let window = UsageWindow(kind: .session, usedPct: 40, resetsAt: nil, duration: 5 * 3600)
         XCTAssertNil(PaceCalculator.pace(for: window, now: now))
     }
 
     func testNilForCreditsKind() {
         // Credits is a spend cap, not a time window — no duration, no pace.
         let window = UsageWindow(kind: .credits, usedPct: 40, resetsAt: now.addingTimeInterval(3600))
+        XCTAssertNil(PaceCalculator.pace(for: window, now: now))
+    }
+
+    func testNilWhenProviderDidNotSetADuration() {
+        // A window with a reset date but no reported duration (e.g. a
+        // provider whose usage isn't a fixed-length rolling window) has no
+        // pace to compute — this is the general case `.credits` is one
+        // instance of.
+        let window = UsageWindow(kind: .session, usedPct: 40, resetsAt: now.addingTimeInterval(3600))
         XCTAssertNil(PaceCalculator.pace(for: window, now: now))
     }
 

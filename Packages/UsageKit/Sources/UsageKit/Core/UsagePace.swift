@@ -62,7 +62,7 @@ public enum PaceCalculator {
         tolerance: Double = defaultTolerance
     ) -> UsagePace? {
         guard let resetsAt = window.resetsAt,
-              let duration = window.kind.windowDuration,
+              let duration = window.duration,
               duration > 0 else { return nil }
 
         let windowStart = resetsAt.addingTimeInterval(-duration)

@@ -11,7 +11,7 @@ final class UsageProjectionTests: XCTestCase {
     func testAverageOnPaceProjectsExactlyAtReset() throws {
         // Halfway through a 5h session at 50% used → average rate lands the
         // projection exactly on the reset boundary (not early).
-        let window = UsageWindow(kind: .session, usedPct: 50, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        let window = UsageWindow(kind: .session, usedPct: 50, resetsAt: now.addingTimeInterval(2.5 * 3600), duration: 5 * 3600)
         let p = try XCTUnwrap(RunOutPredictor.averageProjection(for: window, now: now))
         XCTAssertEqual(p.projectedExhaustion.timeIntervalSince1970, p.resetsAt.timeIntervalSince1970, accuracy: 1)
         XCTAssertFalse(p.runsOutEarly)
@@ -19,14 +19,14 @@ final class UsageProjectionTests: XCTestCase {
 
     func testAverageAheadRunsOutEarly() throws {
         // Halfway, but 80% used → burning fast → projected well before reset.
-        let window = UsageWindow(kind: .session, usedPct: 80, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        let window = UsageWindow(kind: .session, usedPct: 80, resetsAt: now.addingTimeInterval(2.5 * 3600), duration: 5 * 3600)
         let p = try XCTUnwrap(RunOutPredictor.averageProjection(for: window, now: now))
         XCTAssertTrue(p.runsOutEarly)
         XCTAssertGreaterThan(p.earlyBy, 0)
     }
 
     func testAverageBehindDoesNotRunOutEarly() throws {
-        let window = UsageWindow(kind: .session, usedPct: 20, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        let window = UsageWindow(kind: .session, usedPct: 20, resetsAt: now.addingTimeInterval(2.5 * 3600), duration: 5 * 3600)
         let p = try XCTUnwrap(RunOutPredictor.averageProjection(for: window, now: now))
         XCTAssertFalse(p.runsOutEarly)
         XCTAssertEqual(p.earlyBy, 0)
@@ -34,9 +34,11 @@ final class UsageProjectionTests: XCTestCase {
 
     func testAverageNilWhenNotUsedOrNoResetOrNoDuration() {
         XCTAssertNil(RunOutPredictor.averageProjection(
-            for: UsageWindow(kind: .session, usedPct: 0, resetsAt: now.addingTimeInterval(3600)), now: now))
+            for: UsageWindow(kind: .session, usedPct: 0, resetsAt: now.addingTimeInterval(3600), duration: 5 * 3600), now: now))
         XCTAssertNil(RunOutPredictor.averageProjection(
-            for: UsageWindow(kind: .session, usedPct: 40, resetsAt: nil), now: now))
+            for: UsageWindow(kind: .session, usedPct: 40, resetsAt: nil, duration: 5 * 3600), now: now))
+        // No provider-reported duration (e.g. `.credits`, or any window a
+        // provider didn't set a length for) → no projection either.
         XCTAssertNil(RunOutPredictor.averageProjection(
             for: UsageWindow(kind: .credits, usedPct: 40, resetsAt: now.addingTimeInterval(3600)), now: now))
     }
