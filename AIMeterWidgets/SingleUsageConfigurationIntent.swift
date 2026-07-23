@@ -58,30 +58,33 @@ struct UsageWindowOptionQuery: EntityQuery {
         currentOptions().first
     }
 
-    /// Only "claude" is implemented today; the store lookup still drives
-    /// the option list so it reflects whatever windows the account
-    /// currently has rather than assuming a fixed set. When there's no
-    /// per-model window and the credits fallback would actually show
-    /// (Settings: Credits, or Auto with credits enabled), "Credits" is
-    /// offered too — same rule `WindowSlots` uses for the dashboard's
-    /// third slot.
+    /// Options for every provider in `AppConfig.providerIDs` (just "claude"
+    /// today) — the store lookup still drives each provider's own option
+    /// list so it reflects whatever windows that account currently has
+    /// rather than assuming a fixed set. When there's no per-model window
+    /// and the credits fallback would actually show (Settings: Credits, or
+    /// Auto with credits enabled), "Credits" is offered too — same rule
+    /// `WindowSlots` uses for the dashboard's third slot.
     private func currentOptions() -> [UsageWindowOption] {
-        let providerID = "claude"
-        let providerName = UsageWindowOption.providerName(for: providerID)
-        let snapshot = SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: providerID)
-        let kinds = snapshot?.windows.map(\.kind) ?? []
-        var resolvedKinds = kinds.isEmpty ? [.session, .weekly] : kinds
-
-        let hasModelWindow = resolvedKinds.contains {
-            if case .modelSpecific = $0 { return true }
-            return false
-        }
+        let store = SnapshotStore(suiteName: AppConfig.appGroupID)
         let fallback = Preferences.load().modelSlotFallback
-        if !hasModelWindow, fallback != .hidden, snapshot?.creditsWindow != nil {
-            resolvedKinds.append(.credits)
-        }
 
-        return resolvedKinds.map { UsageWindowOption(providerID: providerID, kind: $0, providerName: providerName) }
+        return AppConfig.providerIDs.flatMap { providerID -> [UsageWindowOption] in
+            let providerName = UsageWindowOption.providerName(for: providerID)
+            let snapshot = store?.snapshot(for: providerID)
+            let kinds = snapshot?.windows.map(\.kind) ?? []
+            var resolvedKinds = kinds.isEmpty ? [.session, .weekly] : kinds
+
+            let hasModelWindow = resolvedKinds.contains {
+                if case .modelSpecific = $0 { return true }
+                return false
+            }
+            if !hasModelWindow, fallback != .hidden, snapshot?.creditsWindow != nil {
+                resolvedKinds.append(.credits)
+            }
+
+            return resolvedKinds.map { UsageWindowOption(providerID: providerID, kind: $0, providerName: providerName) }
+        }
     }
 }
 

@@ -16,16 +16,16 @@ struct ProviderDetailView: View {
                 SectionHeader(title: String(localized: "Rate limits"))
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                        WindowRowsList(snapshot: model.snapshot, showsPace: true)
-                        UsageStatusFooter(snapshot: model.snapshot, error: model.lastError)
+                        WindowRowsList(snapshot: model.snapshot(for: "claude"), showsPace: true)
+                        UsageStatusFooter(snapshot: model.snapshot(for: "claude"), error: model.lastError(for: "claude"))
                     }
                 }
 
-                if let snapshot = model.snapshot, !snapshot.windows.isEmpty {
+                if let snapshot = model.snapshot(for: "claude"), !snapshot.windows.isEmpty {
                     SectionHeader(title: String(localized: "Forecast"))
                         .padding(.top, Theme.sectionSpacing - 10)
-                    ForecastCard(snapshot: snapshot, ready: model.paceReady)
-                    if model.paceReady {
+                    ForecastCard(snapshot: snapshot, ready: model.paceReady(for: "claude"))
+                    if model.paceReady(for: "claude") {
                         SectionFootnote(text: String(localized: "Projected from your average pace so far this window. It refines as you use more."))
                     }
                 }
@@ -53,19 +53,19 @@ struct ProviderDetailView: View {
                     .padding(.top, Theme.sectionSpacing - 10)
                 Card {
                     SegmentedPill(
-                        options: UsageSnapshot.glanceOptions(for: model.snapshot, modelSlotFallback: prefs.modelSlotFallback).map { ($0, $0.shortName) },
+                        options: UsageSnapshot.glanceOptions(for: model.snapshot(for: "claude"), modelSlotFallback: prefs.modelSlotFallback).map { ($0, $0.shortName) },
                         selection: $prefs.glanceMetric
                     )
                 }
                 SectionFootnote(text: glanceFootnote)
 
-                if let spend = model.snapshot?.spend {
+                if let spend = model.snapshot(for: "claude")?.spend {
                     SectionHeader(title: String(localized: "Spend"))
                         .padding(.top, Theme.sectionSpacing - 10)
                     DetailRowsCard(rows: spendRows(spend))
                 }
 
-                if let extra = model.snapshot?.extraUsage {
+                if let extra = model.snapshot(for: "claude")?.extraUsage {
                     SectionHeader(title: String(localized: "Extra usage"))
                         .padding(.top, Theme.sectionSpacing - 10)
                     DetailRowsCard(rows: extraUsageRows(extra))
@@ -366,7 +366,7 @@ struct NotificationTogglesCard: View {
     var body: some View {
         Card {
             VStack(spacing: Theme.rowSpacing) {
-                let slots = WindowSlots(snapshot: model.snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
+                let slots = WindowSlots(snapshot: model.snapshot(for: "claude"), modelSlotFallback: prefs.modelSlotFallback).slots
                 ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                     if index > 0 {
                         Divider().overlay(Theme.track)
@@ -420,8 +420,8 @@ struct NotificationTogglesCard: View {
 
     private func binding(for kind: UsageWindow.Kind) -> Binding<Bool> {
         Binding(
-            get: { model.notificationsEnabled(for: kind) },
-            set: { model.setNotificationsEnabled($0, for: kind) }
+            get: { model.notificationsEnabled(for: "claude", kind: kind) },
+            set: { model.setNotificationsEnabled($0, for: "claude", kind: kind) }
         )
     }
 }

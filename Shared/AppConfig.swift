@@ -3,6 +3,14 @@ import Foundation
 /// Identifiers shared between the app and the widget extension.
 /// The App Group must match the entitlements of both targets exactly.
 enum AppConfig {
+    /// Every provider this build knows about, in display order. Shared
+    /// between the app (which builds live `UsageProvider` instances from
+    /// it) and the widget extension (which only needs the IDs to look up
+    /// stored snapshots — `SnapshotStore`/`UsageHistoryStore` are already
+    /// keyed by provider ID). One entry today; appending a provider here
+    /// is additive, not a rewrite.
+    static let providerIDs: [String] = ["claude"]
+
     static let appGroupID = "group.com.mikealvarado.aimeter"
     static let keychainService = "com.mikealvarado.aimeter"
     /// Keychain access group shared by app and widget so the widget can
