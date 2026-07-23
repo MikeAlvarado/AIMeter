@@ -17,7 +17,7 @@ struct AIMeterApp: App {
         #if os(iOS)
         .backgroundTask(.appRefresh(AppConfig.refreshTaskID)) {
             await BackgroundRefresh.scheduleNext()
-            _ = try? await RefreshService().refresh()
+            _ = await RefreshService().refresh()
         }
         #endif
 
@@ -29,7 +29,7 @@ struct AIMeterApp: App {
                 .tint(Theme.accent)
                 .preferredColorScheme(prefs.appearance.colorScheme)
         } label: {
-            MenuBarLabel(snapshot: model.snapshot, displayMode: prefs.displayMode, metric: prefs.glanceMetric)
+            MenuBarLabel(snapshot: model.snapshot(for: "claude"), displayMode: prefs.displayMode, metric: prefs.glanceMetric)
         }
         .menuBarExtraStyle(.window)
 

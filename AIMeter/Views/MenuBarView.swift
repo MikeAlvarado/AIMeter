@@ -31,13 +31,13 @@ struct MenuBarView: View {
             header
             Divider().overlay(Theme.track)
 
-            if model.needsConnection {
+            if model.needsConnection(for: "claude") {
                 DisconnectedPrompt(buttonLabel: "Connect Claude Code", verticalPadding: 10) {
                     showingConnect = true
                 }
             } else {
-                WindowRowsList(snapshot: model.snapshot)
-                UsageStatusFooter(snapshot: model.snapshot, error: model.lastError, showsDividers: false)
+                WindowRowsList(snapshot: model.snapshot(for: "claude"))
+                UsageStatusFooter(snapshot: model.snapshot(for: "claude"), error: model.lastError(for: "claude"), showsDividers: false)
             }
 
             Divider().overlay(Theme.track)
@@ -79,7 +79,7 @@ struct MenuBarView: View {
                 iconCornerRadius: 5,
                 font: Theme.sectionHeader,
                 nameColor: Theme.inkSecondary,
-                planName: model.snapshot?.planName
+                planName: model.snapshot(for: "claude")?.planName
             )
             Spacer()
         }

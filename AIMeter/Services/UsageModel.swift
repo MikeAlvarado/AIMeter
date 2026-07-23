@@ -3,16 +3,22 @@ import Observation
 import UserNotifications
 import UsageKit
 
-/// UI-facing state. Wraps RefreshService and keeps the last known snapshot
-/// visible even when a refresh fails (the error is surfaced alongside).
+/// Per-provider UI state: the last known snapshot (kept visible even when a
+/// refresh fails, with the error surfaced alongside), the last error, and
+/// whether this provider needs the user to connect.
+struct ProviderState {
+    var snapshot: UsageSnapshot?
+    var lastError: String?
+    var needsConnection: Bool
+}
+
+/// UI-facing state, keyed by provider ID so one provider's failure never
+/// blanks another's. `AppConfig.providerIDs` lists every provider this
+/// build knows about; today that's just Claude.
 @Observable
 final class UsageModel {
-    private(set) var snapshot: UsageSnapshot?
+    private var providerStates: [String: ProviderState] = [:]
     private(set) var isRefreshing = false
-    private(set) var lastError: String?
-    /// True when there are no usable credentials — dashboard shows the
-    /// connect card instead of usage rows.
-    private(set) var needsConnection: Bool
 
     private let service = RefreshService()
     private let preferences = NotificationPreferences()
@@ -21,86 +27,106 @@ final class UsageModel {
     #endif
 
     init() {
-        snapshot = service.lastSnapshot()
+        for providerID in AppConfig.providerIDs {
+            providerStates[providerID] = ProviderState(
+                snapshot: service.lastSnapshot(for: providerID),
+                lastError: nil,
+                needsConnection: Self.initialNeedsConnection(for: providerID)
+            )
+        }
         #if os(macOS)
-        // Assume connected; the first refresh flips this if no credentials
-        // are found (neither Claude Code's nor the app's own).
-        needsConnection = false
         AppEnvironment.shared = self
-        #else
-        needsConnection = !RefreshService.storedCredentialsExist()
-        #endif
-        #if os(macOS)
         rebuildTimer(interval: Preferences.load().refreshCadence.interval)
         #endif
     }
+
+    private static func initialNeedsConnection(for providerID: String) -> Bool {
+        #if os(macOS)
+        // Assume connected; the first refresh flips this if no credentials
+        // are found (neither Claude Code's nor the app's own).
+        return false
+        #else
+        return !RefreshService.storedCredentialsExist()
+        #endif
+    }
+
+    func snapshot(for providerID: String) -> UsageSnapshot? { providerStates[providerID]?.snapshot }
+    func lastError(for providerID: String) -> String? { providerStates[providerID]?.lastError }
+    func needsConnection(for providerID: String) -> Bool { providerStates[providerID]?.needsConnection ?? true }
 
     func refresh() async {
         guard !isRefreshing else { return }
         isRefreshing = true
         defer { isRefreshing = false }
-        do {
-            snapshot = try await service.refresh()
-            lastError = nil
-            needsConnection = false
-        } catch let error as UsageError {
-            if case .credentialsNotFound = error {
-                needsConnection = true
-                lastError = nil
-            } else {
-                lastError = error.errorDescription
-            }
-        } catch is CancellationError {
-            // A superseded refresh (pull-to-refresh released, scene change)
-            // is not an error worth showing.
-        } catch let error as URLError where error.code == .cancelled {
-            // Same: the URL task was cancelled by a newer refresh.
-        } catch {
-            lastError = error.localizedDescription
+        for result in await service.refresh() {
+            apply(result)
         }
     }
 
-    /// Foreground-activation refresh: skips the network when the snapshot
-    /// is still fresh, so quick app switches don't refetch, but returning
-    /// after a while updates the dashboard — and, via the refresh flow,
-    /// pushes the new snapshot to the widgets immediately.
-    func refreshIfStale(maxAge: TimeInterval = 60) async {
-        if let fetchedAt = snapshot?.fetchedAt,
-           Date().timeIntervalSince(fetchedAt) < maxAge {
-            return
+    /// Applies one provider's refresh outcome to its own state slot —
+    /// success updates the snapshot, "no credentials" flips the connect
+    /// prompt, any other error is surfaced alongside the last-known
+    /// snapshot, and a cancelled/superseded fetch (no snapshot, no error)
+    /// leaves the existing state untouched.
+    private func apply(_ result: ProviderRefreshResult) {
+        var state = providerStates[result.providerID]
+            ?? ProviderState(snapshot: nil, lastError: nil, needsConnection: true)
+        if let snapshot = result.snapshot {
+            state.snapshot = snapshot
+            state.lastError = nil
+            state.needsConnection = false
+        } else if let usageError = result.error as? UsageError, case .credentialsNotFound = usageError {
+            state.needsConnection = true
+            state.lastError = nil
+        } else if let usageError = result.error as? UsageError {
+            state.lastError = usageError.errorDescription
+        } else if let error = result.error {
+            state.lastError = error.localizedDescription
         }
+        providerStates[result.providerID] = state
+    }
+
+    /// Foreground-activation refresh: skips the network when every
+    /// provider's snapshot is still fresh, so quick app switches don't
+    /// refetch, but returning after a while updates the dashboard — and,
+    /// via the refresh flow, pushes new snapshots to the widgets immediately.
+    func refreshIfStale(maxAge: TimeInterval = 60) async {
+        let allFresh = providerStates.values.allSatisfy { state in
+            guard let fetchedAt = state.snapshot?.fetchedAt else { return false }
+            return Date().timeIntervalSince(fetchedAt) < maxAge
+        }
+        if allFresh { return }
         await refresh()
     }
 
     /// True once pace has warmed up (a couple of sessions observed since the
     /// account connected). Until then, views withhold the pace caption and
     /// the forecast, showing a "learning" state instead of asserting a pace
-    /// from too little history. Re-evaluated on each refresh.
-    var paceReady: Bool {
-        _ = snapshot // re-read when a refresh lands
-        return PaceCalculator.isReady(observingSince: service.paceObservingSince())
+    /// from too little history.
+    func paceReady(for providerID: String) -> Bool {
+        _ = providerStates[providerID] // re-read when a refresh lands
+        return PaceCalculator.isReady(observingSince: service.paceObservingSince(for: providerID))
     }
 
     /// Called by the connect sheet after a successful OAuth exchange.
     func completeConnection(_ credentials: ClaudeCredentials) async {
         do {
             try await service.storeConnection(credentials)
-            needsConnection = false
-            lastError = nil
+            providerStates["claude"]?.needsConnection = false
+            providerStates["claude"]?.lastError = nil
             await refresh()
         } catch {
-            lastError = (error as? UsageError)?.errorDescription ?? error.localizedDescription
+            providerStates["claude"]?.lastError =
+                (error as? UsageError)?.errorDescription ?? error.localizedDescription
         }
     }
 
     func disconnect() {
         do {
             try service.disconnect()
-            snapshot = nil
-            lastError = nil
-            needsConnection = true
+            providerStates["claude"] = ProviderState(snapshot: nil, lastError: nil, needsConnection: true)
         } catch {
-            lastError = error.localizedDescription
+            providerStates["claude"]?.lastError = error.localizedDescription
         }
     }
 
@@ -119,13 +145,13 @@ final class UsageModel {
         await MainActor.run { notificationsBlocked = status == .denied }
     }
 
-    func notificationsEnabled(for kind: UsageWindow.Kind) -> Bool {
+    func notificationsEnabled(for providerID: String, kind: UsageWindow.Kind) -> Bool {
         _ = notificationsRevision
-        return preferences.isEnabled(for: kind)
+        return preferences.isEnabled(for: providerID, kind: kind)
     }
 
-    func setNotificationsEnabled(_ enabled: Bool, for kind: UsageWindow.Kind) {
-        let snapshot = self.snapshot
+    func setNotificationsEnabled(_ enabled: Bool, for providerID: String, kind: UsageWindow.Kind) {
+        let snapshot = self.snapshot(for: providerID)
         Task { @MainActor in
             if enabled {
                 guard await NotificationScheduler.ensureAuthorization() else {
@@ -137,13 +163,13 @@ final class UsageModel {
                 }
                 notificationsBlocked = false
             }
-            preferences.setEnabled(enabled, for: kind)
+            preferences.setEnabled(enabled, for: providerID, kind: kind)
             notificationsRevision += 1
-            await NotificationScheduler.rescheduleResets(for: snapshot, preferences: preferences)
+            await NotificationScheduler.rescheduleResets(for: snapshot, providerID: providerID, preferences: preferences)
         }
     }
 
-    // MARK: Smart notifications (global run-out / early-reset)
+    // MARK: Smart notifications (global run-out / early-reset, across all providers)
 
     var runOutWarningsEnabled: Bool {
         _ = notificationsRevision
@@ -156,17 +182,20 @@ final class UsageModel {
     }
 
     func setRunOutWarningsEnabled(_ enabled: Bool) {
-        let snapshot = self.snapshot
+        let statesByProvider = providerStates
         Task { @MainActor in
             guard await authorizeIfEnabling(enabled) else { return }
             preferences.runOutWarningsEnabled = enabled
             notificationsRevision += 1
             // Immediate scheduling uses the average rate (no history needed);
-            // the next fetch refines it with the recent rate.
-            let projections = snapshot.map {
-                RunOutPredictor.averageProjections(for: $0, minimumUsedPct: RunOutPredictor.alertMinimumUsedPct)
-            } ?? [:]
-            await NotificationScheduler.rescheduleRunOuts(projections, preferences: preferences)
+            // the next fetch refines it with the recent rate. Every
+            // connected provider gets its own rescheduled set.
+            for (providerID, state) in statesByProvider {
+                let projections = state.snapshot.map {
+                    RunOutPredictor.averageProjections(for: $0, minimumUsedPct: RunOutPredictor.alertMinimumUsedPct)
+                } ?? [:]
+                await NotificationScheduler.rescheduleRunOuts(projections, providerID: providerID, preferences: preferences)
+            }
         }
     }
 
