@@ -68,7 +68,11 @@ final class UsageModel {
     /// prompt, any other error is surfaced alongside the last-known
     /// snapshot, and a cancelled/superseded fetch (no snapshot, no error)
     /// leaves the existing state untouched.
-    private func apply(_ result: ProviderRefreshResult) {
+    ///
+    /// Internal (not private) so `AIMeterTests` can drive this dispatch
+    /// directly with hand-built results, instead of needing a real network
+    /// fetch to exercise the success/error/cancellation branches.
+    func apply(_ result: ProviderRefreshResult) {
         var state = providerStates[result.providerID]
             ?? ProviderState(snapshot: nil, lastError: nil, needsConnection: true)
         if let snapshot = result.snapshot {

@@ -67,8 +67,13 @@ struct RefreshService {
     /// their key suffix doesn't round-trip through
     /// `UsageWindow.Kind(storageKey:)`. Idempotent, guarded by a completed
     /// flag so it only ever scans once.
-    private static func migrateNotificationKeysToProviderScope() {
-        let defaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
+    ///
+    /// Internal (not private) and takes an injectable `defaults` so
+    /// `AIMeterTests` can exercise it against an isolated suite instead of
+    /// the real App Group.
+    static func migrateNotificationKeysToProviderScope(
+        defaults: UserDefaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
+    ) {
         let flag = "migration.notificationKeysProviderScoped"
         guard !defaults.bool(forKey: flag) else { return }
 

@@ -7,7 +7,13 @@ import UsageKit
 /// "reset" toggles are the free baseline; the two "smart" toggles
 /// (run-out warnings, early-reset alerts) are global across windows.
 struct NotificationPreferences {
-    private let defaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
+    private let defaults: UserDefaults
+
+    /// Defaults to the shared App Group; a test injects an isolated suite
+    /// instead, matching `SnapshotStore`/`UsageHistoryStore`'s pattern.
+    init(defaults: UserDefaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard) {
+        self.defaults = defaults
+    }
 
     func isEnabled(for providerID: String, kind: UsageWindow.Kind) -> Bool {
         defaults.bool(forKey: key(for: providerID, kind: kind))
