@@ -98,4 +98,20 @@ final class PaceCalculatorTests: XCTestCase {
         let window = UsageWindow(kind: .credits, usedPct: 40, resetsAt: now.addingTimeInterval(3600))
         XCTAssertNil(PaceCalculator.pace(for: window, now: now))
     }
+
+    // MARK: - Warm-up readiness
+
+    func testNotReadyWithoutObservationStart() {
+        XCTAssertFalse(PaceCalculator.isReady(observingSince: nil, now: now))
+    }
+
+    func testNotReadyBeforeWarmupElapses() {
+        let since = now.addingTimeInterval(-PaceCalculator.warmupDuration + 3600) // 1h short
+        XCTAssertFalse(PaceCalculator.isReady(observingSince: since, now: now))
+    }
+
+    func testReadyOnceWarmupElapsed() {
+        let since = now.addingTimeInterval(-PaceCalculator.warmupDuration)
+        XCTAssertTrue(PaceCalculator.isReady(observingSince: since, now: now))
+    }
 }

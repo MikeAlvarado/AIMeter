@@ -96,11 +96,7 @@ private struct WindowBarRow: View {
             }
             UsageBarView(
                 value: window?.displayedPct(prefs.displayMode),
-                tint: window?.tint ?? Theme.accent,
-                // Marker only in widgets — no room for a pace caption.
-                marker: window.flatMap { PaceCalculator.pace(for: $0) }.map {
-                    prefs.displayMode == .used ? $0.expectedPct : 100 - $0.expectedPct
-                }
+                tint: window?.tint ?? Theme.accent
             )
             if showsReset, let resetsAt = window?.resetsAt {
                 HStack(spacing: 3) {

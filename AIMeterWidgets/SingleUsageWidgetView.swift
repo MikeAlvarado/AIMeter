@@ -17,10 +17,7 @@ struct SingleUsageWidgetView: View {
             Spacer(minLength: 10)
             UsageBarView(
                 value: entry.window?.displayedPct(entry.prefs.displayMode),
-                tint: entry.window?.tint ?? Theme.accent,
-                marker: entry.window.flatMap { PaceCalculator.pace(for: $0) }.map {
-                    entry.prefs.displayMode == .used ? $0.expectedPct : 100 - $0.expectedPct
-                }
+                tint: entry.window?.tint ?? Theme.accent
             )
             resetLine
         }

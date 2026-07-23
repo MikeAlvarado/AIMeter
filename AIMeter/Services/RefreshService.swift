@@ -43,6 +43,11 @@ struct RefreshService {
         store?.snapshot(for: provider.id)
     }
 
+    /// When usage history first started recording — the pace warm-up anchor.
+    func paceObservingSince() -> Date? {
+        historyStore?.observingSince(for: provider.id)
+    }
+
     @discardableResult
     func refresh() async throws -> UsageSnapshot {
         let previous = store?.snapshot(for: provider.id)

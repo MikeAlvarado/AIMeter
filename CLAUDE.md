@@ -138,8 +138,19 @@ Credential sources:
   and refresh if the snapshot is >60 s old; `BGAppRefreshTask` at the
   user-selected cadence (15/30/60 min) as best-effort backstop.
 - macOS: repeating timer at the cadence while the menu bar app runs.
-- Widget timeline: single entry, `.after(cadence)`; on iOS `getTimeline`
-  self-fetches when the stored snapshot is older than the cadence.
+- Widget timeline: single entry, `.after(interval)` where `interval =
+  max(displayCadence, AppConfig.widgetRefreshFloor)` (30 min). The widget's
+  reload interval is deliberately floored *independent of* the user's
+  display cadence: WidgetKit budgets background refreshes (~a few dozen a
+  day), so requesting every 15 min exhausts the budget and the system
+  stops refreshing that widget — and then ignores even app-initiated
+  `reloadAllTimelines()` until the budget replenishes (this is per widget
+  *kind*, which is why a heavily-refreshed medium widget can freeze while
+  the single-usage widget stays live). The app's foreground push covers
+  freshness during active use. On iOS `getTimeline` self-fetches when the
+  stored snapshot is older than that interval, via a short-timeout
+  (`timeoutIntervalForRequest = 15`, `waitsForConnectivity = false`)
+  URLSession so a slow request fails fast instead of wasting the refresh.
 - Usage history: `UsageHistoryStore` (App Group) keeps a bounded,
   reset-aware ring of `(timestamp, usedPct)` samples per window — the
   extra data (beyond the single latest snapshot) the recent-rate run-out
@@ -198,13 +209,20 @@ Credential sources:
   within a ±5 pt tolerance. Needs `resetsAt` and the kind's
   `windowDuration` (session 5h, weekly/model 7d, credits none — distinct
   from `nominalPeriod`), so idle sessions and credits have no pace. It
-  renders two ways: a thin tick in `UsageBarView` (optional `marker`, at
-  `expectedPct` — flipped to `100 − expectedPct` in Remaining mode so the
-  tick and fill share one coordinate space) everywhere including widgets,
-  and a per-row status caption ("On pace"/"Ahead of pace"/"Behind pace",
-  `UsagePace.Status.label`) alongside the reset line in the app rows only.
-  Pace is per-window (each window's own used% vs the same expected line),
-  so — unlike the grouped reset line — every row shows its own.
+  renders as a per-row status caption ("On pace"/"Ahead of pace"/"Behind
+  pace", `UsagePace.Status.label`) alongside the reset line — only on the
+  Claude detail screen (`WindowRowsList(showsPace:)`, true just there; the
+  dashboard, menu bar, and landscape leave it off to keep the glance
+  clean), and never as a bar marker or in widgets. Pace is per-window
+  (each window's own used% vs the same expected line), so — unlike the
+  grouped reset line — every row shows its own.
+- Pace warm-up: pace and the forecast are withheld until the account has
+  been observed long enough to trust them — `PaceCalculator.isReady`
+  against `UsageHistoryStore.observingSince` (set on the first fetch, kept
+  across resets, cleared on disconnect) vs `warmupDuration` (~4 session
+  cycles, 20h). Until ready (`UsageModel.paceReady`), rows drop the pace
+  caption and the Forecast card shows a "Learning your pace…" state instead
+  of asserting on/ahead/behind from too little history.
 - Run-out prediction (the other half of "predictions & pace"):
   `RunOutPredictor` projects when a window hits 100% two ways (the "hybrid"
   model). `averageProjection` uses the average rate since the window began

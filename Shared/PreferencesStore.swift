@@ -63,15 +63,15 @@ enum ModelSlotFallback: String, CaseIterable {
 }
 
 enum RefreshCadence: Int, CaseIterable {
-    case minutes15 = 900
     case minutes30 = 1800
     case hour1 = 3600
+    case hours3 = 10800
 
     var label: String {
         switch self {
-        case .minutes15: return String(localized: "Every 15 minutes")
         case .minutes30: return String(localized: "Every 30 minutes")
         case .hour1: return String(localized: "Every hour")
+        case .hours3: return String(localized: "Every 3 hours")
         }
     }
 
@@ -84,7 +84,7 @@ enum RefreshCadence: Int, CaseIterable {
 struct Preferences: Sendable {
     var displayMode: DisplayMode = .used
     var resetStyle: ResetStyle = .relative
-    var refreshCadence: RefreshCadence = .minutes15
+    var refreshCadence: RefreshCadence = .minutes30
     var appearance: AppearanceMode = .system
     var modelSlotFallback: ModelSlotFallback = .auto
     /// Which single window the compact "at a glance" surfaces show: the

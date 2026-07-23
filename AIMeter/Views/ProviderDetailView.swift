@@ -16,7 +16,7 @@ struct ProviderDetailView: View {
                 SectionHeader(title: String(localized: "Rate limits"))
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                        WindowRowsList(snapshot: model.snapshot)
+                        WindowRowsList(snapshot: model.snapshot, showsPace: true)
                         UsageStatusFooter(snapshot: model.snapshot, error: model.lastError)
                     }
                 }
@@ -24,8 +24,10 @@ struct ProviderDetailView: View {
                 if let snapshot = model.snapshot, !snapshot.windows.isEmpty {
                     SectionHeader(title: String(localized: "Forecast"))
                         .padding(.top, Theme.sectionSpacing - 10)
-                    ForecastCard(snapshot: snapshot)
-                    SectionFootnote(text: String(localized: "Projected from your average pace so far this window. It refines as you use more."))
+                    ForecastCard(snapshot: snapshot, ready: model.paceReady)
+                    if model.paceReady {
+                        SectionFootnote(text: String(localized: "Projected from your average pace so far this window. It refines as you use more."))
+                    }
                 }
 
                 SectionHeader(title: String(localized: "Third usage row"))
@@ -171,8 +173,37 @@ struct ProviderDetailView: View {
 /// is what drives the alerts, not this display.
 private struct ForecastCard: View {
     let snapshot: UsageSnapshot
+    /// While false (pace still warming up), the card shows a "learning"
+    /// state rather than a forecast — see `UsageModel.paceReady`.
+    var ready = true
 
     var body: some View {
+        if ready {
+            forecast
+        } else {
+            learning
+        }
+    }
+
+    private var learning: some View {
+        Card {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: "hourglass")
+                    .foregroundStyle(Theme.inkSecondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Learning your pace…")
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                    Text("Insights appear after a couple of sessions to learn from.")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+                Spacer(minLength: 0)
+            }
+        }
+    }
+
+    private var forecast: some View {
         // Gate on the Phase-1 pace status so the forecast and the row's
         // "Ahead of pace" caption never disagree — a window only "runs out
         // early" here when it's genuinely ahead (beyond the pace tolerance),
@@ -184,7 +215,7 @@ private struct ForecastCard: View {
             return (window.kind, projection)
         }
 
-        Card {
+        return Card {
             if atRisk.isEmpty {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Image(systemName: "checkmark.circle")

@@ -72,6 +72,15 @@ final class UsageModel {
         await refresh()
     }
 
+    /// True once pace has warmed up (a couple of sessions observed since the
+    /// account connected). Until then, views withhold the pace caption and
+    /// the forecast, showing a "learning" state instead of asserting a pace
+    /// from too little history. Re-evaluated on each refresh.
+    var paceReady: Bool {
+        _ = snapshot // re-read when a refresh lands
+        return PaceCalculator.isReady(observingSince: service.paceObservingSince())
+    }
+
     /// Called by the connect sheet after a successful OAuth exchange.
     func completeConnection(_ credentials: ClaudeCredentials) async {
         do {

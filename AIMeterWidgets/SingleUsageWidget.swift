@@ -43,10 +43,12 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: SingleUsageConfigurationIntent, in context: Context) async -> Timeline<SingleUsageEntry> {
         var current = entry(for: configuration)
+        // Floor the reload interval to stay within WidgetKit's refresh budget.
+        let interval = max(current.prefs.refreshCadence.interval, AppConfig.widgetRefreshFloor)
         #if os(iOS)
         if let fresh = await WidgetRefresher.fetchIfStale(
             current: current.snapshot,
-            cadence: current.prefs.refreshCadence.interval
+            cadence: interval
         ) {
             current = SingleUsageEntry(
                 date: .now,
@@ -58,7 +60,7 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
             )
         }
         #endif
-        let next = Date(timeIntervalSinceNow: current.prefs.refreshCadence.interval)
+        let next = Date(timeIntervalSinceNow: interval)
         return Timeline(entries: [current], policy: .after(next))
     }
 

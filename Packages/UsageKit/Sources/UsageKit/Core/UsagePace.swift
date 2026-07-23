@@ -37,6 +37,22 @@ public enum PaceCalculator {
     /// fluctuations from flipping the status back and forth.
     public static let defaultTolerance: Double = 5
 
+    /// How long to observe an account before trusting pace insights — about
+    /// four 5-hour session cycles. Until this has elapsed since the first
+    /// recorded sample, the UI shows a "learning" state rather than
+    /// asserting on/ahead/behind from too little history.
+    public static let warmupDuration: TimeInterval = 20 * 3600
+
+    /// Whether enough time has passed since observation began to trust pace.
+    public static func isReady(
+        observingSince: Date?,
+        now: Date = Date(),
+        warmup: TimeInterval = warmupDuration
+    ) -> Bool {
+        guard let observingSince else { return false }
+        return now.timeIntervalSince(observingSince) >= warmup
+    }
+
     /// Pace for a window, or nil when it can't be computed — no reset date
     /// (an idle session, or the credits pseudo-window) or a kind with no
     /// known duration. `now` is injectable for testing.

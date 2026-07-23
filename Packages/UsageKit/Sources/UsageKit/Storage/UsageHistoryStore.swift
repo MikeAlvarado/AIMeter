@@ -30,10 +30,21 @@ public struct UsageHistoryStore: @unchecked Sendable {
         load(providerID)[kind.storageKey] ?? []
     }
 
+    /// When history first started being recorded for this provider — set
+    /// once on the first `record` and kept across window resets (unlike the
+    /// samples themselves). Drives the pace warm-up: how long we've been
+    /// observing the account. nil until the first fetch, cleared on disconnect.
+    public func observingSince(for providerID: String) -> Date? {
+        defaults.object(forKey: Self.sinceKey(for: providerID)) as? Date
+    }
+
     /// Appends one sample per window in the snapshot. When a kind's used%
     /// fell (a reset), its prior samples are dropped first so the recorded
     /// series always lies within the current window.
     public func record(_ snapshot: UsageSnapshot, at now: Date = Date()) {
+        if defaults.object(forKey: Self.sinceKey(for: snapshot.providerID)) == nil {
+            defaults.set(now, forKey: Self.sinceKey(for: snapshot.providerID))
+        }
         var byKind = load(snapshot.providerID)
         for window in snapshot.windows {
             let key = window.kind.storageKey
@@ -52,6 +63,7 @@ public struct UsageHistoryStore: @unchecked Sendable {
 
     public func clear(for providerID: String) {
         defaults.removeObject(forKey: Self.key(for: providerID))
+        defaults.removeObject(forKey: Self.sinceKey(for: providerID))
     }
 
     // MARK: - Persistence
@@ -72,5 +84,9 @@ public struct UsageHistoryStore: @unchecked Sendable {
 
     private static func key(for providerID: String) -> String {
         "usage.history.\(providerID)"
+    }
+
+    private static func sinceKey(for providerID: String) -> String {
+        "usage.history.since.\(providerID)"
     }
 }

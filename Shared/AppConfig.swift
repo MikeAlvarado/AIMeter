@@ -22,4 +22,12 @@ enum AppConfig {
     static let refreshInterval: TimeInterval = 15 * 60
     /// A snapshot older than this is flagged as stale in widgets.
     static let staleAfter: TimeInterval = 30 * 60
+    /// Minimum interval between a widget's own timeline reloads,
+    /// independent of the user's display cadence. WidgetKit budgets
+    /// background refreshes (~a few dozen a day); requesting every 15 min
+    /// exhausts that budget and the system stops refreshing the widget —
+    /// then even ignores app-initiated `reloadAllTimelines()` until the
+    /// budget replenishes (next day). This floor keeps the widget in
+    /// budget; the app still pushes fresh data on foreground for active use.
+    static let widgetRefreshFloor: TimeInterval = 30 * 60
 }

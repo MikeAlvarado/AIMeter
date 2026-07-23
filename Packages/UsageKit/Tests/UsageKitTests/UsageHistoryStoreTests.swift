@@ -72,4 +72,20 @@ final class UsageHistoryStoreTests: XCTestCase {
         store.clear(for: "claude")
         XCTAssertTrue(store.samples(for: "claude", kind: .session).isEmpty)
     }
+
+    func testObservingSinceSetOnceAndSurvivesResets() {
+        let store = UsageHistoryStore(userDefaults: defaults)
+        XCTAssertNil(store.observingSince(for: "claude"))
+
+        store.record(snapshot(10, resetsAt: now.addingTimeInterval(3600)), at: now)
+        XCTAssertEqual(store.observingSince(for: "claude"), now)
+
+        // A later reset discards samples but must NOT move the observing-since.
+        store.record(snapshot(80, resetsAt: now.addingTimeInterval(3600)), at: now.addingTimeInterval(600))
+        store.record(snapshot(5, resetsAt: now.addingTimeInterval(5 * 3600)), at: now.addingTimeInterval(1200))
+        XCTAssertEqual(store.observingSince(for: "claude"), now)
+
+        store.clear(for: "claude")
+        XCTAssertNil(store.observingSince(for: "claude"))
+    }
 }

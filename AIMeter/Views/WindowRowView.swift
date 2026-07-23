@@ -13,11 +13,17 @@ struct WindowRowView: View {
     /// "$14.27 of $25.00" — Credits has no reset date, so this optionally
     /// fills the same line instead (`Preferences.showCreditsAmount`).
     var moneySubtitle: String? = nil
+    /// Whether to render the pace status caption in this row. Off by
+    /// default and enabled only on the Claude detail screen (the dashboard,
+    /// menu bar, and landscape intentionally omit it); the caller folds the
+    /// warm-up gate into this flag too, so it's already both "this surface
+    /// wants pace" and "pace has warmed up".
+    var showsPace = false
 
     var body: some View {
         // Pace is per-window (unlike the grouped reset line): each window
         // has its own used% against the same expected line.
-        let pace = window.flatMap { PaceCalculator.pace(for: $0) }
+        let pace = showsPace ? window.flatMap { PaceCalculator.pace(for: $0) } : nil
         let showsResetLine = showsReset && window?.resetsAt != nil
 
         VStack(alignment: .leading, spacing: 7) {
@@ -33,8 +39,7 @@ struct WindowRowView: View {
 
             UsageBarView(
                 value: window?.displayedPct(prefs.displayMode),
-                tint: window?.tint ?? Theme.accent,
-                marker: pace.map(markerValue)
+                tint: window?.tint ?? Theme.accent
             )
 
             if pace != nil || showsResetLine || moneySubtitle != nil {
@@ -71,14 +76,6 @@ struct WindowRowView: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// The marker's position in the bar's displayed coordinate space: the
-    /// bar fills with *used* or *remaining* per the display mode, so the
-    /// "expected used" line must flip to match, keeping fill and tick
-    /// directly comparable.
-    private func markerValue(_ pace: UsagePace) -> Double {
-        prefs.displayMode == .used ? pace.expectedPct : 100 - pace.expectedPct
-    }
-
     private var percentText: String {
         window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—"
     }
@@ -88,7 +85,11 @@ struct WindowRowView: View {
 /// dashboard card and the provider detail card.
 struct WindowRowsList: View {
     @Environment(PreferencesModel.self) private var prefs
+    @Environment(UsageModel.self) private var model
     let snapshot: UsageSnapshot?
+    /// Only the Claude detail screen passes `true`; the dashboard, menu
+    /// bar, and landscape leave it off so pace stays out of the glance.
+    var showsPace = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.rowSpacing) {
@@ -101,7 +102,8 @@ struct WindowRowsList: View {
                     kind: slot.kind,
                     window: slot.window,
                     showsReset: WindowSlots.showsReset(at: index, in: slots),
-                    moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
+                    moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot),
+                    showsPace: showsPace && model.paceReady
                 )
             }
         }

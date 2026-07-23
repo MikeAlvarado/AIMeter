@@ -29,15 +29,18 @@ struct UsageTimelineProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<UsageEntry>) -> Void) {
         Task {
             var entry = entry()
+            // Floor the widget's own reload interval so it stays within
+            // WidgetKit's refresh budget regardless of the display cadence.
+            let interval = max(entry.prefs.refreshCadence.interval, AppConfig.widgetRefreshFloor)
             #if os(iOS)
             if let fresh = await WidgetRefresher.fetchIfStale(
                 current: entry.snapshot,
-                cadence: entry.prefs.refreshCadence.interval
+                cadence: interval
             ) {
                 entry = UsageEntry(date: .now, snapshot: fresh, prefs: entry.prefs)
             }
             #endif
-            let next = Date(timeIntervalSinceNow: entry.prefs.refreshCadence.interval)
+            let next = Date(timeIntervalSinceNow: interval)
             completion(Timeline(entries: [entry], policy: .after(next)))
         }
     }
