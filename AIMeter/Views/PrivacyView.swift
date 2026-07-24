@@ -28,6 +28,14 @@ struct PrivacyView: View {
                             title: String(localized: "No tracking, no analytics"),
                             text: String(localized: "No analytics SDKs, no ad networks, no crash reporting. The app collects no data at all.")
                         )
+                        #if os(macOS)
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
+                            systemName: "power",
+                            title: String(localized: "Opening at login is yours to choose"),
+                            text: String(localized: "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS — which asks you to approve it — and turning it back off removes it. All it does when it starts is read your usage.")
+                        )
+                        #endif
                     }
                 }
 

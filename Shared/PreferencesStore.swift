@@ -99,6 +99,28 @@ struct Preferences: Sendable {
     /// default — opt-in extra detail, only visible when a Credits row is
     /// actually showing.
     var showCreditsAmount: Bool = false
+
+    // MARK: macOS chrome
+    //
+    // How the app presents itself on the Mac, independent of any provider's
+    // data — which is why these live here and surface in app-wide Settings
+    // rather than in Claude's Provider Detail alongside `glanceMetric`.
+    // All three default to the behavior shipped before they existed, so an
+    // upgrade never changes what an existing install looks like.
+
+    /// Whether the menu bar label spells out the `glanceMetric` percentage
+    /// next to the gauge, or shows the gauge alone. Icon-only still carries
+    /// the number in the tooltip and the accessibility label.
+    var menuBarShowsPercentage: Bool = true
+    /// Whether the menu bar status item is present at all. Hiding it and the
+    /// Dock icon together leaves no visible UI — relaunching the app is the
+    /// way back in (see `AppDelegate.applicationShouldHandleReopen`).
+    var statusItemVisible: Bool = true
+    /// Drops the Dock icon and Cmd-Tab entry (`.accessory` activation
+    /// policy), turning AIMeter into a menu-bar-only utility. The app keeps
+    /// running and refreshing either way.
+    var hideDockIcon: Bool = false
+
     var lastScheduledAt: Date?
 
     enum Keys {
@@ -109,6 +131,9 @@ struct Preferences: Sendable {
         static let modelSlotFallback = "pref.modelSlotFallback"
         static let glanceMetric = "pref.glanceMetric"
         static let showCreditsAmount = "pref.showCreditsAmount"
+        static let menuBarShowsPercentage = "pref.menuBarShowsPercentage"
+        static let statusItemVisible = "pref.statusItemVisible"
+        static let hideDockIcon = "pref.hideDockIcon"
         static let lastScheduledAt = "pref.lastScheduledAt"
     }
 
@@ -137,10 +162,22 @@ struct Preferences: Sendable {
             prefs.glanceMetric = value
         }
         prefs.showCreditsAmount = defaults.bool(forKey: Keys.showCreditsAmount)
+        prefs.menuBarShowsPercentage = bool(defaults, Keys.menuBarShowsPercentage, default: true)
+        prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
+        prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
         if let timestamp = defaults.object(forKey: Keys.lastScheduledAt) as? Date {
             prefs.lastScheduledAt = timestamp
         }
         return prefs
+    }
+
+    /// `UserDefaults.bool(forKey:)` reports `false` for a key that was never
+    /// written, which silently flips any preference whose default is `true`
+    /// for every install that upgrades without touching the setting. The
+    /// presence check keeps the struct's own default authoritative until the
+    /// user actually chooses.
+    private static func bool(_ defaults: UserDefaults, _ key: String, default fallback: Bool) -> Bool {
+        defaults.object(forKey: key) == nil ? fallback : defaults.bool(forKey: key)
     }
 
     static func recordScheduled(_ date: Date = Date()) {
@@ -173,6 +210,15 @@ final class PreferencesModel {
     var showCreditsAmount: Bool {
         didSet { defaults.set(showCreditsAmount, forKey: Preferences.Keys.showCreditsAmount) }
     }
+    var menuBarShowsPercentage: Bool {
+        didSet { defaults.set(menuBarShowsPercentage, forKey: Preferences.Keys.menuBarShowsPercentage) }
+    }
+    var statusItemVisible: Bool {
+        didSet { defaults.set(statusItemVisible, forKey: Preferences.Keys.statusItemVisible) }
+    }
+    var hideDockIcon: Bool {
+        didSet { defaults.set(hideDockIcon, forKey: Preferences.Keys.hideDockIcon) }
+    }
 
     @ObservationIgnored private let defaults: UserDefaults
 
@@ -186,6 +232,9 @@ final class PreferencesModel {
         modelSlotFallback = loaded.modelSlotFallback
         glanceMetric = loaded.glanceMetric
         showCreditsAmount = loaded.showCreditsAmount
+        menuBarShowsPercentage = loaded.menuBarShowsPercentage
+        statusItemVisible = loaded.statusItemVisible
+        hideDockIcon = loaded.hideDockIcon
     }
 
     var lastScheduledAt: Date? {
@@ -205,6 +254,9 @@ final class PreferencesModel {
         prefs.modelSlotFallback = modelSlotFallback
         prefs.glanceMetric = glanceMetric
         prefs.showCreditsAmount = showCreditsAmount
+        prefs.menuBarShowsPercentage = menuBarShowsPercentage
+        prefs.statusItemVisible = statusItemVisible
+        prefs.hideDockIcon = hideDockIcon
         prefs.lastScheduledAt = lastScheduledAt
         return prefs
     }

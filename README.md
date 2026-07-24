@@ -12,22 +12,39 @@ can be added later.
   analytics.
 - Widgets: `systemSmall` and `systemMedium` show all three Claude windows
   with grouped reset countdowns; Lock Screen accessories (circular,
-  rectangular, inline). On iOS the widget refreshes itself in the
-  background — you don't need to open the app.
+  rectangular, inline) — the circular gauge follows whichever window you
+  pick as your glance metric. On iOS the widget refreshes itself in the
+  background — you don't need to open the app. On macOS, both widgets show
+  up automatically in Notification Center / the desktop and are fed by the
+  menu bar app, which is why AIMeter can keep running with no icons visible
+  (see below) — that's what keeps them from going stale.
 - A second, single-window widget ("Single Limit") for when you only care
-  about one number — pick the provider/window (session, weekly, or a
-  per-model limit) from the widget's own Edit Widget configuration.
+  about one number — pick the provider/window (session, weekly, a
+  per-model limit, or usage credits) from the widget's own Edit Widget
+  configuration.
 - Dashboard with your plan badge (Pro/Max), per-window reset countdowns,
   and a fullscreen landscape mode on iPhone.
 - Detail screen with the raw provider data: spend cap and extra-usage
-  credits, exactly as the endpoint reports them. When a plan bills a model
-  via usage credits instead of its own weekly limit (e.g. Fable 5 on
-  Claude Pro), the third usage row can be hidden or repurposed to show
-  that spend/credit status instead of a dead placeholder — your choice.
-- macOS menu bar extra with session usage and your plan badge at a glance.
-- Optional local notifications when a usage window resets (with honest
-  permission handling — no silent failures).
-- Background refresh at a configurable cadence (15/30/60 min); widgets
+  credits, exactly as the endpoint reports them; a **Forecast** card
+  projecting which windows are on track to run out early, plus a per-row
+  pace caption (on / ahead / behind a steady burn to the next reset). When
+  a plan bills a model via usage credits instead of its own weekly limit
+  (e.g. Fable 5 on Claude Pro), the third usage row can be hidden or
+  repurposed to show that spend/credit status instead of a dead
+  placeholder — your choice.
+- Smart notifications, off by default and toggled individually: a reset
+  reminder per window, a near-limit warning at a threshold you set, a
+  limit-reached alert, run-out warnings when your recent pace projects an
+  early exhaustion, and early-reset alerts if a window refills before its
+  scheduled date — all with honest permission handling, no silent
+  failures.
+- macOS menu bar extra: a gauge that fills with whichever window you pick
+  to glance at, with the exact percentage spelled out beside it if you
+  want (it's always in the tooltip either way), plus your plan badge.
+  Hide the Dock icon, hide the menu bar icon, or both, and optionally have
+  AIMeter open itself at login (opt-in, visibly toggleable) so it keeps
+  refreshing and feeding widgets with no icon on screen at all.
+- Background refresh at a configurable cadence (30 min / 1 h / 3 h); widgets
   keep the last known data (with a staleness hint) when a fetch fails.
 - English and Spanish, following the device language.
 
@@ -72,6 +89,11 @@ no analytics, no crash reporting, no third-party SDKs, no server of ours.
 
 **Disconnecting** (iOS button, or macOS just uses Claude Code's login)
 deletes the stored token and the cached snapshot.
+
+**Login item (macOS, opt-in)**: AIMeter never adds itself to your login
+items. Turning on "Open at Login" in Settings registers it with macOS
+(`SMAppService`) — which asks you to approve it — and turning it back off
+removes the registration. All it does when it starts is read your usage.
 
 **Audit it**: `Scripts/probe-usage-endpoint.sh` prints the exact raw JSON
 the app consumes, using your own local login; the token is never printed

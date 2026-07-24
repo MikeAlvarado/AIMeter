@@ -15,6 +15,11 @@ enum AppConfig {
     static let keychainAccessGroup: String? = nil
     #endif
     static let refreshTaskID = "com.mikealvarado.aimeter.refresh"
+    /// macOS `NSBackgroundActivityScheduler` identifier for the repeating
+    /// refresh. Distinct from `refreshTaskID` (iOS `BGTaskScheduler`) — two
+    /// different systems, and sharing one string across them only invites
+    /// confusion about which platform registered what.
+    static let refreshActivityID = "com.mikealvarado.aimeter.refresh.activity"
     static let widgetKind = "AIMeterUsage"
     /// Single-window widget: shows one provider/window the user picks from
     /// the widget's own Edit Widget configuration.

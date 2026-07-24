@@ -42,6 +42,11 @@ struct SettingsView: View {
                 }
                 SectionFootnote(text: String(localized: "Relative counts down to the reset. Absolute shows the local time. Tap any reset label on the dashboard to switch."))
 
+                #if os(macOS)
+                sectionGap
+                MacChromeSettings()
+                #endif
+
                 sectionGap
                 SectionHeader(title: String(localized: "Background refresh"))
                 Card {
@@ -129,7 +134,7 @@ struct SettingsView: View {
             #if os(iOS)
             BackgroundRefresh.scheduleNext()
             #else
-            model.rebuildTimer(interval: newValue.interval)
+            model.rebuildRefreshSchedule(interval: newValue.interval)
             #endif
         }
     }
