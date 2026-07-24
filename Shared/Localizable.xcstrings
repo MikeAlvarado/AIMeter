@@ -1378,6 +1378,172 @@
           }
         }
       }
+    },
+    "%@: %lld%% %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$lld%% %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$lld%% %3$@"
+          }
+        }
+      }
+    },
+    "AIMeter keeps running and refreshing your usage either way — hiding only changes what you see. Quit still quits." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter sigue funcionando y actualizando tu uso en cualquier caso: ocultarlo solo cambia lo que ves. Salir sigue siendo salir."
+          }
+        }
+      }
+    },
+    "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS — which asks you to approve it — and turning it back off removes it. All it does when it starts is read your usage." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter nunca se añade solo a tus ítems de inicio. Si activas «Abrir al iniciar sesión» en los ajustes, se registra en macOS —que te pedirá aprobarlo— y al desactivarlo se elimina. Lo único que hace al arrancar es leer tu uso."
+          }
+        }
+      }
+    },
+    "AIMeter — no usage data yet" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter: aún no hay datos de uso"
+          }
+        }
+      }
+    },
+    "Hide Dock icon" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar icono del Dock"
+          }
+        }
+      }
+    },
+    "Hide menu bar icon" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar icono de la barra de menú"
+          }
+        }
+      }
+    },
+    "Hiding AIMeter" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar AIMeter"
+          }
+        }
+      }
+    },
+    "Open at Login" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir al iniciar sesión"
+          }
+        }
+      }
+    },
+    "Opening at login is yours to choose" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir al iniciar sesión lo decides tú"
+          }
+        }
+      }
+    },
+    "Show percentage" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar porcentaje"
+          }
+        }
+      }
+    },
+    "Starts AIMeter automatically after you log in, so your usage keeps updating without opening it yourself." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia AIMeter automáticamente al iniciar sesión, para que tu uso se siga actualizando sin que tengas que abrirlo."
+          }
+        }
+      }
+    },
+    "Startup" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicio"
+          }
+        }
+      }
+    },
+    "The menu bar always shows a gauge that fills with your usage. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip. Which window it reads is set in Claude's settings." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La barra de menú siempre muestra un indicador que se llena con tu uso. Actívalo para ver el porcentaje escrito al lado; si lo desactivas, el valor sigue estando en la información al pasar el cursor. Qué ventana muestra se elige en los ajustes de Claude."
+          }
+        }
+      }
+    },
+    "Waiting for approval in System Settings." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando aprobación en los Ajustes del sistema."
+          }
+        }
+      }
+    },
+    "With both hidden, AIMeter has no visible controls. Open it again from Finder or Spotlight to bring this window back." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con ambos ocultos, AIMeter no tiene controles visibles. Ábrelo de nuevo desde el Finder o Spotlight para recuperar esta ventana."
+          }
+        }
+      }
+    },
+    "With the Dock icon hidden, turn this on so AIMeter is back after a restart — otherwise you'll need to open it yourself." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con el icono del Dock oculto, actívalo para que AIMeter vuelva tras reiniciar; si no, tendrás que abrirlo tú."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

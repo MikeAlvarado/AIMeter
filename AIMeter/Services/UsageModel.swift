@@ -2,6 +2,9 @@ import Foundation
 import Observation
 import UserNotifications
 import UsageKit
+#if os(macOS)
+import AppKit
+#endif
 
 /// UI-facing state. Wraps RefreshService and keeps the last known snapshot
 /// visible even when a refresh fails (the error is surfaced alongside).
@@ -17,7 +20,7 @@ final class UsageModel {
     private let service = RefreshService()
     private let preferences = NotificationPreferences()
     #if os(macOS)
-    @ObservationIgnored private var refreshTimer: Timer?
+    @ObservationIgnored private var refreshScheduler: NSBackgroundActivityScheduler?
     #endif
 
     init() {
@@ -31,7 +34,8 @@ final class UsageModel {
         needsConnection = !RefreshService.storedCredentialsExist()
         #endif
         #if os(macOS)
-        rebuildTimer(interval: Preferences.load().refreshCadence.interval)
+        rebuildRefreshSchedule(interval: Preferences.load().refreshCadence.interval)
+        observeWake()
         #endif
     }
 
@@ -231,26 +235,66 @@ final class UsageModel {
         return true
     }
 
-    // MARK: - macOS refresh timer
+    // MARK: - macOS refresh schedule
 
     #if os(macOS)
-    func rebuildTimer(interval: TimeInterval) {
-        refreshTimer?.invalidate()
-        let timer = Timer(timeInterval: interval, repeats: true) { _ in
+    /// Rebuilds the repeating refresh at the user's cadence.
+    ///
+    /// `NSBackgroundActivityScheduler` rather than a run-loop `Timer`: a
+    /// menu-bar-only app with no visible window is a prime App Nap
+    /// candidate — which is exactly what AIMeter becomes once the Dock icon
+    /// is hidden — and Nap throttles timers unpredictably. The scheduler is
+    /// Nap- and power-aware, and trades an exact fire instant (nothing here
+    /// needs one) for actually running.
+    func rebuildRefreshSchedule(interval: TimeInterval) {
+        refreshScheduler?.invalidate()
+        let scheduler = NSBackgroundActivityScheduler(identifier: AppConfig.refreshActivityID)
+        scheduler.repeats = true
+        scheduler.interval = interval
+        // The cadence is a "roughly every N" contract, not a deadline, so a
+        // wide tolerance lets the system coalesce this with other wake-ups
+        // instead of waking the CPU on AIMeter's account alone.
+        scheduler.tolerance = interval * 0.2
+        scheduler.qualityOfService = .utility
+        scheduler.schedule { completion in
+            // Called off the main actor; hop back before touching the model,
+            // and report completion so the scheduler re-arms.
             Task { @MainActor in
                 await AppEnvironment.shared?.refresh()
+                completion(.finished)
             }
         }
-        RunLoop.main.add(timer, forMode: .common)
-        refreshTimer = timer
+        refreshScheduler = scheduler
         Preferences.recordScheduled()
+    }
+
+    /// Neither a scheduler nor a timer fires while the Mac is asleep. Waking
+    /// does re-arm the schedule, but not necessarily right away, so nudge it
+    /// — `refreshIfStale` decides whether anything is actually due, making
+    /// this a no-op when the snapshot is still fresh.
+    ///
+    /// Registered once, from `init`: the model is owned by the App scene for
+    /// the whole process lifetime, and the closure holds nothing strongly
+    /// (it reaches the model through the same weak `AppEnvironment` the
+    /// schedule uses), so there is no observer to unregister before exit.
+    private func observeWake() {
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didWakeNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                let cadence = Preferences.load().refreshCadence.interval
+                await AppEnvironment.shared?.refreshIfStale(maxAge: cadence)
+            }
+        }
     }
     #endif
 }
 
 #if os(macOS)
-/// Lets the repeating Timer reach the live model without retaining cycles
-/// in the closure signature Timer requires.
+/// Lets the background refresh schedule and the wake observer reach the
+/// live model from closures that can't capture it strongly.
 enum AppEnvironment {
     static weak var shared: UsageModel?
 }

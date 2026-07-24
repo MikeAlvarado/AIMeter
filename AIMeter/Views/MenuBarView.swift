@@ -7,17 +7,51 @@ import UsageKit
 /// `glanceMetric` in Claude's Provider Detail (e.g. Credits, or a
 /// per-model window on Max) — honoring the Remaining/Used display
 /// preference.
+///
+/// The gauge is always drawn; `showsPercentage` (Settings → Menu bar) only
+/// decides whether the number is spelled out beside it. Its variable value
+/// tracks the same figure the text would show, so the two never disagree
+/// and icon-only mode still reads as a rough level rather than a static
+/// glyph. Either way the exact value stays reachable through the tooltip
+/// and the accessibility label — a menu bar with no room to spare is
+/// exactly where that matters.
 struct MenuBarLabel: View {
     let snapshot: UsageSnapshot?
     let displayMode: DisplayMode
     let metric: UsageWindow.Kind
+    let showsPercentage: Bool
 
     var body: some View {
-        if let window = snapshot?.window(for: metric) {
-            Text("\(Int(window.displayedPct(displayMode)))%")
-        } else {
-            Image(systemName: "gauge.with.needle")
+        HStack(spacing: 3) {
+            Image(systemName: "gauge.with.needle", variableValue: gaugeValue)
+            if showsPercentage, let percent {
+                Text(verbatim: "\(percent)%")
+                    .monospacedDigit()
+            }
         }
+        .help(valueLabel)
+        .accessibilityLabel(valueLabel)
+    }
+
+    private var window: UsageWindow? { snapshot?.window(for: metric) }
+
+    private var percent: Int? {
+        window.map { Int($0.displayedPct(displayMode)) }
+    }
+
+    /// 0–1 for the symbol's variable rendering. Follows the *displayed*
+    /// figure rather than raw usage, so a "Remaining" reading of 58% shows a
+    /// gauge that's 58% full instead of contradicting its own label.
+    private var gaugeValue: Double {
+        guard let window else { return 0 }
+        return min(max(window.displayedPct(displayMode) / 100, 0), 1)
+    }
+
+    private var valueLabel: String {
+        guard let percent else {
+            return String(localized: "AIMeter — no usage data yet")
+        }
+        return String(localized: "\(metric.shortName): \(percent)% \(displayMode.label)")
     }
 }
 

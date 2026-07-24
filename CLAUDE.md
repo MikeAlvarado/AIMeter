@@ -40,6 +40,12 @@ Packages/UsageKit     local Swift Package, provider-agnostic, pure logic
                       UsageHistoryStore (bounded per-window sample ring)
   Sources/UsageKit/Resources/Localizable.xcstrings   (package strings)
 AIMeter/              multiplatform SwiftUI app (views + services)
+  Services/           RefreshService, UsageModel, NotificationScheduler,
+                      BackgroundRefresh (iOS) + macOS-only AppDelegate/
+                      AppChrome (activation policy, hiding, reopen) and
+                      LoginItemManager (SMAppService)
+  Views/              dashboard/detail/settings/menu bar + macOS-only
+                      MacChromeSettings (menu bar, hiding, startup)
 AIMeterWidgets/       both widgets — AIMeterUsage (3-window) and
                       AIMeterSingleUsage (single window, AppIntents
                       configuration); renders snapshots; iOS: self-fetch
@@ -73,6 +79,15 @@ assets and string catalog from there.
   access group), writing the result back to the store. On macOS the menu
   bar app feeds the widget (a sandboxed widget can't read Claude Code's
   credential file).
+- macOS widget freshness contract: both widgets appear in Notification
+  Center / the desktop automatically — WidgetKit discovery, nothing to
+  register — but on macOS they only ever render what the app last wrote.
+  The timeline still re-runs on schedule with the app closed; it just
+  re-serves the same snapshot, indefinitely and with no error state. The
+  only signal is the `isStale` (>30 min) "updated X ago" hint in the widget
+  header. That is precisely why the app is built to keep running while
+  hidden: a quit app doesn't break the widget visibly, it just quietly
+  freezes it.
 - OAuth tokens live in the Keychain only (shared access group on iOS,
   `kSecAttrAccessibleAfterFirstUnlock`). Never UserDefaults, never in git.
 - Typed errors (`UsageError`) carry the raw HTTP body so the UI can show
@@ -136,8 +151,16 @@ Credential sources:
 - iOS app: refresh on cold launch; on foreground, always reload widget
   timelines (covers WidgetKit's archived-render cache after app updates)
   and refresh if the snapshot is >60 s old; `BGAppRefreshTask` at the
-  user-selected cadence (15/30/60 min) as best-effort backstop.
-- macOS: repeating timer at the cadence while the menu bar app runs.
+  user-selected cadence (30 min / 1 h / 3 h, `RefreshCadence`) as
+  best-effort backstop.
+- macOS: `NSBackgroundActivityScheduler` (`UsageModel.rebuildRefreshSchedule`)
+  at the cadence, with a 20 % tolerance, for as long as the app runs — which
+  now includes running with no visible icons at all. Deliberately *not* a
+  run-loop `Timer`: an app with no visible window is a prime App Nap
+  target, and Nap throttles timers unpredictably. Nothing fires while the
+  Mac sleeps, so `NSWorkspace.didWakeNotification` nudges
+  `refreshIfStale(maxAge: cadence)` on wake — a no-op when the snapshot is
+  still fresh, a catch-up fetch when it isn't.
 - Widget timeline: single entry, `.after(interval)` where `interval =
   max(displayCadence, AppConfig.widgetRefreshFloor)` (30 min). The widget's
   reload interval is deliberately floored *independent of* the user's
@@ -247,6 +270,19 @@ Credential sources:
   has it enabled *and* `modelSlotFallback` isn't Hidden
   (`UsageSnapshot.glanceOptions`) — 2 to 4 choices, same live-options
   principle `UsageWindowOptionQuery` uses for the single-window widget.
+- macOS chrome prefs (same App Group store, macOS-only meaning):
+  `menuBarShowsPercentage` (default **true**), `statusItemVisible`
+  (default **true**), `hideDockIcon` (default **false**). All three default
+  to the behavior that shipped before they existed, so an upgrade never
+  changes an existing install. Bools whose default is `true` must load
+  through `Preferences.bool(_:_:default:)`, which presence-checks the key —
+  `UserDefaults.bool(forKey:)` reports `false` for an unwritten key and
+  would silently flip them. Unlike `glanceMetric` (account-dependent, so it
+  lives in Claude's Provider Detail) these are provider-agnostic app chrome
+  and surface in app-wide Settings via `MacChromeSettings`.
+- "Open at Login" has **no preference key**: `SMAppService.mainApp.status`
+  is the state, read live by `LoginItemManager`. A mirrored bool would drift
+  the moment the user revoked it in System Settings.
 - Stale snapshot (>30 min): widgets show a small "last updated" hint in the
   header trailing edge.
 - Errors render inside the provider card, below the rows: raw endpoint body
@@ -278,11 +314,16 @@ Credential sources:
   cadence menu, per-window reset notification toggles + the Smart
   notifications card, a "Privacy & data" link, and an "Open Source" row
   (GitHub mark, opens the repo URL). iOS: sheet with Done; macOS: Settings
-  scene (wrapped in a NavigationStack so the link can push).
+  scene (wrapped in a NavigationStack so the link can push), plus the
+  macOS-only `MacChromeSettings` block — "Menu bar" (Show percentage),
+  "Hiding AIMeter" (Hide Dock icon / Hide menu bar icon, with a warning row
+  once both are hidden), and "Startup" (Open at Login, with a pending-approval
+  row and a nudge when the Dock icon is hidden but the login item is off).
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
-  Keychain, no tracking), how connecting works (per platform), the exact
-  OAuth scopes as chips + the two read-only endpoints called, and the
-  independence/MIT footer. Every claim must stay true to the code.
+  Keychain, no tracking, and on macOS the opt-in login item), how connecting
+  works (per platform), the exact OAuth scopes as chips + the two read-only
+  endpoints called, and the independence/MIT footer. Every claim must stay
+  true to the code.
 - The GitHub mark is a bundled PNG (`Shared/Media.xcassets/GitHubIcon`,
   light/dark appearance variants — same mechanism as the app icon) —
   SF Symbols has no third-party brand glyphs. It is pre-colored per
@@ -316,9 +357,41 @@ Credential sources:
     matches what the account actually has instead of a name baked in at
     build time.
 - **macOS menu bar**: header (logo + "Claude" + plan pill, via
-  `ProviderIdentityView`) + divider, `glanceMetric` window's % as the menu
-  bar label (Provider Detail, default Session), popover with the same
-  rows, refresh/settings/quit.
+  `ProviderIdentityView`) + divider, popover with the same rows,
+  refresh/settings/quit. The label (`MenuBarLabel`) is a variable-value
+  `gauge.with.needle` whose fill tracks the `glanceMetric` window's
+  *displayed* percentage (so a "Remaining" reading never contradicts its own
+  gauge), with the number spelled out beside it only when
+  `menuBarShowsPercentage` is on. Either way the exact value stays in the
+  `.help` tooltip and the accessibility label — icon-only mode must never be
+  the only place the number lived. The whole status item disappears when
+  `statusItemVisible` is off (`MenuBarExtra(isInserted:)`).
+- **macOS hiding & re-entry** (`AppDelegate` + `AppChrome`, the project's
+  only AppDelegate — SwiftUI has no scene hook for either concern):
+  - `hideDockIcon` → `.accessory` activation policy, applied in
+    `applicationWillFinishLaunching` so a hidden icon never flashes.
+  - `.accessory` does **not** suppress `WindowGroup`'s auto-open (measured —
+    the window is up by `applicationDidFinishLaunching`), so the delegate
+    closes it explicitly, but *only* while `statusItemVisible` is true.
+    With both icons hidden the dashboard is the app's sole affordance, so
+    launching has to produce it or the app would be unreachable — that
+    combination is the one case where a launch legitimately shows a window.
+  - Re-entry when everything is hidden is **relaunching the app**
+    (Finder/Spotlight/`open -a`), which fires
+    `applicationShouldHandleReopen` — verified to arrive with no Dock icon
+    and no status item, and without spawning a second instance. It reveals
+    the dashboard without clearing the hidden prefs: needing to relaunch
+    once shouldn't permanently undo the user's chosen chrome. There is no
+    global hotkey, deliberately — it would cost an Accessibility/Input
+    Monitoring TCC permission to guard a path that already works.
+  - AppKit callbacks can't reach SwiftUI's `openWindow`, so the dashboard
+    scene publishes it to `AppChrome.openDashboard` on appear — same
+    bridging shape as `AppEnvironment.shared` for the refresh schedule.
+    Dashboard windows are matched by the identifier SwiftUI derives from
+    `WindowGroup(id:)` (`dashboard-AppWindow-…`) so the Settings window,
+    also main-capable, is never mistaken for one.
+  - **Quit still means quit.** Hiding changes only what is visible; the menu
+    bar Quit button remains an unconditional `NSApp.terminate`.
 
 ## Design system (Shared/Theme.swift)
 
@@ -386,6 +459,16 @@ region to the project's `knownRegions`.
   ever introduced.
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
+- App Store notes for the macOS background work: the `SMAppService` login
+  item is reviewed, so it stays opt-in, off by default, visibly toggleable,
+  and disclosed in `PrivacyView`. It needs no entitlement (unlike the
+  deprecated `SMLoginItemSetEnabled`/`SMJobBless`) and works unsandboxed as
+  the app is today. Hiding the Dock icon via `.accessory` is routine for
+  menu-bar utilities and unproblematic. A global re-entry hotkey was
+  rejected precisely because it would add an Accessibility/Input Monitoring
+  permission and the review scrutiny that comes with it. Separately,
+  `ENABLE_APP_SANDBOX = NO` is pre-existing and would have to change for
+  Mac App Store distribution regardless of any of this.
 
 ## Workflow
 
