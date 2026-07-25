@@ -12,6 +12,15 @@ public final class ClaudeAutoCredentialSource: ClaudeCredentialSource, @unchecke
     private let fallback: ClaudeKeychainCredentialSource
     private let lock = NSLock()
     private var lastLoadWasLocal = true
+    /// The last credentials read from Claude Code's Keychain item, reused
+    /// while still valid so a re-fetch doesn't re-read the item on every
+    /// refresh cycle. Reading a foreign app's Keychain item requires macOS
+    /// authorization each time its access grant has lapsed — which happens
+    /// whenever Claude Code itself rewrites that item (e.g. its own token
+    /// rotation resets the item's trusted-app list) — so this is what keeps
+    /// the "AIMeter wants to access…" prompt from firing on every refresh
+    /// instead of roughly once per access-token lifetime.
+    private var cachedLocal: ClaudeCredentials?
 
     public var allowsRefresh: Bool {
         lock.withLock { !lastLoadWasLocal }
@@ -22,8 +31,15 @@ public final class ClaudeAutoCredentialSource: ClaudeCredentialSource, @unchecke
     }
 
     public func load() async throws -> ClaudeCredentials {
-        if let credentials = try? await local.load() {
+        if let cached = lock.withLock({ cachedLocal }), !cached.isExpired {
             lock.withLock { lastLoadWasLocal = true }
+            return cached
+        }
+        if let credentials = try? await local.load() {
+            lock.withLock {
+                lastLoadWasLocal = true
+                cachedLocal = credentials
+            }
             return credentials
         }
         let credentials = try await fallback.load()
@@ -36,6 +52,7 @@ public final class ClaudeAutoCredentialSource: ClaudeCredentialSource, @unchecke
     }
 
     public func clear() throws {
+        lock.withLock { cachedLocal = nil }
         try fallback.clear()
     }
 }
