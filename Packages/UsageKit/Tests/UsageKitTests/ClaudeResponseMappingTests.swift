@@ -15,16 +15,20 @@ final class ClaudeResponseMappingTests: XCTestCase {
         XCTAssertEqual(session.severity, .normal)
         XCTAssertEqual(session.isActive, true)
         XCTAssertNotNil(session.resetsAt)
+        // Provider-owned duration, used by pace/run-out math.
+        XCTAssertEqual(session.duration, 5 * 3600)
 
         let weekly = try XCTUnwrap(windows.first { $0.kind == .weekly })
         XCTAssertEqual(weekly.usedPct, 14)
         XCTAssertEqual(weekly.isActive, false)
+        XCTAssertEqual(weekly.duration, 7 * 86400)
 
         let model = try XCTUnwrap(windows.first { $0.kind == .modelSpecific("Fable") })
         XCTAssertEqual(model.usedPct, 5)
         XCTAssertEqual(model.severity, .normal)
         // Scoped weekly windows share the weekly reset date exactly.
         XCTAssertEqual(model.resetsAt, weekly.resetsAt)
+        XCTAssertEqual(model.duration, 7 * 86400)
     }
 
     func testResetsAtParsesFractionalSecondsUTC() throws {
@@ -59,6 +63,9 @@ final class ClaudeResponseMappingTests: XCTestCase {
         XCTAssertEqual(windows.first { $0.kind == .session }?.usedPct, 42.5)
         XCTAssertEqual(windows.first { $0.kind == .weekly }?.usedPct, 10.0)
         XCTAssertNil(windows.first { $0.kind == .weekly }?.resetsAt)
+        // The legacy fallback path sets duration too, same as the modern one.
+        XCTAssertEqual(windows.first { $0.kind == .session }?.duration, 5 * 3600)
+        XCTAssertEqual(windows.first { $0.kind == .weekly }?.duration, 7 * 86400)
     }
 
     func testSkipsUnknownLimitKindsAndScopelessScopedLimits() throws {

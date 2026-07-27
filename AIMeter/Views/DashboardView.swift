@@ -72,7 +72,7 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 10) {
             providerHeader
 
-            if model.needsConnection {
+            if model.needsConnection(for: "claude") {
                 Card {
                     VStack(spacing: 14) {
                         DisconnectedPrompt(buttonLabel: "Connect", verticalPadding: 12) {
@@ -84,8 +84,8 @@ struct DashboardView: View {
             } else {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                        WindowRowsList(snapshot: model.snapshot)
-                        UsageStatusFooter(snapshot: model.snapshot, error: model.lastError)
+                        WindowRowsList(snapshot: model.snapshot(for: "claude"))
+                        UsageStatusFooter(snapshot: model.snapshot(for: "claude"), error: model.lastError(for: "claude"))
                     }
                 }
             }
@@ -101,10 +101,10 @@ struct DashboardView: View {
                     iconCornerRadius: 6,
                     font: Theme.sectionHeader,
                     nameColor: Theme.inkSecondary,
-                    planName: model.snapshot?.planName
+                    planName: model.snapshot(for: "claude")?.planName
                 )
                 Spacer()
-                if !model.needsConnection {
+                if !model.needsConnection(for: "claude") {
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Theme.inkSecondary)
@@ -112,7 +112,7 @@ struct DashboardView: View {
             }
         }
         .buttonStyle(.plain)
-        .disabled(model.needsConnection)
+        .disabled(model.needsConnection(for: "claude"))
     }
 }
 

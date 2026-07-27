@@ -7,14 +7,20 @@ import UsageKit
 /// "reset" toggles are the free baseline; the two "smart" toggles
 /// (run-out warnings, early-reset alerts) are global across windows.
 struct NotificationPreferences {
-    private let defaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
+    private let defaults: UserDefaults
 
-    func isEnabled(for kind: UsageWindow.Kind) -> Bool {
-        defaults.bool(forKey: key(for: kind))
+    /// Defaults to the shared App Group; a test injects an isolated suite
+    /// instead, matching `SnapshotStore`/`UsageHistoryStore`'s pattern.
+    init(defaults: UserDefaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard) {
+        self.defaults = defaults
     }
 
-    func setEnabled(_ enabled: Bool, for kind: UsageWindow.Kind) {
-        defaults.set(enabled, forKey: key(for: kind))
+    func isEnabled(for providerID: String, kind: UsageWindow.Kind) -> Bool {
+        defaults.bool(forKey: key(for: providerID, kind: kind))
+    }
+
+    func setEnabled(_ enabled: Bool, for providerID: String, kind: UsageWindow.Kind) {
+        defaults.set(enabled, forKey: key(for: providerID, kind: kind))
     }
 
     /// "At this rate, [window] runs out before it resets" warnings.
@@ -55,8 +61,10 @@ struct NotificationPreferences {
         nonmutating set { defaults.set(newValue, forKey: "notify.limitReached") }
     }
 
-    private func key(for kind: UsageWindow.Kind) -> String {
-        "notify.\(kind.storageKey)"
+    /// Provider-scoped: two providers reporting the same `kind` (e.g. both
+    /// `.session`) must not share a toggle.
+    private func key(for providerID: String, kind: UsageWindow.Kind) -> String {
+        "notify.\(providerID).\(kind.storageKey)"
     }
 }
 
@@ -111,14 +119,18 @@ enum NotificationScheduler {
 
     // MARK: - Reset notifications (per-window, at resetsAt)
 
-    static func rescheduleResets(for snapshot: UsageSnapshot?, preferences: NotificationPreferences) async {
+    /// `providerID` is explicit rather than read from `snapshot` — the
+    /// snapshot can be nil (e.g. toggling a preference before any fetch),
+    /// and the remove-then-readd below must still only touch this
+    /// provider's own pending requests, not every provider's.
+    static func rescheduleResets(for snapshot: UsageSnapshot?, providerID: String, preferences: NotificationPreferences) async {
         let center = UNUserNotificationCenter.current()
-        await removePending(withPrefix: identifierPrefix, from: center)
+        await removePending(withPrefix: identifierPrefix + providerID + ".", from: center)
 
         guard let snapshot, await canDeliver() else { return }
 
         for window in snapshot.windows {
-            guard preferences.isEnabled(for: window.kind),
+            guard preferences.isEnabled(for: providerID, kind: window.kind),
                   let resetsAt = window.resetsAt,
                   resetsAt > Date() else { continue }
 
@@ -132,7 +144,7 @@ enum NotificationScheduler {
                 from: resetsAt
             )
             let request = UNNotificationRequest(
-                identifier: identifierPrefix + window.kind.storageKey,
+                identifier: identifierPrefix + providerID + "." + window.kind.storageKey,
                 content: content,
                 trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             )
@@ -148,11 +160,12 @@ enum NotificationScheduler {
     /// deceleration removes a warning that no longer applies.
     static func rescheduleRunOuts(
         _ projections: [UsageWindow.Kind: RunOutProjection],
+        providerID: String,
         preferences: NotificationPreferences,
         now: Date = Date()
     ) async {
         let center = UNUserNotificationCenter.current()
-        await removePending(withPrefix: runOutPrefix, from: center)
+        await removePending(withPrefix: runOutPrefix + providerID + ".", from: center)
 
         guard preferences.runOutWarningsEnabled, await canDeliver() else { return }
 
@@ -176,7 +189,7 @@ enum NotificationScheduler {
                 from: fireDate
             )
             let request = UNNotificationRequest(
-                identifier: runOutPrefix + kind.storageKey,
+                identifier: runOutPrefix + providerID + "." + kind.storageKey,
                 content: content,
                 trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             )
@@ -189,7 +202,7 @@ enum NotificationScheduler {
     /// Posts an immediate alert for each window that refilled before its
     /// scheduled reset. Not scheduled — the event already happened — so it
     /// delivers right away (nil trigger).
-    static func notifyEarlyResets(_ kinds: [UsageWindow.Kind], preferences: NotificationPreferences) async {
+    static func notifyEarlyResets(_ kinds: [UsageWindow.Kind], providerID: String, preferences: NotificationPreferences) async {
         guard preferences.earlyResetAlertsEnabled, !kinds.isEmpty, await canDeliver() else { return }
         let center = UNUserNotificationCenter.current()
 
@@ -201,7 +214,7 @@ enum NotificationScheduler {
 
             // A unique id per event so repeated early resets each notify.
             let request = UNNotificationRequest(
-                identifier: earlyResetPrefix + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
+                identifier: earlyResetPrefix + providerID + "." + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
                 content: content,
                 trigger: nil
             )
@@ -223,7 +236,7 @@ enum NotificationScheduler {
             content.title = String(localized: "\(kind.displayName) nearing its limit")
             content.body = String(localized: "You're at \(Int(used))% of this window.")
             content.sound = .default
-            await add(content, prefix: nearLimitPrefix, kind: kind, to: center)
+            await add(content, prefix: nearLimitPrefix, providerID: current.providerID, kind: kind, to: center)
         }
     }
 
@@ -244,15 +257,15 @@ enum NotificationScheduler {
                 ? String(localized: "Further usage now draws on your usage credits.")
                 : String(localized: "You're blocked on this limit until it resets.")
             content.sound = .default
-            await add(content, prefix: limitReachedPrefix, kind: kind, to: center)
+            await add(content, prefix: limitReachedPrefix, providerID: current.providerID, kind: kind, to: center)
         }
     }
 
     /// Adds an immediate (nil-trigger) notification with a unique per-event
     /// id, so repeated crossings each deliver rather than replacing.
-    private static func add(_ content: UNMutableNotificationContent, prefix: String, kind: UsageWindow.Kind, to center: UNUserNotificationCenter) async {
+    private static func add(_ content: UNMutableNotificationContent, prefix: String, providerID: String, kind: UsageWindow.Kind, to center: UNUserNotificationCenter) async {
         let request = UNNotificationRequest(
-            identifier: prefix + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
+            identifier: prefix + providerID + "." + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
             content: content,
             trigger: nil
         )

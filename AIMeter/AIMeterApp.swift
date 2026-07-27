@@ -29,7 +29,7 @@ struct AIMeterApp: App {
         #if os(iOS)
         .backgroundTask(.appRefresh(AppConfig.refreshTaskID)) {
             await BackgroundRefresh.scheduleNext()
-            _ = try? await RefreshService().refresh()
+            _ = await RefreshService().refresh()
         }
         #endif
 
@@ -42,7 +42,7 @@ struct AIMeterApp: App {
                 .preferredColorScheme(prefs.appearance.colorScheme)
         } label: {
             MenuBarLabel(
-                snapshot: model.snapshot,
+                snapshot: model.snapshot(for: "claude"),
                 displayMode: prefs.displayMode,
                 metric: prefs.glanceMetric,
                 showsPercentage: prefs.menuBarShowsPercentage

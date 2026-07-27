@@ -71,7 +71,7 @@ final class ModelCodableTests: XCTestCase {
             planName: "max",
             fetchedAt: Date(timeIntervalSince1970: 1_780_000_000),
             windows: [
-                UsageWindow(kind: .session, usedPct: 24, resetsAt: Date(), severity: .normal, isActive: true),
+                UsageWindow(kind: .session, usedPct: 24, resetsAt: Date(), severity: .normal, isActive: true, duration: 5 * 3600),
                 UsageWindow(kind: .modelSpecific("Fable"), usedPct: 5),
             ]
         )
@@ -85,7 +85,22 @@ final class ModelCodableTests: XCTestCase {
         XCTAssertEqual(decoded.providerID, "claude")
         XCTAssertEqual(decoded.windows.count, 2)
         XCTAssertEqual(decoded.sessionWindow?.usedPct, 24)
+        XCTAssertEqual(decoded.sessionWindow?.duration, 5 * 3600)
         XCTAssertEqual(decoded.modelWindows.first?.kind, .modelSpecific("Fable"))
+        XCTAssertNil(decoded.modelWindows.first?.duration)
+    }
+
+    /// A snapshot cached by a pre-refactor build has no "duration" key at
+    /// all on its windows — must still decode cleanly (duration → nil)
+    /// rather than fail, since `SnapshotStore` falls back to treating a
+    /// decode failure as "no snapshot yet."
+    func testWindowDecodesWithoutDurationField() throws {
+        let json = """
+        {"kind": {"type": "session"}, "usedPct": 24}
+        """
+        let window = try JSONDecoder().decode(UsageWindow.self, from: Data(json.utf8))
+        XCTAssertEqual(window.usedPct, 24)
+        XCTAssertNil(window.duration)
     }
 
     func testClaudeCodeCredentialsParsing() throws {
