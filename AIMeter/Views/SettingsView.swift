@@ -14,6 +14,55 @@ struct SettingsView: View {
 
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
+                if model.isDemoMode {
+                    SectionHeader(title: String(localized: "Demo mode"))
+                    Card {
+                        Button(role: .destructive) {
+                            model.exitDemoMode()
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "eye.slash")
+                                    .font(.footnote.weight(.semibold))
+                                    .foregroundStyle(Theme.danger)
+                                    .frame(width: 28, height: 28)
+                                    .background(Theme.danger.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                Text("Exit Demo")
+                                    .font(.body.weight(.medium))
+                                    .foregroundStyle(Theme.ink)
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    SectionFootnote(text: String(localized: "You're viewing sample data. Exit to connect your real Claude account."))
+                    sectionGap
+                } else if model.needsConnection {
+                    // Demo mode's only entry point — the dashboard's
+                    // disconnected card stays just Connect, so Settings is
+                    // the one place to find "View Demo".
+                    SectionHeader(title: String(localized: "Demo mode"))
+                    Card {
+                        Button {
+                            model.enterDemoMode()
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "eye")
+                                    .font(.footnote.weight(.semibold))
+                                    .foregroundStyle(Theme.accent)
+                                    .frame(width: 28, height: 28)
+                                    .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                Text("View Demo")
+                                    .font(.body.weight(.medium))
+                                    .foregroundStyle(Theme.ink)
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    SectionFootnote(text: String(localized: "Explore every screen with sample data before connecting your real Claude account."))
+                    sectionGap
+                }
+
                 SectionHeader(title: String(localized: "Appearance"))
                 Card {
                     SegmentedPill(

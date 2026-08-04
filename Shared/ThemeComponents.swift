@@ -29,13 +29,18 @@ struct UsageBarView: View {
 struct SegmentedPill<Option: Hashable>: View {
     let options: [(value: Option, label: String)]
     @Binding var selection: Option
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: 4) {
             ForEach(options, id: \.value) { option in
                 Button {
-                    withAnimation(.snappy(duration: 0.18)) {
+                    if reduceMotion {
                         selection = option.value
+                    } else {
+                        withAnimation(.snappy(duration: 0.18)) {
+                            selection = option.value
+                        }
                     }
                 } label: {
                     Text(option.label)

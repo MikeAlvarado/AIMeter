@@ -16,6 +16,12 @@ final class UsageModel {
     /// True when there are no usable credentials — dashboard shows the
     /// connect card instead of usage rows.
     private(set) var needsConnection: Bool
+    /// True while showing fabricated data from "View Demo" — lets someone
+    /// (an App Store reviewer, a curious user) explore every screen without
+    /// a real Claude account. Never touches `RefreshService`, the App Group
+    /// `SnapshotStore`, or `WidgetCenter`, so it can never leak into
+    /// widgets or a real connection.
+    private(set) var isDemoMode = false
 
     private let service = RefreshService()
     private let preferences = NotificationPreferences()
@@ -44,7 +50,7 @@ final class UsageModel {
     }
 
     func refresh() async {
-        guard !isRefreshing else { return }
+        guard !isRefreshing, !isDemoMode else { return }
         isRefreshing = true
         defer { isRefreshing = false }
         do {
@@ -73,6 +79,7 @@ final class UsageModel {
     /// after a while updates the dashboard — and, via the refresh flow,
     /// pushes the new snapshot to the widgets immediately.
     func refreshIfStale(maxAge: TimeInterval = 60) async {
+        guard !isDemoMode else { return }
         if let fetchedAt = snapshot?.fetchedAt,
            Date().timeIntervalSince(fetchedAt) < maxAge {
             return
@@ -86,6 +93,10 @@ final class UsageModel {
     /// from too little history. Re-evaluated on each refresh.
     var paceReady: Bool {
         _ = snapshot // re-read when a refresh lands
+        // Demo data has no real observation history to warm up from — treat
+        // it as always ready so the pace captions and Forecast card show
+        // their full state instead of "Learning your pace…".
+        if isDemoMode { return true }
         return PaceCalculator.isReady(observingSince: service.paceObservingSince())
     }
 
@@ -112,6 +123,23 @@ final class UsageModel {
         }
     }
 
+    // MARK: - Demo mode
+
+    func enterDemoMode() {
+        snapshot = DemoUsageData.snapshot()
+        isDemoMode = true
+        needsConnection = false
+        lastError = nil
+    }
+
+    func exitDemoMode() {
+        guard isDemoMode else { return }
+        isDemoMode = false
+        snapshot = nil
+        needsConnection = true
+        lastError = nil
+    }
+
     // MARK: - Notification preferences
 
     /// True when the user denied notification permission in the system
@@ -133,7 +161,8 @@ final class UsageModel {
     }
 
     func setNotificationsEnabled(_ enabled: Bool, for kind: UsageWindow.Kind) {
-        let snapshot = self.snapshot
+        // Never schedule a real notification off fabricated demo resets.
+        let snapshot = isDemoMode ? nil : self.snapshot
         Task { @MainActor in
             if enabled {
                 guard await NotificationScheduler.ensureAuthorization() else {
@@ -164,7 +193,8 @@ final class UsageModel {
     }
 
     func setRunOutWarningsEnabled(_ enabled: Bool) {
-        let snapshot = self.snapshot
+        // Never schedule a real notification off fabricated demo resets.
+        let snapshot = isDemoMode ? nil : self.snapshot
         Task { @MainActor in
             guard await authorizeIfEnabling(enabled) else { return }
             preferences.runOutWarningsEnabled = enabled

@@ -49,6 +49,7 @@ struct SingleUsageWidgetView: View {
             Text(entry.kind.shortName)
                 .font(.system(size: 11))
                 .foregroundStyle(Theme.inkSecondary)
+                .lineLimit(1)
         }
     }
 

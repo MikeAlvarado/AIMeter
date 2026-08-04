@@ -132,6 +132,7 @@ struct RoundIconButton: View {
     var isBusy = false
     let action: () -> Void
     @State private var rotation = 0.0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Button(action: action) {
@@ -147,8 +148,15 @@ struct RoundIconButton: View {
         .disabled(isBusy)
         .onChange(of: isBusy) { wasBusy, busy in
             guard busy, !wasBusy else { return }
-            withAnimation(.easeInOut(duration: 0.5)) {
+            // Reduce Motion: still land on the same +360° value (so state
+            // stays consistent across repeated taps) but skip animating the
+            // turn — the haptic in DashboardView already confirms the tap.
+            if reduceMotion {
                 rotation += 360
+            } else {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    rotation += 360
+                }
             }
         }
     }

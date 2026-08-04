@@ -439,6 +439,56 @@
         }
       }
     },
+    "View Demo" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver demo"
+          }
+        }
+      }
+    },
+    "Exit Demo" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir del modo demo"
+          }
+        }
+      }
+    },
+    "Demo mode" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo demo"
+          }
+        }
+      }
+    },
+    "You're viewing sample data. Exit to connect your real Claude account." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estás viendo datos de muestra. Sal para conectar tu cuenta real de Claude."
+          }
+        }
+      }
+    },
+    "Explore every screen with sample data before connecting your real Claude account." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explora todas las pantallas con datos de muestra antes de conectar tu cuenta real de Claude."
+          }
+        }
+      }
+    },
     "Display" : {
       "localizations" : {
         "es" : {

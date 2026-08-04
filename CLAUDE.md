@@ -371,7 +371,9 @@ Credential sources:
   app-wide Settings screen — a future provider's own detail view would
   carry its own equivalents
   instead of sharing these.
-- **Settings**: appearance / display mode / reset style pills, refresh
+- **Settings**: while `isDemoMode` is true, a "Demo mode" section (Exit
+  Demo action + explanatory footnote) leads the list, above everything
+  else, then appearance / display mode / reset style pills, refresh
   cadence menu, per-window reset notification toggles + the Smart
   notifications card, a "Privacy & data" link, and an "Open Source" row
   (GitHub mark, opens the repo URL). iOS: sheet with Done; macOS: Settings
@@ -397,6 +399,27 @@ Credential sources:
 - **Connect sheet**: pixel-Claude icon, explainer, "Open Claude Sign-In",
   paste field (accepts OAuth code or full credentials JSON), Connect —
   surfaces the connection error inline instead of dismissing on failure.
+- **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
+  `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
+  usage — so every screen (rate limits, pace, peak hours, forecast,
+  spend/extra cards) can be explored without a real Claude account. Exists
+  mainly so App Store reviewers can evaluate the app without being handed
+  credentials to a paid third-party account; also a source of screenshots
+  that doesn't expose anyone's real usage. Purely in-memory: never calls
+  `RefreshService`, never touches the App Group `SnapshotStore` or
+  `WidgetCenter`, so it can't leak into widgets or a real connection, and
+  `paceReady` short-circuits true so pace/forecast don't show the
+  "learning" state on fabricated data with no history. Scheduling a
+  `reset.`/`runout.` notification while in demo mode is a deliberate no-op
+  (`UsageModel` passes `nil` in place of the demo snapshot) so a fake
+  reset date can never produce a real notification. Entry and exit both
+  live in Settings only — a "Demo mode" section at the top of the list
+  (shown while disconnected or while demo is active, hidden once a real
+  account is connected) offers "View Demo" or "Exit Demo" accordingly; the
+  dashboard's disconnected card stays just Connect, no demo affordance, to
+  keep it from looking like a second, competing call to action. Provider
+  Detail's bottom button also becomes "Exit Demo" (both platforms) instead
+  of "Disconnect Claude" (iOS-only) while active.
 - **Landscape (iPhone)**: `verticalSizeClass == .compact` swaps the
   dashboard for a fullscreen card with the same stacked rows.
 - **Widgets**:
@@ -505,6 +528,9 @@ region to the project's `knownRegions`.
 - Keep files under ~300 lines; split by feature, not by type.
 - Accessibility: every usage row is one combined VoiceOver element; bars
   are decorative (`accessibilityHidden`); icon-only buttons carry labels.
+  `accessibilityReduceMotion` gates the two animated transitions in the app
+  (`RoundIconButton`'s refresh spin, `SegmentedPill`'s selection change) —
+  when on, the state still updates, just without `withAnimation`.
 - Tests live in UsageKit (`swift test`); fixture
   `Tests/UsageKitTests/Fixtures/claude-usage-response.json` is a real
   captured response — mapping tests assert against it.
@@ -515,6 +541,13 @@ region to the project's `knownRegions`.
 - MIT license. README includes: undocumented-endpoint disclaimer, privacy
   /data-transparency section, build instructions with the user's own team
   ID, no affiliation with Anthropic.
+- The App Store Connect app record's **Name** is `AIMeter: Usage Tracker`,
+  not the bare `AIMeter` — that exact string is already registered to
+  another app (`Name` must be globally unique across every developer in
+  the store, unlike the Bundle ID or SKU, which are only scoped to this
+  account). This is store-listing metadata only: the in-app title, Bundle
+  ID (`com.mikealvarado.aimeter`), App Group, and every other reference in
+  this project and codebase stay `AIMeter`.
 - `DEVELOPMENT_TEAM` is not hardcoded in `project.pbxproj`: both targets'
   build configs read it from a `baseConfigurationReference` to
   `Config.local.xcconfig` (gitignored, matches the `*.local.xcconfig`

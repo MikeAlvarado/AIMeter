@@ -87,18 +87,33 @@ struct ProviderDetailView: View {
                 SmartNotificationTogglesCard()
                 SectionFootnote(text: SmartNotificationTogglesCard.footnote)
 
-                #if os(iOS)
-                Button(role: .destructive) {
-                    model.disconnect()
-                    dismiss()
-                } label: {
-                    Text("Disconnect Claude")
-                        .font(.body.weight(.medium))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous))
+                if model.isDemoMode {
+                    Button(role: .destructive) {
+                        model.exitDemoMode()
+                        dismiss()
+                    } label: {
+                        Text("Exit Demo")
+                            .font(.body.weight(.medium))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous))
+                    }
+                    .padding(.top, Theme.sectionSpacing - 10)
                 }
-                .padding(.top, Theme.sectionSpacing - 10)
+                #if os(iOS)
+                if !model.isDemoMode {
+                    Button(role: .destructive) {
+                        model.disconnect()
+                        dismiss()
+                    } label: {
+                        Text("Disconnect Claude")
+                            .font(.body.weight(.medium))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous))
+                    }
+                    .padding(.top, Theme.sectionSpacing - 10)
+                }
                 #endif
             }
             .padding(20)
