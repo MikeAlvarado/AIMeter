@@ -181,9 +181,14 @@ Credential sources:
   refresh *and* the iOS widget self-fetch, so it stays continuous when
   only the widget runs); a used%-drop discards a kind's prior samples so a
   rate never spans a reset. Cleared on disconnect.
-- Notifications are local only, all rescheduled/re-evaluated from scratch
-  after every successful fetch, keyed by identifier prefix
-  (`NotificationScheduler`). Two are *scheduled* to a future trigger:
+- Notifications are local only, keyed by identifier prefix
+  (`NotificationScheduler`). Four families are rescheduled/re-evaluated
+  from scratch after every successful fetch; a fifth, `peak.`, is the
+  deliberate exception (see "Peak hours" below) since it depends only on
+  a fixed weekday schedule, never on what a fetch returns — it's
+  rescheduled once at `UsageModel.init` and whenever its toggle changes
+  instead. Two of the four fetch-driven families are *scheduled* to a
+  future trigger:
   `reset.` (per-window `UNCalendarNotificationTrigger` at each window's
   `resetsAt`, the free baseline, per-window opt-in toggles) and `runout.`
   (per-window run-out warnings fired a lead time before a projected early
@@ -258,6 +263,59 @@ Credential sources:
   `ResetDetector.earlyResets` compares consecutive snapshots for an early
   refill (used% dropped well before the known reset) to fire the
   early-reset alert.
+- Peak hours: Anthropic has repeatedly introduced/reverted a policy where
+  Claude session usage burns faster during documented weekday-morning
+  windows (currently 5-11 AM PT; the exact hours have changed before and
+  will again). `docs/design/peak-hours-investigation.md` confirms
+  empirically — by diffing a live response captured inside the window
+  against one captured outside it — that neither `/api/oauth/usage` nor
+  `/api/oauth/profile` carries any peak-related field in either state, so
+  there is nothing server-side to key off. `PeakCalculator` (UsageKit
+  core, pure — `isPeak(at:schedule:)` / `nextTransition(after:schedule:)`)
+  computes it instead, entirely on-device and with zero network cost,
+  since peak state is a deterministic function of the clock. The
+  mechanism is provider-agnostic; the concrete PT/weekday/5-11 values are
+  Claude's own policy and live in `ClaudePeakSchedule`
+  (`Providers/Claude/`) alongside a `lastVerified` date — the honesty
+  mechanism for a policy known to change: it's surfaced in the UI
+  (Provider Detail's "Peak hours" card) so a schedule that goes stale
+  between releases is never presented as live truth. Deliberately
+  hardcoded and release-updated rather than remote-fetched (this project
+  has no server, by design) or user-editable (most users can't verify a
+  schedule they'd hand-edit).
+  - The named-timezone rule is load-bearing: `PeakCalculator` evaluates
+    weekday/hour through `TimeZone(identifier: "America/Los_Angeles")` —
+    never `TimeZone.current` — so the result is identical regardless of
+    the device's own timezone, and DST is handled for free (a named zone
+    carries its own historical/future transition rules; a fixed UTC
+    offset would silently break twice a year). `PeakCalculatorTests`
+    checks both DST transition dates and an explicit
+    device-timezone-independence case.
+  - `ClaudePeakStatus` (Shared/) wraps the calculator with the copy
+    ("Peak hours now" / "Off-peak now", next-transition countdown,
+    `lastVerified` label) shared by Provider Detail, the menu bar, and
+    both widget headers.
+  - Glance surfaces, all zero-network since peak is time-derived: Provider
+    Detail shows a dedicated card; the macOS menu bar popover header shows
+    a bolt badge, while the status item itself (`MenuBarLabel`) folds peak
+    into the tooltip/accessibility text only, not a second glyph, to
+    avoid disturbing its carefully-tuned single gauge; both widgets
+    (`AIMeterUsage` header, `AIMeterSingleUsage` header when the picked
+    window is `.session`) show the same badge. Widget timelines add a
+    second `TimelineEntry` dated exactly at `nextTransition` (when it
+    falls before the next scheduled reload) so WidgetKit flips the badge
+    on its own at the right wall-clock moment — no extra refresh, no
+    widened refresh budget. Lock Screen accessories deliberately don't
+    show it (too cramped, lowest value).
+  - Notifications: an off-by-default `peak.` family
+    (`NotificationScheduler.reschedulePeakNotifications`) — "Peak hours
+    started"/"ended", 10 recurring `UNCalendarNotificationTrigger`s (5
+    weekdays × start/end) with `DateComponents.timeZone` pinned to the
+    schedule's zone for the same DST-correctness reason as the calculator.
+    Deliberately **not** part of the "reschedule every fetch" convention
+    the other families follow: this schedule never depends on a fetched
+    snapshot, so `UsageModel` reschedules it once at init and whenever the
+    toggle changes, not on every refresh.
 - Display prefs (App Group, shared with widgets): Remaining/Used,
   Relative/Absolute reset style (tap any reset line to toggle), appearance
   System/Light/Dark, refresh cadence, and `glanceMetric` — the one window
@@ -295,7 +353,9 @@ Credential sources:
   title, then a section per provider: logo + name + Pro/Max pill (trailing)
   → card with the three windows, error, "Updated X ago". Disconnected state
   shows a Connect card.
-- **Provider detail** (push): rate-limit rows; a **Forecast** card
+- **Provider detail** (push): rate-limit rows; a **Peak hours** card
+  (`PeakHoursCard`, see "Peak hours" above) with a live status line and a
+  "schedule as of" footnote; a **Forecast** card
   (`ForecastCard`) listing any window projected to run out early or an
   all-clear row; a "Third usage row" card with the Auto/Hidden/Credits
   pill (governs the third-slot fallback above, defaults to Auto) plus a
@@ -305,10 +365,11 @@ Credential sources:
   and Extra usage cards (label/value rows, currency formatted); per-window
   reset notification toggles plus a **Smart notifications** card
   (`SmartNotificationTogglesCard`: global Near-limit warnings with a
-  threshold slider, Limit reached, Run-out warnings, Early-reset alerts);
-  iOS disconnect button. All of these are Claude-specific display
-  prefs, so they live here rather than in the app-wide Settings screen — a
-  future provider's own detail view would carry its own equivalents
+  threshold slider, Limit reached, Run-out warnings, Early-reset alerts,
+  Peak-hours alerts); iOS disconnect button. All of these are
+  Claude-specific display prefs, so they live here rather than in the
+  app-wide Settings screen — a future provider's own detail view would
+  carry its own equivalents
   instead of sharing these.
 - **Settings**: appearance / display mode / reset style pills, refresh
   cadence menu, per-window reset notification toggles + the Smart
@@ -347,7 +408,9 @@ Credential sources:
     `glanceMetric` points at (Provider Detail). Widget fonts are fixed
     sizes (12/11/9 pt) on purpose — text styles scale with Dynamic Type
     and overflow the fixed widget height on real devices. Rows sit in
-    equal flexible slices so the layout fills any family height.
+    equal flexible slices so the layout fills any family height. The
+    header also shows a small peak-hours badge (see "Peak hours" above);
+    Lock Screen accessories don't.
   - `AIMeterSingleUsage` (small only): shows exactly one window the user
     picks from the widget's own Edit Widget UI
     (`SingleUsageConfigurationIntent`, `AppIntentConfiguration`) —
@@ -355,7 +418,9 @@ Credential sources:
     (`UsageWindowOptionQuery`), including "Credits" when the fallback
     above is on and there's no real model window, so the list always
     matches what the account actually has instead of a name baked in at
-    build time.
+    build time. Its header shows the same peak-hours badge, but only when
+    the picked window is `.session` — the only window the documented
+    policy actually affects.
 - **macOS menu bar**: header (logo + "Claude" + plan pill, via
   `ProviderIdentityView`) + divider, popover with the same rows,
   refresh/settings/quit. The label (`MenuBarLabel`) is a variable-value
@@ -365,7 +430,10 @@ Credential sources:
   `menuBarShowsPercentage` is on. Either way the exact value stays in the
   `.help` tooltip and the accessibility label — icon-only mode must never be
   the only place the number lived. The whole status item disappears when
-  `statusItemVisible` is off (`MenuBarExtra(isInserted:)`).
+  `statusItemVisible` is off (`MenuBarExtra(isInserted:)`). Peak-hours
+  state folds into that same tooltip/accessibility text rather than a
+  second glyph on the status item itself (see "Peak hours" above); the
+  popover header shows a visible bolt badge instead, where there's room.
 - **macOS hiding & re-entry** (`AppDelegate` + `AppChrome`, the project's
   only AppDelegate — SwiftUI has no scene hook for either concern):
   - `hideDockIcon` → `.accessory` activation policy, applied in

@@ -14,7 +14,7 @@ struct UsageWidgetView: View {
             if let snapshot = entry.snapshot {
                 switch family {
                 case .systemMedium:
-                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs)
+                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date)
                 #if os(iOS)
                 case .accessoryCircular:
                     CircularUsageView(snapshot: snapshot, prefs: entry.prefs)
@@ -24,7 +24,7 @@ struct UsageWidgetView: View {
                     InlineUsageView(snapshot: snapshot, prefs: entry.prefs)
                 #endif
                 default:
-                    SmallUsageView(snapshot: snapshot, prefs: entry.prefs)
+                    SmallUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date)
                 }
             } else {
                 Text("Open AIMeter to load usage")
@@ -47,6 +47,11 @@ struct UsageWidgetView: View {
 /// the fixed widget height on real hardware.
 private struct WidgetHeader: View {
     let snapshot: UsageSnapshot
+    /// The rendered timeline entry's own date — not `Date()` — so the
+    /// peak badge matches whichever entry WidgetKit is currently
+    /// displaying, including a future entry dated at the next peak
+    /// transition (see `UsageTimelineProvider.peakTransitionEntry`).
+    let date: Date
 
     var body: some View {
         HStack(spacing: 5) {
@@ -59,6 +64,11 @@ private struct WidgetHeader: View {
                 planName: nil
             )
             Spacer(minLength: 0)
+            if ClaudePeakStatus(at: date).isPeak {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 9))
+                    .foregroundStyle(Theme.danger)
+            }
             if snapshot.isStale {
                 HStack(spacing: 2) {
                     Image(systemName: "clock.arrow.circlepath")
@@ -128,11 +138,12 @@ private struct WindowBarList: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
     let count: Int
+    let date: Date
 
     var body: some View {
         let slots = Array(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.prefix(count))
         VStack(alignment: .leading, spacing: 0) {
-            WidgetHeader(snapshot: snapshot)
+            WidgetHeader(snapshot: snapshot, date: date)
             ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                 WindowBarRow(
                     kind: slot.kind,
@@ -152,9 +163,10 @@ private struct WindowBarList: View {
 struct SmallUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
+    let date: Date
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date)
     }
 }
 
@@ -162,9 +174,10 @@ struct SmallUsageView: View {
 struct MediumUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
+    let date: Date
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date)
     }
 }
 

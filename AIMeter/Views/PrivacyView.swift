@@ -14,7 +14,7 @@ struct PrivacyView: View {
                         PrivacyRow(
                             systemName: "iphone",
                             title: String(localized: "Everything stays on your device"),
-                            text: String(localized: "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else.")
+                            text: String(localized: "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way — from a fixed schedule and the clock, with no extra network call.")
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(

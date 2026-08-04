@@ -41,8 +41,19 @@ struct UsageTimelineProvider: TimelineProvider {
             }
             #endif
             let next = Date(timeIntervalSinceNow: interval)
-            completion(Timeline(entries: [entry], policy: .after(next)))
+            completion(Timeline(entries: [entry] + peakTransitionEntry(after: entry, before: next), policy: .after(next)))
         }
+    }
+
+    /// If Claude's peak-hours schedule flips before the next scheduled
+    /// reload, an extra entry dated exactly at that transition makes
+    /// WidgetKit switch the header's peak badge on its own at the right
+    /// wall-clock moment — no extra refresh or network call, since peak
+    /// state is a pure function of the entry's own `date`.
+    private func peakTransitionEntry(after entry: UsageEntry, before next: Date) -> [UsageEntry] {
+        guard let transition = PeakCalculator.nextTransition(after: entry.date, schedule: ClaudePeakSchedule.current),
+              transition < next else { return [] }
+        return [UsageEntry(date: transition, snapshot: entry.snapshot, prefs: entry.prefs)]
     }
 
     private func entry() -> UsageEntry {

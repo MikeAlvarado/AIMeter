@@ -61,7 +61,22 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
         }
         #endif
         let next = Date(timeIntervalSinceNow: interval)
-        return Timeline(entries: [current], policy: .after(next))
+        var entries = [current]
+        // Same trick as the main widget: an extra entry dated exactly at
+        // the next peak transition lets WidgetKit flip the header's badge
+        // on its own, with no extra refresh or network call.
+        if let transition = PeakCalculator.nextTransition(after: current.date, schedule: ClaudePeakSchedule.current),
+           transition < next {
+            entries.append(SingleUsageEntry(
+                date: transition,
+                snapshot: current.snapshot,
+                providerID: current.providerID,
+                kind: current.kind,
+                providerName: current.providerName,
+                prefs: current.prefs
+            ))
+        }
+        return Timeline(entries: entries, policy: .after(next))
     }
 
     private func entry(for configuration: SingleUsageConfigurationIntent) -> SingleUsageEntry {

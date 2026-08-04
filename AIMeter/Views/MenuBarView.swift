@@ -47,11 +47,18 @@ struct MenuBarLabel: View {
         return min(max(window.displayedPct(displayMode) / 100, 0), 1)
     }
 
+    /// Peak state folds into the tooltip/accessibility text only — the
+    /// status item itself is a carefully tuned single gauge (see the type
+    /// doc above), and this is the smallest way to surface "why is this
+    /// moving faster than usual" without adding a second glyph to the
+    /// smallest surface in the app. The popover header shows a visible
+    /// badge instead, where there's room (`MenuBarView.header`).
     private var valueLabel: String {
-        guard let percent else {
-            return String(localized: "AIMeter — no usage data yet")
-        }
-        return String(localized: "\(metric.shortName): \(percent)% \(displayMode.label)")
+        let peak = ClaudePeakStatus()
+        let base = percent.map {
+            String(localized: "\(metric.shortName): \($0)% \(displayMode.label)")
+        } ?? String(localized: "AIMeter — no usage data yet")
+        return peak.isPeak ? "\(base) · \(peak.title)" : base
     }
 }
 
@@ -106,7 +113,8 @@ struct MenuBarView: View {
     }
 
     private var header: some View {
-        HStack(spacing: 8) {
+        let peak = ClaudePeakStatus()
+        return HStack(spacing: 8) {
             ProviderIdentityView(
                 name: "Claude",
                 iconSize: 20,
@@ -116,6 +124,12 @@ struct MenuBarView: View {
                 planName: model.snapshot?.planName
             )
             Spacer()
+            if peak.isPeak {
+                Image(systemName: "bolt.fill")
+                    .foregroundStyle(Theme.danger)
+                    .help(peak.subtitle)
+                    .accessibilityLabel(peak.title)
+            }
         }
     }
 }

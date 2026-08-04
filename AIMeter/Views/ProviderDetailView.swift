@@ -21,6 +21,12 @@ struct ProviderDetailView: View {
                     }
                 }
 
+                SectionHeader(title: String(localized: "Peak hours"))
+                    .padding(.top, Theme.sectionSpacing - 10)
+                let peakStatus = ClaudePeakStatus()
+                PeakHoursCard(status: peakStatus)
+                SectionFootnote(text: "\(peakStatus.scheduleDescription) \(peakStatus.lastVerifiedLabel)")
+
                 if let snapshot = model.snapshot, !snapshot.windows.isEmpty {
                     SectionHeader(title: String(localized: "Forecast"))
                         .padding(.top, Theme.sectionSpacing - 10)
@@ -166,6 +172,32 @@ struct ProviderDetailView: View {
     }
 }
 
+/// Anthropic's documented weekday peak-usage window, computed on-device
+/// from a fixed schedule (see `ClaudePeakSchedule`) — there's no server
+/// signal to key off instead (`docs/design/peak-hours-investigation.md`).
+private struct PeakHoursCard: View {
+    let status: ClaudePeakStatus
+
+    var body: some View {
+        Card {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: status.isPeak ? "bolt.fill" : "bolt.slash")
+                    .foregroundStyle(status.isPeak ? Theme.danger : Theme.inkSecondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(status.title)
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                    Text(status.subtitle)
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+                Spacer(minLength: 0)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
 /// Per-window run-out forecast from the average pace so far — a warning
 /// row for each window projected to hit its limit before it resets, or a
 /// single reassuring row when none are. Uses the stable average-rate
@@ -263,7 +295,7 @@ struct SmartNotificationTogglesCard: View {
     /// Shared caption for the section, used by both Provider Detail and
     /// Settings so the four alerts are described in one place.
     static var footnote: String {
-        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule.")
+        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Peak-hours alerts notify when Claude's documented weekday peak window starts or ends.")
     }
 
     var body: some View {
@@ -290,6 +322,11 @@ struct SmartNotificationTogglesCard: View {
                 toggle(String(localized: "Early-reset alerts"),
                        isOn: model.earlyResetAlertsEnabled,
                        set: model.setEarlyResetAlertsEnabled)
+
+                divider
+                toggle(String(localized: "Peak-hours alerts"),
+                       isOn: model.peakNotificationsEnabled,
+                       set: model.setPeakNotificationsEnabled)
             }
         }
         .task {

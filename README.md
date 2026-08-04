@@ -35,9 +35,18 @@ can be added later.
 - Smart notifications, off by default and toggled individually: a reset
   reminder per window, a near-limit warning at a threshold you set, a
   limit-reached alert, run-out warnings when your recent pace projects an
-  early exhaustion, and early-reset alerts if a window refills before its
-  scheduled date — all with honest permission handling, no silent
-  failures.
+  early exhaustion, early-reset alerts if a window refills before its
+  scheduled date, and peak-hours alerts when Claude's documented weekday
+  peak window starts or ends — all with honest permission handling, no
+  silent failures.
+- Peak-hours awareness: Anthropic has documented weekday morning windows
+  (5-11 AM PT) where Claude session usage burns faster. There's no API
+  signal for this — confirmed by capturing live responses inside and
+  outside the window (see `docs/design/peak-hours-investigation.md`) — so
+  AIMeter computes it on-device from the published schedule, correctly
+  across timezones and DST. Because Anthropic has changed this policy more
+  than once, the in-app indicator always shows the date the schedule was
+  last verified.
 - macOS menu bar extra: a gauge that fills with whichever window you pick
   to glance at, with the exact percentage spelled out beside it if you
   want (it's always in the tooltip either way), plus your plan badge.

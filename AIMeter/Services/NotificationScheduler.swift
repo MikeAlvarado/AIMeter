@@ -55,6 +55,13 @@ struct NotificationPreferences {
         nonmutating set { defaults.set(newValue, forKey: "notify.limitReached") }
     }
 
+    /// "Peak hours started/ended" alerts, scheduled from Claude's fixed
+    /// weekday schedule rather than anything fetched.
+    var peakEnabled: Bool {
+        get { defaults.bool(forKey: "notify.peak") }
+        nonmutating set { defaults.set(newValue, forKey: "notify.peak") }
+    }
+
     private func key(for kind: UsageWindow.Kind) -> String {
         "notify.\(kind.storageKey)"
     }
@@ -74,6 +81,7 @@ enum NotificationScheduler {
     private static let earlyResetPrefix = "earlyreset."
     private static let nearLimitPrefix = "nearlimit."
     private static let limitReachedPrefix = "limitreached."
+    private static let peakPrefix = "peak."
     /// How long before the projected exhaustion to fire the warning, so
     /// it's actionable rather than after the fact.
     private static let runOutLead: TimeInterval = 20 * 60
@@ -246,6 +254,74 @@ enum NotificationScheduler {
             content.sound = .default
             await add(content, prefix: limitReachedPrefix, kind: kind, to: center)
         }
+    }
+
+    // MARK: - Peak-hours alerts (recurring, from a fixed schedule)
+
+    /// Schedules "Peak hours started"/"Peak hours ended" alerts from
+    /// Claude's documented weekday schedule — 10 recurring calendar
+    /// triggers (one weekday × start/end pair each), pinned to the
+    /// schedule's own named timezone so DST is handled the same way
+    /// `PeakCalculator` handles it: by asking the zone, never a fixed
+    /// offset. Deliberately *not* part of the "reschedule every fetch"
+    /// convention the other families follow — this schedule never depends
+    /// on a fetched snapshot, so it only needs (re)scheduling once at
+    /// launch and whenever the toggle changes; call sites should not add
+    /// it to the per-fetch reschedule sweep in `RefreshService`.
+    static func reschedulePeakNotifications(
+        schedule: PeakCalculator.Schedule = ClaudePeakSchedule.current,
+        preferences: NotificationPreferences
+    ) async {
+        let center = UNUserNotificationCenter.current()
+        await removePending(withPrefix: peakPrefix, from: center)
+
+        guard preferences.peakEnabled, await canDeliver() else { return }
+        guard let timeZone = TimeZone(identifier: schedule.timeZoneIdentifier) else { return }
+
+        for weekday in schedule.weekdays {
+            await addPeakTrigger(
+                weekday: weekday, hour: schedule.startHour, timeZone: timeZone,
+                title: String(localized: "Peak hours started"),
+                body: String(localized: "Claude session usage may burn faster right now."),
+                suffix: "start",
+                to: center
+            )
+            await addPeakTrigger(
+                weekday: weekday, hour: schedule.endHour, timeZone: timeZone,
+                title: String(localized: "Peak hours ended"),
+                body: String(localized: "Claude session usage is back to its normal rate."),
+                suffix: "end",
+                to: center
+            )
+        }
+    }
+
+    private static func addPeakTrigger(
+        weekday: Int,
+        hour: Int,
+        timeZone: TimeZone,
+        title: String,
+        body: String,
+        suffix: String,
+        to center: UNUserNotificationCenter
+    ) async {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        var components = DateComponents()
+        components.timeZone = timeZone
+        components.weekday = weekday
+        components.hour = hour
+        components.minute = 0
+
+        let request = UNNotificationRequest(
+            identifier: "\(peakPrefix)\(weekday).\(suffix)",
+            content: content,
+            trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        )
+        try? await center.add(request)
     }
 
     /// Adds an immediate (nil-trigger) notification with a unique per-event

@@ -37,6 +37,10 @@ final class UsageModel {
         rebuildRefreshSchedule(interval: Preferences.load().refreshCadence.interval)
         observeWake()
         #endif
+        // Peak-hours alerts come from a fixed weekday schedule, not a
+        // fetched snapshot, so they only need scheduling once here (and
+        // whenever the toggle changes) — not on every refresh.
+        Task { await NotificationScheduler.reschedulePeakNotifications(preferences: preferences) }
     }
 
     func refresh() async {
@@ -217,6 +221,20 @@ final class UsageModel {
             guard await authorizeIfEnabling(enabled) else { return }
             preferences.limitReachedEnabled = enabled
             notificationsRevision += 1
+        }
+    }
+
+    var peakNotificationsEnabled: Bool {
+        _ = notificationsRevision
+        return preferences.peakEnabled
+    }
+
+    func setPeakNotificationsEnabled(_ enabled: Bool) {
+        Task { @MainActor in
+            guard await authorizeIfEnabling(enabled) else { return }
+            preferences.peakEnabled = enabled
+            notificationsRevision += 1
+            await NotificationScheduler.reschedulePeakNotifications(preferences: preferences)
         }
     }
 

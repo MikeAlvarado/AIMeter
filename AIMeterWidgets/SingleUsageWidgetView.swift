@@ -38,6 +38,14 @@ struct SingleUsageWidgetView: View {
                 planName: nil
             )
             Spacer(minLength: 4)
+            // Scoped to .session: that's the window the documented peak
+            // policy actually affects, so a Weekly/Credits/model pick
+            // never shows a badge that would misattribute it.
+            if entry.kind == .session, ClaudePeakStatus(at: entry.date).isPeak {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 9))
+                    .foregroundStyle(Theme.danger)
+            }
             Text(entry.kind.shortName)
                 .font(.system(size: 11))
                 .foregroundStyle(Theme.inkSecondary)
