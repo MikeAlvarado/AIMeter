@@ -1,6 +1,9 @@
 import SwiftUI
 import WidgetKit
 import UsageKit
+#if os(iOS)
+import AppIntents
+#endif
 
 /// System families show a "Claude" header plus capsule bars with reset
 /// times, mirroring the dashboard rows. All views honor the
@@ -14,7 +17,7 @@ struct UsageWidgetView: View {
             if let snapshot = entry.snapshot {
                 switch family {
                 case .systemMedium:
-                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountName: entry.accountName)
+                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
                 #if os(iOS)
                 case .accessoryCircular:
                     CircularUsageView(snapshot: snapshot, prefs: entry.prefs)
@@ -24,7 +27,7 @@ struct UsageWidgetView: View {
                     InlineUsageView(snapshot: snapshot, prefs: entry.prefs)
                 #endif
                 default:
-                    SmallUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountName: entry.accountName)
+                    SmallUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
                 }
             } else {
                 Text("Open AIMeter to load usage")
@@ -52,6 +55,7 @@ private struct WidgetHeader: View {
     /// displaying, including a future entry dated at the next peak
     /// transition (see `UsageTimelineProvider.peakTransitionEntry`).
     let date: Date
+    let accountID: String
     var accountName: String = "Claude"
 
     var body: some View {
@@ -78,13 +82,27 @@ private struct WidgetHeader: View {
                 .font(.system(size: 8))
                 .foregroundStyle(Theme.inkSecondary.opacity(0.8))
             }
+            #if os(iOS)
+            // Always present, not just while stale — a predictable, always-
+            // available manual refresh, same philosophy as the app's own
+            // Dashboard refresh button. macOS omits it: a sandboxed widget
+            // there has no credentials to fetch with (see `WidgetRefresher`).
+            Button(intent: RefreshAccountIntent(accountID: accountID)) {
+                Image(systemName: "arrow.clockwise")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(Theme.inkSecondary)
+            }
+            .buttonStyle(.plain)
+            #endif
         }
     }
 }
 
 /// One usage window as a labeled bar with its reset line under it, like
 /// the dashboard rows: name + percent, capsule bar, "Resets in 4h 10m".
-private struct WindowBarRow: View {
+/// Internal (not `private`): also reused by `AllAccountsWidgetView` for its
+/// per-account rows, so the two widgets render windows identically.
+struct WindowBarRow: View {
     let kind: UsageWindow.Kind
     let window: UsageWindow?
     let prefs: Preferences
@@ -140,12 +158,13 @@ private struct WindowBarList: View {
     let prefs: Preferences
     let count: Int
     let date: Date
+    let accountID: String
     var accountName: String = "Claude"
 
     var body: some View {
         let slots = Array(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.prefix(count))
         VStack(alignment: .leading, spacing: 0) {
-            WidgetHeader(snapshot: snapshot, date: date, accountName: accountName)
+            WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName)
             ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                 WindowBarRow(
                     kind: slot.kind,
@@ -166,10 +185,11 @@ struct SmallUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
     let date: Date
+    let accountID: String
     var accountName: String = "Claude"
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountName: accountName)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountID: accountID, accountName: accountName)
     }
 }
 
@@ -178,10 +198,11 @@ struct MediumUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
     let date: Date
+    let accountID: String
     var accountName: String = "Claude"
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountName: accountName)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountID: accountID, accountName: accountName)
     }
 }
 

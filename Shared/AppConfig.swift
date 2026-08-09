@@ -2,7 +2,13 @@ import Foundation
 
 /// Identifiers shared between the app and the widget extension.
 /// The App Group must match the entitlements of both targets exactly.
-enum AppConfig {
+///
+/// `nonisolated`: plain constants with no mutable state, so there's no
+/// reason for them to inherit the project's default MainActor isolation —
+/// that default made them inaccessible from `AppIntent.perform()`, which
+/// AppIntents runs outside the main actor regardless of this project's
+/// build setting.
+nonisolated enum AppConfig {
     static let appGroupID = "group.com.mikealvarado.aimeter"
     static let keychainService = "com.mikealvarado.aimeter"
     /// Keychain access group shared by app and widget so the widget can
@@ -24,6 +30,9 @@ enum AppConfig {
     /// Single-window widget: shows one provider/window the user picks from
     /// the widget's own Edit Widget configuration.
     static let singleWidgetKind = "AIMeterSingleUsage"
+    /// Large-only widget showing every connected account at once — no
+    /// per-instance configuration, since there's nothing to pick.
+    static let allAccountsWidgetKind = "AIMeterAllAccounts"
     static let refreshInterval: TimeInterval = 15 * 60
     /// A snapshot older than this is flagged as stale in widgets.
     static let staleAfter: TimeInterval = 30 * 60

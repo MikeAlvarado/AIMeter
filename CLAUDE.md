@@ -25,9 +25,11 @@ system, and behaviors. It should be enough to rebuild the app from zero.
   builds and even codesigns fine without the Keychain entitlement; it only
   fails at runtime on a real device (the Simulator is lenient about it).
 - Background task ID: `com.mikealvarado.aimeter.refresh`
-- Widget kinds: `AIMeterUsage` (the three-window widget) and
+- Widget kinds: `AIMeterUsage` (the three-window widget),
   `AIMeterSingleUsage` (single-window widget, user-configurable via
-  WidgetKit's `AppIntentConfiguration`).
+  WidgetKit's `AppIntentConfiguration`), and `AIMeterAllAccounts`
+  (`.systemLarge`-only, every connected account at once, no per-instance
+  configuration — see `AIMeterWidgets/CLAUDE.md`).
 
 ## Layout of the repo
 

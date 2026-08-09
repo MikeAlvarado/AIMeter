@@ -19,6 +19,14 @@ enum WidgetRefresher {
         return URLSession(configuration: config)
     }()
 
+    /// Guards a user-initiated `refreshNow` against a double-tap or button
+    /// mashing — deliberately much shorter than `AppConfig.widgetRefreshFloor`
+    /// (30 min), which protects WidgetKit's *background* refresh budget. A
+    /// direct tap is high-priority and user-initiated, not subject to that
+    /// same budget throttling, so this is just spam protection, not a real
+    /// staleness check.
+    private static let minInterval: TimeInterval = 5
+
     static func fetchIfStale(
         accountID: String,
         current: UsageSnapshot?,
@@ -27,6 +35,21 @@ enum WidgetRefresher {
         if let current, Date().timeIntervalSince(current.fetchedAt) < cadence {
             return nil
         }
+        return await fetch(accountID: accountID, previous: current)
+    }
+
+    /// Unconditional (modulo the anti-spam floor above) fetch for an
+    /// interactive widget button tap — as opposed to `fetchIfStale`'s
+    /// passive check during timeline generation.
+    static func refreshNow(accountID: String) async -> UsageSnapshot? {
+        let current = SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: accountID)
+        if let current, Date().timeIntervalSince(current.fetchedAt) < minInterval {
+            return nil
+        }
+        return await fetch(accountID: accountID, previous: current)
+    }
+
+    private static func fetch(accountID: String, previous: UsageSnapshot?) async -> UsageSnapshot? {
         let keychain = KeychainStore(
             service: AppConfig.keychainService,
             accessGroup: AppConfig.keychainAccessGroup
@@ -37,7 +60,7 @@ enum WidgetRefresher {
             transport: URLSessionTransport(session: session)
         )
         guard let fetched = try? await provider.fetchUsage() else { return nil }
-        let snapshot = fetched.fillingMissingResets(from: current)
+        let snapshot = fetched.fillingMissingResets(from: previous)
         try? SnapshotStore(suiteName: AppConfig.appGroupID)?.save(snapshot, for: accountID)
         // Keep the usage history continuous even when only the widget fetches,
         // so the run-out predictor's recent-rate stays accurate.

@@ -1,11 +1,12 @@
 ## Widgets
 
-Both kinds are `AppIntentConfiguration`, so every placed
-instance — Home Screen or Lock Screen — has its own independent account
-selection; an empty `AccountRegistryStore` (nothing connected yet, or
-the app hasn't run its one-time migration since the last update) falls
-back to a single synthetic "claude" option in both pickers rather than
-showing an empty list.
+`AIMeterUsage` and `AIMeterSingleUsage` are `AppIntentConfiguration`, so
+every placed instance — Home Screen or Lock Screen — has its own
+independent account selection; an empty `AccountRegistryStore` (nothing
+connected yet, or the app hasn't run its one-time migration since the
+last update) falls back to a single synthetic "claude" option in both
+pickers rather than showing an empty list. `AIMeterAllAccounts` (see
+below) has no picker at all.
 - `AIMeterUsage` (small & medium, `UsageAccountConfigurationIntent`):
   header (logo + the picked account's nickname) + all three bars with
   reset lines; Lock Screen accessories (circular gauge, rectangular
@@ -19,7 +20,42 @@ showing an empty list.
   Type and overflow the fixed widget height on real devices. Rows sit in
   equal flexible slices so the layout fills any family height. The
   header also shows a small peak-hours badge (see "Peak hours" in the
-  repo-root CLAUDE.md); Lock Screen accessories don't.
+  repo-root CLAUDE.md); Lock Screen accessories don't. On iOS, the header
+  also carries an always-visible manual refresh button (`RefreshAccountIntent`,
+  `Button(intent:)`) — deliberately not conditioned on staleness, same
+  "predictable, always-available" philosophy as the app's own Dashboard
+  refresh button. iOS only: a sandboxed macOS widget has no credentials to
+  fetch with (the menu bar app feeds it instead — see "App ↔ widget data
+  flows" in the repo-root CLAUDE.md), so there's nothing for a macOS tap
+  to do. The intent reuses `WidgetRefresher`'s fetch/save/record path
+  (its `refreshNow(accountID:)`, gated only by a 5s anti-spam floor, not
+  a real staleness check — a direct user tap is high-priority and isn't
+  subject to the same background-refresh budget throttling
+  `AppConfig.widgetRefreshFloor` protects), then calls
+  `WidgetCenter.shared.reloadTimelines(ofKind:)` so the tap shows fresh
+  data within a couple seconds. `isDiscoverable = false`: internal to the
+  widget's own button, not a standalone Shortcuts/Siri action. No live
+  loading state — WidgetKit can't show a spinner mid-tap, so the widget
+  just re-renders once the intent completes, same limitation every
+  interactive widget has.
+- `AIMeterAllAccounts` (`.systemLarge` only, `StaticConfiguration` — no
+  per-instance configuration, since there's nothing to pick, it always
+  shows every connected account): one compact row per account —
+  `ProviderIdentityView` at the same small size `AIMeterUsage`'s header
+  uses, the same always-visible iOS refresh button, and that account's
+  `WindowSlots` rendered as full `WindowBarRow`s — the exact same row
+  `AIMeterUsage` uses, reset lines included (internal, not `private`, in
+  `UsageWidgetViews.swift` specifically so this view can reuse it
+  unchanged rather than re-implementing a second row style). That
+  full-detail row costs real vertical room, so this is capped at the
+  first 2 accounts (registry order, same order Dashboard/menu bar already
+  use) with a "+N more" line beyond that — deliberately not a
+  `ScrollView`; static content is the safer choice for widgets. One
+  peak-hours badge for the whole widget, not repeated per account — same
+  rule the macOS menu bar popover already follows. On iOS, self-refreshes
+  every shown account's stale snapshot concurrently (`withTaskGroup`, same
+  pattern `UsageModel.refreshAll()` uses in the app) during timeline
+  generation, same as `AIMeterUsage` does for its one account.
 - `AIMeterSingleUsage` (small only): shows exactly one (account, window)
   pair the user picks from the widget's own Edit Widget UI
   (`SingleUsageConfigurationIntent`) — `UsageWindowOption`'s composite id

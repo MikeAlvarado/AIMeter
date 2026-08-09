@@ -6,5 +6,6 @@ struct AIMeterWidgetsBundle: WidgetBundle {
     var body: some Widget {
         SingleUsageWidget()
         UsageWidget()
+        AllAccountsWidget()
     }
 }

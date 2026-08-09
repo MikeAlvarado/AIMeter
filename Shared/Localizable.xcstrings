@@ -239,6 +239,17 @@
         }
       }
     },
+    "All Accounts" : {
+      "comment" : "Configuration display name of the widget that shows every connected account.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas las cuentas"
+          }
+        }
+      }
+    },
     "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -585,6 +596,17 @@
         }
       }
     },
+    "Every connected account's usage at a glance." : {
+      "comment" : "Description of the widget that shows every connected account.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El uso de cada cuenta conectada, de un vistazo."
+          }
+        }
+      }
+    },
     "Every 15 minutes" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -903,6 +925,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin rastreo ni analíticas"
+          }
+        }
+      }
+    },
+    "No usage data yet" : {
+      "comment" : "Shown for a connected account the widget hasn't fetched usage for yet.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay datos de uso"
+          }
+        }
+      }
+    },
+    "+%lld more" : {
+      "comment" : "Shown when the all-accounts widget has more connected accounts than fit — %lld is the remaining count.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld más"
           }
         }
       }
