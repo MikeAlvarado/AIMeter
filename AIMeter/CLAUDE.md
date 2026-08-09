@@ -23,8 +23,10 @@
   toggle (off by default, also shared) for the Credits row's money
   subtitle; on iOS only, a "Lock Screen widget" pill for `glanceMetric`
   (macOS's equivalent lives in Settings now — see "Display prefs" in the
-  repo-root CLAUDE.md), options read live from this account's snapshot;
-  Spend and Extra usage
+  repo-root CLAUDE.md), options read live from this account's snapshot,
+  and a "Live Activity" toggle (also iOS only — see
+  `AIMeterWidgets/CLAUDE.md`) for this account's Session countdown on the
+  Lock Screen/Dynamic Island, off by default; Spend and Extra usage
   cards (label/value rows, currency formatted) for this account; per-window
   reset notification toggles plus a **Smart notifications** card
   (`SmartNotificationTogglesCard`: Near-limit warnings with a threshold

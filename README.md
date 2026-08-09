@@ -10,20 +10,34 @@ can be added later.
 
 - **iOS 17+ / macOS 14+**, pure SwiftUI, no dependencies, no server, no
   analytics.
+- **Multiple accounts**: connect more than one Claude login (e.g. personal
+  + work) and refresh them all at once. Each gets a nickname, its own card
+  on the dashboard, its own Provider Detail screen, and its own
+  notification/Live Activity toggles — nothing is shared between accounts
+  except the handful of settings that are genuinely app-wide (appearance,
+  refresh cadence, peak-hours alerts).
 - Widgets: `systemSmall` and `systemMedium` show all three Claude windows
-  with grouped reset countdowns; Lock Screen accessories (circular,
+  for one account, with grouped reset countdowns and an always-visible
+  manual refresh button (iOS); Lock Screen accessories (circular,
   rectangular, inline) — the circular gauge follows whichever window you
-  pick as your glance metric. On iOS the widget refreshes itself in the
-  background — you don't need to open the app. On macOS, both widgets show
-  up automatically in Notification Center / the desktop and are fed by the
-  menu bar app, which is why AIMeter can keep running with no icons visible
-  (see below) — that's what keeps them from going stale.
+  pick as your glance metric. A `systemLarge` widget shows every connected
+  account at once instead of picking one. On iOS widgets refresh
+  themselves in the background — you don't need to open the app. On macOS,
+  widgets show up automatically in Notification Center / the desktop and
+  are fed by the menu bar app, which is why AIMeter can keep running with
+  no icons visible (see below) — that's what keeps them from going stale.
 - A second, single-window widget ("Single Limit") for when you only care
-  about one number — pick the provider/window (session, weekly, a
+  about one number — pick the account and window (session, weekly, a
   per-model limit, or usage credits) from the widget's own Edit Widget
   configuration.
-- Dashboard with your plan badge (Pro/Max), per-window reset countdowns,
-  and a fullscreen landscape mode on iPhone.
+- **Live Activity** (iOS): opt in per account from Provider Detail to put
+  that account's session countdown on the Lock Screen and Dynamic Island
+  while it's running — off by default. The countdown ticks live on-device
+  with no network involved; since AIMeter has no server to push updates
+  from, the percentage itself refreshes opportunistically whenever the app
+  or a widget happens to fetch next, not instantly.
+- Dashboard with one card per connected account (plan badge, per-window
+  reset countdowns), and a fullscreen landscape mode on iPhone.
 - Detail screen with the raw provider data: spend cap and extra-usage
   credits, exactly as the endpoint reports them; a **Forecast** card
   projecting which windows are on track to run out early, plus a per-row
@@ -32,13 +46,14 @@ can be added later.
   (e.g. Fable 5 on Claude Pro), the third usage row can be hidden or
   repurposed to show that spend/credit status instead of a dead
   placeholder — your choice.
-- Smart notifications, off by default and toggled individually: a reset
-  reminder per window, a near-limit warning at a threshold you set, a
-  limit-reached alert, run-out warnings when your recent pace projects an
-  early exhaustion, early-reset alerts if a window refills before its
-  scheduled date, and peak-hours alerts when Claude's documented weekday
-  peak window starts or ends — all with honest permission handling, no
-  silent failures.
+- Smart notifications, off by default and toggled individually per
+  account: a reset reminder per window, a near-limit warning at a
+  threshold you set, a limit-reached alert, run-out warnings when your
+  recent pace projects an early exhaustion, and early-reset alerts if a
+  window refills before its scheduled date. Peak-hours alerts are the one
+  exception — a single app-wide toggle in Settings, since Claude's peak
+  policy applies the same way to every account, not something to repeat
+  per login. All with honest permission handling, no silent failures.
 - Peak-hours awareness: Anthropic has documented weekday morning windows
   (5-11 AM PT) where Claude session usage burns faster. There's no API
   signal for this — confirmed by capturing live responses inside and
@@ -96,8 +111,11 @@ no analytics, no crash reporting, no third-party SDKs, no server of ours.
 (`UNUserNotificationCenter`) from the reset dates already in the snapshot
 — no push service involved.
 
-**Disconnecting** (iOS button, or macOS just uses Claude Code's login)
-deletes the stored token and the cached snapshot.
+**Disconnecting** is per account, on both platforms — a button on that
+account's Provider Detail screen deletes its stored token, cached
+snapshot, and history. The one exception is a Mac's auto-detected
+Claude Code login: there's nothing of AIMeter's own to delete there,
+since it only ever reads Claude Code's existing credentials.
 
 **Login item (macOS, opt-in)**: AIMeter never adds itself to your login
 items. Turning on "Open at Login" in Settings registers it with macOS
@@ -110,19 +128,25 @@ or written to disk. `Scripts/sample-response.json` is a captured example.
 
 ## How it gets your usage
 
-- **macOS** — zero setup. The app reads the credentials Claude Code already
-  maintains on your Mac (Keychain item `Claude Code-credentials`, falling
-  back to `~/.claude/.credentials.json`). It never modifies them: Claude
-  Code keeps owning the token refresh cycle. Requires Claude Code installed
-  and logged in.
-- **iOS** — sign in once, in the app. Tap **Connect**: AIMeter opens
-  Claude's sign-in page in your browser (same PKCE flow Claude Code uses,
-  any sign-in method works), you copy the code it shows and paste it back.
-  The app then owns its token copy — including automatic refresh — stored
-  only in the device Keychain, shared with the widget through the App Group
-  keychain access group so widgets can update themselves in the background.
-  As a fallback, the same field also accepts the full credentials JSON
-  copied from another device (`~/.claude/.credentials.json`).
+- **macOS** — zero setup for your first account. AIMeter reads the
+  credentials Claude Code already maintains on your Mac (Keychain item
+  `Claude Code-credentials`, falling back to `~/.claude/.credentials.json`).
+  It never modifies them: Claude Code keeps owning the token refresh cycle.
+  Requires Claude Code installed and logged in.
+- **iOS, and every account after the first on macOS** — sign in in the
+  app. Tap **Connect**: AIMeter opens Claude's sign-in page in your
+  browser (same PKCE flow Claude Code uses, any sign-in method works), you
+  copy the code it shows and paste it back, and optionally give the
+  account a nickname (only asked once you already have one connected — a
+  single account never needs a name). The app then owns its token copy —
+  including automatic refresh — stored only in the device Keychain, shared
+  with the widget extension through the App Group keychain access group so
+  widgets can update themselves in the background. As a fallback, the same
+  field also accepts the full credentials JSON copied from another device
+  (`~/.claude/.credentials.json`).
+- **Adding more accounts**: tap **Add account** on the dashboard any time
+  — the same Connect flow above, repeated per login. There's no limit
+  beyond what's practical to keep track of.
 
 ## Building
 
@@ -159,18 +183,28 @@ login. The token is never printed or written to disk.
 ## Architecture
 
 ```
-Packages/UsageKit     provider-agnostic Swift Package (no UI imports)
-  Core/               UsageProvider protocol, UsageSnapshot, UsageWindow
-  Providers/Claude/   all endpoint- and OAuth-specific code, isolated
-  Storage/            Keychain wrapper + App Group snapshot store
-AIMeter/              multiplatform SwiftUI app (iOS + macOS)
-AIMeterWidgets/       both widgets (the 3-window widget and Single Limit);
-                      renders App Group snapshots and, on iOS, refreshes
-                      them itself when they go stale
-Shared/               config + presentation helpers used by app and widgets,
-                      including PrivacyInfo.xcprivacy (bundled into both
-                      targets) and the shared provider header component
+Packages/UsageKit      provider-agnostic Swift Package (no UI imports)
+  Core/                UsageProvider protocol, UsageSnapshot, UsageWindow
+  Providers/Claude/    all endpoint- and OAuth-specific code, isolated
+  Storage/             Keychain wrapper + App Group snapshot store +
+                       AccountRegistryStore (the list of connected logins)
+AIMeter/                multiplatform SwiftUI app (iOS + macOS);
+                        AccountMigration upgrades a pre-multi-account
+                        install in place
+AIMeterWidgets/         AIMeterUsage (3-window), AIMeterSingleUsage (one
+                        number), AIMeterAllAccounts (every account at
+                        once), and a Live Activity (iOS) — all render App
+                        Group snapshots and, on iOS, refresh themselves
+                        when stale
+Shared/                 config + presentation helpers used by app and
+                        widgets, including PrivacyInfo.xcprivacy (bundled
+                        into both targets) and the shared provider header
+                        component
 ```
+
+Each of `AIMeter/`, `AIMeterWidgets/`, and `Packages/UsageKit/Sources/UsageKit/Providers/Claude/`
+has its own `CLAUDE.md` with the detail specific to that folder — the
+repo-root `CLAUDE.md` is the full spec that ties them together.
 
 Adding a provider = implementing `UsageProvider` (one folder under
 `Providers/`), returning `UsageWindow`s with an extensible `kind`

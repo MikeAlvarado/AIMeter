@@ -410,6 +410,15 @@ for the menu bar which already brackets the section with its own) and
 button — dashboard and menu bar, `buttonLabel`/`verticalPadding`
 parametrized per surface, caller still owns the wrapping container).
 
+Bar/percentage color is one decision, `UsageWindow.tint`
+(`Shared/WindowDisplay.swift`) — `Theme.danger` when the provider flags a
+window `critical`/`exceeded` *or* `usedPct >= 80`, `Theme.accent`
+otherwise. Two colors, nothing else, on purpose. Exposed as a static,
+`tint(usedPct:severity:)`, so a caller that only carries those two values
+(not a full `UsageWindow`) can still make the same call rather than
+re-deriving a simplified copy — the Live Activity's `ContentState` does
+exactly this (see `AIMeterWidgets/CLAUDE.md`).
+
 ## Localization
 
 English source, Spanish complete; the device language picks automatically.
@@ -477,3 +486,12 @@ region to the project's `knownRegions`.
 - Before large changes, propose the plan and wait for approval.
 - Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
   `swift test` in `Packages/UsageKit` must pass warning-free.
+- Docs follow reality, same as the data model: any change that touches
+  behavior, config, file layout, or a new feature's shape is not done
+  until every doc that describes it is updated too — this file, the
+  nested `AIMeter/CLAUDE.md` / `AIMeterWidgets/CLAUDE.md` /
+  `Packages/UsageKit/Sources/UsageKit/Providers/Claude/CLAUDE.md`, and
+  `README.md` for anything user-facing (features, setup steps, the
+  architecture tree). A stale doc is a bug, not a follow-up — this file's
+  own opening claim is that it's enough to rebuild the app from zero, and
+  that stops being true the moment one of these drifts from the code.

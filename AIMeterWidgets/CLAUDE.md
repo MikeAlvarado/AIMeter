@@ -6,7 +6,11 @@ independent account selection; an empty `AccountRegistryStore` (nothing
 connected yet, or the app hasn't run its one-time migration since the
 last update) falls back to a single synthetic "claude" option in both
 pickers rather than showing an empty list. `AIMeterAllAccounts` (see
-below) has no picker at all.
+below) has no picker at all. Both configured widgets share the same
+nil-configuration fallback (the timing edge case right after a widget is
+first placed, before the intent's default has resolved) through
+`WidgetAccountFallback.resolve()` — the first connected account, or the
+legacy sentinel if none — rather than each re-deriving it.
 - `AIMeterUsage` (small & medium, `UsageAccountConfigurationIntent`):
   header (logo + the picked account's nickname) + all three bars with
   reset lines; Lock Screen accessories (circular gauge, rectangular
@@ -137,9 +141,14 @@ above); no new target, no push entitlement.
   Dynamic Island's own standard behavior (one compact/expanded at a time,
   others collapse to `.minimal`) handles that with no special-casing here.
 - `Shared/SessionActivityAttributes.swift` (`ActivityAttributes` +
-  `ContentState: usedPct, resetsAt, isPeak`) lives in `Shared/`, synced
-  into both targets already like `Theme.swift`/`AppConfig.swift` — both
-  the app (start/update/end) and this extension (render) need the type.
+  `ContentState: usedPct, resetsAt, isPeak, severity`) lives in `Shared/`,
+  synced into both targets already like `Theme.swift`/`AppConfig.swift` —
+  both the app (start/update/end) and this extension (render) need the
+  type. `severity` rides along so the bar can call the same
+  `UsageWindow.tint(usedPct:severity:)` every other surface uses (see
+  "Design system" in the repo-root CLAUDE.md) instead of a simplified
+  percentage-only copy that would miss a provider-flagged critical window
+  under the raw threshold.
 - Presentation: chosen from 3 mocked layout concepts (Minimal, Detailed,
   Bold stat) — "Detailed" shipped, since it mirrors the row rhythm this
   app's own usage rows already use elsewhere. Lock Screen banner and the
