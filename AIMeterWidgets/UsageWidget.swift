@@ -65,9 +65,9 @@ struct UsageTimelineProvider: AppIntentTimelineProvider {
         // fall back to the first real connected account (matching
         // `UsageAccountOptionQuery.defaultResult()`) rather than assuming
         // the legacy sentinel, which a fresh multi-account install never uses.
-        let fallbackAccount = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().first
-        let accountID = configuration.account?.accountID ?? fallbackAccount?.accountID ?? ClaudeKeychainCredentialSource.legacyAccountID
-        let accountName = configuration.account?.accountName ?? fallbackAccount?.displayName ?? "Claude"
+        let fallback = WidgetAccountFallback.resolve()
+        let accountID = configuration.account?.accountID ?? fallback.accountID
+        let accountName = configuration.account?.accountName ?? fallback.accountName
         return UsageEntry(
             date: .now,
             snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: accountID),

@@ -85,9 +85,9 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
         // Same nil-configuration timing edge case as the 3-window widget:
         // fall back to the first real connected account instead of assuming
         // the legacy sentinel.
-        let fallbackAccount = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().first
-        let accountID = selection?.accountID ?? fallbackAccount?.accountID ?? ClaudeKeychainCredentialSource.legacyAccountID
-        let accountName = selection?.accountName ?? fallbackAccount?.displayName ?? "Claude"
+        let fallback = WidgetAccountFallback.resolve()
+        let accountID = selection?.accountID ?? fallback.accountID
+        let accountName = selection?.accountName ?? fallback.accountName
         return SingleUsageEntry(
             date: .now,
             snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: accountID),

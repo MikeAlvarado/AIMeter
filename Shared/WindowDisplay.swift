@@ -38,8 +38,14 @@ extension UsageWindow.Kind {
 extension UsageWindow {
     /// Terracotta throughout; red only when the provider flags trouble or
     /// the window is nearly exhausted. Two colors, nothing else.
-    var tint: Color {
-        if severity == .critical || severity == .exceeded || usedPct >= 90 {
+    var tint: Color { Self.tint(usedPct: usedPct, severity: severity) }
+
+    /// Same decision as `tint` above, callable without a full `UsageWindow`
+    /// — the Live Activity only carries `usedPct`/`severity` in its
+    /// `ContentState` (not a whole window), so it needs this reusable
+    /// instead of duplicating the threshold.
+    static func tint(usedPct: Double, severity: Severity?) -> Color {
+        if severity == .critical || severity == .exceeded || usedPct >= 80 {
             return Theme.danger
         }
         return Theme.accent
