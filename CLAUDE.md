@@ -4,7 +4,9 @@ Open source multiplatform app (iOS 17+ / macOS 14+, pure SwiftUI, no
 dependencies, no server) that shows AI subscription usage and remaining
 limits in the app, in widgets, and in the macOS menu bar. First provider:
 Claude Pro/Max. The architecture is provider-agnostic so more AI providers
-(Codex, Cursor, …) can be added as new sections later.
+(Codex, Cursor, …) can be added as new sections later, and multi-account:
+several logins of the same provider (e.g. two Claude accounts) can be
+connected and refreshed simultaneously — see "Accounts vs. providers" below.
 
 This file is the complete spec: product, data source, architecture, design
 system, and behaviors. It should be enough to rebuild the app from zero.
@@ -29,33 +31,6 @@ system, and behaviors. It should be enough to rebuild the app from zero.
 
 ## Layout of the repo
 
-```
-Packages/UsageKit     local Swift Package, provider-agnostic, pure logic
-  Core/               UsageProvider, UsageSnapshot, UsageWindow, SpendStatus,
-                      UsagePace/PaceCalculator, UsageSample/RunOutPredictor/
-                      ResetDetector/ThresholdDetector, UsageError (localized
-                      via bundle: .module)
-  Providers/Claude/   ALL Claude endpoint/OAuth specifics, isolated here
-  Storage/            KeychainStore (accessGroup-aware) + SnapshotStore +
-                      UsageHistoryStore (bounded per-window sample ring)
-  Sources/UsageKit/Resources/Localizable.xcstrings   (package strings)
-AIMeter/              multiplatform SwiftUI app (views + services)
-  Services/           RefreshService, UsageModel, NotificationScheduler,
-                      BackgroundRefresh (iOS) + macOS-only AppDelegate/
-                      AppChrome (activation policy, hiding, reopen) and
-                      LoginItemManager (SMAppService)
-  Views/              dashboard/detail/settings/menu bar + macOS-only
-                      MacChromeSettings (menu bar, hiding, startup)
-AIMeterWidgets/       both widgets — AIMeterUsage (3-window) and
-                      AIMeterSingleUsage (single window, AppIntents
-                      configuration); renders snapshots; iOS: self-fetch
-Shared/               AppConfig, Theme, components, formatting, preferences,
-                      ProviderIdentityView (shared header), PrivacyInfo.xcprivacy,
-                      Media.xcassets (Claude logos), Localizable.xcstrings
-Scripts/              probe-usage-endpoint.sh + sample-response.json
-docs/design/reference/  local-only reference screenshots (gitignored)
-```
-
 Both app targets sync the `Shared/` folder; the widget target also gets its
 assets and string catalog from there.
 
@@ -72,13 +47,40 @@ assets and string catalog from there.
   mapping code never produces it and it's never part of a persisted
   snapshot's `windows`. Widgets and views render whatever windows a
   snapshot contains; provider names are never hardcoded in rendering logic.
+- **Accounts vs. providers**: `providerID` (`UsageProvider.id`,
+  `UsageSnapshot.providerID`) identifies a provider *family* — `"claude"` —
+  and never changes per login; `accountID` identifies one specific
+  connected login of that family and is a storage/orchestration concept
+  that lives *outside* UsageKit's `Core/` — `UsageProvider`, `UsageSnapshot`,
+  and `ClaudeProvider` carry no account identity and don't need to, since
+  the caller (the app, a widget) always already knows which account it
+  asked for. `AccountRegistryStore` (`Packages/UsageKit/Storage/`) is the
+  App Group-shared list of connected `ConnectedAccount`s (accountID,
+  providerID, a user-editable `displayName`, and `credentialStrategy`:
+  `.managed` for an app-owned Keychain copy from OAuth/paste, or macOS-only
+  `.autoDetected` for the one login mirrored from Claude Code's own
+  Keychain item — capped at exactly one account, since the CLI itself only
+  ever tracks one login per machine; every other account, on either
+  platform, is `.managed`). Only the app ever writes to the registry
+  (`add`/`rename`/`remove`); the widget extension only reads
+  (`accounts()`/`account(for:)`) — same "only the app writes" invariant
+  `SnapshotStore` already had. A pre-multi-account
+  install's one account is migrated in place as the literal accountID
+  `"claude"` (not a fresh UUID) by `AccountMigration`, so its existing
+  Keychain item, `SnapshotStore`/`UsageHistoryStore` entries, and any
+  already-placed widget survive the upgrade with zero rewrite — new
+  accounts (2nd+, or the 1st on a clean post-feature install) get
+  `UUID().uuidString`.
 - App ↔ widget data flows only through the App Group `SnapshotStore`
-  (JSON-encoded snapshot per provider ID). Widgets render the last
-  snapshot; on iOS the widget may fetch for itself when the snapshot is
-  older than the refresh cadence (credentials via the shared keychain
-  access group), writing the result back to the store. On macOS the menu
-  bar app feeds the widget (a sandboxed widget can't read Claude Code's
-  credential file).
+  (JSON-encoded snapshot per `accountID`, not `providerID` — two accounts
+  of the same provider would otherwise collide on one key). Widgets render
+  the last snapshot for whichever account their `AppIntentConfiguration`
+  selection points at; on iOS the widget may fetch for itself when that
+  account's snapshot is older than the refresh cadence (credentials via
+  the shared keychain access group, keyed the same way —
+  `ClaudeKeychainCredentialSource.storageKey(for:)`), writing the result
+  back to the store. On macOS the menu bar app feeds the widget (a
+  sandboxed widget can't read Claude Code's credential file).
 - macOS widget freshness contract: both widgets appear in Notification
   Center / the desktop automatically — WidgetKit discovery, nothing to
   register — but on macOS they only ever render what the app last wrote.
@@ -93,44 +95,10 @@ assets and string catalog from there.
 - Typed errors (`UsageError`) carry the raw HTTP body so the UI can show
   exactly what the endpoint said; UI decides presentation.
 
-## Data source (Claude) — all isolated in Providers/Claude/
-
-Undocumented endpoints Claude Code uses internally. Treat as unstable; a
-server change must only touch these files. Validate against reality with
-`Scripts/probe-usage-endpoint.sh` (see `Scripts/sample-response.json` for a
-captured response) before changing the model.
-
-- `GET https://api.anthropic.com/api/oauth/usage` — rate-limit windows.
-  Modern shape is the `limits` array (kinds: `session`, `weekly_all`,
-  `weekly_scoped` + `scope.model.display_name`); top-level `five_hour` /
-  `seven_day` objects are a legacy fallback. Also `spend` (amounts in
-  `amount_minor` scaled by `exponent`) and `extra_usage` (credits scaled by
-  `decimal_places`). `resets_at` is ISO 8601 with fractional seconds, and
-  is **null for windows with no usage yet**.
-- `GET https://api.anthropic.com/api/oauth/profile` — used once to resolve
-  the plan name when credentials lack it: `account.has_claude_pro` /
-  `has_claude_max` → "pro"/"max" (max wins). Result is persisted into the
-  stored credentials.
-- Auth headers on every call: `Authorization: Bearer <token>`,
-  `anthropic-beta: oauth-2025-04-20`, and a Claude Code-like
-  `User-Agent: claude-code/<version>` — other agents hit an aggressively
-  rate-limited bucket (persistent 429s).
-- OAuth: PKCE against `https://claude.ai/oauth/authorize` (client ID
-  `9d1c250a-e61b-44d9-88ed-5944d1962f5e`, scope
-  `user:profile user:inference`); the user pastes back `<code>#<state>`
-  (an empty or malformed paste, e.g. just `"#"`, throws a typed error
-  instead of indexing a possibly-empty split result); exchange/refresh at
-  `https://console.anthropic.com/v1/oauth/token`.
-
-Credential sources:
-- macOS: `ClaudeAutoCredentialSource` — read-only mirror of Claude Code's
-  own login (Keychain item `Claude Code-credentials`, fallback
-  `~/.claude/.credentials.json`); never refreshes those tokens (that would
-  log out the CLI). Falls back to the app's own Keychain copy.
-- iOS: `ClaudeKeychainCredentialSource` — the app owns its copy (from the
-  in-app OAuth flow, or a pasted credentials JSON) and refreshes it.
-  `RefreshService` migrates pre-sharing credentials into the shared access
-  group once at init.
+Undocumented-endpoint specifics (exact URLs, headers, OAuth flow,
+credential sources) live in
+`Packages/UsageKit/Sources/UsageKit/Providers/Claude/CLAUDE.md` — loaded
+automatically when working in that directory.
 
 ## Data-shaping rules (applied at fetch time, in this order)
 
@@ -145,22 +113,48 @@ Credential sources:
 
 ## Refresh & notification behavior
 
-- `RefreshService.refresh()`: fetch → shape → save to store → record
-  history → `WidgetCenter.reloadAllTimelines()` → reschedule notifications
-  (resets + run-outs) → fire any early-reset alerts.
-- iOS app: refresh on cold launch; on foreground, always reload widget
-  timelines (covers WidgetKit's archived-render cache after app updates)
-  and refresh if the snapshot is >60 s old; `BGAppRefreshTask` at the
-  user-selected cadence (30 min / 1 h / 3 h, `RefreshCadence`) as
-  best-effort backstop.
+- `RefreshService` is scoped to one `ConnectedAccount`
+  (`init(account:)`) — `UsageModel` holds one instance per registered
+  account (`private var services: [String: RefreshService]`) plus
+  `accounts: [AccountUsage]` (account + its own snapshot/error/isRefreshing).
+  `RefreshService.refresh()`: fetch → shape → save to store (keyed by that
+  account's `accountID`) → record history → `WidgetCenter.reloadAllTimelines()`
+  → reschedule that account's notifications (resets + run-outs) → fire any
+  of that account's early-reset alerts. `UsageModel.refreshAll()` fans this
+  out to every account concurrently via `withTaskGroup` — safe, since each
+  account uses a different bearer token (no shared rate-limit bucket) and
+  `UsageModel` is `@MainActor`-isolated, so the per-account bookkeeping
+  each task does on completion is serialized even though the network
+  requests themselves run in parallel. `refresh(accountID:)` refreshes just
+  one (Provider Detail's own pull-to-refresh, one account at a time).
+- Migration: `AccountMigration.run(registry:)`, called once from
+  `UsageModel.init` before accounts are loaded. Each step gates itself
+  independently (not one shared "migrated" flag), so a crash between steps
+  can never skip a later step on the next launch: (1) registers the legacy
+  account as `ConnectedAccount(accountID: "claude", …)` if the app's own
+  Keychain already has credentials at the default key (the `.autoDetected`
+  macOS case is handled separately and lazily — see credential sources
+  above, to avoid a redundant Keychain-authorization probe); (2) copies
+  the pre-multi-account flat notification-preference keys (`notify.session`,
+  `notify.runout`, …) to their new `"claude"`-scoped equivalents so an
+  upgrading user's toggles aren't silently reset. Old keys are never
+  deleted — they're just inert once migrated.
+- iOS app: `refreshAll()` on cold launch; on foreground, always reload
+  widget timelines (covers WidgetKit's archived-render cache after app
+  updates) and `refreshAllIfStale()` (each account whose own snapshot is
+  >60 s old, independently); `BGAppRefreshTask` at the user-selected
+  cadence (30 min / 1 h / 3 h, `RefreshCadence`) as a best-effort backstop
+  — `UsageModel.refreshAllInBackground()` is a standalone static path for
+  this (the background task context has no live `UsageModel` instance to
+  reuse), reading the registry and fanning out concurrently the same way.
 - macOS: `NSBackgroundActivityScheduler` (`UsageModel.rebuildRefreshSchedule`)
   at the cadence, with a 20 % tolerance, for as long as the app runs — which
   now includes running with no visible icons at all. Deliberately *not* a
   run-loop `Timer`: an app with no visible window is a prime App Nap
   target, and Nap throttles timers unpredictably. Nothing fires while the
   Mac sleeps, so `NSWorkspace.didWakeNotification` nudges
-  `refreshIfStale(maxAge: cadence)` on wake — a no-op when the snapshot is
-  still fresh, a catch-up fetch when it isn't.
+  `refreshAllIfStale(maxAge: cadence)` on wake — a no-op for any account
+  whose snapshot is still fresh, a catch-up fetch for the rest.
 - Widget timeline: single entry, `.after(interval)` where `interval =
   max(displayCadence, AppConfig.widgetRefreshFloor)` (30 min). The widget's
   reload interval is deliberately floored *independent of* the user's
@@ -169,26 +163,36 @@ Credential sources:
   stops refreshing that widget — and then ignores even app-initiated
   `reloadAllTimelines()` until the budget replenishes (this is per widget
   *kind*, which is why a heavily-refreshed medium widget can freeze while
-  the single-usage widget stays live). The app's foreground push covers
-  freshness during active use. On iOS `getTimeline` self-fetches when the
-  stored snapshot is older than that interval, via a short-timeout
+  the single-usage widget stays live). Multiple accounts sharpen this: each
+  placed widget instance draws from the same per-*kind* budget regardless
+  of which account it's configured for, so N accounts × M widgets divides
+  one shared allowance — a known tradeoff, not something fixed in code.
+  The app's foreground push covers freshness during active use. On iOS
+  `getTimeline` self-fetches for that instance's own configured account
+  when its stored snapshot is older than that interval, via a short-timeout
   (`timeoutIntervalForRequest = 15`, `waitsForConnectivity = false`)
   URLSession so a slow request fails fast instead of wasting the refresh.
-- Usage history: `UsageHistoryStore` (App Group) keeps a bounded,
-  reset-aware ring of `(timestamp, usedPct)` samples per window — the
-  extra data (beyond the single latest snapshot) the recent-rate run-out
-  predictor needs. Recorded wherever a fetch persists a snapshot (the app
-  refresh *and* the iOS widget self-fetch, so it stays continuous when
-  only the widget runs); a used%-drop discards a kind's prior samples so a
-  rate never spans a reset. Cleared on disconnect.
-- Notifications are local only, keyed by identifier prefix
-  (`NotificationScheduler`). Four families are rescheduled/re-evaluated
-  from scratch after every successful fetch; a fifth, `peak.`, is the
-  deliberate exception (see "Peak hours" below) since it depends only on
-  a fixed weekday schedule, never on what a fetch returns — it's
-  rescheduled once at `UsageModel.init` and whenever its toggle changes
-  instead. Two of the four fetch-driven families are *scheduled* to a
-  future trigger:
+- Usage history: `UsageHistoryStore` (App Group, keyed by `accountID`)
+  keeps a bounded, reset-aware ring of `(timestamp, usedPct)` samples per
+  window — the extra data (beyond the single latest snapshot) the
+  recent-rate run-out predictor needs. Recorded wherever a fetch persists
+  a snapshot (the app refresh *and* the iOS widget self-fetch, so it stays
+  continuous when only the widget runs); a used%-drop discards a kind's
+  prior samples so a rate never spans a reset. Cleared on disconnect. Each
+  account's `observingSince` (the pace warm-up anchor) is independent, so
+  an account added later starts its own warm-up clock rather than
+  inheriting an existing account's history.
+- Notifications are local only, keyed by identifier prefix + `accountID`
+  (`NotificationScheduler`, e.g. `reset.<accountID>.<kind>`) so two
+  accounts sharing a window kind never clobber each other's pending
+  requests — the one deliberate exception is `peak.`, which stays
+  account-independent (see below). Four families are rescheduled/
+  re-evaluated from scratch after every successful fetch, scoped to just
+  that fetch's account; a fifth, `peak.`, is the deliberate exception (see
+  "Peak hours" below) since it depends only on a fixed weekday schedule,
+  never on what a fetch returns — it's rescheduled once at
+  `UsageModel.init` and whenever its toggle changes instead. Two of the
+  four fetch-driven families are *scheduled* to a future trigger:
   `reset.` (per-window `UNCalendarNotificationTrigger` at each window's
   `resetsAt`, the free baseline, per-window opt-in toggles) and `runout.`
   (per-window run-out warnings fired a lead time before a projected early
@@ -203,13 +207,24 @@ Credential sources:
   slider; a single big jump that also hits the limit yields only the more
   severe limit-reached, not both). All fire once per upward crossing (not
   on every refresh while above) and re-arm after a reset. Each `smart`
-  alert has one global toggle (near-limit adds a threshold); all off by
-  default; toggles live in the App Group. Permission is handled honestly:
-  a denied system permission snaps the toggle back off and shows a warning
-  row with an "Open Settings" shortcut; authorization is re-checked on
-  foreground. Detection-based alerts share the widget-self-fetch gap noted
-  for history — a crossing the widget applies before the app refreshes is
-  missed. Cancelled URL tasks are not surfaced as errors.
+  alert has its own toggle **per account** (near-limit adds a per-account
+  threshold) — `NotificationPreferences(accountID:)`, so muting a
+  secondary account never touches another's; `peak.` is the one alert
+  family with a single toggle shared by every account (`UsageModel`'s
+  dedicated `peakPreferences`, constructed with a documented placeholder
+  accountID since `peakEnabled` never actually reads it), since it's one
+  Claude-wide policy, not tied to a specific login. All off by default;
+  toggles live in the App Group. Once more than one account is connected,
+  a notification's title is prefixed with that account's nickname (e.g.
+  "Work — Session limit reset"); a single-account install's copy reads
+  exactly as it always has. Permission is a single OS-level toggle, not
+  per account: it's handled honestly regardless of which account's card
+  changed it — a denied system permission snaps every account's toggle
+  back off and shows a warning row with an "Open Settings" shortcut;
+  authorization is re-checked on foreground. Detection-based alerts share
+  the widget-self-fetch gap noted for history — a crossing the widget
+  applies before the app refreshes is missed. Cancelled URL tasks are not
+  surfaced as errors.
 
 ## Presentation rules
 
@@ -321,13 +336,35 @@ Credential sources:
   System/Light/Dark, refresh cadence, and `glanceMetric` — the one window
   shown by the two single-number surfaces with no room for a fixed
   three-slot layout: the macOS menu bar label and iOS's Lock Screen
-  circular gauge. One shared preference drives both. Stored as a plain
-  `UsageWindow.Kind` (not a fixed enum) so its option list scales with the
-  account: Session and Weekly always, the per-model window (e.g. Fable on
-  Max) whenever the account reports one, and Credits whenever the account
-  has it enabled *and* `modelSlotFallback` isn't Hidden
+  circular gauge. One shared preference still drives both, unchanged by
+  multi-account — each surface separately supplies *which account* to
+  read it against: on iOS every Lock Screen accessory is its own
+  `AppIntentConfiguration` instance (`AIMeterUsage`, same as the Home
+  Screen widgets), so it already carries its own account selection and
+  just applies the shared `glanceMetric` to that account's snapshot; macOS
+  has no per-instance mechanism (`MenuBarExtra` is a single scene), so a
+  new paired preference, `primaryAccountID` (`Shared/PreferencesStore.swift`,
+  Settings → `MacChromeSettings`), picks which account the one status item
+  represents (`UsageModel.primaryAccountUsage(preferredID:)`, falling back
+  to the first connected account when unset or stale). Both pickers moved
+  out of Claude's Provider Detail and into `MacChromeSettings` — with
+  several accounts there's no longer one unambiguous account whose detail
+  screen could own "which window does the menu bar read"; iOS keeps its
+  equivalent "Lock Screen widget" pill in Provider Detail, since that one
+  is still meaningfully per-account (which window *of this account* the
+  gauge reads). `glanceMetric` is stored as a plain `UsageWindow.Kind` (not
+  a fixed enum) so its option list scales with whichever account it's
+  being read against: Session and Weekly always, the per-model window
+  (e.g. Fable on Max) whenever that account reports one, and Credits
+  whenever it has that enabled *and* `modelSlotFallback` isn't Hidden
   (`UsageSnapshot.glanceOptions`) — 2 to 4 choices, same live-options
   principle `UsageWindowOptionQuery` uses for the single-window widget.
+  `modelSlotFallback` and `showCreditsAmount` themselves stay **global**
+  (one shared value for every account, not re-keyed per account) — a
+  deliberate scope simplification, not an oversight: re-scoping them would
+  also mean threading an account identity through every widget rendering
+  path that reads them, for a cosmetic edge case (two accounts wanting
+  different third-row fallback behavior) that hasn't come up.
 - macOS chrome prefs (same App Group store, macOS-only meaning):
   `menuBarShowsPercentage` (default **true**), `statusItemVisible`
   (default **true**), `hideDockIcon` (default **false**). All three default
@@ -348,154 +385,13 @@ Credential sources:
 
 ## Screens
 
-- **Dashboard**: floating gear + refresh buttons (refresh icon spins while
-  busy; soft haptic on refresh start), small centered serif "AIMeter"
-  title, then a section per provider: logo + name + Pro/Max pill (trailing)
-  → card with the three windows, error, "Updated X ago". Disconnected state
-  shows a Connect card.
-- **Provider detail** (push): rate-limit rows; a **Peak hours** card
-  (`PeakHoursCard`, see "Peak hours" above) with a live status line and a
-  "schedule as of" footnote; a **Forecast** card
-  (`ForecastCard`) listing any window projected to run out early or an
-  all-clear row; a "Third usage row" card with the Auto/Hidden/Credits
-  pill (governs the third-slot fallback above, defaults to Auto) plus a
-  "Show credit amounts" toggle (off by default) for the Credits row's
-  money subtitle; a "Menu bar" pill on macOS / "Lock Screen widget" pill
-  on iOS for `glanceMetric`, options read live from the snapshot; Spend
-  and Extra usage cards (label/value rows, currency formatted); per-window
-  reset notification toggles plus a **Smart notifications** card
-  (`SmartNotificationTogglesCard`: global Near-limit warnings with a
-  threshold slider, Limit reached, Run-out warnings, Early-reset alerts,
-  Peak-hours alerts); iOS disconnect button. All of these are
-  Claude-specific display prefs, so they live here rather than in the
-  app-wide Settings screen — a future provider's own detail view would
-  carry its own equivalents
-  instead of sharing these.
-- **Settings**: while `isDemoMode` is true, a "Demo mode" section (Exit
-  Demo action + explanatory footnote) leads the list, above everything
-  else, then appearance / display mode / reset style pills, refresh
-  cadence menu, per-window reset notification toggles + the Smart
-  notifications card, a "Privacy & data" link, and an "Open Source" row
-  (GitHub mark, opens the repo URL). iOS: sheet with Done; macOS: Settings
-  scene (wrapped in a NavigationStack so the link can push), plus the
-  macOS-only `MacChromeSettings` block — "Menu bar" (Show percentage),
-  "Hiding AIMeter" (Hide Dock icon / Hide menu bar icon, with a warning row
-  once both are hidden), and "Startup" (Open at Login, with a pending-approval
-  row and a nudge when the Dock icon is hidden but the login item is off).
-- **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
-  Keychain, no tracking, and on macOS the opt-in login item), how connecting
-  works (per platform), the exact OAuth scopes as chips + the two read-only
-  endpoints called, and the independence/MIT footer. Every claim must stay
-  true to the code.
-- The GitHub mark is a bundled PNG (`Shared/Media.xcassets/GitHubIcon`,
-  light/dark appearance variants — same mechanism as the app icon) —
-  SF Symbols has no third-party brand glyphs. It is pre-colored per
-  appearance (light accent `#D97757` / dark accent `#E08B6D`) rather than
-  tinted via `.renderingMode(.template)` at runtime: a solid-black source
-  PNG gets compiled by `actool` into a monochrome/alpha-mask rendition
-  whose `.foregroundStyle` tinting was unreliable in practice, whereas a
-  pre-colored RGBA source always compiles to a plain ARGB rendition (same
-  as `ClaudeIcon`) and just displays as-is — no template step to trust.
-- **Connect sheet**: pixel-Claude icon, explainer, "Open Claude Sign-In",
-  paste field (accepts OAuth code or full credentials JSON), Connect —
-  surfaces the connection error inline instead of dismissing on failure.
-- **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
-  `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
-  usage — so every screen (rate limits, pace, peak hours, forecast,
-  spend/extra cards) can be explored without a real Claude account. Exists
-  mainly so App Store reviewers can evaluate the app without being handed
-  credentials to a paid third-party account; also a source of screenshots
-  that doesn't expose anyone's real usage. Purely in-memory: never calls
-  `RefreshService`, never touches the App Group `SnapshotStore` or
-  `WidgetCenter`, so it can't leak into widgets or a real connection, and
-  `paceReady` short-circuits true so pace/forecast don't show the
-  "learning" state on fabricated data with no history. Scheduling a
-  `reset.`/`runout.` notification while in demo mode is a deliberate no-op
-  (`UsageModel` passes `nil` in place of the demo snapshot) so a fake
-  reset date can never produce a real notification. Entry and exit both
-  live in Settings only — a "Demo mode" section at the top of the list
-  (shown while disconnected or while demo is active, hidden once a real
-  account is connected) offers "View Demo" or "Exit Demo" accordingly; the
-  dashboard's disconnected card stays just Connect, no demo affordance, to
-  keep it from looking like a second, competing call to action. Provider
-  Detail's bottom button also becomes "Exit Demo" (both platforms) instead
-  of "Disconnect Claude" (iOS-only) while active.
-- **Landscape (iPhone)**: `verticalSizeClass == .compact` swaps the
-  dashboard for a fullscreen card with the same stacked rows.
-- **Widgets**:
-  - `AIMeterUsage` (small & medium): header (logo + "Claude") + all three
-    bars with reset lines; Lock Screen accessories (circular gauge,
-    rectangular list, inline). Rectangular and inline show all three
-    `WindowSlots`, credits included under the third-row fallback; the
-    circular gauge has room for one number, so it shows whichever window
-    `glanceMetric` points at (Provider Detail). Widget fonts are fixed
-    sizes (12/11/9 pt) on purpose — text styles scale with Dynamic Type
-    and overflow the fixed widget height on real devices. Rows sit in
-    equal flexible slices so the layout fills any family height. The
-    header also shows a small peak-hours badge (see "Peak hours" above);
-    Lock Screen accessories don't.
-  - `AIMeterSingleUsage` (small only): shows exactly one window the user
-    picks from the widget's own Edit Widget UI
-    (`SingleUsageConfigurationIntent`, `AppIntentConfiguration`) —
-    provider/window options are read live from the last stored snapshot
-    (`UsageWindowOptionQuery`), including "Credits" when the fallback
-    above is on and there's no real model window, so the list always
-    matches what the account actually has instead of a name baked in at
-    build time. Its header shows the same peak-hours badge, but only when
-    the picked window is `.session` — the only window the documented
-    policy actually affects.
-- **macOS menu bar**: header (logo + "Claude" + plan pill, via
-  `ProviderIdentityView`) + divider, popover with the same rows,
-  refresh/settings/quit. The label (`MenuBarLabel`) is a variable-value
-  `gauge.with.needle` whose fill tracks the `glanceMetric` window's
-  *displayed* percentage (so a "Remaining" reading never contradicts its own
-  gauge), with the number spelled out beside it only when
-  `menuBarShowsPercentage` is on. Either way the exact value stays in the
-  `.help` tooltip and the accessibility label — icon-only mode must never be
-  the only place the number lived. The whole status item disappears when
-  `statusItemVisible` is off (`MenuBarExtra(isInserted:)`). Peak-hours
-  state folds into that same tooltip/accessibility text rather than a
-  second glyph on the status item itself (see "Peak hours" above); the
-  popover header shows a visible bolt badge instead, where there's room.
-- **macOS hiding & re-entry** (`AppDelegate` + `AppChrome`, the project's
-  only AppDelegate — SwiftUI has no scene hook for either concern):
-  - `hideDockIcon` → `.accessory` activation policy, applied in
-    `applicationWillFinishLaunching` so a hidden icon never flashes.
-  - `.accessory` does **not** suppress `WindowGroup`'s auto-open (measured —
-    the window is up by `applicationDidFinishLaunching`), so the delegate
-    closes it explicitly, but *only* while `statusItemVisible` is true.
-    With both icons hidden the dashboard is the app's sole affordance, so
-    launching has to produce it or the app would be unreachable — that
-    combination is the one case where a launch legitimately shows a window.
-  - Re-entry when everything is hidden is **relaunching the app**
-    (Finder/Spotlight/`open -a`), which fires
-    `applicationShouldHandleReopen` — verified to arrive with no Dock icon
-    and no status item, and without spawning a second instance. It reveals
-    the dashboard without clearing the hidden prefs: needing to relaunch
-    once shouldn't permanently undo the user's chosen chrome. There is no
-    global hotkey, deliberately — it would cost an Accessibility/Input
-    Monitoring TCC permission to guard a path that already works.
-  - AppKit callbacks can't reach SwiftUI's `openWindow`, so the dashboard
-    scene publishes it to `AppChrome.openDashboard` on appear — same
-    bridging shape as `AppEnvironment.shared` for the refresh schedule.
-    Dashboard windows are matched by the identifier SwiftUI derives from
-    `WindowGroup(id:)` (`dashboard-AppWindow-…`) so the Settings window,
-    also main-capable, is never mistaken for one.
-  - **Quit still means quit.** Hiding changes only what is visible; the menu
-    bar Quit button remains an unconditional `NSApp.terminate`.
+Screen-by-screen behavior lives in `AIMeter/CLAUDE.md` (Dashboard, Provider
+detail, Settings, Privacy & data, Connect sheet, Demo mode, Landscape,
+macOS menu bar, macOS hiding & re-entry) and `AIMeterWidgets/CLAUDE.md`
+(both widget kinds) — loaded automatically when working under those
+directories.
 
 ## Design system (Shared/Theme.swift)
-
-Warm, editorial, Claude-inspired. Terracotta accent `#D97757` (dark
-`#E08B6D`), danger `#B3261E`/`#E5695E`, ivory background `#FAF9F5` (dark
-`#262624`), card white/`#30302E`, track `#EDEAE1`/`#3E3D3A`, ink
-`#1F1E1D`/`#FAF9F5`, secondary `#87867F`/`#9B9A93`. Serif is reserved for
-the app title; monospaced digits for all percentages. Cards: 20 pt
-continuous radius, 16 pt padding, capsule bars 6 pt tall. Elevation: soft
-wide shadow (black 7 %, r16 y8) + tight contact shadow (4 %, r2 y1) on
-cards and floating buttons. Assets: `ClaudeIcon` (starburst) for headers,
-`ClaudeCodeIcon` (pixel creature) for the connect sheet; app icon has
-light/dark/tinted iOS variants + rounded-rect macOS sizes.
 
 `Shared/ProviderIdentityView.swift` is the one place that draws "icon +
 name + optional plan pill" — parametrized by icon size/corner radius,
