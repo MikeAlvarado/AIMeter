@@ -4,10 +4,20 @@ import UsageKit
 
 /// Notification toggles, stored in the App Group so future surfaces (e.g.
 /// widget configuration) can read them too. All off by default. Per-window
-/// "reset" toggles are the free baseline; the two "smart" toggles
-/// (run-out warnings, early-reset alerts) are global across windows.
+/// "reset" toggles are the free baseline; the "smart" toggles (run-out
+/// warnings, early-reset alerts, near-limit, limit-reached) are global
+/// across windows but scoped to one `accountID` — each connected account
+/// has its own independent set, so muting a secondary account never
+/// touches another's. `peakEnabled` is the deliberate exception: it's one
+/// Claude-wide policy, not tied to any specific account, so its key stays
+/// unscoped regardless of which account's `NotificationPreferences` reads it.
 struct NotificationPreferences {
+    let accountID: String
     private let defaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
+
+    init(accountID: String) {
+        self.accountID = accountID
+    }
 
     func isEnabled(for kind: UsageWindow.Kind) -> Bool {
         defaults.bool(forKey: key(for: kind))
@@ -19,58 +29,64 @@ struct NotificationPreferences {
 
     /// "At this rate, [window] runs out before it resets" warnings.
     var runOutWarningsEnabled: Bool {
-        get { defaults.bool(forKey: "notify.runout") }
-        nonmutating set { defaults.set(newValue, forKey: "notify.runout") }
+        get { defaults.bool(forKey: scopedKey("notify.runout")) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.runout")) }
     }
 
     /// "[window] refilled early" alerts.
     var earlyResetAlertsEnabled: Bool {
-        get { defaults.bool(forKey: "notify.earlyReset") }
-        nonmutating set { defaults.set(newValue, forKey: "notify.earlyReset") }
+        get { defaults.bool(forKey: scopedKey("notify.earlyReset")) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.earlyReset")) }
     }
 
     /// "[window] nearing its limit" warnings, fired when used% crosses
     /// `nearLimitThreshold` upward.
     var nearLimitEnabled: Bool {
-        get { defaults.bool(forKey: "notify.nearLimit") }
-        nonmutating set { defaults.set(newValue, forKey: "notify.nearLimit") }
+        get { defaults.bool(forKey: scopedKey("notify.nearLimit")) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.nearLimit")) }
     }
 
     /// User-set used% at which the near-limit warning fires. Default 80,
     /// kept below the limit-reached threshold so the two don't collide.
     var nearLimitThreshold: Double {
         get {
-            let stored = defaults.double(forKey: "notify.nearLimitThreshold")
+            let stored = defaults.double(forKey: scopedKey("notify.nearLimitThreshold"))
             return stored == 0 ? 80 : stored
         }
         nonmutating set {
-            defaults.set(min(95, max(50, newValue)), forKey: "notify.nearLimitThreshold")
+            defaults.set(min(95, max(50, newValue)), forKey: scopedKey("notify.nearLimitThreshold"))
         }
     }
 
     /// "[window] limit reached" alerts (message adapts to whether the
     /// account has credits).
     var limitReachedEnabled: Bool {
-        get { defaults.bool(forKey: "notify.limitReached") }
-        nonmutating set { defaults.set(newValue, forKey: "notify.limitReached") }
+        get { defaults.bool(forKey: scopedKey("notify.limitReached")) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.limitReached")) }
     }
 
     /// "Peak hours started/ended" alerts, scheduled from Claude's fixed
-    /// weekday schedule rather than anything fetched.
+    /// weekday schedule rather than anything fetched. Deliberately global —
+    /// see the type doc above.
     var peakEnabled: Bool {
         get { defaults.bool(forKey: "notify.peak") }
         nonmutating set { defaults.set(newValue, forKey: "notify.peak") }
     }
 
     private func key(for kind: UsageWindow.Kind) -> String {
-        "notify.\(kind.storageKey)"
+        scopedKey("notify.\(kind.storageKey)")
+    }
+
+    private func scopedKey(_ base: String) -> String {
+        "\(base).\(accountID)"
     }
 }
 
 /// Schedules the local notifications, all rescheduled from scratch after
 /// every successful fetch so they track what the endpoint currently
-/// reports. Three independent families, each keyed by its own identifier
-/// prefix so they never clobber one another:
+/// reports. Every identifier includes the triggering account's id (except
+/// `peak.`, which is account-independent) so two accounts with the same
+/// window kind never clobber each other's pending requests:
 /// - `reset.` — per-window, fires at the window's `resetsAt` ("back to full").
 /// - `runout.` — per-window run-out warnings, fired ahead of a projected
 ///   early exhaustion (recent-rate projection supplied by the caller).
@@ -119,9 +135,14 @@ enum NotificationScheduler {
 
     // MARK: - Reset notifications (per-window, at resetsAt)
 
-    static func rescheduleResets(for snapshot: UsageSnapshot?, preferences: NotificationPreferences) async {
+    static func rescheduleResets(
+        for snapshot: UsageSnapshot?,
+        accountID: String,
+        accountLabel: String? = nil,
+        preferences: NotificationPreferences
+    ) async {
         let center = UNUserNotificationCenter.current()
-        await removePending(withPrefix: identifierPrefix, from: center)
+        await removePending(withPrefix: identifierPrefix + accountID + ".", from: center)
 
         guard let snapshot, await canDeliver() else { return }
 
@@ -131,7 +152,7 @@ enum NotificationScheduler {
                   resetsAt > Date() else { continue }
 
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "\(window.kind.displayName) limit reset")
+            content.title = labeled(String(localized: "\(window.kind.displayName) limit reset"), accountLabel)
             content.body = String(localized: "Your \(window.kind.displayName) usage window has reset. Full capacity available.")
             content.sound = .default
 
@@ -140,7 +161,7 @@ enum NotificationScheduler {
                 from: resetsAt
             )
             let request = UNNotificationRequest(
-                identifier: identifierPrefix + window.kind.storageKey,
+                identifier: identifierPrefix + accountID + "." + window.kind.storageKey,
                 content: content,
                 trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             )
@@ -156,11 +177,13 @@ enum NotificationScheduler {
     /// deceleration removes a warning that no longer applies.
     static func rescheduleRunOuts(
         _ projections: [UsageWindow.Kind: RunOutProjection],
+        accountID: String,
+        accountLabel: String? = nil,
         preferences: NotificationPreferences,
         now: Date = Date()
     ) async {
         let center = UNUserNotificationCenter.current()
-        await removePending(withPrefix: runOutPrefix, from: center)
+        await removePending(withPrefix: runOutPrefix + accountID + ".", from: center)
 
         guard preferences.runOutWarningsEnabled, await canDeliver() else { return }
 
@@ -175,7 +198,7 @@ enum NotificationScheduler {
 
             let earlyBy = UsageFormatting.relativeString(from: projection.projectedExhaustion, to: projection.resetsAt)
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "\(kind.displayName) running low")
+            content.title = labeled(String(localized: "\(kind.displayName) running low"), accountLabel)
             content.body = String(localized: "At this rate it runs out about \(earlyBy) before it resets.")
             content.sound = .default
 
@@ -184,7 +207,7 @@ enum NotificationScheduler {
                 from: fireDate
             )
             let request = UNNotificationRequest(
-                identifier: runOutPrefix + kind.storageKey,
+                identifier: runOutPrefix + accountID + "." + kind.storageKey,
                 content: content,
                 trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             )
@@ -197,19 +220,24 @@ enum NotificationScheduler {
     /// Posts an immediate alert for each window that refilled before its
     /// scheduled reset. Not scheduled — the event already happened — so it
     /// delivers right away (nil trigger).
-    static func notifyEarlyResets(_ kinds: [UsageWindow.Kind], preferences: NotificationPreferences) async {
+    static func notifyEarlyResets(
+        _ kinds: [UsageWindow.Kind],
+        accountID: String,
+        accountLabel: String? = nil,
+        preferences: NotificationPreferences
+    ) async {
         guard preferences.earlyResetAlertsEnabled, !kinds.isEmpty, await canDeliver() else { return }
         let center = UNUserNotificationCenter.current()
 
         for kind in kinds {
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "\(kind.displayName) refilled early")
+            content.title = labeled(String(localized: "\(kind.displayName) refilled early"), accountLabel)
             content.body = String(localized: "Your \(kind.displayName) limit reset ahead of schedule — full capacity available.")
             content.sound = .default
 
             // A unique id per event so repeated early resets each notify.
             let request = UNNotificationRequest(
-                identifier: earlyResetPrefix + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
+                identifier: earlyResetPrefix + accountID + "." + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
                 content: content,
                 trigger: nil
             )
@@ -221,17 +249,23 @@ enum NotificationScheduler {
 
     /// Posts an immediate warning for each window that just crossed the
     /// near-limit threshold. `current` supplies the real used% for the copy.
-    static func notifyNearLimit(_ kinds: [UsageWindow.Kind], in current: UsageSnapshot, preferences: NotificationPreferences) async {
+    static func notifyNearLimit(
+        _ kinds: [UsageWindow.Kind],
+        in current: UsageSnapshot,
+        accountID: String,
+        accountLabel: String? = nil,
+        preferences: NotificationPreferences
+    ) async {
         guard preferences.nearLimitEnabled, !kinds.isEmpty, await canDeliver() else { return }
         let center = UNUserNotificationCenter.current()
 
         for kind in kinds {
             let used = current.windows.first { $0.kind == kind }?.usedPct ?? 0
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "\(kind.displayName) nearing its limit")
+            content.title = labeled(String(localized: "\(kind.displayName) nearing its limit"), accountLabel)
             content.body = String(localized: "You're at \(Int(used))% of this window.")
             content.sound = .default
-            await add(content, prefix: nearLimitPrefix, kind: kind, to: center)
+            await add(content, prefix: nearLimitPrefix, accountID: accountID, kind: kind, to: center)
         }
     }
 
@@ -240,20 +274,35 @@ enum NotificationScheduler {
     /// Posts an immediate alert for each window that just hit its limit. The
     /// body adapts: when the account has credits enabled, continuing draws
     /// on them; otherwise the window is blocked until it resets.
-    static func notifyLimitReached(_ kinds: [UsageWindow.Kind], in current: UsageSnapshot, preferences: NotificationPreferences) async {
+    static func notifyLimitReached(
+        _ kinds: [UsageWindow.Kind],
+        in current: UsageSnapshot,
+        accountID: String,
+        accountLabel: String? = nil,
+        preferences: NotificationPreferences
+    ) async {
         guard preferences.limitReachedEnabled, !kinds.isEmpty, await canDeliver() else { return }
         let center = UNUserNotificationCenter.current()
         let hasCredits = current.spend?.enabled ?? false
 
         for kind in kinds {
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "\(kind.displayName) limit reached")
+            content.title = labeled(String(localized: "\(kind.displayName) limit reached"), accountLabel)
             content.body = hasCredits
                 ? String(localized: "Further usage now draws on your usage credits.")
                 : String(localized: "You're blocked on this limit until it resets.")
             content.sound = .default
-            await add(content, prefix: limitReachedPrefix, kind: kind, to: center)
+            await add(content, prefix: limitReachedPrefix, accountID: accountID, kind: kind, to: center)
         }
+    }
+
+    /// Prefixes a notification title with the account's nickname — only
+    /// when the caller supplied one, which `RefreshService` only does once
+    /// more than one account is connected, so a single-account install's
+    /// notifications read exactly as they always have.
+    private static func labeled(_ title: String, _ accountLabel: String?) -> String {
+        guard let accountLabel else { return title }
+        return "\(accountLabel) — \(title)"
     }
 
     // MARK: - Peak-hours alerts (recurring, from a fixed schedule)
@@ -326,9 +375,15 @@ enum NotificationScheduler {
 
     /// Adds an immediate (nil-trigger) notification with a unique per-event
     /// id, so repeated crossings each deliver rather than replacing.
-    private static func add(_ content: UNMutableNotificationContent, prefix: String, kind: UsageWindow.Kind, to center: UNUserNotificationCenter) async {
+    private static func add(
+        _ content: UNMutableNotificationContent,
+        prefix: String,
+        accountID: String,
+        kind: UsageWindow.Kind,
+        to center: UNUserNotificationCenter
+    ) async {
         let request = UNNotificationRequest(
-            identifier: prefix + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
+            identifier: prefix + accountID + "." + kind.storageKey + "." + String(Int(Date().timeIntervalSince1970)),
             content: content,
             trigger: nil
         )

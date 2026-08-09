@@ -38,13 +38,13 @@ struct ContentView: View {
                     await model.refreshNotificationAuthorization()
                     // Coming back to the foreground: fetch fresh usage
                     // (throttled) so app and widgets update right away.
-                    await model.refreshIfStale()
+                    await model.refreshAllIfStale()
                 }
             }
         }
         #endif
         .task {
-            await model.refresh()
+            await model.refreshAll()
         }
     }
 

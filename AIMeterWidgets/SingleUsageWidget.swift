@@ -5,9 +5,9 @@ import UsageKit
 struct SingleUsageEntry: TimelineEntry {
     let date: Date
     let snapshot: UsageSnapshot?
-    let providerID: String
+    let accountID: String
     let kind: UsageWindow.Kind
-    let providerName: String
+    let accountName: String
     let prefs: Preferences
 
     var window: UsageWindow? {
@@ -27,9 +27,9 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
         SingleUsageEntry(
             date: .now,
             snapshot: .sample,
-            providerID: "claude",
+            accountID: ClaudeKeychainCredentialSource.legacyAccountID,
             kind: .session,
-            providerName: "Claude",
+            accountName: "Claude",
             prefs: Preferences()
         )
     }
@@ -47,15 +47,16 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
         let interval = max(current.prefs.refreshCadence.interval, AppConfig.widgetRefreshFloor)
         #if os(iOS)
         if let fresh = await WidgetRefresher.fetchIfStale(
+            accountID: current.accountID,
             current: current.snapshot,
             cadence: interval
         ) {
             current = SingleUsageEntry(
                 date: .now,
                 snapshot: fresh,
-                providerID: current.providerID,
+                accountID: current.accountID,
                 kind: current.kind,
-                providerName: current.providerName,
+                accountName: current.accountName,
                 prefs: current.prefs
             )
         }
@@ -70,9 +71,9 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
             entries.append(SingleUsageEntry(
                 date: transition,
                 snapshot: current.snapshot,
-                providerID: current.providerID,
+                accountID: current.accountID,
                 kind: current.kind,
-                providerName: current.providerName,
+                accountName: current.accountName,
                 prefs: current.prefs
             ))
         }
@@ -81,13 +82,18 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
 
     private func entry(for configuration: SingleUsageConfigurationIntent) -> SingleUsageEntry {
         let selection = configuration.window
-        let providerID = selection?.providerID ?? "claude"
+        // Same nil-configuration timing edge case as the 3-window widget:
+        // fall back to the first real connected account instead of assuming
+        // the legacy sentinel.
+        let fallbackAccount = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().first
+        let accountID = selection?.accountID ?? fallbackAccount?.accountID ?? ClaudeKeychainCredentialSource.legacyAccountID
+        let accountName = selection?.accountName ?? fallbackAccount?.displayName ?? "Claude"
         return SingleUsageEntry(
             date: .now,
-            snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: providerID),
-            providerID: providerID,
+            snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: accountID),
+            accountID: accountID,
             kind: selection?.kind ?? .session,
-            providerName: selection?.providerName ?? "Claude",
+            accountName: accountName,
             prefs: Preferences.load()
         )
     }

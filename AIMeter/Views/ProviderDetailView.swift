@@ -2,11 +2,17 @@ import SwiftUI
 import UsageKit
 
 /// Claude detail: the same windows in full, plus per-window reset
-/// notifications and (iOS) disconnect.
+/// notifications and disconnect.
 struct ProviderDetailView: View {
+    let accountID: String
+
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
     @Environment(\.dismiss) private var dismiss
+
+    private var usage: UsageModel.AccountUsage? {
+        model.usage(for: accountID)
+    }
 
     var body: some View {
         @Bindable var prefs = prefs
@@ -16,8 +22,8 @@ struct ProviderDetailView: View {
                 SectionHeader(title: String(localized: "Rate limits"))
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                        WindowRowsList(snapshot: model.snapshot, showsPace: true)
-                        UsageStatusFooter(snapshot: model.snapshot, error: model.lastError)
+                        WindowRowsList(snapshot: usage?.snapshot, accountID: accountID, showsPace: true)
+                        UsageStatusFooter(snapshot: usage?.snapshot, error: usage?.lastError)
                     }
                 }
 
@@ -27,11 +33,11 @@ struct ProviderDetailView: View {
                 PeakHoursCard(status: peakStatus)
                 SectionFootnote(text: "\(peakStatus.scheduleDescription) \(peakStatus.lastVerifiedLabel)")
 
-                if let snapshot = model.snapshot, !snapshot.windows.isEmpty {
+                if let snapshot = usage?.snapshot, !snapshot.windows.isEmpty {
                     SectionHeader(title: String(localized: "Forecast"))
                         .padding(.top, Theme.sectionSpacing - 10)
-                    ForecastCard(snapshot: snapshot, ready: model.paceReady)
-                    if model.paceReady {
+                    ForecastCard(snapshot: snapshot, ready: model.paceReady(for: accountID))
+                    if model.paceReady(for: accountID) {
                         SectionFootnote(text: String(localized: "Projected from your average pace so far this window. It refines as you use more."))
                     }
                 }
@@ -55,23 +61,33 @@ struct ProviderDetailView: View {
                 }
                 SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line."))
 
+                #if os(iOS)
+                // macOS's equivalent (which window the menu bar gauge
+                // reads) moved to Settings → MacChromeSettings: with
+                // several accounts there's no longer one unambiguous
+                // account whose Provider Detail could own that control.
+                // iOS keeps this here — each Lock Screen widget instance
+                // already picks its own account via Edit Widget, and this
+                // still decides which of that account's windows the
+                // circular gauge reads.
                 SectionHeader(title: glanceSectionTitle)
                     .padding(.top, Theme.sectionSpacing - 10)
                 Card {
                     SegmentedPill(
-                        options: UsageSnapshot.glanceOptions(for: model.snapshot, modelSlotFallback: prefs.modelSlotFallback).map { ($0, $0.shortName) },
+                        options: UsageSnapshot.glanceOptions(for: usage?.snapshot, modelSlotFallback: prefs.modelSlotFallback).map { ($0, $0.shortName) },
                         selection: $prefs.glanceMetric
                     )
                 }
                 SectionFootnote(text: glanceFootnote)
+                #endif
 
-                if let spend = model.snapshot?.spend {
+                if let spend = usage?.snapshot?.spend {
                     SectionHeader(title: String(localized: "Spend"))
                         .padding(.top, Theme.sectionSpacing - 10)
                     DetailRowsCard(rows: spendRows(spend))
                 }
 
-                if let extra = model.snapshot?.extraUsage {
+                if let extra = usage?.snapshot?.extraUsage {
                     SectionHeader(title: String(localized: "Extra usage"))
                         .padding(.top, Theme.sectionSpacing - 10)
                     DetailRowsCard(rows: extraUsageRows(extra))
@@ -79,12 +95,12 @@ struct ProviderDetailView: View {
 
                 SectionHeader(title: String(localized: "Notifications"))
                     .padding(.top, Theme.sectionSpacing - 10)
-                NotificationTogglesCard()
+                NotificationTogglesCard(accountID: accountID)
                 SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
 
                 SectionHeader(title: String(localized: "Smart notifications"))
                     .padding(.top, Theme.sectionSpacing - 10)
-                SmartNotificationTogglesCard()
+                SmartNotificationTogglesCard(accountID: accountID)
                 SectionFootnote(text: SmartNotificationTogglesCard.footnote)
 
                 if model.isDemoMode {
@@ -99,14 +115,12 @@ struct ProviderDetailView: View {
                             .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous))
                     }
                     .padding(.top, Theme.sectionSpacing - 10)
-                }
-                #if os(iOS)
-                if !model.isDemoMode {
+                } else {
                     Button(role: .destructive) {
-                        model.disconnect()
+                        model.disconnect(accountID: accountID)
                         dismiss()
                     } label: {
-                        Text("Disconnect Claude")
+                        Text("Disconnect \(usage?.account.displayName ?? "Claude")")
                             .font(.body.weight(.medium))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
@@ -114,32 +128,25 @@ struct ProviderDetailView: View {
                     }
                     .padding(.top, Theme.sectionSpacing - 10)
                 }
-                #endif
             }
             .padding(20)
         }
         .background(Theme.background)
-        .navigationTitle("Claude")
+        .navigationTitle(usage?.account.displayName ?? "Claude")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
     }
 
+    #if os(iOS)
     private var glanceSectionTitle: String {
-        #if os(macOS)
-        String(localized: "Menu bar")
-        #else
         String(localized: "Lock Screen widget")
-        #endif
     }
 
     private var glanceFootnote: String {
-        #if os(macOS)
-        String(localized: "Which usage window shows as the percentage in the menu bar. Options match what this account actually reports.")
-        #else
         String(localized: "Which usage window the Lock Screen circular widget shows. Options match what this account actually reports.")
-        #endif
     }
+    #endif
 
     private func spendRows(_ spend: SpendStatus) -> [(String, String)] {
         var rows = [(String(localized: "Enabled"), yesNo(spend.enabled))]
@@ -300,48 +307,46 @@ private struct ForecastCard: View {
     }
 }
 
-/// The global "smart" notification toggles. All gate permission through
-/// `UsageModel` and fire on detection at fetch time (near-limit /
-/// limit-reached / early-reset) or are scheduled ahead (run-out). Near-limit
-/// reveals a threshold slider when on.
+/// This account's "smart" notification toggles: near-limit, limit-reached,
+/// run-out, and early-reset — all gate permission through `UsageModel` and
+/// fire on detection at fetch time (near-limit / limit-reached /
+/// early-reset) or are scheduled ahead (run-out). Peak-hours alerts are a
+/// separate toggle in Settings, not here — it's one Claude-wide policy
+/// (`UsageModel.peakPreferences`) shared by every account, not tied to
+/// this one. Near-limit reveals a threshold slider when on.
 struct SmartNotificationTogglesCard: View {
+    let accountID: String
     @Environment(UsageModel.self) private var model
 
-    /// Shared caption for the section, used by both Provider Detail and
-    /// Settings so the four alerts are described in one place.
+    /// Shared caption for the section.
     static var footnote: String {
-        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Peak-hours alerts notify when Claude's documented weekday peak window starts or ends.")
+        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule.")
     }
 
     var body: some View {
         Card {
             VStack(spacing: Theme.rowSpacing) {
                 toggle(String(localized: "Near-limit warnings"),
-                       isOn: model.nearLimitEnabled,
-                       set: model.setNearLimitEnabled)
-                if model.nearLimitEnabled {
+                       isOn: model.nearLimitEnabled(for: accountID),
+                       set: { model.setNearLimitEnabled($0, accountID: accountID) })
+                if model.nearLimitEnabled(for: accountID) {
                     thresholdRow
                 }
 
                 divider
                 toggle(String(localized: "Limit reached"),
-                       isOn: model.limitReachedEnabled,
-                       set: model.setLimitReachedEnabled)
+                       isOn: model.limitReachedEnabled(for: accountID),
+                       set: { model.setLimitReachedEnabled($0, accountID: accountID) })
 
                 divider
                 toggle(String(localized: "Run-out warnings"),
-                       isOn: model.runOutWarningsEnabled,
-                       set: model.setRunOutWarningsEnabled)
+                       isOn: model.runOutWarningsEnabled(for: accountID),
+                       set: { model.setRunOutWarningsEnabled($0, accountID: accountID) })
 
                 divider
                 toggle(String(localized: "Early-reset alerts"),
-                       isOn: model.earlyResetAlertsEnabled,
-                       set: model.setEarlyResetAlertsEnabled)
-
-                divider
-                toggle(String(localized: "Peak-hours alerts"),
-                       isOn: model.peakNotificationsEnabled,
-                       set: model.setPeakNotificationsEnabled)
+                       isOn: model.earlyResetAlertsEnabled(for: accountID),
+                       set: { model.setEarlyResetAlertsEnabled($0, accountID: accountID) })
             }
         }
         .task {
@@ -366,12 +371,15 @@ struct SmartNotificationTogglesCard: View {
                 .font(Theme.caption)
                 .foregroundStyle(Theme.inkSecondary)
             Slider(
-                value: Binding(get: { model.nearLimitThreshold }, set: { model.setNearLimitThreshold($0) }),
+                value: Binding(
+                    get: { model.nearLimitThreshold(for: accountID) },
+                    set: { model.setNearLimitThreshold($0, accountID: accountID) }
+                ),
                 in: 50...95,
                 step: 5
             )
             .tint(Theme.accent)
-            Text("\(Int(model.nearLimitThreshold))%")
+            Text("\(Int(model.nearLimitThreshold(for: accountID)))%")
                 .font(Theme.caption.monospacedDigit())
                 .foregroundStyle(Theme.ink)
                 .frame(width: 42, alignment: .trailing)
@@ -407,18 +415,23 @@ private struct DetailRowsCard: View {
     }
 }
 
-/// Per-window notification toggles over the three fixed slots. When the
-/// system permission is denied, a warning row with a settings shortcut
-/// replaces the silent no-op.
+/// Per-window notification toggles over the three fixed slots, for one
+/// account. When the system permission is denied, a warning row with a
+/// settings shortcut replaces the silent no-op.
 struct NotificationTogglesCard: View {
+    let accountID: String
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
     @Environment(\.openURL) private var openURL
 
+    private var snapshot: UsageSnapshot? {
+        model.usage(for: accountID)?.snapshot
+    }
+
     var body: some View {
         Card {
             VStack(spacing: Theme.rowSpacing) {
-                let slots = WindowSlots(snapshot: model.snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
+                let slots = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
                 ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                     if index > 0 {
                         Divider().overlay(Theme.track)
@@ -472,8 +485,8 @@ struct NotificationTogglesCard: View {
 
     private func binding(for kind: UsageWindow.Kind) -> Binding<Bool> {
         Binding(
-            get: { model.notificationsEnabled(for: kind) },
-            set: { model.setNotificationsEnabled($0, for: kind) }
+            get: { model.notificationsEnabled(for: kind, accountID: accountID) },
+            set: { model.setNotificationsEnabled($0, for: kind, accountID: accountID) }
         )
     }
 }

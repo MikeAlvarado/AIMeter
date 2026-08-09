@@ -99,6 +99,13 @@ struct Preferences: Sendable {
     /// default — opt-in extra detail, only visible when a Credits row is
     /// actually showing.
     var showCreditsAmount: Bool = false
+    /// Which connected account the macOS status item's gauge tracks.
+    /// `MenuBarExtra` has no per-instance configuration the way widgets do
+    /// (there's exactly one status item), so this is the one place a
+    /// "primary" account has to be picked explicitly. nil (or an account
+    /// that's since been disconnected) falls back to the first connected
+    /// account — see `MacChromeSettings`/`AIMeterApp`.
+    var primaryAccountID: String?
 
     // MARK: macOS chrome
     //
@@ -131,6 +138,7 @@ struct Preferences: Sendable {
         static let modelSlotFallback = "pref.modelSlotFallback"
         static let glanceMetric = "pref.glanceMetric"
         static let showCreditsAmount = "pref.showCreditsAmount"
+        static let primaryAccountID = "pref.primaryAccountID"
         static let menuBarShowsPercentage = "pref.menuBarShowsPercentage"
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
@@ -162,6 +170,7 @@ struct Preferences: Sendable {
             prefs.glanceMetric = value
         }
         prefs.showCreditsAmount = defaults.bool(forKey: Keys.showCreditsAmount)
+        prefs.primaryAccountID = defaults.string(forKey: Keys.primaryAccountID)
         prefs.menuBarShowsPercentage = bool(defaults, Keys.menuBarShowsPercentage, default: true)
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
@@ -210,6 +219,9 @@ final class PreferencesModel {
     var showCreditsAmount: Bool {
         didSet { defaults.set(showCreditsAmount, forKey: Preferences.Keys.showCreditsAmount) }
     }
+    var primaryAccountID: String? {
+        didSet { defaults.set(primaryAccountID, forKey: Preferences.Keys.primaryAccountID) }
+    }
     var menuBarShowsPercentage: Bool {
         didSet { defaults.set(menuBarShowsPercentage, forKey: Preferences.Keys.menuBarShowsPercentage) }
     }
@@ -232,6 +244,7 @@ final class PreferencesModel {
         modelSlotFallback = loaded.modelSlotFallback
         glanceMetric = loaded.glanceMetric
         showCreditsAmount = loaded.showCreditsAmount
+        primaryAccountID = loaded.primaryAccountID
         menuBarShowsPercentage = loaded.menuBarShowsPercentage
         statusItemVisible = loaded.statusItemVisible
         hideDockIcon = loaded.hideDockIcon
@@ -254,6 +267,7 @@ final class PreferencesModel {
         prefs.modelSlotFallback = modelSlotFallback
         prefs.glanceMetric = glanceMetric
         prefs.showCreditsAmount = showCreditsAmount
+        prefs.primaryAccountID = primaryAccountID
         prefs.menuBarShowsPercentage = menuBarShowsPercentage
         prefs.statusItemVisible = statusItemVisible
         prefs.hideDockIcon = hideDockIcon

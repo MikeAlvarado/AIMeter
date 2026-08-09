@@ -5,44 +5,47 @@ import UsageKit
 struct UsageEntry: TimelineEntry {
     let date: Date
     let snapshot: UsageSnapshot?
+    let accountID: String
+    let accountName: String
     let prefs: Preferences
 }
 
-/// Serves the last snapshot from the App Group. On iOS, when that snapshot
-/// is older than the refresh cadence, the widget fetches fresh usage itself
-/// (shared keychain credentials) so it keeps updating without the app;
-/// on macOS the menu bar app feeds it. Timeline policy re-runs this at the
-/// user-selected cadence, subject to WidgetKit's refresh budget.
-struct UsageTimelineProvider: TimelineProvider {
+/// Serves the last snapshot from the App Group, for whichever account the
+/// user picked in Edit Widget (`UsageAccountConfigurationIntent`) — every
+/// placed instance, Home Screen or Lock Screen, has its own independent
+/// account selection. On iOS, when that snapshot is older than the refresh
+/// cadence, the widget fetches fresh usage itself (shared keychain
+/// credentials) so it keeps updating without the app; on macOS the menu bar
+/// app feeds it. Timeline policy re-runs this at the user-selected cadence,
+/// subject to WidgetKit's refresh budget.
+struct UsageTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> UsageEntry {
-        UsageEntry(date: .now, snapshot: .sample, prefs: Preferences())
+        UsageEntry(date: .now, snapshot: .sample, accountID: ClaudeKeychainCredentialSource.legacyAccountID, accountName: "Claude", prefs: Preferences())
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (UsageEntry) -> Void) {
+    func snapshot(for configuration: UsageAccountConfigurationIntent, in context: Context) async -> UsageEntry {
         if context.isPreview {
-            completion(UsageEntry(date: .now, snapshot: .sample, prefs: Preferences()))
-        } else {
-            completion(entry())
+            return placeholder(in: context)
         }
+        return entry(for: configuration)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<UsageEntry>) -> Void) {
-        Task {
-            var entry = entry()
-            // Floor the widget's own reload interval so it stays within
-            // WidgetKit's refresh budget regardless of the display cadence.
-            let interval = max(entry.prefs.refreshCadence.interval, AppConfig.widgetRefreshFloor)
-            #if os(iOS)
-            if let fresh = await WidgetRefresher.fetchIfStale(
-                current: entry.snapshot,
-                cadence: interval
-            ) {
-                entry = UsageEntry(date: .now, snapshot: fresh, prefs: entry.prefs)
-            }
-            #endif
-            let next = Date(timeIntervalSinceNow: interval)
-            completion(Timeline(entries: [entry] + peakTransitionEntry(after: entry, before: next), policy: .after(next)))
+    func timeline(for configuration: UsageAccountConfigurationIntent, in context: Context) async -> Timeline<UsageEntry> {
+        var current = entry(for: configuration)
+        // Floor the widget's own reload interval so it stays within
+        // WidgetKit's refresh budget regardless of the display cadence.
+        let interval = max(current.prefs.refreshCadence.interval, AppConfig.widgetRefreshFloor)
+        #if os(iOS)
+        if let fresh = await WidgetRefresher.fetchIfStale(
+            accountID: current.accountID,
+            current: current.snapshot,
+            cadence: interval
+        ) {
+            current = UsageEntry(date: .now, snapshot: fresh, accountID: current.accountID, accountName: current.accountName, prefs: current.prefs)
         }
+        #endif
+        let next = Date(timeIntervalSinceNow: interval)
+        return Timeline(entries: [current] + peakTransitionEntry(after: current, before: next), policy: .after(next))
     }
 
     /// If Claude's peak-hours schedule flips before the next scheduled
@@ -53,13 +56,23 @@ struct UsageTimelineProvider: TimelineProvider {
     private func peakTransitionEntry(after entry: UsageEntry, before next: Date) -> [UsageEntry] {
         guard let transition = PeakCalculator.nextTransition(after: entry.date, schedule: ClaudePeakSchedule.current),
               transition < next else { return [] }
-        return [UsageEntry(date: transition, snapshot: entry.snapshot, prefs: entry.prefs)]
+        return [UsageEntry(date: transition, snapshot: entry.snapshot, accountID: entry.accountID, accountName: entry.accountName, prefs: entry.prefs)]
     }
 
-    private func entry() -> UsageEntry {
-        UsageEntry(
+    private func entry(for configuration: UsageAccountConfigurationIntent) -> UsageEntry {
+        // configuration.account is nil right after a widget is first placed,
+        // before WidgetKit has applied the intent's own default selection —
+        // fall back to the first real connected account (matching
+        // `UsageAccountOptionQuery.defaultResult()`) rather than assuming
+        // the legacy sentinel, which a fresh multi-account install never uses.
+        let fallbackAccount = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().first
+        let accountID = configuration.account?.accountID ?? fallbackAccount?.accountID ?? ClaudeKeychainCredentialSource.legacyAccountID
+        let accountName = configuration.account?.accountName ?? fallbackAccount?.displayName ?? "Claude"
+        return UsageEntry(
             date: .now,
-            snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: "claude"),
+            snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: accountID),
+            accountID: accountID,
+            accountName: accountName,
             prefs: Preferences.load()
         )
     }
@@ -67,11 +80,15 @@ struct UsageTimelineProvider: TimelineProvider {
 
 struct UsageWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: AppConfig.widgetKind, provider: UsageTimelineProvider()) { entry in
+        AppIntentConfiguration(
+            kind: AppConfig.widgetKind,
+            intent: UsageAccountConfigurationIntent.self,
+            provider: UsageTimelineProvider()
+        ) { entry in
             UsageWidgetView(entry: entry)
         }
         .configurationDisplayName("Claude")
-        .description("Session, weekly, and top-model usage windows.")
+        .description("Session, weekly, and top-model usage windows — edit the widget to pick which account.")
         .supportedFamilies(Self.families)
     }
 

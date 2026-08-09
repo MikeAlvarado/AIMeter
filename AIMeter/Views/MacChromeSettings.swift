@@ -1,16 +1,19 @@
 #if os(macOS)
 import SwiftUI
+import UsageKit
 
 /// How AIMeter presents itself on the Mac: the menu bar label's content,
 /// whether the status item and Dock icon are shown at all, and whether the
 /// app starts at login.
 ///
-/// These are app-wide chrome, not provider data, so they live in Settings
-/// rather than in Claude's Provider Detail next to `glanceMetric` — which
-/// *is* account-dependent (its options come from the snapshot) and stays
-/// where it is. The split is deliberate: "which window does the menu bar
-/// read" is a Claude question, "does the menu bar show a number" is not.
+/// Most of this is app-wide chrome, not provider data, so it lives in
+/// Settings rather than in Claude's Provider Detail. `glanceMetric` (which
+/// window the gauge reads) and the new `primaryAccountID` (which account)
+/// are the one exception living here too: with several connected accounts,
+/// there's no longer a single unambiguous "the" account whose Provider
+/// Detail could own that control the way it used to when only one existed.
 struct MacChromeSettings: View {
+    @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
     @Environment(\.openURL) private var openURL
     @State private var loginItem = LoginItemManager()
@@ -20,14 +23,31 @@ struct MacChromeSettings: View {
 
         SectionHeader(title: String(localized: "Menu bar"))
         Card {
-            Toggle(isOn: $prefs.menuBarShowsPercentage) {
-                Text("Show percentage")
-                    .font(Theme.rowTitle)
-                    .foregroundStyle(Theme.ink)
+            VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                if model.accounts.count > 1 {
+                    SegmentedPill(
+                        options: model.accounts.map { ($0.account.accountID, $0.account.displayName) },
+                        selection: primaryAccountBinding
+                    )
+                    Divider().overlay(Theme.track)
+                }
+                SegmentedPill(
+                    options: UsageSnapshot.glanceOptions(
+                        for: model.primaryAccountUsage(preferredID: prefs.primaryAccountID)?.snapshot,
+                        modelSlotFallback: prefs.modelSlotFallback
+                    ).map { ($0, $0.shortName) },
+                    selection: $prefs.glanceMetric
+                )
+                Divider().overlay(Theme.track)
+                Toggle(isOn: $prefs.menuBarShowsPercentage) {
+                    Text("Show percentage")
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                }
+                .tint(Theme.accent)
             }
-            .tint(Theme.accent)
         }
-        SectionFootnote(text: String(localized: "The menu bar always shows a gauge that fills with your usage. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip. Which window it reads is set in Claude's settings."))
+        SectionFootnote(text: menuBarFootnote)
 
         sectionGap
         SectionHeader(title: String(localized: "Hiding AIMeter"))
@@ -165,6 +185,23 @@ struct MacChromeSettings: View {
 
     private var sectionGap: some View {
         Spacer().frame(height: Theme.sectionSpacing - 16)
+    }
+
+    /// Writes through to `prefs.primaryAccountID`; reads through
+    /// `UsageModel.primaryAccountUsage` so the picker always shows a
+    /// connected account even if the stored id is stale (e.g. that account
+    /// was disconnected elsewhere).
+    private var primaryAccountBinding: Binding<String> {
+        Binding(
+            get: { model.primaryAccountUsage(preferredID: prefs.primaryAccountID)?.account.accountID ?? ClaudeKeychainCredentialSource.legacyAccountID },
+            set: { prefs.primaryAccountID = $0 }
+        )
+    }
+
+    private var menuBarFootnote: String {
+        model.accounts.count > 1
+            ? String(localized: "The menu bar shows one account and one window at a time — pick which above. Turn on the percentage to spell it out beside the gauge; with it off, the value is still in the tooltip.")
+            : String(localized: "The menu bar always shows a gauge that fills with your usage. Pick which window it reads above. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip.")
     }
 }
 #endif

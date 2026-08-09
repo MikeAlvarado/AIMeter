@@ -87,6 +87,11 @@ struct WindowRowsList: View {
     @Environment(PreferencesModel.self) private var prefs
     @Environment(UsageModel.self) private var model
     let snapshot: UsageSnapshot?
+    /// Which account's pace-warmup state to check when `showsPace` is on.
+    /// nil falls back to the first connected account (Dashboard/menu
+    /// bar/landscape never pass `showsPace: true`, so this only matters for
+    /// the Claude detail screen, which always passes its own `accountID`).
+    var accountID: String? = nil
     /// Only the Claude detail screen passes `true`; the dashboard, menu
     /// bar, and landscape leave it off so pace stays out of the glance.
     var showsPace = false
@@ -94,6 +99,10 @@ struct WindowRowsList: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.rowSpacing) {
             let slots = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
+            // Only ever multiplied against `showsPace`, which is only ever
+            // true together with a non-nil accountID (see the doc comment
+            // above), so a nil accountID's value here never affects render.
+            let paceReady = accountID.map { model.paceReady(for: $0) } ?? false
             ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                 if index > 0 {
                     Divider().overlay(Theme.track)
@@ -103,7 +112,7 @@ struct WindowRowsList: View {
                     window: slot.window,
                     showsReset: WindowSlots.showsReset(at: index, in: slots),
                     moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot),
-                    showsPace: showsPace && model.paceReady
+                    showsPace: showsPace && paceReady
                 )
             }
         }

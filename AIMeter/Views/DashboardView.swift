@@ -22,11 +22,11 @@ struct DashboardView: View {
         .sensoryFeedback(.impact(flexibility: .soft), trigger: model.isRefreshing) { _, isRefreshing in
             isRefreshing
         }
-        .navigationDestination(for: String.self) { _ in
-            ProviderDetailView()
+        .navigationDestination(for: String.self) { accountID in
+            ProviderDetailView(accountID: accountID)
         }
         #if os(iOS)
-        .refreshable { await model.refresh() }
+        .refreshable { await model.refreshAll() }
         .sheet(isPresented: $showingSettings) {
             SettingsSheet()
         }
@@ -62,16 +62,14 @@ struct DashboardView: View {
             .accessibilityLabel(Text("Settings"))
             Spacer()
             RoundIconButton(systemName: "arrow.clockwise", isBusy: model.isRefreshing) {
-                Task { await model.refresh() }
+                Task { await model.refreshAll() }
             }
             .accessibilityLabel(Text("Refresh"))
         }
     }
 
     private var providerSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            providerHeader
-
+        VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
             if model.needsConnection {
                 Card {
                     VStack(spacing: 14) {
@@ -82,37 +80,23 @@ struct DashboardView: View {
                     .frame(maxWidth: .infinity)
                 }
             } else {
-                Card {
-                    VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                        WindowRowsList(snapshot: model.snapshot)
-                        UsageStatusFooter(snapshot: model.snapshot, error: model.lastError)
-                    }
+                ForEach(model.accounts) { usage in
+                    AccountSectionView(usage: usage)
                 }
+                addAccountButton
             }
         }
     }
 
-    private var providerHeader: some View {
-        NavigationLink(value: "claude") {
-            HStack(spacing: 8) {
-                ProviderIdentityView(
-                    name: "Claude",
-                    iconSize: 22,
-                    iconCornerRadius: 6,
-                    font: Theme.sectionHeader,
-                    nameColor: Theme.inkSecondary,
-                    planName: model.snapshot?.planName
-                )
-                Spacer()
-                if !model.needsConnection {
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.inkSecondary)
-                }
-            }
+    private var addAccountButton: some View {
+        Button {
+            showingConnect = true
+        } label: {
+            Label("Add account", systemImage: "plus.circle")
+                .font(Theme.rowTitle)
+                .foregroundStyle(Theme.accent)
         }
         .buttonStyle(.plain)
-        .disabled(model.needsConnection)
     }
 }
 

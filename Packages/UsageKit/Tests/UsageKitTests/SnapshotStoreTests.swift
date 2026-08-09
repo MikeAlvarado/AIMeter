@@ -24,7 +24,7 @@ final class SnapshotStoreTests: XCTestCase {
             windows: [UsageWindow(kind: .session, usedPct: 24, resetsAt: Date())]
         )
 
-        try store.save(snapshot)
+        try store.save(snapshot, for: "claude")
         let loaded = try XCTUnwrap(store.snapshot(for: "claude"))
 
         XCTAssertEqual(loaded.providerID, "claude")
@@ -38,14 +38,25 @@ final class SnapshotStoreTests: XCTestCase {
         XCTAssertNil(store.snapshot(for: "claude"))
     }
 
-    func testSnapshotsAreScopedPerProvider() throws {
+    func testSnapshotsAreScopedPerAccount() throws {
         let store = SnapshotStore(userDefaults: defaults)
-        try store.save(UsageSnapshot(providerID: "claude", windows: []))
+        try store.save(UsageSnapshot(providerID: "claude", windows: []), for: "claude")
 
         XCTAssertNotNil(store.snapshot(for: "claude"))
         XCTAssertNil(store.snapshot(for: "openai"))
 
         store.removeSnapshot(for: "claude")
         XCTAssertNil(store.snapshot(for: "claude"))
+    }
+
+    func testTwoAccountsOfTheSameProviderDoNotCollide() throws {
+        // Both snapshots share providerID "claude" (same provider family) —
+        // only the explicit accountID keeps them from clobbering each other.
+        let store = SnapshotStore(userDefaults: defaults)
+        try store.save(UsageSnapshot(providerID: "claude", planName: "pro", windows: []), for: "claude")
+        try store.save(UsageSnapshot(providerID: "claude", planName: "max", windows: []), for: "work-uuid")
+
+        XCTAssertEqual(store.snapshot(for: "claude")?.planName, "pro")
+        XCTAssertEqual(store.snapshot(for: "work-uuid")?.planName, "max")
     }
 }

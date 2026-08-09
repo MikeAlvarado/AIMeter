@@ -19,7 +19,11 @@ enum WidgetRefresher {
         return URLSession(configuration: config)
     }()
 
-    static func fetchIfStale(current: UsageSnapshot?, cadence: TimeInterval) async -> UsageSnapshot? {
+    static func fetchIfStale(
+        accountID: String,
+        current: UsageSnapshot?,
+        cadence: TimeInterval
+    ) async -> UsageSnapshot? {
         if let current, Date().timeIntervalSince(current.fetchedAt) < cadence {
             return nil
         }
@@ -27,16 +31,17 @@ enum WidgetRefresher {
             service: AppConfig.keychainService,
             accessGroup: AppConfig.keychainAccessGroup
         )
+        let credentialKey = ClaudeKeychainCredentialSource.storageKey(for: accountID)
         let provider = ClaudeProvider(
-            credentialSource: ClaudeKeychainCredentialSource(store: keychain),
+            credentialSource: ClaudeKeychainCredentialSource(store: keychain, key: credentialKey),
             transport: URLSessionTransport(session: session)
         )
         guard let fetched = try? await provider.fetchUsage() else { return nil }
         let snapshot = fetched.fillingMissingResets(from: current)
-        try? SnapshotStore(suiteName: AppConfig.appGroupID)?.save(snapshot)
+        try? SnapshotStore(suiteName: AppConfig.appGroupID)?.save(snapshot, for: accountID)
         // Keep the usage history continuous even when only the widget fetches,
         // so the run-out predictor's recent-rate stays accurate.
-        UsageHistoryStore(suiteName: AppConfig.appGroupID)?.record(snapshot)
+        UsageHistoryStore(suiteName: AppConfig.appGroupID)?.record(snapshot, for: accountID)
         return snapshot
     }
 }

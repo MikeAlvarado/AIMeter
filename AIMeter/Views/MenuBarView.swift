@@ -67,25 +67,44 @@ struct MenuBarView: View {
     @Environment(\.openSettings) private var openSettings
     @State private var showingConnect = false
 
+    private var peak: ClaudePeakStatus { ClaudePeakStatus() }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-            header
-            Divider().overlay(Theme.track)
+            if peak.isPeak {
+                peakBadgeRow
+                Divider().overlay(Theme.track)
+            }
 
             if model.needsConnection {
                 DisconnectedPrompt(buttonLabel: "Connect Claude Code", verticalPadding: 10) {
                     showingConnect = true
                 }
             } else {
-                WindowRowsList(snapshot: model.snapshot)
-                UsageStatusFooter(snapshot: model.snapshot, error: model.lastError, showsDividers: false)
+                // Height-capped rather than growing unbounded — a handful
+                // of accounts should still fit the popover; more scrolls.
+                ScrollView {
+                    VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
+                        ForEach(model.accounts) { usage in
+                            AccountSectionView(
+                                usage: usage,
+                                iconSize: 20,
+                                iconCornerRadius: 5,
+                                font: Theme.sectionHeader,
+                                linksToDetail: false,
+                                showsStatusDividers: false
+                            )
+                        }
+                    }
+                }
+                .frame(maxHeight: 360)
             }
 
             Divider().overlay(Theme.track)
 
             HStack {
                 Button {
-                    Task { await model.refresh() }
+                    Task { await model.refreshAll() }
                 } label: {
                     Label("Refresh", systemImage: "arrow.clockwise")
                 }
@@ -112,25 +131,17 @@ struct MenuBarView: View {
         }
     }
 
-    private var header: some View {
-        let peak = ClaudePeakStatus()
-        return HStack(spacing: 8) {
-            ProviderIdentityView(
-                name: "Claude",
-                iconSize: 20,
-                iconCornerRadius: 5,
-                font: Theme.sectionHeader,
-                nameColor: Theme.inkSecondary,
-                planName: model.snapshot?.planName
-            )
+    private var peakBadgeRow: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "bolt.fill")
+                .foregroundStyle(Theme.danger)
+            Text(peak.title)
+                .font(Theme.sectionHeader)
+                .foregroundStyle(Theme.ink)
             Spacer()
-            if peak.isPeak {
-                Image(systemName: "bolt.fill")
-                    .foregroundStyle(Theme.danger)
-                    .help(peak.subtitle)
-                    .accessibilityLabel(peak.title)
-            }
         }
+        .help(peak.subtitle)
+        .accessibilityElement(children: .combine)
     }
 }
 #endif

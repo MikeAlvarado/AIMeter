@@ -1,29 +1,29 @@
 import AppIntents
 import UsageKit
 
-/// One selectable (provider, window kind) pair for the single-limit
-/// widget's Edit Widget UI. Options are read from the last stored snapshot
-/// so the list always matches what the account actually reports right now
-/// — e.g. a Pro account with no per-model window simply offers session and
-/// weekly, rather than a name baked in at build time.
+/// One selectable (account, window kind) pair for the single-limit widget's
+/// Edit Widget UI. Options are read from each connected account's last
+/// stored snapshot so the list always matches what that account actually
+/// reports right now — e.g. a Pro account with no per-model window simply
+/// offers session and weekly, rather than a name baked in at build time.
 struct UsageWindowOption: AppEntity {
-    let providerID: String
+    let accountID: String
     let kind: UsageWindow.Kind
-    let providerName: String
+    let accountName: String
 
-    var id: String { "\(providerID)|\(kind.storageKey)" }
+    var id: String { "\(accountID)|\(kind.storageKey)" }
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation = "Usage Window"
     static var defaultQuery = UsageWindowOptionQuery()
 
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(providerName) · \(kind.shortName)")
+        DisplayRepresentation(title: "\(accountName) · \(kind.shortName)")
     }
 
-    init(providerID: String, kind: UsageWindow.Kind, providerName: String) {
-        self.providerID = providerID
+    init(accountID: String, kind: UsageWindow.Kind, accountName: String) {
+        self.accountID = accountID
         self.kind = kind
-        self.providerName = providerName
+        self.accountName = accountName
     }
 
     /// Reconstructs an option straight from its persisted `id`, so a
@@ -36,12 +36,16 @@ struct UsageWindowOption: AppEntity {
         guard parts.count == 2, let kind = UsageWindow.Kind(storageKey: String(parts[1])) else {
             return nil
         }
-        let providerID = String(parts[0])
-        self.init(providerID: providerID, kind: kind, providerName: Self.providerName(for: providerID))
+        let accountID = String(parts[0])
+        self.init(accountID: accountID, kind: kind, accountName: Self.accountName(for: accountID))
     }
 
-    static func providerName(for providerID: String) -> String {
-        providerID == "claude" ? "Claude" : providerID.capitalized
+    /// Looks up the account's nickname from the shared registry. Falls back
+    /// to "Claude" for the legacy id or a registry that hasn't loaded yet
+    /// (e.g. the widget process running before the app has ever migrated).
+    static func accountName(for accountID: String) -> String {
+        AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)?.displayName
+            ?? (accountID == ClaudeKeychainCredentialSource.legacyAccountID ? "Claude" : accountID)
     }
 }
 
@@ -58,36 +62,46 @@ struct UsageWindowOptionQuery: EntityQuery {
         currentOptions().first
     }
 
-    /// Only "claude" is implemented today; the store lookup still drives
-    /// the option list so it reflects whatever windows the account
-    /// currently has rather than assuming a fixed set. When there's no
-    /// per-model window and the credits fallback would actually show
-    /// (Settings: Credits, or Auto with credits enabled), "Credits" is
-    /// offered too — same rule `WindowSlots` uses for the dashboard's
-    /// third slot.
+    /// Enumerates every connected account's live windows — an account with
+    /// no per-model window and the credits fallback actually showing
+    /// (Settings: Credits, or Auto with credits enabled) also offers
+    /// "Credits", same rule `WindowSlots` uses for the dashboard's third
+    /// slot. An empty registry (nothing connected yet, or the app hasn't
+    /// run its one-time account migration since this install's last
+    /// update) falls back to the single legacy "claude" identity rather
+    /// than an empty picker.
     private func currentOptions() -> [UsageWindowOption] {
-        let providerID = "claude"
-        let providerName = UsageWindowOption.providerName(for: providerID)
-        let snapshot = SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: providerID)
-        let kinds = snapshot?.windows.map(\.kind) ?? []
-        var resolvedKinds = kinds.isEmpty ? [.session, .weekly] : kinds
+        let registry = AccountRegistryStore(suiteName: AppConfig.appGroupID)
+        let store = SnapshotStore(suiteName: AppConfig.appGroupID)
+        let accounts = registry?.accounts() ?? []
+        let resolved = accounts.isEmpty
+            ? [ConnectedAccount(accountID: ClaudeKeychainCredentialSource.legacyAccountID, providerID: "claude", displayName: "Claude", credentialStrategy: .managed)]
+            : accounts
 
-        let hasModelWindow = resolvedKinds.contains {
-            if case .modelSpecific = $0 { return true }
-            return false
-        }
-        let fallback = Preferences.load().modelSlotFallback
-        if !hasModelWindow, fallback != .hidden, snapshot?.creditsWindow != nil {
-            resolvedKinds.append(.credits)
-        }
+        return resolved.flatMap { account -> [UsageWindowOption] in
+            let snapshot = store?.snapshot(for: account.accountID)
+            let kinds = snapshot?.windows.map(\.kind) ?? []
+            var resolvedKinds = kinds.isEmpty ? [.session, .weekly] : kinds
 
-        return resolvedKinds.map { UsageWindowOption(providerID: providerID, kind: $0, providerName: providerName) }
+            let hasModelWindow = resolvedKinds.contains {
+                if case .modelSpecific = $0 { return true }
+                return false
+            }
+            let fallback = Preferences.load().modelSlotFallback
+            if !hasModelWindow, fallback != .hidden, snapshot?.creditsWindow != nil {
+                resolvedKinds.append(.credits)
+            }
+
+            return resolvedKinds.map {
+                UsageWindowOption(accountID: account.accountID, kind: $0, accountName: account.displayName)
+            }
+        }
     }
 }
 
 struct SingleUsageConfigurationIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Usage Window"
-    static var description = IntentDescription("Choose which limit this widget shows.")
+    static var description = IntentDescription("Choose which account and limit this widget shows.")
 
     @Parameter(title: "Limit")
     var window: UsageWindowOption?

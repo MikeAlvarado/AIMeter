@@ -91,6 +91,24 @@ struct SettingsView: View {
                 }
                 SectionFootnote(text: String(localized: "Relative counts down to the reset. Absolute shows the local time. Tap any reset label on the dashboard to switch."))
 
+                sectionGap
+                SectionHeader(title: String(localized: "Notifications"))
+                Card {
+                    Toggle(isOn: Binding(
+                        get: { model.peakNotificationsEnabled },
+                        set: model.setPeakNotificationsEnabled
+                    )) {
+                        Text("Peak-hours alerts")
+                            .font(Theme.rowTitle)
+                            .foregroundStyle(Theme.ink)
+                    }
+                    .tint(Theme.accent)
+                }
+                .task {
+                    await model.refreshNotificationAuthorization()
+                }
+                SectionFootnote(text: String(localized: "Notify when Claude's documented weekday peak window starts or ends. This is one Claude-wide policy, not a per-account setting — every connected account's rate-limit alerts still have their own toggles on that account's own screen."))
+
                 #if os(macOS)
                 sectionGap
                 MacChromeSettings()
@@ -115,16 +133,6 @@ struct SettingsView: View {
                     }
                 }
                 SectionFootnote(text: refreshFootnote)
-
-                sectionGap
-                SectionHeader(title: String(localized: "Notifications"))
-                NotificationTogglesCard()
-                SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
-
-                sectionGap
-                SectionHeader(title: String(localized: "Smart notifications"))
-                SmartNotificationTogglesCard()
-                SectionFootnote(text: SmartNotificationTogglesCard.footnote)
 
                 sectionGap
                 Card {

@@ -6,6 +6,21 @@ import Foundation
 public struct ClaudeKeychainCredentialSource: ClaudeCredentialSource {
     public static let defaultKey = "claude.credentials"
 
+    /// The pre-multi-account install's literal accountID (not a UUID), so
+    /// its existing Keychain item/snapshot/history survive an upgrade with
+    /// zero rewrite. The one sentinel every other "claude" literal across
+    /// both build targets must stay byte-identical to.
+    public static let legacyAccountID = "claude"
+
+    /// The Keychain key for a given account. The legacy single-account
+    /// install's accountID is migrated as the literal `legacyAccountID`, so
+    /// this resolves to `defaultKey` for it — existing Keychain items keep
+    /// working with zero migration. Every other account gets its own
+    /// suffixed key.
+    public static func storageKey(for accountID: String) -> String {
+        accountID == legacyAccountID ? defaultKey : "claude.credentials.\(accountID)"
+    }
+
     public var allowsRefresh: Bool { true }
 
     private let store: KeychainStore

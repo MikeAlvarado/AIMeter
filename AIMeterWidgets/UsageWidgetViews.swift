@@ -14,7 +14,7 @@ struct UsageWidgetView: View {
             if let snapshot = entry.snapshot {
                 switch family {
                 case .systemMedium:
-                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date)
+                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountName: entry.accountName)
                 #if os(iOS)
                 case .accessoryCircular:
                     CircularUsageView(snapshot: snapshot, prefs: entry.prefs)
@@ -24,7 +24,7 @@ struct UsageWidgetView: View {
                     InlineUsageView(snapshot: snapshot, prefs: entry.prefs)
                 #endif
                 default:
-                    SmallUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date)
+                    SmallUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountName: entry.accountName)
                 }
             } else {
                 Text("Open AIMeter to load usage")
@@ -52,11 +52,12 @@ private struct WidgetHeader: View {
     /// displaying, including a future entry dated at the next peak
     /// transition (see `UsageTimelineProvider.peakTransitionEntry`).
     let date: Date
+    var accountName: String = "Claude"
 
     var body: some View {
         HStack(spacing: 5) {
             ProviderIdentityView(
-                name: "Claude",
+                name: accountName,
                 iconSize: 15,
                 iconCornerRadius: 3.5,
                 font: .system(size: 12, weight: .semibold),
@@ -139,11 +140,12 @@ private struct WindowBarList: View {
     let prefs: Preferences
     let count: Int
     let date: Date
+    var accountName: String = "Claude"
 
     var body: some View {
         let slots = Array(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.prefix(count))
         VStack(alignment: .leading, spacing: 0) {
-            WidgetHeader(snapshot: snapshot, date: date)
+            WidgetHeader(snapshot: snapshot, date: date, accountName: accountName)
             ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                 WindowBarRow(
                     kind: slot.kind,
@@ -164,9 +166,10 @@ struct SmallUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
     let date: Date
+    var accountName: String = "Claude"
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountName: accountName)
     }
 }
 
@@ -175,9 +178,10 @@ struct MediumUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
     let date: Date
+    var accountName: String = "Claude"
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountName: accountName)
     }
 }
 

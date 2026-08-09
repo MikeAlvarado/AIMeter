@@ -30,7 +30,7 @@ struct SingleUsageWidgetView: View {
     private var header: some View {
         HStack(spacing: 5) {
             ProviderIdentityView(
-                name: entry.providerName,
+                name: entry.accountName,
                 iconSize: 15,
                 iconCornerRadius: 3.5,
                 font: .system(size: 12, weight: .semibold),

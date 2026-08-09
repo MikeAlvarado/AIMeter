@@ -26,8 +26,8 @@ public final class ClaudeAutoCredentialSource: ClaudeCredentialSource, @unchecke
         lock.withLock { !lastLoadWasLocal }
     }
 
-    public init(store: KeychainStore) {
-        fallback = ClaudeKeychainCredentialSource(store: store)
+    public init(store: KeychainStore, key: String = ClaudeKeychainCredentialSource.defaultKey) {
+        fallback = ClaudeKeychainCredentialSource(store: store, key: key)
     }
 
     public func load() async throws -> ClaudeCredentials {

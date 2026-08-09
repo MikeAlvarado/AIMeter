@@ -12,7 +12,6 @@ struct LandscapeUsageView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                header
                 if model.needsConnection {
                     Text("Sign in to see your usage.")
                         .font(.callout)
@@ -20,8 +19,12 @@ struct LandscapeUsageView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.top, 40)
                 } else {
-                    Card {
-                        WindowRowsList(snapshot: model.snapshot)
+                    // No ancestor NavigationStack here (ContentView renders
+                    // this view outside one), so links to Provider Detail
+                    // aren't available — same reasoning the menu bar popover
+                    // already documents for its own `linksToDetail: false`.
+                    ForEach(model.accounts) { usage in
+                        AccountSectionView(usage: usage, linksToDetail: false)
                     }
                 }
             }
@@ -29,25 +32,6 @@ struct LandscapeUsageView: View {
         }
         .background(Theme.background.ignoresSafeArea())
         .statusBarHidden()
-    }
-
-    private var header: some View {
-        HStack(spacing: 8) {
-            ProviderIdentityView(
-                name: "Claude",
-                iconSize: 22,
-                iconCornerRadius: 6,
-                font: Theme.sectionHeader,
-                nameColor: Theme.inkSecondary,
-                planName: model.snapshot?.planName
-            )
-            Spacer()
-            if let snapshot = model.snapshot {
-                Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
-                    .font(Theme.caption)
-                    .foregroundStyle(Theme.inkSecondary)
-            }
-        }
     }
 }
 #endif
