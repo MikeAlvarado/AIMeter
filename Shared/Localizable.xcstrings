@@ -828,6 +828,17 @@
         }
       }
     },
+    "Live Activity" : {
+      "comment" : "Section header and toggle label for the session countdown Live Activity.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actividad en vivo"
+          }
+        }
+      }
+    },
     "Lock Screen widget" : {
       "localizations" : {
         "es" : {
@@ -1394,6 +1405,16 @@
         }
       }
     },
+    "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default — updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra la cuenta regresiva de la sesión de esta cuenta en la Pantalla Bloqueada y en la Dynamic Island mientras haya una sesión activa. Desactivado por defecto — se actualiza cuando AIMeter o sus widgets se refrescan, no al instante, ya que no hay un servidor que envíe actualizaciones."
+          }
+        }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "es" : {
@@ -1627,6 +1648,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usado"
+          }
+        }
+      }
+    },
+    "until reset" : {
+      "comment" : "Trailing label after the countdown timer on the Live Activity Lock Screen banner.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hasta el reinicio"
           }
         }
       }

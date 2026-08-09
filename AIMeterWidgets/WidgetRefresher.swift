@@ -65,6 +65,14 @@ enum WidgetRefresher {
         // Keep the usage history continuous even when only the widget fetches,
         // so the run-out predictor's recent-rate stays accurate.
         UsageHistoryStore(suiteName: AppConfig.appGroupID)?.record(snapshot, for: accountID)
+        // Same reasoning as the history record above: a running Live
+        // Activity should stay fresh even on cycles where only the widget
+        // (not the app) fetches. No-op when the account's toggle is off.
+        let accountName = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)?.displayName ?? "Claude"
+        LiveActivityManager.sync(
+            accountID: accountID, accountName: accountName, snapshot: snapshot,
+            enabled: LiveActivityPreferences(accountID: accountID).enabled
+        )
         return snapshot
     }
 }

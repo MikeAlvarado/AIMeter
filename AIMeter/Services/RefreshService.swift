@@ -73,6 +73,12 @@ struct RefreshService {
         try store?.save(snapshot, for: account.accountID)
         historyStore?.record(snapshot, for: account.accountID)
         WidgetCenter.shared.reloadAllTimelines()
+        #if os(iOS)
+        LiveActivityManager.sync(
+            accountID: account.accountID, accountName: account.displayName, snapshot: snapshot,
+            enabled: LiveActivityPreferences(accountID: account.accountID).enabled
+        )
+        #endif
 
         let prefs = NotificationPreferences(accountID: account.accountID)
         await NotificationScheduler.rescheduleResets(
@@ -167,5 +173,8 @@ struct RefreshService {
         store?.removeSnapshot(for: account.accountID)
         historyStore?.clear(for: account.accountID)
         WidgetCenter.shared.reloadAllTimelines()
+        #if os(iOS)
+        LiveActivityManager.end(accountID: account.accountID)
+        #endif
     }
 }

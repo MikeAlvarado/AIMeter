@@ -79,6 +79,18 @@ struct ProviderDetailView: View {
                     )
                 }
                 SectionFootnote(text: glanceFootnote)
+
+                SectionHeader(title: String(localized: "Live Activity"))
+                    .padding(.top, Theme.sectionSpacing - 10)
+                Card {
+                    Toggle(isOn: liveActivityBinding) {
+                        Text("Live Activity")
+                            .font(Theme.rowTitle)
+                            .foregroundStyle(Theme.ink)
+                    }
+                    .tint(Theme.accent)
+                }
+                SectionFootnote(text: String(localized: "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default — updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates."))
                 #endif
 
                 if let spend = usage?.snapshot?.spend {
@@ -145,6 +157,30 @@ struct ProviderDetailView: View {
 
     private var glanceFootnote: String {
         String(localized: "Which usage window the Lock Screen circular widget shows. Options match what this account actually reports.")
+    }
+
+    /// Reads/writes straight through `LiveActivityPreferences` — no
+    /// permission gate needed (unlike notifications), and this is the only
+    /// place in the view tree that reads this account's toggle, so a plain
+    /// computed `Binding` is enough; no revision-counter invalidation like
+    /// the notification toggles need.
+    private var liveActivityBinding: Binding<Bool> {
+        Binding(
+            get: { LiveActivityPreferences(accountID: accountID).enabled },
+            set: { newValue in
+                LiveActivityPreferences(accountID: accountID).enabled = newValue
+                if newValue {
+                    LiveActivityManager.sync(
+                        accountID: accountID,
+                        accountName: usage?.account.displayName ?? "Claude",
+                        snapshot: usage?.snapshot,
+                        enabled: true
+                    )
+                } else {
+                    LiveActivityManager.end(accountID: accountID)
+                }
+            }
+        )
     }
     #endif
 

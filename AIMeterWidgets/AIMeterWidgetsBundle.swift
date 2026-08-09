@@ -7,5 +7,8 @@ struct AIMeterWidgetsBundle: WidgetBundle {
         SingleUsageWidget()
         UsageWidget()
         AllAccountsWidget()
+        #if os(iOS)
+        SessionLiveActivity()
+        #endif
     }
 }
