@@ -95,6 +95,7 @@ struct MenuBarView: View {
                                 showsStatusDividers: false
                             )
                         }
+                        addAccountButton
                     }
                 }
                 .frame(maxHeight: 360)
@@ -103,6 +104,21 @@ struct MenuBarView: View {
             Divider().overlay(Theme.track)
 
             HStack {
+                // The popover has no navigation stack, so it can't reach
+                // Provider Detail (Peak hours, Forecast, per-account
+                // notifications, disconnect) — this is the only way back to
+                // the Dashboard window that can. `revealMainWindow` reopens
+                // it even if `AppDelegate` closed it at launch (the common
+                // hidden-Dock-icon case), since the scene registers its
+                // reopen hook on first appearance, before any such close.
+                Button {
+                    AppChrome.revealMainWindow()
+                } label: {
+                    Image(systemName: "macwindow")
+                }
+                .help(String(localized: "Open AIMeter"))
+                .accessibilityLabel(Text("Open AIMeter"))
+
                 Button {
                     Task { await model.refreshAll() }
                 } label: {
@@ -129,6 +145,22 @@ struct MenuBarView: View {
         .sheet(isPresented: $showingConnect) {
             ConnectClaudeSheet()
         }
+    }
+
+    /// Once at least one account is connected, this is the *only* way to add
+    /// another from the menu bar — the Dashboard window (which has its own
+    /// copy of this button) isn't reachable from here, and stays closed by
+    /// default whenever the Dock icon is hidden (see `AppDelegate`), which
+    /// is the common case for a menu-bar-first setup.
+    private var addAccountButton: some View {
+        Button {
+            showingConnect = true
+        } label: {
+            Label("Add account", systemImage: "plus.circle")
+                .font(Theme.rowTitle)
+                .foregroundStyle(Theme.accent)
+        }
+        .buttonStyle(.plain)
     }
 
     private var peakBadgeRow: some View {

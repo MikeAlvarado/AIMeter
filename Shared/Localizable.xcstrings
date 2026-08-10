@@ -132,6 +132,17 @@
         }
       }
     },
+    "+%lld more" : {
+      "comment" : "Shown when the all-accounts widget has more connected accounts than fit — %lld is the remaining count.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld más"
+          }
+        }
+      }
+    },
     "$" : {
       "comment" : "Compact subtitle under the Lock Screen circular gauge when it shows the Credits window.",
       "localizations" : {
@@ -239,17 +250,6 @@
         }
       }
     },
-    "All Accounts" : {
-      "comment" : "Configuration display name of the widget that shows every connected account.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todas las cuentas"
-          }
-        }
-      }
-    },
     "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -337,6 +337,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AIMeter abrirá la página de inicio de sesión de Claude en tu navegador. Cuando apruebes, copia el código que aparece y pégalo aquí para terminar. Funciona cualquier método de inicio de sesión."
+          }
+        }
+      }
+    },
+    "All Accounts" : {
+      "comment" : "Configuration display name of the widget that shows every connected account.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas las cuentas"
           }
         }
       }
@@ -596,17 +607,6 @@
         }
       }
     },
-    "Every connected account's usage at a glance." : {
-      "comment" : "Description of the widget that shows every connected account.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El uso de cada cuenta conectada, de un vistazo."
-          }
-        }
-      }
-    },
     "Every 15 minutes" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -624,6 +624,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada 30 minutos"
+          }
+        }
+      }
+    },
+    "Every connected account's usage at a glance." : {
+      "comment" : "Description of the widget that shows every connected account.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El uso de cada cuenta conectada, de un vistazo."
           }
         }
       }
@@ -951,17 +962,6 @@
         }
       }
     },
-    "+%lld more" : {
-      "comment" : "Shown when the all-accounts widget has more connected accounts than fit — %lld is the remaining count.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+%lld más"
-          }
-        }
-      }
-    },
     "Notifications" : {
       "localizations" : {
         "es" : {
@@ -1038,6 +1038,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre AIMeter para cargar el uso"
+          }
+        }
+      }
+    },
+    "Open AIMeter" : {
+      "comment" : "Tooltip/accessibility label for the menu bar popover button that brings the main Dashboard window forward.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir AIMeter"
           }
         }
       }
@@ -1405,16 +1416,6 @@
         }
       }
     },
-    "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default — updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muestra la cuenta regresiva de la sesión de esta cuenta en la Pantalla Bloqueada y en la Dynamic Island mientras haya una sesión activa. Desactivado por defecto — se actualiza cuando AIMeter o sus widgets se refrescan, no al instante, ya que no hay un servidor que envíe actualizaciones."
-          }
-        }
-      }
-    },
     "Settings" : {
       "localizations" : {
         "es" : {
@@ -1473,6 +1474,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Muestra una ventana de uso que elijas — edita el widget para elegir sesión, semanal o un límite por modelo."
+          }
+        }
+      }
+    },
+    "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default — updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra la cuenta regresiva de la sesión de esta cuenta en la Pantalla Bloqueada y en la Dynamic Island mientras haya una sesión activa. Desactivado por defecto — se actualiza cuando AIMeter o sus widgets se refrescan, no al instante, ya que no hay un servidor que envíe actualizaciones."
           }
         }
       }
@@ -1559,6 +1570,10 @@
         }
       }
     },
+    "The menu bar always shows a gauge that fills with your usage. Pick which window it reads above. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip." : {
+      "comment" : "Footnote for the menu bar label.",
+      "isCommentAutoGenerated" : true
+    },
     "The menu bar always shows a gauge that fills with your usage. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip. Which window it reads is set in Claude's settings." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1569,6 +1584,10 @@
           }
         }
       }
+    },
+    "The menu bar shows one account and one window at a time — pick which above. Turn on the percentage to spell it out beside the gauge; with it off, the value is still in the tooltip." : {
+      "comment" : "Footnote for the menu bar label.",
+      "isCommentAutoGenerated" : true
     },
     "Third usage row" : {
       "localizations" : {
@@ -1586,6 +1605,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Los tokens viven en el llavero"
+          }
+        }
+      }
+    },
+    "until reset" : {
+      "comment" : "Trailing label after the countdown timer on the Live Activity Lock Screen banner.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hasta el reinicio"
           }
         }
       }
@@ -1648,17 +1678,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usado"
-          }
-        }
-      }
-    },
-    "until reset" : {
-      "comment" : "Trailing label after the countdown timer on the Live Activity Lock Screen banner.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "hasta el reinicio"
           }
         }
       }

@@ -63,6 +63,7 @@ final class UsageModel {
         AppEnvironment.shared = self
         rebuildRefreshSchedule(interval: Preferences.load().refreshCadence.interval)
         observeWake()
+        observeActivation()
         #endif
         // Peak-hours alerts come from a fixed weekday schedule, not a
         // fetched snapshot, so they only need scheduling once here (and
@@ -517,6 +518,29 @@ final class UsageModel {
             Task { @MainActor in
                 let cadence = Preferences.load().refreshCadence.interval
                 await AppEnvironment.shared?.refreshAllIfStale(maxAge: cadence)
+            }
+        }
+    }
+
+    /// The iOS side already re-checks notification authorization whenever
+    /// `scenePhase` returns to `.active` ("the user may have flipped the
+    /// permission in Settings" — `ContentView`), because System Settings and
+    /// the app trade the foreground there. macOS has no scene phase, but the
+    /// same trip — alt-tab to System Settings, flip the toggle, alt-tab back
+    /// — is if anything more common on a desktop, and `notificationsBlocked`
+    /// (the in-app warning banner, and the stale value a toggle's `.denied`
+    /// check can otherwise race right after such a change) was only ever
+    /// getting refreshed when a Provider Detail view happened to re-appear.
+    /// `didBecomeActiveNotification` is the direct macOS equivalent of that
+    /// iOS signal. Same no-unregister reasoning as `observeWake()`.
+    private func observeActivation() {
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                await AppEnvironment.shared?.refreshNotificationAuthorization()
             }
         }
     }

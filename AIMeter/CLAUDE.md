@@ -126,9 +126,19 @@
   Dashboard, `linksToDetail: false` here since the popover has no
   navigation stack to push into — tapping a section header does nothing,
   unlike the Dashboard's chevron-and-push) inside a height-capped
-  `ScrollView` so a handful of accounts still fit and more scrolls, then
-  divider + refresh/settings/quit. "Refresh" calls `refreshAll()` (every
-  account, concurrently). Peak-hours state folds into the status item's
+  `ScrollView` so a handful of accounts still fit and more scrolls, then an
+  "Add account" row (same affordance and copy as the Dashboard's own —
+  this is the only way to add another account once the Dock icon is
+  hidden, since the Dashboard window stays closed by default in that case;
+  see "macOS hiding & re-entry" below), then divider + an icon-only "Open
+  AIMeter" button (`AppChrome.revealMainWindow()`, `macwindow` symbol, full
+  text in `.help`/accessibility label only) + refresh/settings/quit. "Open
+  AIMeter" is the popover's only route to Provider Detail, since the
+  popover itself has no navigation stack — it reopens the Dashboard window
+  even after `AppDelegate` closed it at launch, because the scene registers
+  the reopen hook on first appearance, before that close ever runs.
+  "Refresh" calls `refreshAll()` (every account, concurrently). Peak-hours
+  state folds into the status item's
   tooltip/accessibility text rather than a second glyph there (see "Peak
   hours" in the repo-root CLAUDE.md); the popover's top badge row is the
   visible one, where there's room.

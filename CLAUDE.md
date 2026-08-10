@@ -223,7 +223,11 @@ automatically when working in that directory.
   per account: it's handled honestly regardless of which account's card
   changed it — a denied system permission snaps every account's toggle
   back off and shows a warning row with an "Open Settings" shortcut;
-  authorization is re-checked on foreground. Detection-based alerts share
+  authorization is re-checked on foreground — iOS via `scenePhase == .active`
+  (`ContentView`), macOS via `NSApplication.didBecomeActiveNotification`
+  (`UsageModel.observeActivation()`, registered once from `init` alongside
+  `observeWake()`) — both exist for the same reason: the user may have just
+  come back from flipping the OS toggle in Settings. Detection-based alerts share
   the widget-self-fetch gap noted for history — a crossing the widget
   applies before the app refreshes is missed. Cancelled URL tasks are not
   surfaced as errors.
