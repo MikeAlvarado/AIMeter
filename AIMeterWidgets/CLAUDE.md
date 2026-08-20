@@ -52,8 +52,9 @@ legacy sentinel if none — rather than each re-deriving it.
   `UsageWidgetViews.swift` specifically so this view can reuse it
   unchanged rather than re-implementing a second row style). That
   full-detail row costs real vertical room, so this is capped at the
-  first 2 accounts (registry order, same order Dashboard/menu bar already
-  use) with a "+N more" line beyond that — deliberately not a
+  first 2 accounts (registry order — the same order the Dashboard/menu bar
+  use, and the one a Dashboard drag-reorder rewrites, which is why a
+  reorder reloads timelines) with a "+N more" line beyond that — deliberately not a
   `ScrollView`; static content is the safer choice for widgets. One
   peak-hours badge for the whole widget, not repeated per account — same
   rule the macOS menu bar popover already follows. On iOS, self-refreshes

@@ -17,6 +17,32 @@ public enum UsageError: Error, Equatable, Sendable {
     case storage(String)
 }
 
+extension UsageError {
+    /// Whether the only way out of this failure is signing in again.
+    ///
+    /// All three cases mean the stored credentials can't produce a usable
+    /// token from this device: the provider rejected them outright
+    /// (`notAuthenticated`, i.e. a refresh token Anthropic no longer
+    /// honours — typically because the same login was refreshed elsewhere
+    /// and the token rotated), they expired with no way to refresh them
+    /// here (`tokenExpired`, e.g. macOS mirroring Claude Code's own login,
+    /// which only the CLI may rotate), or they're gone entirely
+    /// (`credentialsNotFound`). None of them heal by retrying, so a UI that
+    /// only shows the message leaves the user stuck — surfaces offer a
+    /// re-connect affordance instead. Deliberately broader than what
+    /// warrants a *notification*: `RefreshService` only alerts on
+    /// `notAuthenticated`, the one case that is terminal rather than
+    /// possibly self-healing (see its `refresh(accountLabel:)`).
+    public var requiresReauthentication: Bool {
+        switch self {
+        case .notAuthenticated, .tokenExpired, .credentialsNotFound:
+            return true
+        case .rateLimited, .httpError, .invalidResponse, .storage:
+            return false
+        }
+    }
+}
+
 extension UsageError: LocalizedError {
     public var errorDescription: String? {
         switch self {

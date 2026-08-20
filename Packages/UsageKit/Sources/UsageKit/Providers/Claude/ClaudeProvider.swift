@@ -79,6 +79,16 @@ public struct ClaudeProvider: UsageProvider {
     /// The stored subscription when present; otherwise resolved once from
     /// the profile endpoint and persisted so later fetches skip the extra
     /// call. Best-effort: a profile failure just leaves the plan unknown.
+    ///
+    /// The write-back re-reads the source instead of saving the
+    /// `credentials` value this fetch started with, and that matters: only
+    /// `subscriptionType` is ours to persist here, while the token fields
+    /// may have been rotated in the meantime by a concurrent fetch (on iOS
+    /// the widget refreshes itself alongside the app, against the same
+    /// shared Keychain item). Saving the whole stale value would put a
+    /// consumed refresh token back over the fresh one — and Anthropic
+    /// rejects a consumed refresh token permanently, which bricks the
+    /// account until the user signs in again.
     private func planName(for credentials: ClaudeCredentials) async -> String? {
         if let subscription = credentials.subscriptionType {
             return subscription
@@ -87,9 +97,9 @@ public struct ClaudeProvider: UsageProvider {
             return nil
         }
         if credentialSource.allowsRefresh {
-            var updated = credentials
-            updated.subscriptionType = plan
-            try? await credentialSource.save(updated)
+            var latest = (try? await credentialSource.load()) ?? credentials
+            latest.subscriptionType = plan
+            try? await credentialSource.save(latest)
         }
         return plan
     }

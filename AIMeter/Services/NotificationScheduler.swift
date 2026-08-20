@@ -3,7 +3,8 @@ import UserNotifications
 import UsageKit
 
 /// Notification toggles, stored in the App Group so future surfaces (e.g.
-/// widget configuration) can read them too. All off by default. Per-window
+/// widget configuration) can read them too. All off by default except
+/// `reauthAlertsEnabled` — see the reasoning on that property. Per-window
 /// "reset" toggles are the free baseline; the "smart" toggles (run-out
 /// warnings, early-reset alerts, near-limit, limit-reached) are global
 /// across windows but scoped to one `accountID` — each connected account
@@ -65,12 +66,49 @@ struct NotificationPreferences {
         nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.limitReached")) }
     }
 
+    /// "Sign in again" alerts, fired when this account's stored login
+    /// stops working (`UsageError.notAuthenticated`).
+    ///
+    /// The one family that defaults to **on**, deliberately breaking the
+    /// "every toggle off by default" rule the other five follow: those
+    /// announce *usage*, which the user can always go look at, whereas this
+    /// one announces that AIMeter has stopped being able to look at all.
+    /// Silence there is indistinguishable from "nothing has changed", so an
+    /// opt-in default would mean the app quietly shows stale numbers for
+    /// days — the exact failure this alert exists to prevent. It is also
+    /// self-limiting: it fires once per breakage (see
+    /// `reauthAlertDelivered`), not on a schedule. Being on by default
+    /// still never means a surprise prompt — like every family here it only
+    /// delivers if notification permission was already granted.
+    var reauthAlertsEnabled: Bool {
+        get { bool(scopedKey("notify.reauth"), default: true) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.reauth")) }
+    }
+
+    /// Whether the *current* broken sign-in has already been announced.
+    /// Set when the alert is delivered and cleared by the next successful
+    /// refresh (or a reconnect), so a login that breaks, gets fixed, and
+    /// breaks again alerts twice — while a login that stays broken across
+    /// every refresh for days alerts once.
+    var reauthAlertDelivered: Bool {
+        get { defaults.bool(forKey: scopedKey("notify.reauth.delivered")) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.reauth.delivered")) }
+    }
+
     /// "Peak hours started/ended" alerts, scheduled from Claude's fixed
     /// weekday schedule rather than anything fetched. Deliberately global —
     /// see the type doc above.
     var peakEnabled: Bool {
         get { defaults.bool(forKey: "notify.peak") }
         nonmutating set { defaults.set(newValue, forKey: "notify.peak") }
+    }
+
+    /// `UserDefaults.bool(forKey:)` reports `false` for a key nobody has
+    /// written, which would silently flip any preference whose default is
+    /// `true` — same trap, and same presence check, as
+    /// `Preferences.bool(_:_:default:)`.
+    private func bool(_ key: String, default fallback: Bool) -> Bool {
+        defaults.object(forKey: key) == nil ? fallback : defaults.bool(forKey: key)
     }
 
     private func key(for kind: UsageWindow.Kind) -> String {
@@ -91,6 +129,8 @@ struct NotificationPreferences {
 /// - `runout.` — per-window run-out warnings, fired ahead of a projected
 ///   early exhaustion (recent-rate projection supplied by the caller).
 /// - `earlyreset.` — immediate alerts when a window refilled early.
+/// - `reauth.` — an immediate alert when the account's stored sign-in
+///   stopped working, deduped so it fires once per breakage.
 enum NotificationScheduler {
     private static let identifierPrefix = "reset."
     private static let runOutPrefix = "runout."
@@ -98,6 +138,7 @@ enum NotificationScheduler {
     private static let nearLimitPrefix = "nearlimit."
     private static let limitReachedPrefix = "limitreached."
     private static let peakPrefix = "peak."
+    private static let reauthPrefix = "reauth."
     /// How long before the projected exhaustion to fire the warning, so
     /// it's actionable rather than after the fact.
     private static let runOutLead: TimeInterval = 20 * 60
@@ -303,6 +344,52 @@ enum NotificationScheduler {
     private static func labeled(_ title: String, _ accountLabel: String?) -> String {
         guard let accountLabel else { return title }
         return "\(accountLabel) — \(title)"
+    }
+
+    // MARK: - Sign-in alerts (immediate, once per breakage)
+
+    /// Posts an immediate alert when an account's stored credentials stop
+    /// working. Not scheduled — like the other detection-based families,
+    /// the event has already happened by the time we know about it.
+    ///
+    /// The dedupe is what makes this liveable: every refresh from here on
+    /// fails the same way (the credentials can't heal themselves), so
+    /// without `reauthAlertDelivered` the user would get one notification
+    /// per refresh cycle, forever. A fixed identifier per account also
+    /// means a second delivery would merely replace the first in
+    /// Notification Center rather than stack.
+    static func notifyReauthenticationNeeded(
+        accountID: String,
+        accountLabel: String? = nil,
+        preferences: NotificationPreferences
+    ) async {
+        guard preferences.reauthAlertsEnabled,
+              !preferences.reauthAlertDelivered,
+              await canDeliver() else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = labeled(String(localized: "Sign-in expired"), accountLabel)
+        content.body = String(localized: "Claude rejected AIMeter's saved sign-in. Open AIMeter and sign in again to keep tracking your usage.")
+        content.sound = .default
+
+        let request = UNNotificationRequest(
+            identifier: reauthPrefix + accountID,
+            content: content,
+            trigger: nil
+        )
+        try? await UNUserNotificationCenter.current().add(request)
+        preferences.reauthAlertDelivered = true
+    }
+
+    /// Re-arms the alert after a successful refresh (or a reconnect) and
+    /// clears the delivered one from Notification Center — once the account
+    /// is working again, an alert telling the user to sign in is worse than
+    /// no alert at all.
+    static func clearReauthenticationAlert(accountID: String, preferences: NotificationPreferences) {
+        guard preferences.reauthAlertDelivered else { return }
+        preferences.reauthAlertDelivered = false
+        UNUserNotificationCenter.current()
+            .removeDeliveredNotifications(withIdentifiers: [reauthPrefix + accountID])
     }
 
     // MARK: - Peak-hours alerts (recurring, from a fixed schedule)

@@ -155,6 +155,37 @@ final class ClaudeProviderTests: XCTestCase {
         XCTAssertEqual(source.saved.last?.subscriptionType, "max")
     }
 
+    /// The plan write-back must persist only `subscriptionType`, over
+    /// whatever tokens are stored *now* — never over the ones this fetch
+    /// loaded. Saving the stale pair would put an already-consumed refresh
+    /// token back on top of a freshly rotated one, and Anthropic rejects a
+    /// consumed refresh token for good.
+    func testProfileWriteBackKeepsTokensRotatedMeanwhile() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        transport.route(url: ClaudeProvider.profileEndpoint, responses: [
+            (200, #"{"account": {"has_claude_pro": false, "has_claude_max": true}}"#),
+        ])
+        let source = StubCredentialSource(credentials: .withoutSubscription, allowsRefresh: true)
+        // Another process (the iOS widget's own fetch) rotates the stored
+        // token while this fetch is in flight.
+        source.rotateAfterFirstLoad = ClaudeCredentials(
+            accessToken: "rotated-token",
+            refreshToken: "rotated-refresh",
+            expiresAt: Date(timeIntervalSinceNow: 3600)
+        )
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        _ = try await provider.fetchUsage()
+
+        let saved = try XCTUnwrap(source.saved.last)
+        XCTAssertEqual(saved.subscriptionType, "max")
+        XCTAssertEqual(saved.accessToken, "rotated-token")
+        XCTAssertEqual(saved.refreshToken, "rotated-refresh")
+    }
+
     func testStoredSubscriptionSkipsProfileCall() async throws {
         let transport = StubTransport()
         transport.route(url: ClaudeProvider.usageEndpoint, responses: [
@@ -213,6 +244,10 @@ private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sen
     let allowsRefresh: Bool
     private(set) var saved: [ClaudeCredentials] = []
     private var credentials: ClaudeCredentials
+    /// Replaces the stored credentials right after the first `load()`,
+    /// standing in for another process rotating the token mid-fetch.
+    var rotateAfterFirstLoad: ClaudeCredentials?
+    private var loads = 0
 
     init(credentials: ClaudeCredentials, allowsRefresh: Bool) {
         self.credentials = credentials
@@ -220,7 +255,13 @@ private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sen
     }
 
     func load() async throws -> ClaudeCredentials {
-        credentials
+        loads += 1
+        defer {
+            if loads == 1, let rotated = rotateAfterFirstLoad {
+                credentials = rotated
+            }
+        }
+        return credentials
     }
 
     func save(_ credentials: ClaudeCredentials) async throws {

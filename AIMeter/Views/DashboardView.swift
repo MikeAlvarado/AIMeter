@@ -8,6 +8,15 @@ struct DashboardView: View {
     #endif
     @State private var showingSettings = false
     @State private var showingConnect = false
+    /// The section being dragged, how far it has moved, and which section
+    /// it would drop onto — see `accountSection(_:)` for why the reorder
+    /// carries this state itself instead of using SwiftUI's drag and drop.
+    @State private var draggingID: String?
+    @State private var dragTranslation: CGFloat = 0
+    @State private var dropTargetID: String?
+    /// Each section's on-screen rect, so a drag can tell what it's over.
+    @State private var sectionFrames: [String: CGRect] = [:]
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ScrollView {
@@ -21,6 +30,11 @@ struct DashboardView: View {
         // Soft tap when a refresh kicks off — pull gesture or button alike.
         .sensoryFeedback(.impact(flexibility: .soft), trigger: model.isRefreshing) { _, isRefreshing in
             isRefreshing
+        }
+        // And a firmer one the moment a card lifts, which is the only
+        // confirmation that the hold registered — the card hasn't moved yet.
+        .sensoryFeedback(.impact(weight: .medium), trigger: draggingID) { was, now in
+            was == nil && now != nil
         }
         .navigationDestination(for: String.self) { accountID in
             ProviderDetailView(accountID: accountID)
@@ -81,12 +95,132 @@ struct DashboardView: View {
                 }
             } else {
                 ForEach(model.accounts) { usage in
-                    AccountSectionView(usage: usage)
+                    accountSection(usage)
                 }
                 addAccountButton
             }
         }
+        .coordinateSpace(name: Self.reorderSpace)
+        .onPreferenceChange(AccountSectionFramesKey.self) { frames in
+            sectionFrames = frames
+        }
     }
+
+    /// Sections reorder by hold-and-drag once there's more than one account
+    /// (nothing to reorder otherwise, and no reason to put a drag gesture
+    /// in the way of the single-account case). Holding a card lifts it,
+    /// dragging moves it, and releasing over another section makes it take
+    /// that section's place — which rewrites the shared account registry,
+    /// so the macOS menu bar popover, the all-accounts widget, and every
+    /// account picker pick up the same order.
+    ///
+    /// Built on a plain gesture rather than SwiftUI's drag and drop
+    /// (`.draggable`/`.dropDestination`), and that is the whole reason this
+    /// code exists: the system carries a *preview* of the dragged view, and
+    /// UIKit scales that preview down to fit its own bounds — a full-width
+    /// account card lifts at roughly half size, with nothing on
+    /// `.draggable(preview:)` to prevent it (supplying a preview at the
+    /// measured on-screen width was tried; it gets scaled just the same).
+    /// Here nothing is lifted out at all: the real card stays in the layout
+    /// and only takes an `offset`, so it moves at exactly the size it had.
+    ///
+    /// Resolving on release (rather than reordering live under the finger)
+    /// keeps the state down to "which card, moved how far, over what" — and
+    /// a gesture, unlike a drag session, always ends, so there is no
+    /// cancelled-drag hole to defend against either.
+    @ViewBuilder
+    private func accountSection(_ usage: UsageModel.AccountUsage) -> some View {
+        // Always found: `usage` came from iterating this same array.
+        let index = model.accounts.firstIndex { $0.id == usage.id } ?? 0
+        let canReorder = model.accounts.count > 1 && !model.isDemoMode
+        let isDragging = draggingID == usage.id
+        let section = AccountSectionView(
+            usage: usage,
+            moveUp: canReorder && index > 0 ? { model.moveAccount(usage.id, by: -1) } : nil,
+            moveDown: canReorder && index < model.accounts.count - 1 ? { model.moveAccount(usage.id, by: 1) } : nil
+        )
+
+        if canReorder {
+            section
+                .background {
+                    GeometryReader { proxy in
+                        Color.clear.preference(
+                            key: AccountSectionFramesKey.self,
+                            value: [usage.id: proxy.frame(in: .named(Self.reorderSpace))]
+                        )
+                    }
+                }
+                .overlay { AccountDropHighlight(isTargeted: dropTargetID == usage.id) }
+                // Depth instead of scale: a lifted card that also grows is
+                // exactly what this interaction was rebuilt to avoid.
+                .shadow(color: isDragging ? Theme.shadowSoft : .clear, radius: 22, x: 0, y: 12)
+                .offset(y: isDragging ? dragTranslation : 0)
+                // Over its neighbours while it travels, back in line after.
+                .zIndex(isDragging ? 1 : 0)
+                .gesture(reorderGesture(for: usage.id))
+        } else {
+            section
+        }
+    }
+
+    /// Hold, then drag. The long press is what lets this coexist with the
+    /// enclosing `ScrollView`: a finger that moves right away scrolls, one
+    /// that stays put long enough starts a reorder instead — the same
+    /// bargain the Home Screen makes.
+    private func reorderGesture(for accountID: String) -> some Gesture {
+        LongPressGesture(minimumDuration: 0.3)
+            .sequenced(before: DragGesture(coordinateSpace: .named(Self.reorderSpace)))
+            .onChanged { value in
+                switch value {
+                case .first(true):
+                    if draggingID != accountID {
+                        draggingID = accountID
+                        dragTranslation = 0
+                    }
+                case .second(true, let drag):
+                    guard draggingID == accountID, let drag else { return }
+                    dragTranslation = drag.translation.height
+                    setDropTarget(hitTest(drag.location, excluding: accountID))
+                default:
+                    break
+                }
+            }
+            .onEnded { _ in endReorder(of: accountID) }
+    }
+
+    /// The section under the finger, if it isn't the one being dragged.
+    /// The dragged card's own slot still counts as occupied, which is what
+    /// makes releasing back where you started a no-op rather than an
+    /// accident.
+    private func hitTest(_ location: CGPoint, excluding accountID: String) -> String? {
+        sectionFrames.first { $0.key != accountID && $0.value.contains(location) }?.key
+    }
+
+    private func endReorder(of accountID: String) {
+        let target = dropTargetID
+        withAnimation(reduceMotion ? nil : .snappy(duration: 0.25)) {
+            if draggingID == accountID, let target {
+                model.moveAccount(accountID, onto: target)
+            }
+            // Reset inside the same transaction as the move, so the card
+            // travels from where it was released into its new slot instead
+            // of snapping back first and then jumping.
+            draggingID = nil
+            dragTranslation = 0
+            dropTargetID = nil
+        }
+    }
+
+    /// Same Reduce Motion rule the app's other transitions follow: the
+    /// state still changes, it just doesn't animate.
+    private func setDropTarget(_ id: String?) {
+        guard dropTargetID != id else { return }
+        withAnimation(reduceMotion ? nil : .snappy(duration: 0.15)) { dropTargetID = id }
+    }
+
+    /// Names the coordinate space section frames and drag locations are
+    /// both resolved in, so comparing the two means something.
+    private static let reorderSpace = "dashboard.accounts"
 
     private var addAccountButton: some View {
         Button {

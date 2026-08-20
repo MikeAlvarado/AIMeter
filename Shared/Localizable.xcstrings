@@ -890,16 +890,6 @@
         }
       }
     },
-    "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota — e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto."
-          }
-        }
-      }
-    },
     "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Peak-hours alerts notify when Claude's documented weekday peak window starts or ends." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1939,6 +1929,106 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tu token de inicio de sesión se guarda cifrado en el llavero del sistema y se comparte solo con el widget (a través del grupo de acceso al llavero de tu App Group) para que pueda actualizar el uso por sí mismo. Se usa exclusivamente para leer tu uso."
+          }
+        }
+      }
+    },
+    "Sign in again" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a iniciar sesión"
+          }
+        }
+      }
+    },
+    "Sign-in expired" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión caducada"
+          }
+        }
+      }
+    },
+    "Sign-in expired — usage can't refresh." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión caducada: no se puede actualizar el uso."
+          }
+        }
+      }
+    },
+    "Sign-in alerts" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos de sesión"
+          }
+        }
+      }
+    },
+    "Move up" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subir"
+          }
+        }
+      }
+    },
+    "Move down" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bajar"
+          }
+        }
+      }
+    },
+    "Claude rejected AIMeter's saved sign-in. Open AIMeter and sign in again to keep tracking your usage." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude rechazó el inicio de sesión guardado de AIMeter. Abre AIMeter y vuelve a iniciar sesión para seguir midiendo tu uso."
+          }
+        }
+      }
+    },
+    "Claude no longer accepts this account's saved sign-in. Sign in again to restore it — its history, alerts, and widgets all stay as they are." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude ya no acepta el inicio de sesión guardado de esta cuenta. Vuelve a iniciar sesión para restaurarla: su historial, sus avisos y sus widgets se mantienen igual."
+          }
+        }
+      }
+    },
+    "Signing in here gives AIMeter its own token, separate from Claude Code's — so neither can invalidate the other's." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al iniciar sesión aquí, AIMeter obtiene su propio token, independiente del de Claude Code, para que ninguno invalide el del otro."
+          }
+        }
+      }
+    },
+    "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in — the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota — e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto. Los avisos de sesión te dicen cuándo Claude deja de aceptar el inicio de sesión guardado de esta cuenta: la única alerta activada por defecto, porque si no, nada te avisaría de que los números dejaron de actualizarse."
           }
         }
       }

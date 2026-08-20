@@ -10,8 +10,50 @@
   Provider Detail (`NavigationLink(value: accountID)`). An "Add account"
   row follows the list. Disconnected state (no accounts at all) shows a
   Connect card instead.
+  - **Reordering** (2+ accounts only): hold a card to lift it, drag, and
+    release over another section to take that section's place, with
+    `AccountDropHighlight`'s accent outline marking the target. The order is
+    the account registry's own (see "Accounts vs. providers" in the
+    repo-root CLAUDE.md), so it carries to the menu bar popover, the
+    all-accounts widget, every account picker, and the macOS status item's
+    "first account" fallback.
+    - Built on `LongPressGesture.sequenced(before: DragGesture)` moving the
+      card with an `offset`, **not** on `.draggable`/`.dropDestination`.
+      That is the entire reason this is hand-rolled: SwiftUI's drag and
+      drop carries a *preview* of the view, and UIKit scales that preview
+      down to fit its own bounds — a full-width account card lifts at
+      roughly half size. Supplying `.draggable(preview:)` with the section
+      rendered at its measured on-screen width was tried and gets scaled
+      identically; the preview API has no opt-out. With a gesture nothing
+      is lifted out of the view tree at all, so the card moves at exactly
+      the size it already had. Depth (shadow) marks the lift, deliberately
+      not a `scaleEffect` — growing the card is the same complaint again.
+    - The long press is also what lets a vertical drag coexist with the
+      enclosing `ScrollView`: move immediately and you scroll, hold first
+      and you reorder — the bargain the Home Screen makes.
+    - `AccountSectionFramesKey` publishes each section's rect in the
+      Dashboard's named coordinate space, since a gesture (unlike a drop
+      target) only gets a location and has to resolve "what am I over"
+      itself. The dragged card's own rect stays in the running so releasing
+      where you started is a no-op.
+    - Resolving on release rather than reordering live keeps the state down
+      to "which card, moved how far, over what", and a gesture always ends
+      — there's no cancelled-drag hole to defend against, which a live
+      `.dropDestination` version needed a catch-all drop target for.
+    - The gesture covers the whole section while the header carries a
+      "Move up"/"Move down" context menu — the same long press would
+      otherwise have to arbitrate between the two, and the menu is both the
+      VoiceOver/Switch Control path and the only part of this that announces
+      itself.
+  - A card whose last refresh failed on credentials shows "Sign-in expired"
+    + a **Sign in again** button instead of the raw error, opening the
+    Connect sheet in reconnect mode (see "Connect sheet" below and "Losing
+    a login" in the repo-root CLAUDE.md). Same row appears in Provider
+    Detail, landscape, and the macOS menu bar popover — it lives in the
+    shared `AccountSectionView`/`UsageStatusFooter`, not per screen.
 - **Provider detail** (push, one per account — `ProviderDetailView(accountID:)`):
-  rate-limit rows for that account; a **Peak hours** card
+  rate-limit rows for that account (with the same "Sign in again" recovery
+  row when this account's credentials stopped working); a **Peak hours** card
   (`PeakHoursCard`, see "Peak hours" in the repo-root CLAUDE.md, identical
   content regardless of account since the policy is Claude-wide, not
   account-specific) with a live status line and a "schedule as of"
@@ -30,8 +72,10 @@
   cards (label/value rows, currency formatted) for this account; per-window
   reset notification toggles plus a **Smart notifications** card
   (`SmartNotificationTogglesCard`: Near-limit warnings with a threshold
-  slider, Limit reached, Run-out warnings, and Early-reset alerts — all
-  four scoped to this one account); a disconnect button, on both
+  slider, Limit reached, Run-out warnings, Early-reset alerts, and
+  Sign-in alerts — all five scoped to this one account, and Sign-in alerts
+  the only toggle in the app that starts **on**, for the reason documented
+  on `NotificationPreferences.reauthAlertsEnabled`); a disconnect button, on both
   platforms (macOS previously had none — a gap multi-account made
   untenable, since it's now the only way to remove a non-primary account).
   All of these are Claude-specific display prefs, so they live here rather
@@ -86,6 +130,16 @@
   on both platforms — the macOS auto-detect path is never something a user
   picks here; it only ever applies automatically to the one CLI-mirrored
   login (see "Accounts vs. providers" in the repo-root CLAUDE.md).
+  - **Reconnect mode** (`ConnectClaudeSheet(reconnecting:)`): the same
+    sheet and the same exchange, titled "Sign in again", with no nickname
+    field (the account keeps the name it has) and landing on
+    `UsageModel.reconnect(accountID:)`, so the existing account is repaired
+    in place rather than a new one created — see "Losing a login" in the
+    repo-root CLAUDE.md for why that distinction is the whole point. Its
+    extra footnote (signing in here mints AIMeter's own token, separate
+    from Claude Code's) is the honest counterpart to the paste-the-JSON
+    hint right above it: pasting the CLI's credentials is exactly what
+    leaves two clients fighting over one rotating refresh token.
 - **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
   `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
   usage — so every screen (rate limits, pace, peak hours, forecast,
@@ -125,7 +179,9 @@
   connected account as its own `AccountSectionView` (shared with the
   Dashboard, `linksToDetail: false` here since the popover has no
   navigation stack to push into — tapping a section header does nothing,
-  unlike the Dashboard's chevron-and-push) inside a height-capped
+  unlike the Dashboard's chevron-and-push, and no reorder affordance
+  either: the popover follows the registry order the Dashboard writes,
+  it doesn't set it) inside a height-capped
   `ScrollView` so a handful of accounts still fit and more scrolls, then an
   "Add account" row (same affordance and copy as the Dashboard's own —
   this is the only way to add another account once the Dock icon is

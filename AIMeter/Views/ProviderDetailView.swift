@@ -9,6 +9,7 @@ struct ProviderDetailView: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
     @Environment(\.dismiss) private var dismiss
+    @State private var showingReconnect = false
 
     private var usage: UsageModel.AccountUsage? {
         model.usage(for: accountID)
@@ -23,7 +24,11 @@ struct ProviderDetailView: View {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                         WindowRowsList(snapshot: usage?.snapshot, accountID: accountID, showsPace: true)
-                        UsageStatusFooter(snapshot: usage?.snapshot, error: usage?.lastError)
+                        UsageStatusFooter(
+                            snapshot: usage?.snapshot,
+                            error: usage?.lastError,
+                            reauthenticate: usage?.needsReauthentication == true ? { showingReconnect = true } : nil
+                        )
                     }
                 }
 
@@ -144,6 +149,11 @@ struct ProviderDetailView: View {
             .padding(20)
         }
         .background(Theme.background)
+        .sheet(isPresented: $showingReconnect) {
+            if let account = usage?.account {
+                ConnectClaudeSheet(reconnecting: account)
+            }
+        }
         .navigationTitle(usage?.account.displayName ?? "Claude")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -356,7 +366,7 @@ struct SmartNotificationTogglesCard: View {
 
     /// Shared caption for the section.
     static var footnote: String {
-        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule.")
+        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in — the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating.")
     }
 
     var body: some View {
@@ -383,6 +393,11 @@ struct SmartNotificationTogglesCard: View {
                 toggle(String(localized: "Early-reset alerts"),
                        isOn: model.earlyResetAlertsEnabled(for: accountID),
                        set: { model.setEarlyResetAlertsEnabled($0, accountID: accountID) })
+
+                divider
+                toggle(String(localized: "Sign-in alerts"),
+                       isOn: model.reauthAlertsEnabled(for: accountID),
+                       set: { model.setReauthAlertsEnabled($0, accountID: accountID) })
             }
         }
         .task {

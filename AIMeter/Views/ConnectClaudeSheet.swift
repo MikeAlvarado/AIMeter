@@ -4,7 +4,17 @@ import UsageKit
 /// OAuth connect flow: open Claude's sign-in page in the browser, the user
 /// approves and copies the authentication code shown, pastes it back here,
 /// and we exchange it for tokens stored in the Keychain.
+///
+/// Doubles as the re-sign-in flow: pass `reconnecting` and the exact same
+/// exchange lands on an existing account's credential key instead of
+/// creating a new account (`UsageModel.reconnect`), which is what keeps
+/// that account's history, toggles, and placed widgets intact. Only the
+/// copy differs, plus dropping the nickname field — the account already has
+/// a name the user chose.
 struct ConnectClaudeSheet: View {
+    /// nil for a brand-new connection; the account being repaired otherwise.
+    var reconnecting: ConnectedAccount?
+
     @Environment(UsageModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
@@ -27,11 +37,11 @@ struct ConnectClaudeSheet: View {
                     .frame(width: 72, height: 72)
                     .padding(.top, 8)
 
-                Text("Connect Claude Code")
+                Text(reconnecting == nil ? String(localized: "Connect Claude Code") : String(localized: "Sign in again"))
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(Theme.ink)
 
-                Text("AIMeter will open Claude's sign-in page in your browser. After you approve, copy the code it shows and paste it back here to finish. Any sign-in method works.")
+                Text(explainer)
                     .font(.callout)
                     .foregroundStyle(Theme.inkSecondary)
                     .multilineTextAlignment(.center)
@@ -48,9 +58,10 @@ struct ConnectClaudeSheet: View {
                 .foregroundStyle(Theme.accent)
                 .background(Theme.accentWash, in: Capsule())
 
-                if !model.accounts.isEmpty {
+                if reconnecting == nil, !model.accounts.isEmpty {
                     // Only relevant once there's more than one account to tell
                     // apart — a single connected account never needed a name.
+                    // Never when reconnecting: that account keeps its name.
                     TextField(defaultNickname, text: $nickname)
                         .textFieldStyle(.plain)
                         .font(.callout)
@@ -106,6 +117,16 @@ struct ConnectClaudeSheet: View {
                     .foregroundStyle(Theme.inkSecondary)
                     .multilineTextAlignment(.center)
 
+                if reconnecting != nil {
+                    // Worth saying here specifically: signing in through this
+                    // flow is also what *prevents* a repeat, and pasting the
+                    // CLI's own JSON above is what invites one.
+                    Text("Signing in here gives AIMeter its own token, separate from Claude Code's — so neither can invalidate the other's.")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .multilineTextAlignment(.center)
+                }
+
                 if let errorText {
                     Text(errorText)
                         .font(Theme.caption)
@@ -128,6 +149,13 @@ struct ConnectClaudeSheet: View {
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
         #endif
+    }
+
+    private var explainer: String {
+        if reconnecting != nil {
+            return String(localized: "Claude no longer accepts this account's saved sign-in. Sign in again to restore it — its history, alerts, and widgets all stay as they are.")
+        }
+        return String(localized: "AIMeter will open Claude's sign-in page in your browser. After you approve, copy the code it shows and paste it back here to finish. Any sign-in method works.")
     }
 
     private var canConnect: Bool {
@@ -165,7 +193,11 @@ struct ConnectClaudeSheet: View {
             defer { isExchanging = false }
             do {
                 let credentials = try await obtainCredentials()
-                await model.completeConnection(credentials, displayName: resolvedNickname)
+                if let reconnecting {
+                    await model.reconnect(accountID: reconnecting.accountID, credentials: credentials)
+                } else {
+                    await model.completeConnection(credentials, displayName: resolvedNickname)
+                }
                 if let connectionError = model.connectionError {
                     errorText = connectionError
                 } else {

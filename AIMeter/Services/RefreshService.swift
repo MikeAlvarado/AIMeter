@@ -68,8 +68,33 @@ struct RefreshService {
     @discardableResult
     func refresh(accountLabel: String?) async throws -> UsageSnapshot {
         let previous = store?.snapshot(for: account.accountID)
-        let snapshot = try await provider.fetchUsage()
-            .fillingMissingResets(from: previous)
+        let prefs = NotificationPreferences(accountID: account.accountID)
+
+        let snapshot: UsageSnapshot
+        do {
+            snapshot = try await provider.fetchUsage()
+                .fillingMissingResets(from: previous)
+        } catch {
+            // Only `notAuthenticated` alerts, not everything
+            // `requiresReauthentication` covers: `tokenExpired` on macOS
+            // just means Claude Code hasn't rotated its own token yet (the
+            // CLI heals that on its next run), and `credentialsNotFound` is
+            // also what the speculative macOS auto-detect candidate throws
+            // when there's no CLI login to mirror — an account the app then
+            // drops rather than keeps. Notifying about either would be
+            // crying wolf; both still show the in-app sign-in affordance,
+            // which costs nothing when it turns out to be unnecessary.
+            if case UsageError.notAuthenticated = error {
+                await NotificationScheduler.notifyReauthenticationNeeded(
+                    accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+                )
+            }
+            throw error
+        }
+        // Fetching at all proves the credentials work, so re-arm the alert
+        // for a future breakage (no-op unless one was actually delivered).
+        NotificationScheduler.clearReauthenticationAlert(accountID: account.accountID, preferences: prefs)
+
         try store?.save(snapshot, for: account.accountID)
         historyStore?.record(snapshot, for: account.accountID)
         WidgetCenter.shared.reloadAllTimelines()
@@ -80,7 +105,6 @@ struct RefreshService {
         )
         #endif
 
-        let prefs = NotificationPreferences(accountID: account.accountID)
         await NotificationScheduler.rescheduleResets(
             for: snapshot, accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
         )

@@ -90,6 +90,32 @@ final class AccountRegistryStoreTests: XCTestCase {
         XCTAssertEqual(store.accounts().map(\.accountID), ["a", "b"])
     }
 
+    func testReplaceAllPersistsANewOrder() {
+        let store = AccountRegistryStore(userDefaults: defaults)
+        store.add(account("claude"))
+        store.add(account("work-uuid", displayName: "Work"))
+
+        // What a dashboard drag-reorder writes: same accounts, new order.
+        store.replaceAll(store.accounts().reversed())
+
+        XCTAssertEqual(store.accounts().map(\.accountID), ["work-uuid", "claude"])
+        XCTAssertEqual(store.account(for: "work-uuid")?.displayName, "Work")
+    }
+
+    func testSetCredentialStrategyConvertsOnlyThatAccount() {
+        let store = AccountRegistryStore(userDefaults: defaults)
+        store.add(account("claude", strategy: .autoDetected))
+        store.add(account("work-uuid", displayName: "Work", strategy: .managed))
+
+        // The macOS reconnect path: a CLI-mirrored login that stopped
+        // working gets app-owned credentials and becomes .managed.
+        store.setCredentialStrategy(.managed, for: "claude")
+
+        XCTAssertEqual(store.account(for: "claude")?.credentialStrategy, .managed)
+        XCTAssertEqual(store.account(for: "work-uuid")?.credentialStrategy, .managed)
+        XCTAssertEqual(store.accounts().map(\.accountID), ["claude", "work-uuid"])
+    }
+
     func testCredentialStrategyRoundtripsThroughCodable() {
         let store = AccountRegistryStore(userDefaults: defaults)
         store.add(account("claude", strategy: .autoDetected))

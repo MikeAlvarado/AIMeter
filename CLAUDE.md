@@ -57,16 +57,24 @@ assets and string catalog from there.
   and `ClaudeProvider` carry no account identity and don't need to, since
   the caller (the app, a widget) always already knows which account it
   asked for. `AccountRegistryStore` (`Packages/UsageKit/Storage/`) is the
-  App Group-shared list of connected `ConnectedAccount`s (accountID,
+  App Group-shared, **order-significant** list of connected
+  `ConnectedAccount`s — its order *is* display order for every surface
+  (dashboard, macOS menu bar popover, all-accounts widget, widget account
+  pickers), which is what makes the dashboard's drag-reorder one
+  `replaceAll` write rather than a per-surface preference (accountID,
   providerID, a user-editable `displayName`, and `credentialStrategy`:
   `.managed` for an app-owned Keychain copy from OAuth/paste, or macOS-only
   `.autoDetected` for the one login mirrored from Claude Code's own
   Keychain item — capped at exactly one account, since the CLI itself only
   ever tracks one login per machine; every other account, on either
   platform, is `.managed`). Only the app ever writes to the registry
-  (`add`/`rename`/`remove`); the widget extension only reads
+  (`add`/`rename`/`remove`/`replaceAll`/`setCredentialStrategy`); the widget
+  extension only reads
   (`accounts()`/`account(for:)`) — same "only the app writes" invariant
-  `SnapshotStore` already had. A pre-multi-account
+  `SnapshotStore` already had. `credentialStrategy` is mutable after the
+  fact for exactly one transition (`setCredentialStrategy`): macOS's
+  `.autoDetected` → `.managed`, when a CLI-mirrored login stops working and
+  the user signs in through the app instead — see "Losing a login" below. A pre-multi-account
   install's one account is migrated in place as the literal accountID
   `"claude"` (not a fresh UUID) by `AccountMigration`, so its existing
   Keychain item, `SnapshotStore`/`UsageHistoryStore` entries, and any
@@ -112,6 +120,42 @@ automatically when working in that directory.
    7-day periods (weekly boundaries are fixed anchors, so this is truth,
    not a guess). Sessions only carry a still-future date: an idle session
    genuinely has no reset. Reported dates are never overwritten.
+
+## Losing a login (and getting it back)
+
+A stored login can stop working for good — Anthropic rotates the refresh
+token on every use, so any other client refreshing the *same* login (Claude
+Code on another machine, a second device the same credentials JSON was
+pasted into) leaves AIMeter's copy invalid; a password change or global
+sign-out does the same. From then on every refresh fails identically and
+the account silently freezes at its last snapshot.
+
+- `UsageError.requiresReauthentication` marks the three failures no retry
+  can fix (`notAuthenticated`, `tokenExpired`, `credentialsNotFound`);
+  `UsageModel.AccountUsage.needsReauthentication` carries it to the UI,
+  which swaps the raw endpoint message for a "Sign in again" prompt
+  (`UsageStatusFooter(reauthenticate:)`). Raw bodies are still shown for
+  every other error — see the typed-errors rule above; this is the one case
+  where the raw text ("The provider rejected the credentials") is faithful
+  and useless at the same time.
+- Recovery is **reconnect in place** (`UsageModel.reconnect(accountID:credentials:)`),
+  never disconnect-then-add: the accountID is the key for the stored
+  snapshot, usage history (and its pace warm-up anchor), notification
+  preferences, Live Activity toggle, and the account selection baked into
+  every already-placed widget. A new UUID orphans all of it, so the
+  Connect sheet's `reconnecting:` mode writes fresh credentials to the
+  *existing* account's Keychain key and changes nothing else.
+- A macOS `.autoDetected` account that reconnects becomes `.managed`: the
+  in-app OAuth exchange mints a token pair the app owns, so it both stops
+  deferring to a CLI login that just proved unusable and ends the rotation
+  standoff — AIMeter can refresh its own pair without invalidating Claude
+  Code's.
+- The `planName` write-back in `ClaudeProvider` re-reads the credential
+  source before saving instead of persisting the value the fetch started
+  with. It only owns `subscriptionType`; saving the whole stale value could
+  put an already-consumed refresh token back over a freshly rotated one —
+  one of the ways an account breaks like this in the first place, since the
+  iOS widget refreshes against the same shared Keychain item as the app.
 
 ## Refresh & notification behavior
 
@@ -188,13 +232,14 @@ automatically when working in that directory.
   (`NotificationScheduler`, e.g. `reset.<accountID>.<kind>`) so two
   accounts sharing a window kind never clobber each other's pending
   requests — the one deliberate exception is `peak.`, which stays
-  account-independent (see below). Four families are rescheduled/
+  account-independent (see below). Five families are rescheduled/
   re-evaluated from scratch after every successful fetch, scoped to just
-  that fetch's account; a fifth, `peak.`, is the deliberate exception (see
-  "Peak hours" below) since it depends only on a fixed weekday schedule,
-  never on what a fetch returns — it's rescheduled once at
-  `UsageModel.init` and whenever its toggle changes instead. Two of the
-  four fetch-driven families are *scheduled* to a future trigger:
+  that fetch's account; two more sit outside that sweep — `peak.` (see
+  "Peak hours" below), which depends only on a fixed weekday schedule and
+  never on what a fetch returns, so it's rescheduled once at
+  `UsageModel.init` and whenever its toggle changes instead, and `reauth.`,
+  which fires from the *failure* path rather than a successful fetch. Two
+  of the five fetch-driven families are *scheduled* to a future trigger:
   `reset.` (per-window `UNCalendarNotificationTrigger` at each window's
   `resetsAt`, the free baseline, per-window opt-in toggles) and `runout.`
   (per-window run-out warnings fired a lead time before a projected early
@@ -208,7 +253,17 @@ automatically when working in that directory.
   reset"), and `nearlimit.` (`crossedUp` at the user's threshold, a
   slider; a single big jump that also hits the limit yields only the more
   severe limit-reached, not both). All fire once per upward crossing (not
-  on every refresh while above) and re-arm after a reset. Each `smart`
+  on every refresh while above) and re-arm after a reset. `reauth.` is
+  immediate too, but fired from the *failure* path rather than from a
+  snapshot comparison: `RefreshService.refresh` posts it when the fetch
+  throws `notAuthenticated` (see "Losing a login" above) — deliberately
+  narrower than `requiresReauthentication`, since `tokenExpired` on macOS
+  usually just means Claude Code hasn't rotated its own token yet, and
+  `credentialsNotFound` is also what the speculative macOS auto-detect
+  candidate throws before being dropped. It dedupes through
+  `reauthAlertDelivered` (fires once per breakage, not once per refresh
+  cycle forever) and is cleared — pending flag and delivered notification
+  alike — by the next successful fetch or a reconnect. Each `smart`
   alert has its own toggle **per account** (near-limit adds a per-account
   threshold) — `NotificationPreferences(accountID:)`, so muting a
   secondary account never touches another's; `peak.` is the one alert
@@ -216,7 +271,14 @@ automatically when working in that directory.
   dedicated `peakPreferences`, constructed with a documented placeholder
   accountID since `peakEnabled` never actually reads it), since it's one
   Claude-wide policy, not tied to a specific login. All off by default;
-  toggles live in the App Group. Once more than one account is connected,
+  toggles live in the App Group — except `reauthAlertsEnabled`, the one
+  family that defaults to **on**: the other five announce usage the user
+  can always go look at, while this one announces that AIMeter has stopped
+  being able to look at all, and silence there is indistinguishable from
+  "nothing changed". (On by default never means a surprise prompt — like
+  every family it only delivers if permission was already granted — and a
+  `true` default must load through a presence check, same trap as
+  `Preferences.bool(_:_:default:)`.) Once more than one account is connected,
   a notification's title is prefixed with that account's nickname (e.g.
   "Work — Session limit reset"); a single-account install's copy reads
   exactly as it always has. Permission is a single OS-level toggle, not
@@ -229,7 +291,10 @@ automatically when working in that directory.
   `observeWake()`) — both exist for the same reason: the user may have just
   come back from flipping the OS toggle in Settings. Detection-based alerts share
   the widget-self-fetch gap noted for history — a crossing the widget
-  applies before the app refreshes is missed. Cancelled URL tasks are not
+  applies before the app refreshes is missed, and the same goes for
+  `reauth.`: `WidgetRefresher` swallows its fetch errors (`try?`), so a
+  broken login is announced by the app's own next refresh or its
+  `BGAppRefreshTask`, not by the widget that hit it first. Cancelled URL tasks are not
   surfaced as errors.
 
 ## Presentation rules
@@ -387,7 +452,9 @@ automatically when working in that directory.
 - Stale snapshot (>30 min): widgets show a small "last updated" hint in the
   header trailing edge.
 - Errors render inside the provider card, below the rows: raw endpoint body
-  included, in `Theme.danger`.
+  included, in `Theme.danger`. The one exception is a credential failure,
+  which shows an actionable "Sign in again" prompt instead — see "Losing a
+  login" above.
 
 ## Screens
 
@@ -409,7 +476,9 @@ Two more `Shared/ThemeComponents.swift` views follow the same rule for
 other repeated pieces: `UsageStatusFooter` (the error label + "Updated X
 ago" caption under the rate-limit rows — dashboard, provider detail, menu
 bar popover; `showsDividers` defaults on for the two card surfaces, off
-for the menu bar which already brackets the section with its own) and
+for the menu bar which already brackets the section with its own, and
+`reauthenticate` swaps the error label for the "Sign in again" prompt, see
+"Losing a login" above) and
 `DisconnectedPrompt` (the "Sign in to see your usage" text + Connect
 button — dashboard and menu bar, `buttonLabel`/`verticalPadding`
 parametrized per surface, caller still owns the wrapping container).
@@ -439,9 +508,14 @@ region to the project's `knownRegions`.
 - Keep files under ~300 lines; split by feature, not by type.
 - Accessibility: every usage row is one combined VoiceOver element; bars
   are decorative (`accessibilityHidden`); icon-only buttons carry labels.
-  `accessibilityReduceMotion` gates the two animated transitions in the app
-  (`RoundIconButton`'s refresh spin, `SegmentedPill`'s selection change) —
-  when on, the state still updates, just without `withAnimation`.
+  `accessibilityReduceMotion` gates the three animated transitions in the
+  app (`RoundIconButton`'s refresh spin, `SegmentedPill`'s selection
+  change, and the Dashboard account reorder's drop-target highlight and
+  settle) — when on, the state still updates, just without
+  `withAnimation`. Anything reachable only by dragging needs a
+  non-drag equivalent: the dashboard's reorder pairs its drag with
+  "Move up"/"Move down" in the account header's context menu, which
+  VoiceOver and Switch Control surface as actions.
 - Tests live in UsageKit (`swift test`); fixture
   `Tests/UsageKitTests/Fixtures/claude-usage-response.json` is a real
   captured response — mapping tests assert against it.

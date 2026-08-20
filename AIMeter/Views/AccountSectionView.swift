@@ -20,6 +20,20 @@ struct AccountSectionView: View {
     /// with its own dividers — same rule `UsageStatusFooter` documents for
     /// its other callers.
     var showsStatusDividers = true
+    /// Reorder actions for the header's context menu, supplied by the
+    /// Dashboard (the one surface that reorders) and nil at either end of
+    /// the list. They exist alongside drag-and-drop rather than instead of
+    /// it: a drag is unreachable with VoiceOver or Switch Control, and a
+    /// menu is also the only part of this that announces itself — nothing
+    /// about a card suggests it can be dragged.
+    var moveUp: (() -> Void)?
+    var moveDown: (() -> Void)?
+
+    /// The sheet is owned here rather than by each caller because all three
+    /// surfaces that render an account (Dashboard, landscape, macOS menu
+    /// bar popover) need the same recovery, and the failure they're
+    /// recovering from belongs to this account, not to the screen.
+    @State private var showingReconnect = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -27,14 +41,36 @@ struct AccountSectionView: View {
             Card {
                 VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                     WindowRowsList(snapshot: usage.snapshot)
-                    UsageStatusFooter(snapshot: usage.snapshot, error: usage.lastError, showsDividers: showsStatusDividers)
+                    UsageStatusFooter(
+                        snapshot: usage.snapshot,
+                        error: usage.lastError,
+                        showsDividers: showsStatusDividers,
+                        reauthenticate: usage.needsReauthentication ? { showingReconnect = true } : nil
+                    )
                 }
             }
+        }
+        .sheet(isPresented: $showingReconnect) {
+            ConnectClaudeSheet(reconnecting: usage.account)
+        }
+    }
+
+    /// The context menu goes on the header alone, not the whole section:
+    /// the Dashboard puts a drag on the section, and both gestures start
+    /// from the same long press, so overlapping them makes which one wins
+    /// a coin toss. Split by area they stay predictable — hold the card to
+    /// drag it, hold the header for the menu.
+    @ViewBuilder
+    private var header: some View {
+        if moveUp == nil && moveDown == nil {
+            headerLink
+        } else {
+            headerLink.contextMenu { reorderMenu }
         }
     }
 
     @ViewBuilder
-    private var header: some View {
+    private var headerLink: some View {
         if linksToDetail {
             NavigationLink(value: usage.account.accountID) {
                 headerContent(showsChevron: true)
@@ -42,6 +78,20 @@ struct AccountSectionView: View {
             .buttonStyle(.plain)
         } else {
             headerContent(showsChevron: false)
+        }
+    }
+
+    @ViewBuilder
+    private var reorderMenu: some View {
+        if let moveUp {
+            Button(action: moveUp) {
+                Label("Move up", systemImage: "arrow.up")
+            }
+        }
+        if let moveDown {
+            Button(action: moveDown) {
+                Label("Move down", systemImage: "arrow.down")
+            }
         }
     }
 

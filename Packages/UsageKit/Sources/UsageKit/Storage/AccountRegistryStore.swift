@@ -93,10 +93,28 @@ public struct AccountRegistryStore: Sendable {
         save(current)
     }
 
+    /// Re-points an account at a different credential strategy. The one
+    /// real transition is macOS's `.autoDetected` → `.managed`: an account
+    /// that mirrored Claude Code's login and then got its own credentials
+    /// through the in-app sign-in flow. It happens *because* the CLI-mirrored
+    /// login stopped working, and it's one-way — the app now owns a token
+    /// pair of its own, so it may refresh it without rotating the CLI's out
+    /// from under it.
+    public func setCredentialStrategy(_ strategy: ConnectedAccount.CredentialStrategy, for accountID: String) {
+        var current = accounts()
+        guard let index = current.firstIndex(where: { $0.accountID == accountID }) else { return }
+        current[index].credentialStrategy = strategy
+        save(current)
+    }
+
     public func remove(_ accountID: String) {
         save(accounts().filter { $0.accountID != accountID })
     }
 
+    /// Rewrites the whole list, order included — the app's dashboard uses
+    /// this to persist a drag-reorder, since this list's order *is* the
+    /// display order every surface enumerates (dashboard, menu bar popover,
+    /// all-accounts widget, and the widget account pickers).
     public func replaceAll(_ accounts: [ConnectedAccount]) {
         save(accounts)
     }

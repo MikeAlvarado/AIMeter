@@ -15,7 +15,19 @@ can be added later.
   on the dashboard, its own Provider Detail screen, and its own
   notification/Live Activity toggles — nothing is shared between accounts
   except the handful of settings that are genuinely app-wide (appearance,
-  refresh cadence, peak-hours alerts).
+  refresh cadence, peak-hours alerts). Hold and drag a card to reorder
+  them (or use Move up/Move down from the card header's context menu); the
+  order carries over to the menu bar, the widgets, and every account
+  picker.
+- **Sign-in recovery**: Claude rotates its OAuth refresh token on every
+  use, so a login shared with another client can stop working — after
+  which usage would just quietly freeze at its last reading. AIMeter says
+  so on the card, notifies you once when it happens (the one alert that's
+  on by default), and offers **Sign in again** right there. That repairs
+  the account in place: history, alerts, and already-placed widgets keep
+  working, unlike disconnecting and adding it back. Signing in through the
+  app also gets AIMeter a token of its own, so it stops competing with
+  Claude Code's.
 - Widgets: `systemSmall` and `systemMedium` show all three Claude windows
   for one account, with grouped reset countdowns and an always-visible
   manual refresh button (iOS); Lock Screen accessories (circular,
@@ -50,7 +62,9 @@ can be added later.
   account: a reset reminder per window, a near-limit warning at a
   threshold you set, a limit-reached alert, run-out warnings when your
   recent pace projects an early exhaustion, and early-reset alerts if a
-  window refills before its scheduled date. Peak-hours alerts are the one
+  window refills before its scheduled date. Sign-in alerts (above) are the
+  single exception that starts on — a broken login is the one thing you
+  can't notice by looking. Peak-hours alerts are the one
   exception — a single app-wide toggle in Settings, since Claude's peak
   policy applies the same way to every account, not something to repeat
   per login. All with honest permission handling, no silent failures.

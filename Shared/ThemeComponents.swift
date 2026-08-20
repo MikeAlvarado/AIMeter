@@ -114,9 +114,29 @@ struct UsageStatusFooter: View {
     let snapshot: UsageSnapshot?
     let error: String?
     var showsDividers = true
+    /// Supplied only when the failure was a credential one
+    /// (`UsageModel.AccountUsage.needsReauthentication`) — it replaces the
+    /// raw endpoint message with an actionable prompt. The raw text is
+    /// deliberately dropped in that one case: "The provider rejected the
+    /// credentials" describes the HTTP exchange faithfully and tells the
+    /// user nothing they can act on, which is the opposite of the point of
+    /// carrying raw bodies for every *other* error.
+    var reauthenticate: (() -> Void)?
 
     var body: some View {
-        if let error {
+        if let reauthenticate {
+            if showsDividers { Divider().overlay(Theme.track) }
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Label(String(localized: "Sign-in expired — usage can't refresh."), systemImage: "exclamationmark.triangle")
+                    .font(Theme.caption)
+                    .foregroundStyle(Theme.danger)
+                Spacer(minLength: 0)
+                Button(String(localized: "Sign in again"), action: reauthenticate)
+                    .buttonStyle(.plain)
+                    .font(Theme.caption.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+            }
+        } else if let error {
             if showsDividers { Divider().overlay(Theme.track) }
             Label(error, systemImage: "exclamationmark.triangle")
                 .font(Theme.caption)

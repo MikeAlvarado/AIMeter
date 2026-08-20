@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import UserNotifications
+import WidgetKit
 import UsageKit
 #if os(macOS)
 import AppKit
@@ -29,6 +30,15 @@ final class UsageModel {
         var account: ConnectedAccount
         var snapshot: UsageSnapshot?
         var lastError: String?
+        /// The last failure was one no retry can fix (see
+        /// `UsageError.requiresReauthentication`), so the surfaces showing
+        /// this account swap the raw message for a "Sign in again" prompt.
+        /// Signing in again is the *only* honest recovery here: the
+        /// alternative a user would otherwise reach for — disconnect and
+        /// add the account back — mints a fresh `accountID`, which orphans
+        /// this account's history, notification preferences, Live Activity
+        /// toggle, and every already-placed widget configured for it.
+        var needsReauthentication = false
         var isRefreshing = false
     }
 
@@ -151,6 +161,7 @@ final class UsageModel {
             guard let i = index(for: accountID) else { return }
             accounts[i].snapshot = snapshot
             accounts[i].lastError = nil
+            accounts[i].needsReauthentication = false
             if registry?.account(for: accountID) == nil {
                 registry?.add(service.account)
             }
@@ -163,6 +174,7 @@ final class UsageModel {
                 removeAccount(accountID: accountID)
             } else if let i = index(for: accountID) {
                 accounts[i].lastError = error.errorDescription
+                accounts[i].needsReauthentication = error.requiresReauthentication
             }
         } catch is CancellationError {
             // A superseded refresh (pull-to-refresh released, scene change)
@@ -247,6 +259,97 @@ final class UsageModel {
         registry?.add(account)
         addAccount(account, service: service)
         await refresh(accountID: accountID)
+    }
+
+    /// Replaces an existing account's credentials **in place**, keeping its
+    /// `accountID` — the recovery path for a login the provider stopped
+    /// accepting (`AccountUsage.needsReauthentication`). Everything keyed by
+    /// that id survives untouched: stored snapshot, usage history and its
+    /// pace warm-up anchor, per-account notification toggles, and the
+    /// account selection of every widget already on a Home Screen. That is
+    /// the whole point of not routing this through
+    /// `completeConnection`, which mints a new id.
+    func reconnect(accountID: String, credentials: ClaudeCredentials) async {
+        guard let startIndex = index(for: accountID) else { return }
+        var account = accounts[startIndex].account
+        // Whatever the user just signed in with is a token pair the app
+        // owns, so a macOS account that used to mirror Claude Code's login
+        // stops being `.autoDetected` — and stops deferring to a CLI login
+        // that just proved unusable. It also ends the refresh-token
+        // standoff behind most of these failures: with its own pair,
+        // AIMeter can rotate freely without invalidating the CLI's.
+        if account.credentialStrategy == .autoDetected {
+            account.credentialStrategy = .managed
+            registry?.setCredentialStrategy(.managed, for: accountID)
+        }
+        let service = RefreshService(account: account)
+        do {
+            try await service.storeConnection(credentials)
+        } catch {
+            connectionError = (error as? UsageError)?.errorDescription ?? error.localizedDescription
+            return
+        }
+        connectionError = nil
+        NotificationScheduler.clearReauthenticationAlert(
+            accountID: accountID, preferences: preferences(for: accountID)
+        )
+        guard let i = index(for: accountID) else { return }
+        services[accountID] = service
+        accounts[i].account = account
+        accounts[i].lastError = nil
+        accounts[i].needsReauthentication = false
+        // The macOS auto-detect candidate is only speculative until a fetch
+        // confirms it (see `loadAccounts()`), so it may still be missing
+        // from the registry — signing in explicitly is that confirmation.
+        if registry?.account(for: accountID) == nil {
+            registry?.add(account)
+        }
+        await refresh(accountID: accountID)
+    }
+
+    // MARK: Ordering
+
+    /// Moves an account so it takes `targetID`'s place — what a dashboard
+    /// drag-and-drop performs, once, on drop. Registry order *is* display
+    /// order for every surface (dashboard, macOS menu bar popover, the
+    /// all-accounts widget, and each widget's account picker), so this one
+    /// write reorders them all. It also decides which account the macOS
+    /// status item falls back to when no `primaryAccountID` is set:
+    /// whichever ends up first.
+    @discardableResult
+    func moveAccount(_ accountID: String, onto targetID: String) -> Bool {
+        guard accountID != targetID,
+              let from = index(for: accountID),
+              let to = index(for: targetID) else { return false }
+        move(from: from, to: to)
+        return true
+    }
+
+    /// One step up (-1) or down (+1) — the same reorder from the header's
+    /// context menu, for anyone who can't drag (VoiceOver, Switch Control,
+    /// or simply preferring a menu).
+    func moveAccount(_ accountID: String, by offset: Int) {
+        guard let from = index(for: accountID), accounts.indices.contains(from + offset) else { return }
+        move(from: from, to: from + offset)
+    }
+
+    /// Deliberately hand-rolled rather than SwiftUI's
+    /// `move(fromOffsets:toOffset:)`: this is a service type, and pulling
+    /// SwiftUI into it just for an array shuffle isn't worth it. `to` is a
+    /// destination *index* (post-removal), not an insertion offset.
+    ///
+    /// Both entry points are a single discrete action (a completed drop, a
+    /// menu tap), so persisting and reloading widget timelines here is
+    /// exactly once per reorder — which is what keeps this clear of the
+    /// per-kind WidgetKit refresh budget the rest of the app depends on.
+    private func move(from: Int, to: Int) {
+        guard !isDemoMode, accounts.indices.contains(from), accounts.indices.contains(to) else { return }
+        let moved = accounts.remove(at: from)
+        accounts.insert(moved, at: min(to, accounts.count))
+        registry?.replaceAll(accounts.map(\.account))
+        // The all-accounts widget renders the registry in order, so it has
+        // to re-render for the new one to show up there too.
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func disconnect(accountID: String) {
@@ -394,6 +497,24 @@ final class UsageModel {
             prefs.earlyResetAlertsEnabled = enabled
             notificationsRevision += 1
             // Nothing to schedule now — these fire on detection at fetch time.
+        }
+    }
+
+    /// On by default, unlike every other toggle here — see
+    /// `NotificationPreferences.reauthAlertsEnabled` for why this one family
+    /// is the exception.
+    func reauthAlertsEnabled(for accountID: String) -> Bool {
+        _ = notificationsRevision
+        return preferences(for: accountID).reauthAlertsEnabled
+    }
+
+    func setReauthAlertsEnabled(_ enabled: Bool, accountID: String) {
+        let prefs = preferences(for: accountID)
+        Task { @MainActor in
+            guard await authorizeIfEnabling(enabled) else { return }
+            prefs.reauthAlertsEnabled = enabled
+            notificationsRevision += 1
+            // Detection-based: fires from the next failed refresh onward.
         }
     }
 
