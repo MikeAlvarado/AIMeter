@@ -107,8 +107,9 @@ AIMeter is designed so you can verify every claim in this section by
 reading the code (it's small) or probing the endpoints yourself.
 
 **What leaves your device** — HTTPS requests to `api.anthropic.com` only
-(`/api/oauth/usage` for the windows/spend data, `/api/oauth/profile` once
-to resolve your plan name) and, for the iOS sign-in flow, the standard
+(`/api/oauth/usage` for the windows/spend data, `/api/oauth/profile` to
+resolve your plan name, re-checked at most every 6 hours so a plan change
+shows up) and, for the iOS sign-in flow, the standard
 OAuth exchange with `claude.ai` / `console.anthropic.com`. Nothing else:
 no analytics, no crash reporting, no third-party SDKs, no server of ours.
 

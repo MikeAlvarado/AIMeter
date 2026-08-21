@@ -12,10 +12,20 @@ captured response) before changing the model.
   `amount_minor` scaled by `exponent`) and `extra_usage` (credits scaled by
   `decimal_places`). `resets_at` is ISO 8601 with fractional seconds, and
   is **null for windows with no usage yet**.
-- `GET https://api.anthropic.com/api/oauth/profile` — used once to resolve
-  the plan name when credentials lack it: `account.has_claude_pro` /
-  `has_claude_max` → "pro"/"max" (max wins). Result is persisted into the
-  stored credentials.
+- `GET https://api.anthropic.com/api/oauth/profile` — the only source of
+  the plan name (the usage response carries no subscription field):
+  `account.has_claude_pro` / `has_claude_max` → "pro"/"max" (max wins).
+  The result is cached in the stored credentials (`subscriptionType`) with
+  the date it was confirmed (`planCheckedAt`), and re-confirmed once the
+  cache is older than `ClaudeProvider.planRecheckInterval` (6 h) — a
+  subscription changes whenever the user upgrades, and a cache with no
+  expiry kept showing "Pro" forever after a move to Max. A failed profile
+  call (or one reporting no subscription at all, which is also what a wire
+  shape change would look like) keeps the last known plan rather than
+  blanking it. Read-only sources have nowhere to persist `planCheckedAt`,
+  so `ClaudeProvider`'s in-memory `PlanCache` holds the resolved plan for
+  the life of the provider instance and takes precedence over the CLI
+  item's own `subscriptionType`.
 - Auth headers on every call: `Authorization: Bearer <token>`,
   `anthropic-beta: oauth-2025-04-20`, and a Claude Code-like
   `User-Agent: claude-code/<version>` — other agents hit an aggressively

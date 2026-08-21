@@ -9,19 +9,29 @@ public struct ClaudeCredentials: Codable, Equatable, Sendable {
     public var scopes: [String]
     /// e.g. "pro", "max".
     public var subscriptionType: String?
+    /// When `subscriptionType` was last confirmed against the profile
+    /// endpoint. Nil means "never confirmed, or confirmed before this field
+    /// existed" — which reads as due for a check, so an install upgrading
+    /// from a build that cached the plan forever re-verifies on its next
+    /// fetch. A subscription can change at any time (Pro → Max) and nothing
+    /// in the usage response reports it, so the cached value needs an
+    /// expiry date of its own; see `ClaudeProvider.planRecheckInterval`.
+    public var planCheckedAt: Date?
 
     public init(
         accessToken: String,
         refreshToken: String? = nil,
         expiresAt: Date? = nil,
         scopes: [String] = [],
-        subscriptionType: String? = nil
+        subscriptionType: String? = nil,
+        planCheckedAt: Date? = nil
     ) {
         self.accessToken = accessToken
         self.refreshToken = refreshToken
         self.expiresAt = expiresAt
         self.scopes = scopes
         self.subscriptionType = subscriptionType
+        self.planCheckedAt = planCheckedAt
     }
 
     public var isExpired: Bool {

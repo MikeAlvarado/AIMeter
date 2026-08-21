@@ -152,10 +152,20 @@ the account silently freezes at its last snapshot.
   Code's.
 - The `planName` write-back in `ClaudeProvider` re-reads the credential
   source before saving instead of persisting the value the fetch started
-  with. It only owns `subscriptionType`; saving the whole stale value could
-  put an already-consumed refresh token back over a freshly rotated one —
-  one of the ways an account breaks like this in the first place, since the
-  iOS widget refreshes against the same shared Keychain item as the app.
+  with. It only owns `subscriptionType` and `planCheckedAt`; saving the
+  whole stale value could put an already-consumed refresh token back over a
+  freshly rotated one — one of the ways an account breaks like this in the
+  first place, since the iOS widget refreshes against the same shared
+  Keychain item as the app.
+- The plan name is the one part of a snapshot that isn't re-derived from
+  the usage response on every fetch — that response carries no subscription
+  field, so the name comes from `/api/oauth/profile` and is cached in the
+  credentials. It therefore needs an expiry of its own: `planCheckedAt`
+  stamps each confirmation and `ClaudeProvider.planRecheckInterval` (6 h)
+  bounds how long it's trusted, so a Pro → Max upgrade reaches the plan
+  pill (dashboard, menu bar, landscape, all-accounts widget — all of them
+  read `UsageSnapshot.planName`) instead of showing the plan the account
+  had at sign-in forever. Details in the Claude provider's own CLAUDE.md.
 
 ## Refresh & notification behavior
 

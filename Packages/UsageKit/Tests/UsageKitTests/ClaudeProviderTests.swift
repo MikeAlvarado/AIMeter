@@ -186,7 +186,7 @@ final class ClaudeProviderTests: XCTestCase {
         XCTAssertEqual(saved.refreshToken, "rotated-refresh")
     }
 
-    func testStoredSubscriptionSkipsProfileCall() async throws {
+    func testRecentlyCheckedSubscriptionSkipsProfileCall() async throws {
         let transport = StubTransport()
         transport.route(url: ClaudeProvider.usageEndpoint, responses: [
             (200, Self.usageBody),
@@ -198,6 +198,68 @@ final class ClaudeProviderTests: XCTestCase {
 
         XCTAssertEqual(snapshot.planName, "pro")
         XCTAssertFalse(transport.requests.contains { $0.url == ClaudeProvider.profileEndpoint })
+    }
+
+    /// The upgrade case: a plan cached at login stays cached forever unless
+    /// something re-checks it, and the usage response never reports one — so
+    /// a Pro → Max move would keep showing "Pro" everywhere the pill renders.
+    func testStalePlanIsReverifiedAndPersisted() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        transport.route(url: ClaudeProvider.profileEndpoint, responses: [
+            (200, #"{"account": {"has_claude_pro": false, "has_claude_max": true}}"#),
+        ])
+        let source = StubCredentialSource(credentials: .stalePlan, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let snapshot = try await provider.fetchUsage()
+
+        XCTAssertEqual(snapshot.planName, "max")
+        XCTAssertEqual(source.saved.last?.subscriptionType, "max")
+        let checkedAt = try XCTUnwrap(source.saved.last?.planCheckedAt)
+        XCTAssertEqual(checkedAt.timeIntervalSinceNow, 0, accuracy: 5)
+    }
+
+    func testUnreachableProfileKeepsLastKnownPlan() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        transport.route(url: ClaudeProvider.profileEndpoint, responses: [
+            (500, "boom"),
+        ])
+        let source = StubCredentialSource(credentials: .stalePlan, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let snapshot = try await provider.fetchUsage()
+
+        XCTAssertEqual(snapshot.planName, "pro")
+        XCTAssertTrue(source.saved.isEmpty)
+    }
+
+    /// A read-only source (macOS mirroring Claude Code's own login) has
+    /// nowhere to persist the check, so the resolved plan has to override
+    /// the CLI item's stale one in memory — and not re-ask on every fetch.
+    func testReadOnlySourceResolvesPlanOnceAndOverridesStoredOne() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        transport.route(url: ClaudeProvider.profileEndpoint, responses: [
+            (200, #"{"account": {"has_claude_pro": false, "has_claude_max": true}}"#),
+        ])
+        let source = StubCredentialSource(credentials: .stalePlan, allowsRefresh: false)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let first = try await provider.fetchUsage()
+        let second = try await provider.fetchUsage()
+
+        XCTAssertEqual(first.planName, "max")
+        XCTAssertEqual(second.planName, "max")
+        XCTAssertTrue(source.saved.isEmpty)
+        XCTAssertEqual(transport.requests.filter { $0.url == ClaudeProvider.profileEndpoint }.count, 1)
     }
 
     private static let usageBody = """
@@ -221,14 +283,27 @@ private extension ClaudeCredentials {
         accessToken: "valid-token",
         refreshToken: "refresh-token",
         expiresAt: Date(timeIntervalSinceNow: 3600),
-        subscriptionType: "pro"
+        subscriptionType: "pro",
+        planCheckedAt: Date()
     )
 
     static let expired = ClaudeCredentials(
         accessToken: "old-token",
         refreshToken: "refresh-token",
         expiresAt: Date(timeIntervalSinceNow: -60),
-        subscriptionType: "pro"
+        subscriptionType: "pro",
+        planCheckedAt: Date()
+    )
+
+    /// A plan cached longer ago than `planRecheckInterval` — or, with
+    /// `planCheckedAt` nil, one cached by a build that never re-checked at
+    /// all. Both are what an account that changed plan looks like.
+    static let stalePlan = ClaudeCredentials(
+        accessToken: "valid-token",
+        refreshToken: "refresh-token",
+        expiresAt: Date(timeIntervalSinceNow: 3600),
+        subscriptionType: "pro",
+        planCheckedAt: Date(timeIntervalSinceNow: -ClaudeProvider.planRecheckInterval - 60)
     )
 
     /// An in-app OAuth connection made before the exchange captured the
