@@ -44,7 +44,7 @@ struct SessionLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                claudeIcon(size: 16)
+                providerMark(size: 16)
             } compactTrailing: {
                 HStack(spacing: 4) {
                     percentText(context.state, size: 12)
@@ -53,17 +53,13 @@ struct SessionLiveActivity: Widget {
                     }
                 }
             } minimal: {
-                claudeIcon(size: 14)
+                providerMark(size: 14)
             }
         }
     }
 
-    private func claudeIcon(size: CGFloat) -> some View {
-        Image("ClaudeIcon")
-            .resizable()
-            .scaledToFit()
-            .frame(width: size, height: size)
-            .clipShape(RoundedRectangle(cornerRadius: size / 4, style: .continuous))
+    private func providerMark(size: CGFloat) -> some View {
+        ProviderMark(size: size, cornerRadius: size / 4)
     }
 
     private func percentText(_ state: SessionActivityAttributes.ContentState, size: CGFloat) -> some View {

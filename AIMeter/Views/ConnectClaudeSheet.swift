@@ -31,13 +31,10 @@ struct ConnectClaudeSheet: View {
         // instead, and dragging up to `.large` still shows it all at once.
         ScrollView {
             VStack(spacing: 18) {
-                Image("ClaudeCodeIcon")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 72, height: 72)
+                ProviderMark(size: 72, cornerRadius: 20, prominent: true)
                     .padding(.top, 8)
 
-                Text(reconnecting == nil ? String(localized: "Connect Claude Code") : String(localized: "Sign in again"))
+                Text(reconnecting == nil ? String(localized: "Connect your Claude account") : String(localized: "Sign in again"))
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(Theme.ink)
 
@@ -53,6 +50,11 @@ struct ConnectClaudeSheet: View {
                         .font(.body.weight(.semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 13)
+                        // The capsule is drawn *outside* the button (below),
+                        // so without this only the label's glyphs would be
+                        // tappable — a `.plain` button hit-tests its label,
+                        // and a transparent frame is not opaque content.
+                        .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(Theme.accent)
@@ -104,6 +106,9 @@ struct ConnectClaudeSheet: View {
                     .font(.body.weight(.semibold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 13)
+                    // Whole capsule tappable, not just the word — see the
+                    // sign-in button above.
+                    .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.white)
@@ -112,7 +117,27 @@ struct ConnectClaudeSheet: View {
                 )
                 .disabled(!canConnect)
 
+                #if os(macOS)
+                // macOS only, and not by accident: the iOS build never asks
+                // for — or accepts — another app's credential file. Doing so
+                // is what App Review guideline 5.2.2 reads as "requesting
+                // third-party account information", and what Anthropic's
+                // authentication policy forbids outright ("developers may
+                // not collect, store, or intermediate Claude.ai
+                // credentials"). On the Mac the first account already mirrors
+                // Claude Code's own login by design, so this stays a
+                // fallback there; see `obtainCredentials`.
                 Text("You can also paste the full credentials JSON from ~/.claude/.credentials.json.")
+                    .font(Theme.caption)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .multilineTextAlignment(.center)
+                #endif
+
+                // Said here, at the moment of connecting, not only buried in
+                // Privacy & data: what this app is, what the token is for,
+                // and where it stays. Every clause must remain true to the
+                // code (read-only endpoints, Keychain-only storage, no server).
+                Text("AIMeter is an independent app, not affiliated with Anthropic. It only reads your own usage limits — it never sends prompts or spends your plan's usage — and your sign-in token stays on this device.")
                     .font(Theme.caption)
                     .foregroundStyle(Theme.inkSecondary)
                     .multilineTextAlignment(.center)
@@ -209,15 +234,19 @@ struct ConnectClaudeSheet: View {
         }
     }
 
-    /// The field accepts either the OAuth code from the sign-in page or a
-    /// full credentials JSON copied from another device
-    /// (`~/.claude/.credentials.json`) — a fallback if the sign-in flow
-    /// ever breaks.
+    /// The field accepts the OAuth code from the sign-in page. On macOS only
+    /// it also accepts a full credentials JSON copied from another machine
+    /// (`~/.claude/.credentials.json`) — a fallback if the sign-in flow ever
+    /// breaks. The iOS build deliberately has no such path (see the hint
+    /// above): an App Store build must never take in another app's
+    /// credential file, so on iOS a pasted JSON is just an invalid code.
     private func obtainCredentials() async throws -> ClaudeCredentials {
         let trimmed = code.trimmingCharacters(in: .whitespacesAndNewlines)
+        #if os(macOS)
         if trimmed.hasPrefix("{") {
             return try ClaudeCredentials.fromClaudeCodeJSON(Data(trimmed.utf8))
         }
+        #endif
         return try await ClaudeOAuth().exchange(pastedCode: trimmed, session: session)
     }
 }

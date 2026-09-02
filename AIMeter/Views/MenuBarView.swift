@@ -77,7 +77,7 @@ struct MenuBarView: View {
             }
 
             if model.needsConnection {
-                DisconnectedPrompt(buttonLabel: "Connect Claude Code", verticalPadding: 10) {
+                DisconnectedPrompt(buttonLabel: "Connect Claude account", verticalPadding: 10) {
                     showingConnect = true
                 }
             } else {

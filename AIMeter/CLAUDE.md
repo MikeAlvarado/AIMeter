@@ -17,8 +17,10 @@
     repo-root CLAUDE.md), so it carries to the menu bar popover, the
     all-accounts widget, every account picker, and the macOS status item's
     "first account" fallback.
-    - Built on `LongPressGesture.sequenced(before: DragGesture)` moving the
-      card with an `offset`, **not** on `.draggable`/`.dropDestination`.
+    - Built on a hold-then-drag gesture moving the card with an `offset`
+      (SwiftUI's `LongPressGesture.sequenced(before: DragGesture)` on iOS 17
+      and macOS, a UIKit long-press recognizer on iOS 18+ — see the last
+      bullets below), **not** on `.draggable`/`.dropDestination`.
       That is the entire reason this is hand-rolled: SwiftUI's drag and
       drop carries a *preview* of the view, and UIKit scales that preview
       down to fit its own bounds — a full-width account card lifts at
@@ -30,7 +32,41 @@
       not a `scaleEffect` — growing the card is the same complaint again.
     - The long press is also what lets a vertical drag coexist with the
       enclosing `ScrollView`: move immediately and you scroll, hold first
-      and you reorder — the bargain the Home Screen makes.
+      and you reorder — the bargain the Home Screen makes. Its duration is
+      the platform's 0.5 s, deliberately not shorter: at 0.3 s a thumb that
+      merely settled before scrolling completed the press and the scroll
+      became a reorder (reproduced with a 400 ms dwell on the simulator).
+    - The press alone cannot tell a scroll from a hold: `LongPressGesture`
+      measures `maximumDistance` in the card's own coordinate space, and a
+      card scrolls *with* the finger, so a scrolling finger never "moves"
+      and the press completes mid-scroll — the card lifted, shadow and
+      haptic included, while the list was still moving (reported from a
+      device). `DashboardScrollOffsetKey` publishes the content's offset in
+      the ScrollView's own space and `ScrollMovementTracker` (a reference in
+      `@State`, so per-frame updates invalidate nothing) records when it
+      last changed; a press that completes with movement inside the press
+      window (0.6 s) is ignored and the rest of that touch stays a scroll.
+    - On iOS 18+ the gesture is not a SwiftUI gesture at all but a UIKit
+      `UILongPressGestureRecognizer` (`ReorderPressRecognizer`, a
+      `UIGestureRecognizerRepresentable` in `AccountReorder.swift`). Any
+      SwiftUI gesture with a drag in it — `.gesture` *and*
+      `.simultaneousGesture` were both tried — makes the ScrollView refuse to
+      pan for touches that begin on the card (iOS 26 simulator: a flick on a
+      card did nothing, the same flick in the gap between cards scrolled,
+      and with the gesture removed the flick on the card scrolled), and
+      cards are nearly all the content. UIKit's recognizer has the right
+      semantics natively: a finger that moves before 0.5 s starts the pan
+      and cancels the press; a press that completes first prevents the pan
+      for that touch; its `.changed` states are the drag. iOS 17 and macOS
+      keep the SwiftUI sequenced gesture (no such regression there). Both
+      paths report through `ReorderPhase` into one handler, and
+      `.scrollDisabled(draggingID != nil)` on the ScrollView restates the
+      "lifted card never scrolls" promise for the SwiftUI path. Verified on
+      the iOS 26 simulator with four accounts: flick up/down from a card
+      scrolls; 200 ms pause then move scrolls; 800 ms hold then move
+      reorders with the list still; a 1.2 s slow drag with the finger down
+      scrolls without lifting (the device symptom); header tap and header
+      context menu unaffected.
     - `AccountSectionFramesKey` publishes each section's rect in the
       Dashboard's named coordinate space, since a gesture (unlike a drop
       target) only gets a location and has to resolve "what am I over"
@@ -106,9 +142,10 @@
   the Dock icon is hidden but the login item is off).
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
   Keychain, no tracking, and on macOS the opt-in login item), how connecting
-  works (per platform), the exact OAuth scopes as chips + the two read-only
-  endpoints called, and the independence/MIT footer. Every claim must stay
-  true to the code.
+  works (per platform), the one requested OAuth scope (`user:profile`) as a
+  chip + the two read-only endpoints called, and the independence/MIT/
+  trademark footer. Every claim must stay true to the code — the scope chip
+  in particular must match `ClaudeOAuth.scope`.
 - The GitHub mark is a bundled PNG (`Shared/Media.xcassets/GitHubIcon`,
   light/dark appearance variants — same mechanism as the app icon) —
   SF Symbols has no third-party brand glyphs. It is pre-colored per
@@ -116,13 +153,26 @@
   tinted via `.renderingMode(.template)` at runtime: a solid-black source
   PNG gets compiled by `actool` into a monochrome/alpha-mask rendition
   whose `.foregroundStyle` tinting was unreliable in practice, whereas a
-  pre-colored RGBA source always compiles to a plain ARGB rendition (same
-  as `ClaudeIcon`) and just displays as-is — no template step to trust.
-- **Connect sheet**: pixel-Claude icon, explainer, "Open Claude Sign-In", a
+  pre-colored RGBA source always compiles to a plain ARGB rendition and
+  just displays as-is — no template step to trust. It is the only
+  third-party mark in the bundle: the provider itself is drawn by the
+  neutral `ProviderMark`, never by Anthropic's logo (see "Design system"
+  in the repo-root CLAUDE.md).
+- **Connect sheet**: `ProviderMark` header (prominent tile), title "Connect
+  your Claude account", explainer, "Open Claude Sign-In", a
   nickname field (only shown once at least one account is already
   connected — a first connection needs no name; suggests "Claude 2" etc.
-  based on how many exist), paste field (accepts OAuth code or full
-  credentials JSON), Connect — surfaces the connection error inline
+  based on how many exist), paste field, Connect, then an independence
+  footnote (not affiliated with Anthropic, reads only your own limits,
+  never sends prompts, token stays on this device — said at the moment of
+  connecting, not only in Privacy & data). The paste field accepts the
+  OAuth code; **on macOS only** it also accepts a full credentials JSON
+  (`~/.claude/.credentials.json`, with its own hint line), a fallback the
+  iOS build deliberately lacks — an App Store build never asks for or
+  accepts another app's credential file, which is at once what App Review
+  guideline 5.2.2 objects to and what Anthropic's credential policy forbids
+  ("developers may not collect, store, or intermediate Claude.ai
+  credentials"). Surfaces the connection error inline
   (`UsageModel.connectionError`, a transient property distinct from an
   already-connected account's ongoing `lastError`, since a failed
   connection attempt never makes it into `accounts`) instead of dismissing

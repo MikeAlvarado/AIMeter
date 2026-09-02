@@ -112,5 +112,10 @@ struct AccountSectionView: View {
                     .foregroundStyle(Theme.inkSecondary)
             }
         }
+        // The Spacer between name and chevron is not hit-testable on its
+        // own; without this, tapping the empty middle of the header did
+        // nothing. Also what makes the header — not the card behind it —
+        // own a long press anywhere along its width (context menu).
+        .contentShape(Rectangle())
     }
 }

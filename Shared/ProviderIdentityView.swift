@@ -15,11 +15,7 @@ struct ProviderIdentityView: View {
     let planName: String?
 
     var body: some View {
-        Image("ClaudeIcon")
-            .resizable()
-            .scaledToFit()
-            .frame(width: iconSize, height: iconSize)
-            .clipShape(RoundedRectangle(cornerRadius: iconCornerRadius, style: .continuous))
+        ProviderMark(size: iconSize, cornerRadius: iconCornerRadius)
         Text(name)
             .font(font)
             .foregroundStyle(nameColor)

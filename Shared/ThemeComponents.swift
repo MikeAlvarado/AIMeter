@@ -53,6 +53,10 @@ struct SegmentedPill<Option: Hashable>: View {
                                 Capsule().fill(Theme.accentWash)
                             }
                         }
+                        // An unselected segment draws no background, so
+                        // without this only its word would be tappable and
+                        // a tap beside the word would do nothing.
+                        .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(selection == option.value ? .isSelected : [])
@@ -171,6 +175,11 @@ struct DisconnectedPrompt: View {
                 .font(.body.weight(.semibold))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, verticalPadding)
+                // The capsule below is outside the button, so the label has
+                // to claim the whole shape itself or only the text would
+                // respond to a tap (a `.plain` button hit-tests its label,
+                // and a transparent frame isn't opaque content).
+                .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .foregroundStyle(.white)

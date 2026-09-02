@@ -31,8 +31,13 @@ captured response) before changing the model.
   `User-Agent: claude-code/<version>` — other agents hit an aggressively
   rate-limited bucket (persistent 429s).
 - OAuth: PKCE against `https://claude.ai/oauth/authorize` (client ID
-  `9d1c250a-e61b-44d9-88ed-5944d1962f5e`, scope
-  `user:profile user:inference`); the user pastes back `<code>#<state>`
+  `9d1c250a-e61b-44d9-88ed-5944d1962f5e`, scope `user:profile` **only** —
+  the scope `/api/oauth/usage` and `/api/oauth/profile` gate on.
+  `user:inference` is deliberately never requested, so a token AIMeter
+  mints cannot run inference at all: least privilege for a read-only
+  meter, and the line Anthropic's authentication policy draws for
+  third-party tools. `ClaudeOAuthTests` pins the scope; the Privacy screen's
+  scope chip must match it); the user pastes back `<code>#<state>`
   (an empty or malformed paste, e.g. just `"#"`, throws a typed error
   instead of indexing a possibly-empty split result); exchange/refresh at
   `https://console.anthropic.com/v1/oauth/token`.
@@ -51,7 +56,9 @@ repo-root CLAUDE.md):
   probe beyond what that one refresh attempt already does.
 - Every `.managed` account (iOS always; macOS for every account past the
   first): `ClaudeKeychainCredentialSource` — the app owns its copy (from
-  the in-app OAuth flow, or a pasted credentials JSON) and refreshes it,
+  the in-app OAuth flow, or — macOS only — a pasted credentials JSON; the
+  iOS build accepts nothing but the OAuth code, see the Connect sheet in
+  `AIMeter/CLAUDE.md`) and refreshes it,
   keyed by `ClaudeKeychainCredentialSource.storageKey(for: accountID)`
   (the legacy default key for `"claude"`, `"claude.credentials.<accountID>"`
   for every other account — both the app and the widget extension call

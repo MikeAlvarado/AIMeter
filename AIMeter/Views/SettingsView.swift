@@ -31,6 +31,7 @@ struct SettingsView: View {
                                     .foregroundStyle(Theme.ink)
                                 Spacer()
                             }
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                     }
@@ -56,6 +57,7 @@ struct SettingsView: View {
                                     .foregroundStyle(Theme.ink)
                                 Spacer()
                             }
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                     }
@@ -153,6 +155,7 @@ struct SettingsView: View {
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(Theme.inkSecondary)
                         }
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                 }
@@ -178,6 +181,7 @@ struct SettingsView: View {
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(Theme.inkSecondary)
                         }
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                 }

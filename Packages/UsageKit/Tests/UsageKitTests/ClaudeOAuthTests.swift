@@ -19,6 +19,8 @@ final class ClaudeOAuthTests: XCTestCase {
         XCTAssertEqual(items["redirect_uri"], "https://console.anthropic.com/oauth/code/callback")
         XCTAssertEqual(items["code_challenge_method"], "S256")
         XCTAssertEqual(items["state"], session.state)
+        // Read-only meter: profile only, never the inference scope.
+        XCTAssertEqual(items["scope"], "user:profile")
         XCTAssertFalse(session.codeVerifier.isEmpty)
         // Challenge must be base64url (no padding, no +/ characters).
         let challenge = try XCTUnwrap(items["code_challenge"])

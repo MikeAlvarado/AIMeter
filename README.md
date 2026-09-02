@@ -101,6 +101,17 @@ and in accordance with Anthropic's terms of service.
 Your token never leaves your device: it is read from (macOS) or stored in
 (iOS) the Keychain, and requests go directly to Anthropic's API.
 
+AIMeter's own sign-in requests a single OAuth scope, `user:profile` — the
+one the usage and profile endpoints need — and never `user:inference`, so a
+token issued to AIMeter cannot be used to run Claude. Be aware that
+Anthropic's published authentication policy (Claude Code docs → Legal and
+compliance → "Authentication and credential use") reserves Claude.ai OAuth
+for its own applications and disallows third-party apps from collecting or
+storing Claude.ai credentials. AIMeter is a read-only meter of your own
+account that holds nothing but the token you grant it, on your device — but
+it claims no exemption from that policy, and Anthropic may restrict this
+endpoint or these tokens at any time.
+
 ## Privacy & data transparency
 
 AIMeter is designed so you can verify every claim in this section by
@@ -156,9 +167,11 @@ or written to disk. `Scripts/sample-response.json` is a captured example.
   single account never needs a name). The app then owns its token copy —
   including automatic refresh — stored only in the device Keychain, shared
   with the widget extension through the App Group keychain access group so
-  widgets can update themselves in the background. As a fallback, the same
-  field also accepts the full credentials JSON copied from another device
-  (`~/.claude/.credentials.json`).
+  widgets can update themselves in the background. On macOS only, the same
+  field also accepts the full credentials JSON copied from another Mac
+  (`~/.claude/.credentials.json`) as a fallback; the iOS build accepts
+  nothing but the sign-in code — it never takes in another app's
+  credential file.
 - **Adding more accounts**: tap **Add account** on the dashboard any time
   — the same Connect flow above, repeated per login. There's no limit
   beyond what's practical to keep track of.

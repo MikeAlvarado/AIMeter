@@ -125,9 +125,9 @@ automatically when working in that directory.
 
 A stored login can stop working for good — Anthropic rotates the refresh
 token on every use, so any other client refreshing the *same* login (Claude
-Code on another machine, a second device the same credentials JSON was
-pasted into) leaves AIMeter's copy invalid; a password change or global
-sign-out does the same. From then on every refresh fails identically and
+Code on another machine, or — macOS only, the iOS build has no such path —
+a second Mac the same credentials JSON was pasted into) leaves AIMeter's
+copy invalid; a password change or global sign-out does the same. From then on every refresh fails identically and
 the account silently freezes at its last snapshot.
 
 - `UsageError.requiresReauthentication` marks the three failures no retry
@@ -482,6 +482,17 @@ font, and name color so it fits the dashboard, landscape header, menu bar,
 and both widgets without re-typing the composition per surface; each
 caller still wraps it in its own `HStack` for whatever trailing content
 (chevron, "Updated X ago", a staleness hint, or nothing) that surface needs.
+The icon it draws is `Shared/ProviderMark.swift` — an SF Symbol
+(`sparkle`) on the app's own accent wash (or a filled accent tile,
+`prominent: true`, for the Connect sheet header), also used directly by
+Privacy & data and the Live Activity's compact/minimal islands. It is
+deliberately **not** the provider's logo: Anthropic's trademark guidelines
+reserve the Claude logo for uses approved in writing, and App Review
+(4.1(c)/5.2.1) treats a third party's icon the same way — the app was
+rejected once over brand use. The provider is identified by its *name*
+alone, plain-text referential use, which is what both permit; no
+third-party logo ships in the bundle (the GitHub mark in Settings is the
+one exception, used as a link glyph to the app's own repository).
 Two more `Shared/ThemeComponents.swift` views follow the same rule for
 other repeated pieces: `UsageStatusFooter` (the error label + "Updated X
 ago" caption under the rate-limit rows — dashboard, provider detail, menu
@@ -518,6 +529,14 @@ region to the project's `knownRegions`.
 - Keep files under ~300 lines; split by feature, not by type.
 - Accessibility: every usage row is one combined VoiceOver element; bars
   are decorative (`accessibilityHidden`); icon-only buttons carry labels.
+- Hit areas: a `.plain`-style `Button` hit-tests its *label*, and a
+  transparent frame, padding, or `Spacer` is not opaque content — so any
+  button whose background is drawn outside the label (the capsule buttons,
+  `SegmentedPill`'s unselected segments, the Settings rows inside a `Card`,
+  the account header) claims its full shape with `.contentShape(...)` on
+  the label. Without it only the word or glyph responds, which is how the
+  Connect sheet's button shipped once: tappable on the text, dead on the
+  rest of the capsule.
   `accessibilityReduceMotion` gates the three animated transitions in the
   app (`RoundIconButton`'s refresh spin, `SegmentedPill`'s selection
   change, and the Dashboard account reorder's drop-target highlight and
@@ -553,6 +572,23 @@ region to the project's `knownRegions`.
   one required-reason API category actually used — `UserDefaults`, reason
   `1C8F.1` (App Group only). Update it if a new required-reason API is
   ever introduced.
+- App Review posture. Version 1.0 was rejected under 4.1(c) (Copycats —
+  the store subtitle named Claude) and 5.2.2 (Legal — "requests, displays,
+  or distributes third-party account information"). The code-side answer,
+  all of which must hold for every later submission: no third-party logo in
+  the bundle (`ProviderMark`, not Anthropic's Claude/Claude Code icons);
+  "Claude" only as plain-text nominative use *inside* the app, never in
+  the App Store name, subtitle, icon, or keywords, with the store
+  description carrying the not-affiliated/trademark line the Privacy
+  screen already shows; the in-app OAuth requests `user:profile` only; the
+  iOS build never accepts another app's credential file; and the Connect
+  sheet states independence and read-only scope at the moment of
+  connecting. Anthropic's own published rule (Claude Code docs → Legal and
+  compliance → "Authentication and credential use") reserves Claude.ai
+  OAuth for its own applications and disallows third parties collecting or
+  storing Claude.ai credentials, so none of this amounts to permission —
+  it is the honest minimum, and any change that adds a brand asset or a
+  credential path reopens both findings.
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 - App Store notes for the macOS background work: the `SMAppService` login

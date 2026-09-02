@@ -61,23 +61,21 @@ struct PrivacyView: View {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                         HStack(spacing: 8) {
-                            Image("ClaudeIcon")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 22, height: 22)
-                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                            ProviderMark(size: 22, cornerRadius: 6)
                             Text(verbatim: "Claude")
                                 .font(.body.weight(.semibold))
                                 .foregroundStyle(Theme.ink)
                         }
-                        Text("Requested OAuth scopes:")
+                        Text("Requested OAuth scope:")
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
                         HStack(spacing: 8) {
+                            // Exactly what `ClaudeOAuth.scope` requests — keep
+                            // the two in sync; this chip is the user-facing
+                            // proof that the inference scope is never asked for.
                             ScopeChip(name: "user:profile")
-                            ScopeChip(name: "user:inference")
                         }
-                        Text("Whatever the token could technically do, AIMeter only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). It never sends prompts, never generates code, and never spends usage on your behalf — the source is open if you want to verify.")
+                        Text("When you sign in through AIMeter it requests only the profile scope — what the usage and profile endpoints need — and never the inference scope, so a token issued to AIMeter can't send prompts or spend usage on your behalf even in theory. Either way it only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). The source is open if you want to verify.")
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
                     }
@@ -85,7 +83,7 @@ struct PrivacyView: View {
 
                 sectionGap
                 Card {
-                    Text("AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic. \"Claude\" is a trademark of Anthropic, PBC.")
+                    Text("AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic. \"Claude\" and \"Anthropic\" are trademarks of Anthropic, PBC, used only to identify the service whose usage this app displays.")
                         .font(Theme.caption)
                         .foregroundStyle(Theme.inkSecondary)
                 }

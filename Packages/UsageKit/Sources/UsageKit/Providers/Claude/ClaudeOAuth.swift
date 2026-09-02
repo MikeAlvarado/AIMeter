@@ -16,8 +16,15 @@ public struct ClaudeOAuth: Sendable {
 
     static let authorizeEndpoint = URL(string: "https://claude.ai/oauth/authorize")!
     static let redirectURI = "https://console.anthropic.com/oauth/code/callback"
-    /// user:profile is what the usage endpoint requires.
-    static let scope = "user:profile user:inference"
+    /// `user:profile` is the one scope `/api/oauth/usage` and
+    /// `/api/oauth/profile` gate on, and it is the *only* one requested.
+    /// `user:inference` is deliberately left out: a token AIMeter mints can
+    /// then never be used to send prompts or run a model — least privilege
+    /// for a read-only meter, and it keeps the app clearly on the right side
+    /// of Anthropic's rule against third-party tools routing inference
+    /// through a Claude subscription. The consent page shows the user
+    /// exactly this, so the claim is verifiable at sign-in.
+    static let scope = "user:profile"
 
     private let transport: any HTTPTransport
 
