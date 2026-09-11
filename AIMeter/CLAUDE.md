@@ -193,7 +193,13 @@
 - **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
   `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
   usage — so every screen (rate limits, pace, peak hours, forecast,
-  spend/extra cards) can be explored without a real Claude account. Exists
+  spend/extra cards) can be explored without a real Claude account. Its
+  names are deliberately neutral — the account is nicknamed "Personal" and
+  the per-model window is "Top model", never a provider or product name —
+  because demo mode is where App Store screenshots come from, and
+  screenshots are store metadata: the third rejection (4.1(a)) was for
+  third-party names in metadata, and "Claude"/"Fable 5" in every card
+  header was exactly that. Exists
   mainly so App Store reviewers can evaluate the app without being handed
   credentials to a paid third-party account; also a source of screenshots
   that doesn't expose anyone's real usage. Purely in-memory: never calls

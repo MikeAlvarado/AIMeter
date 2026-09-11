@@ -581,9 +581,15 @@ region to the project's `knownRegions`.
   the App Store name, subtitle, icon, or keywords, with the store
   description carrying the not-affiliated/trademark line the Privacy
   screen already shows; the in-app OAuth requests `user:profile` only; the
-  iOS build never accepts another app's credential file; and the Connect
+  iOS build never accepts another app's credential file; the Connect
   sheet states independence and read-only scope at the moment of
-  connecting. Anthropic's own published rule (Claude Code docs → Legal and
+  connecting; and demo data — the source of App Store screenshots, which
+  are metadata too — names no provider or product ("Personal", "Top
+  model"). Store metadata itself (name, subtitle, promotional text,
+  keywords, description, screenshots, in every localization) carries no
+  third-party name at all after the third rejection under 4.1(a): even the
+  descriptive "supports Claude Pro/Max" sentence was pulled from the
+  description. Anthropic's own published rule (Claude Code docs → Legal and
   compliance → "Authentication and credential use") reserves Claude.ai
   OAuth for its own applications and disallows third parties collecting or
   storing Claude.ai credentials, so none of this amounts to permission —

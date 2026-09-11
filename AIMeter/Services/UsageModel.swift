@@ -386,9 +386,12 @@ final class UsageModel {
         isDemoMode = true
         connectionError = nil
         accounts = [AccountUsage(
+            // Neutral nickname on purpose — see `DemoUsageData`: the demo is
+            // the source of App Store screenshots, and a provider's name in
+            // a screenshot is a third-party name in store metadata (4.1(a)).
             account: ConnectedAccount(
                 accountID: "demo", providerID: "claude",
-                displayName: "Claude", credentialStrategy: .managed
+                displayName: "Personal", credentialStrategy: .managed
             ),
             snapshot: DemoUsageData.snapshot()
         )]

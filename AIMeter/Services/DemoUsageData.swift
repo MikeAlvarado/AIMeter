@@ -31,8 +31,13 @@ enum DemoUsageData {
                 ),
                 // Scoped weekly windows share the weekly window's exact
                 // resetsAt (see UsageSnapshot data-shaping rules).
+                // A neutral stand-in, not a real model name: demo mode is
+                // what App Store screenshots are taken from, and screenshots
+                // are store metadata — the app was rejected under 4.1(a) for
+                // third-party names in metadata. Nothing in this fixture may
+                // name a provider or one of its products.
                 UsageWindow(
-                    kind: .modelSpecific("Fable 5"),
+                    kind: .modelSpecific(String(localized: "Top model")),
                     usedPct: 18,
                     resetsAt: weeklyReset,
                     severity: .normal,

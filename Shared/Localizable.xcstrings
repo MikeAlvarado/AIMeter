@@ -1697,6 +1697,16 @@
         }
       }
     },
+    "Top model" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelo top"
+          }
+        }
+      }
+    },
     "Updated %lld min ago" : {
       "localizations" : {
         "es" : {
