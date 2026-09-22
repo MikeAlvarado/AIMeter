@@ -139,10 +139,8 @@ final class UsageModel {
         // (`Preferences.autoDetectDeclined`), in which case re-mirroring it
         // here would just undo the disconnect on every launch.
         if accounts.isEmpty, !Preferences.autoDetectDeclined {
-            let candidate = ConnectedAccount(
-                accountID: ClaudeKeychainCredentialSource.legacyAccountID, providerID: "claude",
-                displayName: "Claude", credentialStrategy: .autoDetected
-            )
+            var candidate = ProviderCatalog.legacyAccount
+            candidate.credentialStrategy = .autoDetected
             let service = previousServices[candidate.accountID] ?? RefreshService(account: candidate)
             services[candidate.accountID] = service
             accounts = [AccountUsage(account: candidate, snapshot: service.lastSnapshot())]

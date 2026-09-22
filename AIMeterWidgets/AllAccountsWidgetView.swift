@@ -20,7 +20,9 @@ struct AllAccountsWidgetView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            let peak = ClaudePeakStatus(at: entry.date)
+            // Claude's policy: badge only when a Claude account is shown.
+            let hasClaude = entry.rows.contains { $0.account.providerID == ClaudeProvider.providerID }
+            let peak = ClaudePeakStatus.forProvider(hasClaude ? ClaudeProvider.providerID : nil, at: entry.date)
             if peak.isPeak {
                 HStack {
                     PeakBadge(size: 10, title: peak.title)

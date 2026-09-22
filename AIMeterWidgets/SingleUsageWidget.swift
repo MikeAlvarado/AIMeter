@@ -27,9 +27,9 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
         SingleUsageEntry(
             date: .now,
             snapshot: .sample,
-            accountID: ClaudeKeychainCredentialSource.legacyAccountID,
+            accountID: ProviderCatalog.legacyAccount.accountID,
             kind: .session,
-            accountName: "Claude",
+            accountName: ProviderCatalog.legacyAccount.displayName,
             prefs: Preferences()
         )
     }

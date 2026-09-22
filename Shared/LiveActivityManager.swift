@@ -20,11 +20,12 @@ enum LiveActivityManager {
     /// sees an empty `Activity.activities` and can neither start nor
     /// update one, which is why `WidgetRefresher` doesn't call this.
     static func sync(
-        accountID: String, accountName: String, snapshot: UsageSnapshot?, enabled: Bool, mayStart: Bool = true
+        accountID: String, accountName: String, providerID: String,
+        snapshot: UsageSnapshot?, enabled: Bool, mayStart: Bool = true
     ) {
         let running = Activity<SessionActivityAttributes>.activities.first { $0.attributes.accountID == accountID }
 
-        guard let content = content(for: snapshot, enabled: enabled) else {
+        guard let content = content(for: snapshot, providerID: providerID, enabled: enabled) else {
             guard let running else { return }
             Task { await running.end(nil, dismissalPolicy: .immediate) }
             return
@@ -44,10 +45,12 @@ enum LiveActivityManager {
     /// when none is running — the next `sync` picks the new name up on its
     /// own. Called from the rename action only, so the app is in the
     /// foreground, which `Activity.request` requires.
-    static func rename(accountID: String, accountName: String, snapshot: UsageSnapshot?, enabled: Bool) {
+    static func rename(
+        accountID: String, accountName: String, providerID: String, snapshot: UsageSnapshot?, enabled: Bool
+    ) {
         let running = Activity<SessionActivityAttributes>.activities.filter { $0.attributes.accountID == accountID }
         guard !running.isEmpty else { return }
-        let content = content(for: snapshot, enabled: enabled)
+        let content = content(for: snapshot, providerID: providerID, enabled: enabled)
         Task {
             for activity in running {
                 await activity.end(nil, dismissalPolicy: .immediate)
@@ -74,7 +77,7 @@ enum LiveActivityManager {
     /// (toggle off, no session window, an idle one, or one already past
     /// its reset) — which `sync` reads as "end whatever is running".
     private static func content(
-        for snapshot: UsageSnapshot?, enabled: Bool
+        for snapshot: UsageSnapshot?, providerID: String, enabled: Bool
     ) -> ActivityContent<SessionActivityAttributes.ContentState>? {
         guard enabled,
               let window = snapshot?.sessionWindow,
@@ -86,7 +89,7 @@ enum LiveActivityManager {
             state: SessionActivityAttributes.ContentState(
                 usedPct: window.usedPct,
                 resetsAt: resetsAt,
-                isPeak: ClaudePeakStatus().isPeak,
+                isPeak: ClaudePeakStatus.forProvider(providerID).isPeak,
                 severity: window.severity
             ),
             staleDate: resetsAt

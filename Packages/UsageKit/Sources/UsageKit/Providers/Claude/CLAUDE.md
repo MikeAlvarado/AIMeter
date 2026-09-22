@@ -75,8 +75,17 @@ repo-root CLAUDE.md):
   The token endpoint's 429 maps to `rateLimited` (refresh and exchange
   alike), never to `notAuthenticated`, which would otherwise trip the
   sign-in-expired alert on a throttle.
-- `ClaudeCredentialSource.invalidateCache()` (default no-op) is called by
+- `CredentialStore.invalidateCache()` (UsageKit core, default no-op;
+  `ClaudeCredentialSource` refines `CredentialStore`) is called by
   the provider on a 401 from a source that can't refresh — i.e. the
   macOS CLI mirror, whose `cachedLocal` copy would otherwise keep serving
   a token Claude Code has since replaced (logout, account switch) until
-  it expired on its own.
+  it expired on its own. `CredentialStore.clear()` is what disconnect
+  calls without knowing the provider; `ClaudeCodeLocalCredentialSource`'s
+  is a deliberate no-op (never log the CLI out).
+- `ClaudeProvider.providerID` / `providerDisplayName` are the only place
+  the `"claude"` / `"Claude"` literals live; the app and widgets go through
+  `ProviderCatalog` (Shared/). `ClaudeUsageResponse.duration(of:)` stamps
+  every mapped window with its length (5 h sessions, 7-day weeks) so
+  `UsageWindow.effectiveDuration` never has to fall back to the kind's
+  default for a Claude window.

@@ -45,7 +45,7 @@ struct UsageWindowOption: AppEntity {
     /// (e.g. the widget process running before the app has ever migrated).
     static func accountName(for accountID: String) -> String {
         AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)?.displayName
-            ?? (accountID == ClaudeKeychainCredentialSource.legacyAccountID ? "Claude" : accountID)
+            ?? (accountID == ProviderCatalog.legacyAccount.accountID ? ProviderCatalog.legacyAccount.displayName : accountID)
     }
 }
 
@@ -74,9 +74,7 @@ struct UsageWindowOptionQuery: EntityQuery {
         let registry = AccountRegistryStore(suiteName: AppConfig.appGroupID)
         let store = SnapshotStore(suiteName: AppConfig.appGroupID)
         let accounts = registry?.accounts() ?? []
-        let resolved = accounts.isEmpty
-            ? [ConnectedAccount(accountID: ClaudeKeychainCredentialSource.legacyAccountID, providerID: "claude", displayName: "Claude", credentialStrategy: .managed)]
-            : accounts
+        let resolved = accounts.isEmpty ? [ProviderCatalog.legacyAccount] : accounts
 
         return resolved.flatMap { account -> [UsageWindowOption] in
             let snapshot = store?.snapshot(for: account.accountID)

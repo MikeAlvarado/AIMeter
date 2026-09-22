@@ -11,7 +11,7 @@ struct UsageAccountOption: AppEntity {
 
     var id: String { accountID }
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Claude Account"
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Account"
     static var defaultQuery = UsageAccountOptionQuery()
 
     var displayRepresentation: DisplayRepresentation {
@@ -43,14 +43,15 @@ struct UsageAccountOptionQuery: EntityQuery {
     private func currentOptions() -> [UsageAccountOption] {
         let accounts = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts() ?? []
         if accounts.isEmpty {
-            return [UsageAccountOption(accountID: ClaudeKeychainCredentialSource.legacyAccountID, accountName: "Claude")]
+            let legacy = ProviderCatalog.legacyAccount
+            return [UsageAccountOption(accountID: legacy.accountID, accountName: legacy.displayName)]
         }
         return accounts.map { UsageAccountOption(accountID: $0.accountID, accountName: $0.displayName) }
     }
 }
 
 struct UsageAccountConfigurationIntent: WidgetConfigurationIntent {
-    static var title: LocalizedStringResource = "Claude Account"
+    static var title: LocalizedStringResource = "Account"
     static var description = IntentDescription("Choose which connected account this widget shows.")
 
     @Parameter(title: "Account")

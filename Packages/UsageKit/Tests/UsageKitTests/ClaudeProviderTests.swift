@@ -423,6 +423,8 @@ private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sen
     func invalidateCache() {
         invalidations += 1
     }
+
+    func clear() throws {}
 }
 
 private final class StubTransport: HTTPTransport, @unchecked Sendable {

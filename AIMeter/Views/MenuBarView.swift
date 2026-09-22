@@ -67,7 +67,12 @@ struct MenuBarView: View {
     @Environment(\.openSettings) private var openSettings
     @State private var showingConnect = false
 
-    private var peak: ClaudePeakStatus { ClaudePeakStatus() }
+    /// Peak is Claude's policy: shown when any connected account is a
+    /// Claude account, off-peak otherwise.
+    private var peak: ClaudePeakStatus {
+        let hasClaude = model.accounts.contains { $0.account.providerID == ClaudeProvider.providerID }
+        return ClaudePeakStatus.forProvider(hasClaude ? ClaudeProvider.providerID : nil)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.rowSpacing) {

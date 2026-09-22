@@ -29,6 +29,14 @@ struct ClaudePeakStatus {
         }
     }
 
+    /// The status for an account of `providerID`: Claude's schedule for a
+    /// Claude account, off-peak with nothing scheduled for anyone else —
+    /// peak hours are Claude's policy, so a second provider's accounts
+    /// never show its bolt.
+    static func forProvider(_ providerID: String?, at date: Date = Date()) -> ClaudePeakStatus {
+        ClaudePeakStatus(at: date, schedule: providerID == ClaudeProvider.providerID ? ClaudePeakSchedule.current : nil)
+    }
+
     var title: String {
         isPeak ? String(localized: "Peak hours now") : String(localized: "Off-peak now")
     }

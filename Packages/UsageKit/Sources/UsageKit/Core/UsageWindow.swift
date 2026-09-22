@@ -34,19 +34,35 @@ public struct UsageWindow: Codable, Hashable, Sendable {
     public var severity: Severity?
     /// Whether the provider considers this window currently active.
     public var isActive: Bool?
+    /// The window's nominal length, when the provider states it (Claude:
+    /// 5 h sessions, 7-day weeks). Pace and run-out math read
+    /// `effectiveDuration`, which falls back to the kind's Claude-shaped
+    /// default when this is nil — so a provider whose "weekly" is a
+    /// calendar month, or whose session is 3 h, sets this instead of
+    /// needing a new `Kind`. Optional in the persisted shape, so snapshots
+    /// saved before it existed still decode.
+    public var duration: TimeInterval?
 
     public init(
         kind: Kind,
         usedPct: Double,
         resetsAt: Date? = nil,
         severity: Severity? = nil,
-        isActive: Bool? = nil
+        isActive: Bool? = nil,
+        duration: TimeInterval? = nil
     ) {
         self.kind = kind
         self.usedPct = usedPct
         self.resetsAt = resetsAt
         self.severity = severity
         self.isActive = isActive
+        self.duration = duration
+    }
+
+    /// The length pace/run-out math uses: the provider's own `duration`
+    /// when set, else `Kind.windowDuration`'s default.
+    public var effectiveDuration: TimeInterval? {
+        duration ?? kind.windowDuration
     }
 
     /// Remaining percentage of the window's limit, 0–100.

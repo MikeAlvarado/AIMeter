@@ -68,14 +68,15 @@ extension UsageModel {
 
     /// Placeholder for a new account's nickname — there's no email or name
     /// signal from Claude's API to derive one from, so the user sets it or
-    /// accepts this. "Claude" for the first account, then the first free
-    /// "Claude N" counting from how many exist, skipping any a rename has
-    /// already taken.
-    func suggestedNickname() -> String {
-        guard !accounts.isEmpty else { return "Claude" }
+    /// accepts this. The provider's name for the first account, then the
+    /// first free "<Provider> N" counting from how many exist, skipping any
+    /// a rename has already taken.
+    func suggestedNickname(providerID: String = ProviderCatalog.defaultProviderID) -> String {
+        let base = ProviderCatalog.displayName(for: providerID)
+        guard !accounts.isEmpty else { return base }
         var n = accounts.count + 1
-        while isNameTaken("Claude \(n)") { n += 1 }
-        return "Claude \(n)"
+        while isNameTaken("\(base) \(n)") { n += 1 }
+        return "\(base) \(n)"
     }
 
     /// Renames an account in place — the nickname is the one thing about
@@ -125,7 +126,8 @@ extension UsageModel {
         WidgetCenter.shared.reloadAllTimelines()
         #if os(iOS)
         LiveActivityManager.rename(
-            accountID: accountID, accountName: usage.account.displayName, snapshot: usage.snapshot,
+            accountID: accountID, accountName: usage.account.displayName,
+            providerID: usage.account.providerID, snapshot: usage.snapshot,
             enabled: LiveActivityPreferences(accountID: accountID).enabled
         )
         #endif

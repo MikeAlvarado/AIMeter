@@ -114,4 +114,25 @@ final class PaceCalculatorTests: XCTestCase {
         let since = now.addingTimeInterval(-PaceCalculator.warmupDuration)
         XCTAssertTrue(PaceCalculator.isReady(observingSince: since, now: now))
     }
+
+    func testProviderStatedDurationOverridesTheKindDefault() {
+        // A "weekly" window a provider says is 30 days long: halfway through
+        // it, 50% used is on pace — the 7-day default would call it far behind.
+        let now = Date()
+        let window = UsageWindow(
+            kind: .weekly, usedPct: 50,
+            resetsAt: now.addingTimeInterval(15 * 86400),
+            duration: 30 * 86400
+        )
+        let pace = PaceCalculator.pace(for: window, now: now)
+        XCTAssertEqual(pace?.status, .onPace)
+        XCTAssertEqual(pace?.expectedPct ?? 0, 50, accuracy: 0.01)
+    }
+
+    func testWindowWithoutStatedDurationUsesTheKindDefault() {
+        let now = Date()
+        let window = UsageWindow(kind: .session, usedPct: 50, resetsAt: now.addingTimeInterval(2.5 * 3600))
+        XCTAssertEqual(window.effectiveDuration, 5 * 3600)
+        XCTAssertEqual(PaceCalculator.pace(for: window, now: now)?.status, .onPace)
+    }
 }

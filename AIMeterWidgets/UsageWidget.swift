@@ -20,7 +20,8 @@ struct UsageEntry: TimelineEntry {
 /// subject to WidgetKit's refresh budget.
 struct UsageTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> UsageEntry {
-        UsageEntry(date: .now, snapshot: .sample, accountID: ClaudeKeychainCredentialSource.legacyAccountID, accountName: "Claude", prefs: Preferences())
+        let legacy = ProviderCatalog.legacyAccount
+        return UsageEntry(date: .now, snapshot: .sample, accountID: legacy.accountID, accountName: legacy.displayName, prefs: Preferences())
     }
 
     func snapshot(for configuration: UsageAccountConfigurationIntent, in context: Context) async -> UsageEntry {
@@ -88,7 +89,7 @@ struct UsageWidget: Widget {
         ) { entry in
             UsageWidgetView(entry: entry)
         }
-        .configurationDisplayName("Claude")
+        .configurationDisplayName(ProviderCatalog.displayName(for: ProviderCatalog.defaultProviderID))
         .description("Session, weekly, and top-model usage windows — edit the widget to pick which account.")
         .supportedFamilies(Self.families)
     }
@@ -104,7 +105,7 @@ struct UsageWidget: Widget {
 
 extension UsageSnapshot {
     static let sample = UsageSnapshot(
-        providerID: "claude",
+        providerID: ProviderCatalog.defaultProviderID,
         planName: "pro",
         fetchedAt: .now,
         windows: [

@@ -234,8 +234,10 @@ repo-root `CLAUDE.md` is the full spec that ties them together.
 
 Adding a provider = implementing `UsageProvider` (one folder under
 `Providers/`), returning `UsageWindow`s with an extensible `kind`
-(`.session`, `.weekly`, `.modelSpecific("…")`). Widgets render whatever
-windows a snapshot contains.
+(`.session`, `.weekly`, `.modelSpecific("…")`) and their own `duration`,
+plus one case each in `Shared/ProviderCatalog.swift` (display name, and
+which credential store backs an account of that family). Widgets render
+whatever windows a snapshot contains.
 
 Run the package tests:
 

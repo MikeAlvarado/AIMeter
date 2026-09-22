@@ -69,11 +69,6 @@ enum AccountMigration {
         let legacyAccountID = ClaudeKeychainCredentialSource.legacyAccountID
         guard registry.account(for: legacyAccountID) == nil else { return }
         guard RefreshService.storedCredentialsExist(for: legacyAccountID) else { return }
-        registry.add(ConnectedAccount(
-            accountID: legacyAccountID,
-            providerID: "claude",
-            displayName: "Claude",
-            credentialStrategy: .managed
-        ))
+        registry.add(ProviderCatalog.legacyAccount)
     }
 }

@@ -7,8 +7,14 @@ public struct ClaudeProvider: UsageProvider {
     static let usageEndpoint = URL(string: "https://api.anthropic.com/api/oauth/usage")!
     static let profileEndpoint = URL(string: "https://api.anthropic.com/api/oauth/profile")!
 
-    public let id = "claude"
-    public let displayName = "Claude"
+    /// The provider *family* identifier every `ConnectedAccount.providerID`
+    /// and `UsageSnapshot.providerID` of this provider carries — the one
+    /// place the literal lives.
+    public static let providerID = "claude"
+    public static let providerDisplayName = "Claude"
+
+    public let id = ClaudeProvider.providerID
+    public let displayName = ClaudeProvider.providerDisplayName
 
     /// How long a resolved plan is trusted before it's re-verified against
     /// the profile endpoint. The plan is the one part of a snapshot that
