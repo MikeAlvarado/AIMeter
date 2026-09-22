@@ -34,6 +34,10 @@ public struct ClaudeCodeLocalCredentialSource: ClaudeCredentialSource {
         // Read-only: never mutate Claude Code's credentials.
     }
 
+    public func clear() throws {
+        // Same: disconnecting AIMeter must never log the CLI out.
+    }
+
     private static func readClaudeCodeKeychainItem() -> Data? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,

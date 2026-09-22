@@ -41,7 +41,7 @@ struct SingleUsageWidgetView: View {
             // Scoped to .session: that's the window the documented peak
             // policy actually affects, so a Weekly/Credits/model pick
             // never shows a badge that would misattribute it.
-            if entry.kind == .session, ClaudePeakStatus(at: entry.date).isPeak {
+            if entry.kind == .session, ClaudePeakStatus.forProvider(entry.snapshot?.providerID, at: entry.date).isPeak {
                 PeakBadge(size: 9)
             }
             Text(entry.kind.shortName)

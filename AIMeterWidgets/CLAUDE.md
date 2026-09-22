@@ -86,7 +86,12 @@ legacy sentinel if none — rather than each re-deriving it.
 - A pre-multi-account widget instance's persisted selection
   (`"claude|kind"`) keeps resolving unchanged after an upgrade — the
   migrated legacy account's literal accountID is `"claude"`, so the
-  exact same composite id still parses correctly with zero rewrite.
+  exact same composite id still parses correctly with zero rewrite. Every
+  empty-registry fallback in this target (`WidgetAccountFallback`, both
+  intents' option queries, the placeholders) reads that sentinel from
+  `ProviderCatalog.legacyAccount` rather than spelling it out, and the
+  self-fetch builds its provider through `ProviderCatalog.makeProvider`
+  from the registry's `providerID` for that account.
 
 ## Live Activity (Session window, iOS only)
 

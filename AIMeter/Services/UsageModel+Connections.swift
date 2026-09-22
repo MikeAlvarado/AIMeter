@@ -12,13 +12,14 @@ extension UsageModel {
     /// a new account (the app's own managed credentials — never the
     /// macOS auto-detect path, which only ever applies to a CLI-mirrored
     /// login found automatically, not a manual paste/OAuth flow).
-    func completeConnection(_ credentials: ClaudeCredentials, displayName: String = "Claude") async {
+    func completeConnection(_ credentials: ClaudeCredentials, displayName: String? = nil) async {
         let accountID = UUID().uuidString
         // The Connect sheet already refuses a taken nickname; this only
         // guarantees the registry never holds two accounts under one name.
-        let name = isNameTaken(displayName) ? suggestedNickname() : displayName
+        let requested = displayName ?? suggestedNickname()
+        let name = isNameTaken(requested) ? suggestedNickname() : requested
         let account = ConnectedAccount(
-            accountID: accountID, providerID: "claude",
+            accountID: accountID, providerID: ProviderCatalog.defaultProviderID,
             displayName: name, credentialStrategy: .managed
         )
         let service = RefreshService(account: account)
@@ -143,7 +144,7 @@ extension UsageModel {
             // the source of App Store screenshots, and a provider's name in
             // a screenshot is a third-party name in store metadata (4.1(a)).
             account: ConnectedAccount(
-                accountID: "demo", providerID: "claude",
+                accountID: "demo", providerID: ProviderCatalog.defaultProviderID,
                 displayName: "Personal", credentialStrategy: .managed
             ),
             snapshot: DemoUsageData.snapshot()

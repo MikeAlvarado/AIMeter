@@ -77,11 +77,14 @@ enum WidgetRefresher {
             service: AppConfig.keychainService,
             accessGroup: AppConfig.keychainAccessGroup
         )
-        let credentialKey = ClaudeKeychainCredentialSource.storageKey(for: accountID)
-        let provider = ClaudeProvider(
-            credentialSource: ClaudeKeychainCredentialSource(store: keychain, key: credentialKey),
-            transport: URLSessionTransport(session: session)
-        )
+        // The registry says which provider this account is; an id the
+        // registry doesn't know (the legacy fallback before migration) is
+        // the default provider's.
+        let account = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)
+            ?? ProviderCatalog.legacyAccount
+        let provider = ProviderCatalog.makeProvider(
+            for: account, keychain: keychain, transport: URLSessionTransport(session: session)
+        ).provider
         guard let fetched = try? await provider.fetchUsage() else { return nil }
         let snapshot = fetched.fillingMissingResets(from: previous)
         try? SnapshotStore(suiteName: AppConfig.appGroupID)?.save(snapshot, for: accountID)

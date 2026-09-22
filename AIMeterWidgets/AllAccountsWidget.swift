@@ -21,11 +21,9 @@ struct AllAccountsEntry: TimelineEntry {
 /// does in the app.
 struct AllAccountsTimelineProvider: TimelineProvider {
     func placeholder(in context: Context) -> AllAccountsEntry {
-        let sample = ConnectedAccount(
-            accountID: ClaudeKeychainCredentialSource.legacyAccountID, providerID: "claude",
-            displayName: "Claude", credentialStrategy: .managed
+        return AllAccountsEntry(
+            date: .now, rows: [.init(account: ProviderCatalog.legacyAccount, snapshot: .sample)], prefs: Preferences()
         )
-        return AllAccountsEntry(date: .now, rows: [.init(account: sample, snapshot: .sample)], prefs: Preferences())
     }
 
     func getSnapshot(in context: Context, completion: @escaping (AllAccountsEntry) -> Void) {

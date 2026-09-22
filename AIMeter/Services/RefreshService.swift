@@ -14,8 +14,10 @@ struct RefreshService {
     /// alone. A strategy change still rebuilds the whole service
     /// (`UsageModel.reconnect`).
     private(set) var account: ConnectedAccount
-    let provider: ClaudeProvider
-    let credentialSource: any ClaudeCredentialSource
+    /// Built by `ProviderCatalog.makeProvider` from `account.providerID` —
+    /// nothing in this type knows which provider it's refreshing.
+    let provider: any UsageProvider
+    let credentialSource: any CredentialStore
     /// Whether a fetch may *start* a Live Activity (iOS). ActivityKit only
     /// honours `Activity.request` from the foreground app, so the
     /// `BGAppRefreshTask` path (`UsageModel.refreshAllInBackground`) turns
@@ -27,17 +29,7 @@ struct RefreshService {
 
     init(account: ConnectedAccount) {
         self.account = account
-        let credentialKey = ClaudeKeychainCredentialSource.storageKey(for: account.accountID)
-        #if os(macOS)
-        if account.credentialStrategy == .autoDetected {
-            credentialSource = ClaudeAutoCredentialSource(store: Self.keychainStore, key: credentialKey)
-        } else {
-            credentialSource = ClaudeKeychainCredentialSource(store: Self.keychainStore, key: credentialKey)
-        }
-        #else
-        credentialSource = ClaudeKeychainCredentialSource(store: Self.keychainStore, key: credentialKey)
-        #endif
-        provider = ClaudeProvider(credentialSource: credentialSource)
+        (provider, credentialSource) = ProviderCatalog.makeProvider(for: account, keychain: Self.keychainStore)
         store = SnapshotStore(suiteName: AppConfig.appGroupID)
         historyStore = UsageHistoryStore(suiteName: AppConfig.appGroupID)
     }
@@ -47,8 +39,8 @@ struct RefreshService {
     }
 
     /// The same service under a new nickname. Keeps the provider — and with
-    /// it the in-memory plan cache the CLI-mirrored macOS account depends
-    /// on (see `ClaudeProvider`'s `PlanCache`) — where rebuilding the
+    /// it any in-memory cache it holds (the CLI-mirrored macOS account's
+    /// plan cache, see `ClaudeProvider`'s `PlanCache`) — where rebuilding the
     /// service the way a reconnect must would throw that away for a change
     /// that touches no credential.
     func renamed(to displayName: String) -> RefreshService {
@@ -124,7 +116,8 @@ struct RefreshService {
         // (see `UsageModel.fetch(accountID:)`), not once per account.
         #if os(iOS)
         LiveActivityManager.sync(
-            accountID: account.accountID, accountName: account.displayName, snapshot: snapshot,
+            accountID: account.accountID, accountName: account.displayName,
+            providerID: account.providerID, snapshot: snapshot,
             enabled: LiveActivityPreferences(accountID: account.accountID).enabled,
             mayStart: allowsLiveActivityStart
         )
@@ -222,22 +215,22 @@ struct RefreshService {
         return (try? keychainStore.data(for: key)) != nil
     }
 
+    /// The Claude connect path: the one place this type is provider-typed,
+    /// because the credentials themselves are (`ClaudeCredentials` from the
+    /// in-app OAuth exchange or a pasted JSON). A second provider adds its
+    /// own connect path beside this one rather than generalizing it.
     func storeConnection(_ credentials: ClaudeCredentials) async throws {
-        try await credentialSource.save(credentials)
+        guard let source = credentialSource as? any ClaudeCredentialSource else {
+            throw UsageError.storage("account \(account.accountID) is not a \(ClaudeProvider.providerDisplayName) account")
+        }
+        try await source.save(credentials)
     }
 
     func disconnect() throws {
-        // Cast on credentialStrategy, not platform: macOS accounts can be
-        // either .autoDetected (the CLI-mirrored one) or .managed (every
-        // account after the first, which always goes through the manual
-        // OAuth/paste flow — same as iOS).
-        if account.credentialStrategy == .autoDetected {
-            #if os(macOS)
-            try (credentialSource as? ClaudeAutoCredentialSource)?.clear()
-            #endif
-        } else {
-            try (credentialSource as? ClaudeKeychainCredentialSource)?.clear()
-        }
+        // Whatever backs this account — the CLI mirror's fallback copy, or
+        // the app's own Keychain item — `CredentialStore.clear` removes it
+        // without this type knowing which.
+        try credentialSource.clear()
         store?.removeSnapshot(for: account.accountID)
         historyStore?.clear(for: account.accountID)
         WidgetCenter.shared.reloadAllTimelines()

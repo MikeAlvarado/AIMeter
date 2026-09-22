@@ -75,6 +75,36 @@ assets and string catalog from there.
   mapping code never produces it and it's never part of a persisted
   snapshot's `windows`. Widgets and views render whatever windows a
   snapshot contains; provider names are never hardcoded in rendering logic.
+- **Provider seam** (what a second provider plugs into): every provider
+  family is resolved through `Shared/ProviderCatalog.swift` —
+  `displayName(for:)` (the plain-text name, never a logo), the
+  `legacyAccount` sentinel every widget fallback uses, and
+  `makeProvider(for:keychain:transport:)`, the one switch on
+  `providerID` that builds a `UsageProvider` plus the `CredentialStore`
+  to clear on disconnect. `RefreshService` holds only those two
+  existentials and never names a provider; `WidgetRefresher` builds its
+  self-fetch provider through the same catalog. The literal `"claude"`
+  lives in `ClaudeProvider.providerID` (with `providerDisplayName`) and
+  nowhere else; `ProviderCatalog.defaultProviderID` is what a new
+  connection belongs to until there is a picker. `CredentialStore`
+  (UsageKit core — `clear()`, `invalidateCache()`) is the
+  provider-agnostic half of `ClaudeCredentialSource`, which refines it
+  with the typed `load`/`save`; `RefreshService.storeConnection` is the
+  one deliberately Claude-typed member (the credentials from the OAuth
+  exchange are), and a second provider adds its own connect path beside
+  it rather than generalizing it. Window lengths come from the window,
+  not the kind: `UsageWindow.duration` is set by the provider's mapping
+  (Claude states 5 h / 7 d on every window) and `effectiveDuration` is
+  what pace and run-out math read, falling back to `Kind.windowDuration`'s
+  Claude-shaped default only for windows saved before the field existed —
+  a provider whose week is a month sets `duration` instead of needing a
+  new `Kind`. Peak hours stay Claude's: `ClaudePeakStatus.forProvider`
+  reports off-peak for any other family, so its bolt never appears on
+  another provider's account. Still Claude-shaped, deliberately, until a
+  second provider exists to design against: `WindowSlots`' three-slot
+  layout and the credits fallback, `ConnectClaudeSheet` as the only
+  connect flow (no provider picker on "Add account"), and
+  `CredentialStrategy.autoDetected`, which is Claude Code's semantics.
 - **Accounts vs. providers**: `providerID` (`UsageProvider.id`,
   `UsageSnapshot.providerID`) identifies a provider *family* — `"claude"` —
   and never changes per login; `accountID` identifies one specific

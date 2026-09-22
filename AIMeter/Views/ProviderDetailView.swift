@@ -19,6 +19,12 @@ struct ProviderDetailView: View {
         model.usage(for: accountID)
     }
 
+    /// The nickname, or the provider's name while the account is gone
+    /// (the screen is mid-dismiss after a disconnect).
+    private var accountName: String {
+        usage?.account.displayName ?? ProviderCatalog.displayName(for: ProviderCatalog.defaultProviderID)
+    }
+
     var body: some View {
         @Bindable var prefs = prefs
 
@@ -144,7 +150,7 @@ struct ProviderDetailView: View {
                                     .font(Theme.rowTitle)
                                     .foregroundStyle(Theme.ink)
                                 Spacer()
-                                Text(usage?.account.displayName ?? "Claude")
+                                Text(accountName)
                                     .font(.body)
                                     .foregroundStyle(Theme.inkSecondary)
                                     .lineLimit(1)
@@ -156,7 +162,7 @@ struct ProviderDetailView: View {
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(Text("Rename account"))
-                        .accessibilityValue(Text(usage?.account.displayName ?? "Claude"))
+                        .accessibilityValue(Text(accountName))
                     }
                     SectionFootnote(text: String(localized: "Shown on the dashboard, in widgets, and in notification titles."))
                 }
@@ -178,7 +184,7 @@ struct ProviderDetailView: View {
                         model.disconnect(accountID: accountID)
                         dismiss()
                     } label: {
-                        Text("Disconnect \(usage?.account.displayName ?? "Claude")")
+                        Text("Disconnect \(accountName)")
                             .font(.body.weight(.medium))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
@@ -196,7 +202,7 @@ struct ProviderDetailView: View {
             }
         }
         .renameAccountAlert(for: accountID, isPresented: $showingRename, name: $renameDraft)
-        .navigationTitle(usage?.account.displayName ?? "Claude")
+        .navigationTitle(accountName)
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -224,7 +230,8 @@ struct ProviderDetailView: View {
                 if newValue {
                     LiveActivityManager.sync(
                         accountID: accountID,
-                        accountName: usage?.account.displayName ?? "Claude",
+                        accountName: accountName,
+                        providerID: usage?.account.providerID ?? ProviderCatalog.defaultProviderID,
                         snapshot: usage?.snapshot,
                         enabled: true
                     )

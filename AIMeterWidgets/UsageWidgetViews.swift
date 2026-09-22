@@ -56,7 +56,7 @@ private struct WidgetHeader: View {
     /// transition (see `UsageTimelineProvider.peakTransitionEntry`).
     let date: Date
     let accountID: String
-    var accountName: String = "Claude"
+    let accountName: String
 
     var body: some View {
         HStack(spacing: 5) {
@@ -69,7 +69,7 @@ private struct WidgetHeader: View {
                 planName: nil
             )
             Spacer(minLength: 0)
-            if ClaudePeakStatus(at: date).isPeak {
+            if ClaudePeakStatus.forProvider(snapshot.providerID, at: date).isPeak {
                 PeakBadge(size: 9)
             }
             if snapshot.isStale {
@@ -157,7 +157,7 @@ private struct WindowBarList: View {
     let count: Int
     let date: Date
     let accountID: String
-    var accountName: String = "Claude"
+    let accountName: String
 
     var body: some View {
         let slots = Array(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.prefix(count))
@@ -184,7 +184,7 @@ struct SystemUsageView: View {
     let prefs: Preferences
     let date: Date
     let accountID: String
-    var accountName: String = "Claude"
+    let accountName: String
 
     var body: some View {
         WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountID: accountID, accountName: accountName)

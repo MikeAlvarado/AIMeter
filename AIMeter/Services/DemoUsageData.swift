@@ -11,7 +11,7 @@ enum DemoUsageData {
     static func snapshot(now: Date = Date()) -> UsageSnapshot {
         let weeklyReset = now.addingTimeInterval(3 * 86400 + 4 * 3600)
         return UsageSnapshot(
-            providerID: "claude",
+            providerID: ProviderCatalog.defaultProviderID,
             planName: "Demo",
             fetchedAt: now,
             windows: [

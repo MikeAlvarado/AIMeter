@@ -116,14 +116,16 @@ extension ClaudeUsageResponse {
             windows.append(UsageWindow(
                 kind: .session,
                 usedPct: pct,
-                resetsAt: ClaudeUsageResponse.parseDate(fiveHour.resetsAt)
+                resetsAt: ClaudeUsageResponse.parseDate(fiveHour.resetsAt),
+                duration: Self.duration(of: .session)
             ))
         }
         if let sevenDay, let pct = sevenDay.utilization {
             windows.append(UsageWindow(
                 kind: .weekly,
                 usedPct: pct,
-                resetsAt: ClaudeUsageResponse.parseDate(sevenDay.resetsAt)
+                resetsAt: ClaudeUsageResponse.parseDate(sevenDay.resetsAt),
+                duration: Self.duration(of: .weekly)
             ))
         }
         return windows
@@ -206,7 +208,21 @@ extension ClaudeUsageResponse.Limit {
             usedPct: percent,
             resetsAt: ClaudeUsageResponse.parseDate(resetsAt),
             severity: severity.flatMap(UsageWindow.Severity.init(rawValue:)),
-            isActive: isActive
+            isActive: isActive,
+            duration: ClaudeUsageResponse.duration(of: mappedKind)
         )
+    }
+}
+
+extension ClaudeUsageResponse {
+    /// Claude's window lengths, stated by the provider on every window it
+    /// maps rather than left to `Kind.windowDuration`'s default — the
+    /// provider is the one that knows.
+    static func duration(of kind: UsageWindow.Kind) -> TimeInterval? {
+        switch kind {
+        case .session: 5 * 3600
+        case .weekly, .modelSpecific: 7 * 86400
+        case .credits: nil
+        }
     }
 }

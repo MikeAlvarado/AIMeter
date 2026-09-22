@@ -96,9 +96,10 @@ extension UsageWindow.Kind {
     /// yet is still exactly 5 hours long. `.credits` is a spend cap, not a
     /// time window, so it has no duration.
     ///
-    /// These lengths (5h / 7d) are Claude's today. With a single provider
-    /// and Claude-shaped kinds this lives on `Kind` like `nominalPeriod`;
-    /// revisit if a provider with different window lengths is added.
+    /// These lengths (5h / 7d) are Claude's — the *default* for a kind.
+    /// A provider with different lengths sets `UsageWindow.duration`
+    /// instead, which `effectiveDuration` prefers; this is the fallback
+    /// for windows that don't carry one.
     var windowDuration: TimeInterval? {
         switch self {
         case .session:

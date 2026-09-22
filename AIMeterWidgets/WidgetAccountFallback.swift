@@ -12,6 +12,7 @@ enum WidgetAccountFallback {
         if let first = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().first {
             return (first.accountID, first.displayName)
         }
-        return (ClaudeKeychainCredentialSource.legacyAccountID, "Claude")
+        let legacy = ProviderCatalog.legacyAccount
+        return (legacy.accountID, legacy.displayName)
     }
 }
