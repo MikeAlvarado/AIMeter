@@ -77,10 +77,16 @@ public struct ClaudeOAuth: Sendable {
 
         let (data, response) = try await transport.send(request)
         guard response.statusCode == 200 else {
+            if response.statusCode == 429 {
+                throw UsageError.rateLimited(
+                    retryAfter: response.value(forHTTPHeaderField: "Retry-After").flatMap(TimeInterval.init),
+                    body: ClaudeOAuthClient.body(data)
+                )
+            }
             if (400...499).contains(response.statusCode) {
                 throw UsageError.notAuthenticated
             }
-            throw UsageError.httpError(statusCode: response.statusCode, body: String(data: data, encoding: .utf8))
+            throw UsageError.httpError(statusCode: response.statusCode, body: ClaudeOAuthClient.body(data))
         }
 
         let token: TokenResponse

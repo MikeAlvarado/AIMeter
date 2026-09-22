@@ -86,4 +86,15 @@ public protocol ClaudeCredentialSource: Sendable {
     var allowsRefresh: Bool { get }
     func load() async throws -> ClaudeCredentials
     func save(_ credentials: ClaudeCredentials) async throws
+    /// Drops any in-memory copy this source keeps, so the next `load()`
+    /// reads the backing store again. `ClaudeProvider` calls it when the
+    /// endpoint rejects a token from a source that can't refresh it — the
+    /// one case where a cached copy can outlive the login it mirrors (the
+    /// CLI logged out or switched accounts). A no-op for sources that
+    /// don't cache.
+    func invalidateCache()
+}
+
+public extension ClaudeCredentialSource {
+    func invalidateCache() {}
 }
