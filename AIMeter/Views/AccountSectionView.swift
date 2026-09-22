@@ -54,7 +54,8 @@ struct AccountSectionView: View {
                         snapshot: usage.snapshot,
                         error: usage.lastError,
                         showsDividers: showsStatusDividers,
-                        reauthenticate: usage.needsReauthentication ? { showingReconnect = true } : nil
+                        reauthenticate: usage.needsReauthentication ? { showingReconnect = true } : nil,
+                        offline: usage.isOffline
                     )
                 }
             }

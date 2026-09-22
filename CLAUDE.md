@@ -578,9 +578,14 @@ the account silently freezes at its last snapshot.
 - Stale snapshot (>30 min): widgets show a small "last updated" hint in the
   header trailing edge.
 - Errors render inside the provider card, below the rows: raw endpoint body
-  included, in `Theme.danger`. The one exception is a credential failure,
-  which shows an actionable "Sign in again" prompt instead — see "Losing a
-  login" above.
+  included, in `Theme.danger`. Two exceptions: a credential failure shows
+  an actionable "Sign in again" prompt instead (see "Losing a login"
+  above), and a lost network (`UsageModel.offlineCodes`, the `URLError`s
+  that mean no route rather than a provider answer) shows a quiet
+  "Offline — showing the last update." line in the secondary color
+  (`AccountUsage.isOffline` → `UsageStatusFooter(offline:)`) — nothing is
+  wrong with the account, the last snapshot still stands, and the next
+  successful fetch clears it.
 
 ## Screens
 

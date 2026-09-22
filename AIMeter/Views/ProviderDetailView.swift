@@ -37,7 +37,8 @@ struct ProviderDetailView: View {
                         UsageStatusFooter(
                             snapshot: usage?.snapshot,
                             error: usage?.lastError,
-                            reauthenticate: usage?.needsReauthentication == true ? { showingReconnect = true } : nil
+                            reauthenticate: usage?.needsReauthentication == true ? { showingReconnect = true } : nil,
+                            offline: usage?.isOffline == true
                         )
                     }
                 }

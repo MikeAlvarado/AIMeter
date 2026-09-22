@@ -1,7 +1,8 @@
 ## Screens
 
 - **Dashboard**: floating gear + refresh buttons (refresh icon spins while
-  busy; soft haptic on refresh start; refresh fans out to every account
+  busy; soft haptic on refresh start; ⌘R on macOS, here and in the menu
+  bar popover; refresh fans out to every account
   concurrently via `UsageModel.refreshAll()`), small centered serif
   "AIMeter" title, then one section per *connected account*
   (`AccountSectionView`, shared with the macOS menu bar popover): logo +

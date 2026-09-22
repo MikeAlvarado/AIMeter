@@ -131,6 +131,7 @@ struct MenuBarView: View {
                 } label: {
                     Label("Refresh", systemImage: "arrow.clockwise")
                 }
+                .keyboardShortcut("r", modifiers: .command)
                 .disabled(model.isRefreshing)
 
                 Spacer()
