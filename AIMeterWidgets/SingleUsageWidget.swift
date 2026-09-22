@@ -66,7 +66,8 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
         // Same trick as the main widget: an extra entry dated exactly at
         // the next peak transition lets WidgetKit flip the header's badge
         // on its own, with no extra refresh or network call.
-        if let transition = PeakCalculator.nextTransition(after: current.date, schedule: ClaudePeakSchedule.current),
+        if let schedule = ClaudePeakSchedule.current,
+           let transition = PeakCalculator.nextTransition(after: current.date, schedule: schedule),
            transition < next {
             entries.append(SingleUsageEntry(
                 date: transition,

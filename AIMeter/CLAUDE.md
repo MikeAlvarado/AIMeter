@@ -119,7 +119,8 @@
   (`PeakHoursCard`, see "Peak hours" in the repo-root CLAUDE.md, identical
   content regardless of account since the policy is Claude-wide, not
   account-specific) with a live status line and a "schedule as of"
-  footnote; a **Forecast** card
+  footnote — rendered only while `ClaudePeakSchedule.current` is non-nil,
+  which it isn't today (the policy is retired); a **Forecast** card
   (`ForecastCard`) listing any of that account's windows projected to run
   out early or an all-clear row; a "Third usage row" card with the
   Auto/Hidden/Credits pill (governs the third-slot fallback above,
@@ -149,7 +150,7 @@
   alerts are the one exception: a single toggle in the app-wide Settings
   screen, not repeated per account, since the policy is Claude-wide, not
   account-specific — see "Settings" below and "Peak hours" in the
-  repo-root CLAUDE.md.
+  repo-root CLAUDE.md (hidden today: the policy is retired).
 - **Settings**: while `isDemoMode` is true, a "Demo mode" section (Exit
   Demo action + explanatory footnote) leads the list, above everything
   else, then appearance / display mode / reset style pills, a
@@ -158,7 +159,9 @@
   fully into each account's own Provider Detail once there could be more
   than one "the" account to apply them to, but peak-hours is one
   Claude-wide policy with nothing account-specific to scope it to; see
-  "Peak hours" in the repo-root CLAUDE.md), and refresh
+  "Peak hours" in the repo-root CLAUDE.md — the whole card is gated on
+  `ClaudePeakSchedule.current` being non-nil, so it doesn't render while
+  the policy is retired), and refresh
   cadence menu (all app-wide, not per account), a "Privacy & data" link,
   and an "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet
   with Done; macOS: Settings scene
@@ -223,8 +226,8 @@
     leaves two clients fighting over one rotating refresh token.
 - **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
   `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
-  usage — so every screen (rate limits, pace, peak hours, forecast,
-  spend/extra cards) can be explored without a real Claude account. Its
+  usage — so every screen (rate limits, pace, forecast, spend/extra
+  cards) can be explored without a real Claude account. Its
   names are deliberately neutral — the account is nicknamed "Personal" and
   the per-model window is "Top model", never a provider or product name —
   because demo mode is where App Store screenshots come from, and
@@ -261,8 +264,9 @@
   accessibility label — icon-only mode must never be the only place the
   number lived. The whole status item disappears when `statusItemVisible`
   is off (`MenuBarExtra(isInserted:)`). The popover shows a peak-hours
-  badge row at the top only while peak is active (peak is Claude-wide, not
-  per account, so this isn't repeated per section) + divider, then **every**
+  badge row at the top only while peak is active (never, while the policy
+  is retired; peak is Claude-wide, not per account, so this isn't
+  repeated per section) + divider, then **every**
   connected account as its own `AccountSectionView` (shared with the
   Dashboard, `linksToDetail: false` here since the popover has no
   navigation stack to push into — tapping a section header does nothing,

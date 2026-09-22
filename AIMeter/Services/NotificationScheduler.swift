@@ -405,13 +405,17 @@ enum NotificationScheduler {
     /// launch and whenever the toggle changes; call sites should not add
     /// it to the per-fetch reschedule sweep in `RefreshService`.
     static func reschedulePeakNotifications(
-        schedule: PeakCalculator.Schedule = ClaudePeakSchedule.current,
+        schedule: PeakCalculator.Schedule? = ClaudePeakSchedule.current,
         preferences: NotificationPreferences
     ) async {
         let center = UNUserNotificationCenter.current()
         await removePending(withPrefix: peakPrefix, from: center)
 
-        guard preferences.peakEnabled, await canDeliver() else { return }
+        // No schedule in force (the policy is retired — see
+        // `ClaudePeakSchedule`): the removal above is the whole job, so an
+        // install upgrading with the toggle on stops getting alerts for a
+        // window that no longer exists.
+        guard let schedule, preferences.peakEnabled, await canDeliver() else { return }
         guard let timeZone = TimeZone(identifier: schedule.timeZoneIdentifier) else { return }
 
         for weekday in schedule.weekdays {

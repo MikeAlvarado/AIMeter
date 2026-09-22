@@ -1,5 +1,40 @@
 # Peak-hours investigation
 
+## Status update (2026-09-22): retired
+
+`ClaudePeakSchedule.current` is now `nil`, which hides every peak surface
+(Provider Detail card, menu bar and widget badges, Live Activity bolt,
+Settings toggle) and turns the `peak.` notification family into a cleanup
+of its own pending requests. The mechanism described below is untouched;
+re-activation is assigning a re-verified `lastKnown` to `current`.
+
+Why: the policy this schedule modelled no longer exists.
+
+- 2026-03 — Anthropic reduced Claude Code 5-hour limits 5–11 AM PT on
+  weekdays for Pro and Max.
+- 2026-05-06 — Anthropic announced it was "removing the peak hours limit
+  reduction on Claude Code for Pro and Max accounts"
+  (<https://www.anthropic.com/news/higher-limits-spacex>), alongside
+  doubling the 5-hour limits.
+- Since then no Anthropic help page describes a peak window for any plan:
+  not "What is the Max plan?", "What is the Team plan?", nor "Usage limit
+  best practices" (checked 2026-09-22). The Pro plan page's "at least 5x
+  Free during peak hours" is a capacity floor, not a reduction. Team and
+  Enterprise never had a documented peak reduction — Team Premium seats
+  launched in late April 2026, after the policy — and the removal note
+  names only the plans it had applied to.
+- The "apparently back again" that prompted the 2026-08-03
+  re-verification below was a scheduler warning the user saw, not
+  documentation; that day's own captures (Part 1) found no peak signal in
+  either endpoint, and independent timelines through September 2026
+  record no reinstatement.
+
+The finding below — that the endpoint carries no peak-related field — is
+exactly why the schedule can't stay: with nothing server-side to key off,
+a hardcoded schedule keeps announcing "Peak hours now" every weekday
+morning with no way for the app to notice the policy is gone. Showing
+nothing is the honest state.
+
 Status: **Part 1 confirmed (b) — see Conclusion. Part 2 (recommendation)
 written below. All four phases are implemented** — `PeakCalculator` +
 `ClaudePeakSchedule` + tests (Phase 1), the Provider Detail "Peak hours"

@@ -16,7 +16,7 @@ can be added later.
   card on the dashboard, its own Provider Detail screen, and its own
   notification/Live Activity toggles — nothing is shared between accounts
   except the handful of settings that are genuinely app-wide (appearance,
-  refresh cadence, peak-hours alerts). Hold and drag a card to reorder
+  refresh cadence). Hold and drag a card to reorder
   them (or use Move up/Move down from the card header's context menu); the
   order carries over to the menu bar, the widgets, and every account
   picker.
@@ -65,18 +65,14 @@ can be added later.
   recent pace projects an early exhaustion, and early-reset alerts if a
   window refills before its scheduled date. Sign-in alerts (above) are the
   single exception that starts on — a broken login is the one thing you
-  can't notice by looking. Peak-hours alerts are the one
-  exception — a single app-wide toggle in Settings, since Claude's peak
-  policy applies the same way to every account, not something to repeat
-  per login. All with honest permission handling, no silent failures.
-- Peak-hours awareness: Anthropic has documented weekday morning windows
-  (5-11 AM PT) where Claude session usage burns faster. There's no API
-  signal for this — confirmed by capturing live responses inside and
-  outside the window (see `docs/design/peak-hours-investigation.md`) — so
-  AIMeter computes it on-device from the published schedule, correctly
-  across timezones and DST. Because Anthropic has changed this policy more
-  than once, the in-app indicator always shows the date the schedule was
-  last verified.
+  can't notice by looking. All with honest permission handling, no
+  silent failures.
+- Peak hours: earlier versions showed Anthropic's weekday peak window,
+  during which Claude session usage burned faster. Anthropic removed that
+  policy in May 2026 and no plan documents one today, so the indicator
+  and its alerts are switched off — the mechanism stays in the code (see
+  `docs/design/peak-hours-investigation.md`) for the day the policy
+  returns.
 - macOS menu bar extra: a gauge that fills with whichever window you pick
   to glance at, with the exact percentage spelled out beside it if you
   want (it's always in the tooltip either way), plus your plan badge.

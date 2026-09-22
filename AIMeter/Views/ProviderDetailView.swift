@@ -34,11 +34,15 @@ struct ProviderDetailView: View {
                     }
                 }
 
-                SectionHeader(title: String(localized: "Peak hours"))
-                    .padding(.top, Theme.sectionSpacing - 10)
-                let peakStatus = ClaudePeakStatus()
-                PeakHoursCard(status: peakStatus)
-                SectionFootnote(text: "\(peakStatus.scheduleDescription) \(peakStatus.lastVerifiedLabel)")
+                // Only while a peak schedule is in force — none is today
+                // (the policy is retired, see `ClaudePeakSchedule`).
+                if let schedule = ClaudePeakSchedule.current {
+                    SectionHeader(title: String(localized: "Peak hours"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    let peakStatus = ClaudePeakStatus(schedule: schedule)
+                    PeakHoursCard(status: peakStatus)
+                    SectionFootnote(text: "\(peakStatus.scheduleDescription) \(peakStatus.lastVerifiedLabel)")
+                }
 
                 if let snapshot = usage?.snapshot, !snapshot.windows.isEmpty {
                     SectionHeader(title: String(localized: "Forecast"))

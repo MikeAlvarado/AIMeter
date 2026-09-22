@@ -6,18 +6,27 @@ import UsageKit
 /// `docs/design/peak-hours-investigation.md` for why nothing else is
 /// available to key off). Shared by Provider Detail, the macOS menu bar,
 /// and both widget headers so the same schedule and copy back every
-/// surface.
+/// surface. With no schedule in force (`ClaudePeakSchedule.current` is
+/// nil — the policy is retired, see there) it reports off-peak with no
+/// next transition, which is what keeps every badge hidden without each
+/// surface checking the schedule itself.
 struct ClaudePeakStatus {
     let isPeak: Bool
     let nextTransition: Date?
-    let lastVerified: Date
+    let lastVerified: Date?
     private let referenceDate: Date
 
-    init(at date: Date = Date(), schedule: PeakCalculator.Schedule = ClaudePeakSchedule.current) {
+    init(at date: Date = Date(), schedule: PeakCalculator.Schedule? = ClaudePeakSchedule.current) {
         referenceDate = date
-        isPeak = PeakCalculator.isPeak(at: date, schedule: schedule)
-        nextTransition = PeakCalculator.nextTransition(after: date, schedule: schedule)
-        lastVerified = schedule.lastVerified
+        if let schedule {
+            isPeak = PeakCalculator.isPeak(at: date, schedule: schedule)
+            nextTransition = PeakCalculator.nextTransition(after: date, schedule: schedule)
+            lastVerified = schedule.lastVerified
+        } else {
+            isPeak = false
+            nextTransition = nil
+            lastVerified = nil
+        }
     }
 
     var title: String {
@@ -41,6 +50,7 @@ struct ClaudePeakStatus {
     }
 
     var lastVerifiedLabel: String {
-        String(localized: "Schedule as of \(lastVerified.formatted(date: .abbreviated, time: .omitted)).")
+        guard let lastVerified else { return "" }
+        return String(localized: "Schedule as of \(lastVerified.formatted(date: .abbreviated, time: .omitted)).")
     }
 }
