@@ -94,7 +94,7 @@ final class ModelCodableTests: XCTestCase {
           "claudeAiOauth": {
             "accessToken": "at",
             "refreshToken": "rt",
-            "expiresAt": 1789600295000,
+            "expiresAt": 4102444800000,
             "scopes": ["user:profile", "user:inference"],
             "subscriptionType": "pro"
           }
@@ -104,7 +104,9 @@ final class ModelCodableTests: XCTestCase {
 
         XCTAssertEqual(credentials.accessToken, "at")
         XCTAssertEqual(credentials.refreshToken, "rt")
-        XCTAssertEqual(credentials.expiresAt, Date(timeIntervalSince1970: 1_789_600_295))
+        // 2100-01-01T00:00:00Z: `isExpired` compares against the real clock, so a
+        // fixture in the near future silently expires and turns this test red.
+        XCTAssertEqual(credentials.expiresAt, Date(timeIntervalSince1970: 4_102_444_800))
         XCTAssertEqual(credentials.scopes, ["user:profile", "user:inference"])
         XCTAssertEqual(credentials.subscriptionType, "pro")
         XCTAssertFalse(credentials.isExpired)

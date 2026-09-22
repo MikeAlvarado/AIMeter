@@ -6,7 +6,13 @@ import UsageKit
 /// Data behind the Session-window Live Activity — lives in `Shared/` since
 /// both the app (starts/updates/ends it) and the widget extension (renders
 /// it) need the type. iOS only: ActivityKit doesn't exist on macOS.
-struct SessionActivityAttributes: ActivityAttributes {
+///
+/// `nonisolated`: both targets default to `MainActor` isolation
+/// (`SWIFT_DEFAULT_ACTOR_ISOLATION`), which would make this conformance
+/// main-actor-isolated — and `Activity.update`/`end` run on the concurrent
+/// executor, where an isolated conformance can't be used. It's plain data,
+/// so there's nothing to isolate.
+nonisolated struct SessionActivityAttributes: ActivityAttributes {
     struct ContentState: Codable, Hashable {
         var usedPct: Double
         var resetsAt: Date

@@ -46,7 +46,7 @@ public struct ConnectedAccount: Codable, Hashable, Sendable, Identifiable {
 /// writes" contract. `remove` is deliberately non-cascading — it doesn't
 /// touch Keychain/Snapshot/History/notifications for that account; that
 /// orchestration belongs to the app layer.
-public struct AccountRegistryStore: Sendable {
+public struct AccountRegistryStore: @unchecked Sendable {
     private let defaults: UserDefaults
     private static let key = "usage.accounts"
 
