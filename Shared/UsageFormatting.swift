@@ -164,16 +164,21 @@ enum UsageFormatting {
         let hours = minutes / 60
         let days = hours / 24
 
+        // Localized so the unit suffixes can differ per language.
         if days >= 1 {
             let remainderHours = hours % 24
-            return remainderHours > 0 ? "\(days)d \(remainderHours)h" : "\(days)d"
+            return remainderHours > 0
+                ? String(localized: "\(days)d \(remainderHours)h")
+                : String(localized: "\(days)d")
         }
         if hours >= 1 {
             let remainderMinutes = minutes % 60
-            return remainderMinutes > 0 ? "\(hours)h \(remainderMinutes)m" : "\(hours)h"
+            return remainderMinutes > 0
+                ? String(localized: "\(hours)h \(remainderMinutes)m")
+                : String(localized: "\(hours)h")
         }
         if minutes >= 1 {
-            return "\(minutes)m"
+            return String(localized: "\(minutes)m")
         }
         return String(localized: "now")
     }

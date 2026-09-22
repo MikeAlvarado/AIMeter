@@ -234,13 +234,22 @@ struct ProviderDetailView: View {
     }
     #endif
 
+    private func severityLabel(_ severity: UsageWindow.Severity) -> String {
+        switch severity {
+        case .normal: String(localized: "Normal")
+        case .warning: String(localized: "Warning")
+        case .critical: String(localized: "Critical")
+        case .exceeded: String(localized: "Exceeded")
+        }
+    }
+
     private func spendRows(_ spend: SpendStatus) -> [(String, String)] {
         var rows = [(String(localized: "Enabled"), yesNo(spend.enabled))]
         if let percent = spend.percent {
             rows.append((String(localized: "Percent"), spend.enabled ? "\(Int(percent))%" : placeholder))
         }
         if let severity = spend.severity {
-            rows.append((String(localized: "Severity"), spend.enabled ? severity.rawValue : placeholder))
+            rows.append((String(localized: "Severity"), spend.enabled ? severityLabel(severity) : placeholder))
         }
         if let used = spend.usedAmount {
             rows.append((String(localized: "Used"), spend.enabled ? money(used, spend.currency) : placeholder))
