@@ -13,8 +13,15 @@ import ActivityKit
 enum LiveActivityManager {
     /// Reconciles the running activity (if any) for this account against
     /// its current snapshot and the user's toggle. A no-op when the
-    /// toggle is off and nothing is running.
-    static func sync(accountID: String, accountName: String, snapshot: UsageSnapshot?, enabled: Bool) {
+    /// toggle is off and nothing is running. `mayStart` is false on code
+    /// paths where ActivityKit refuses `Activity.request` (the
+    /// `BGAppRefreshTask`); an update to one already running is fine
+    /// there. Only ever called from the app process — the widget extension
+    /// sees an empty `Activity.activities` and can neither start nor
+    /// update one, which is why `WidgetRefresher` doesn't call this.
+    static func sync(
+        accountID: String, accountName: String, snapshot: UsageSnapshot?, enabled: Bool, mayStart: Bool = true
+    ) {
         let running = Activity<SessionActivityAttributes>.activities.first { $0.attributes.accountID == accountID }
 
         guard let content = content(for: snapshot, enabled: enabled) else {
@@ -25,7 +32,7 @@ enum LiveActivityManager {
 
         if let running {
             Task { await running.update(content) }
-        } else {
+        } else if mayStart {
             start(accountID: accountID, accountName: accountName, content: content)
         }
     }
@@ -89,6 +96,9 @@ enum LiveActivityManager {
     private static func start(
         accountID: String, accountName: String, content: ActivityContent<SessionActivityAttributes.ContentState>
     ) {
+        // The user can switch Live Activities off per app in Settings;
+        // `request` would just throw, but checking makes the no-op explicit.
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         let attributes = SessionActivityAttributes(accountID: accountID, accountName: accountName)
         _ = try? Activity.request(attributes: attributes, content: content, pushType: nil)
     }
@@ -108,6 +118,11 @@ struct LiveActivityPreferences {
     var enabled: Bool {
         get { defaults.bool(forKey: "liveActivity.enabled.\(accountID)") }
         nonmutating set { defaults.set(newValue, forKey: "liveActivity.enabled.\(accountID)") }
+    }
+
+    /// On disconnect, so the key doesn't outlive the account.
+    func clear() {
+        defaults.removeObject(forKey: "liveActivity.enabled.\(accountID)")
     }
 }
 #endif

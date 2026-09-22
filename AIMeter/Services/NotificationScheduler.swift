@@ -111,6 +111,19 @@ struct NotificationPreferences {
         defaults.object(forKey: key) == nil ? fallback : defaults.bool(forKey: key)
     }
 
+    /// Removes every key scoped to this account — called on disconnect,
+    /// the one time an accountID stops existing. Enumerates by suffix
+    /// rather than listing the properties above, so a toggle added later
+    /// can't be forgotten here; the unscoped global keys have no suffix
+    /// and are untouched.
+    func clear() {
+        let suffix = ".\(accountID)"
+        for key in defaults.dictionaryRepresentation().keys
+        where key.hasPrefix("notify.") && key.hasSuffix(suffix) {
+            defaults.removeObject(forKey: key)
+        }
+    }
+
     private func key(for kind: UsageWindow.Kind) -> String {
         scopedKey("notify.\(kind.storageKey)")
     }
@@ -377,8 +390,28 @@ enum NotificationScheduler {
             content: content,
             trigger: nil
         )
-        try? await UNUserNotificationCenter.current().add(request)
-        preferences.reauthAlertDelivered = true
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+            // Only a delivery arms the dedupe: marking it after a failed
+            // `add` would silence the alert for good without it ever
+            // having been shown.
+            preferences.reauthAlertDelivered = true
+        } catch {}
+    }
+
+    /// Everything this account has pending or delivered, on disconnect.
+    /// Scheduled families are matched by their `<prefix><accountID>.` id
+    /// shape; the immediate ones append a kind and timestamp after the
+    /// same stem, and `reauth.` is the bare stem.
+    static func removeAll(accountID: String) async {
+        let center = UNUserNotificationCenter.current()
+        let stems = [identifierPrefix, runOutPrefix, earlyResetPrefix, nearLimitPrefix, limitReachedPrefix]
+            .map { $0 + accountID + "." } + [reauthPrefix + accountID]
+        let matches: (String) -> Bool = { id in stems.contains { id.hasPrefix($0) } }
+        let pending = await center.pendingNotificationRequests().map(\.identifier).filter(matches)
+        center.removePendingNotificationRequests(withIdentifiers: pending)
+        let delivered = await center.deliveredNotifications().map(\.request.identifier).filter(matches)
+        center.removeDeliveredNotifications(withIdentifiers: delivered)
     }
 
     /// Re-arms the alert after a successful refresh (or a reconnect) and

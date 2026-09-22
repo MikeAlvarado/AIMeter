@@ -16,6 +16,12 @@ struct RefreshService {
     private(set) var account: ConnectedAccount
     let provider: ClaudeProvider
     let credentialSource: any ClaudeCredentialSource
+    /// Whether a fetch may *start* a Live Activity (iOS). ActivityKit only
+    /// honours `Activity.request` from the foreground app, so the
+    /// `BGAppRefreshTask` path (`UsageModel.refreshAllInBackground`) turns
+    /// this off — updating one already running is fine from anywhere in
+    /// the app process.
+    var allowsLiveActivityStart = true
     private let store: SnapshotStore?
     private let historyStore: UsageHistoryStore?
 
@@ -114,11 +120,13 @@ struct RefreshService {
 
         try store?.save(snapshot, for: account.accountID)
         historyStore?.record(snapshot, for: account.accountID)
-        WidgetCenter.shared.reloadAllTimelines()
+        // No `reloadAllTimelines()` here: the caller reloads once per sweep
+        // (see `UsageModel.fetch(accountID:)`), not once per account.
         #if os(iOS)
         LiveActivityManager.sync(
             accountID: account.accountID, accountName: account.displayName, snapshot: snapshot,
-            enabled: LiveActivityPreferences(accountID: account.accountID).enabled
+            enabled: LiveActivityPreferences(accountID: account.accountID).enabled,
+            mayStart: allowsLiveActivityStart
         )
         #endif
 
@@ -233,8 +241,17 @@ struct RefreshService {
         store?.removeSnapshot(for: account.accountID)
         historyStore?.clear(for: account.accountID)
         WidgetCenter.shared.reloadAllTimelines()
+        // Everything else keyed by this accountID goes too: the reset/
+        // run-out requests still queued for it (they'd fire at their
+        // `resetsAt` for an account that no longer exists), whatever it
+        // delivered, and its per-account toggles — otherwise a UUID's
+        // worth of keys leaks into the App Group forever.
+        let accountID = account.accountID
+        Task { await NotificationScheduler.removeAll(accountID: accountID) }
+        NotificationPreferences(accountID: accountID).clear()
         #if os(iOS)
-        LiveActivityManager.end(accountID: account.accountID)
+        LiveActivityManager.end(accountID: accountID)
+        LiveActivityPreferences(accountID: accountID).clear()
         #endif
     }
 }

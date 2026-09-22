@@ -103,7 +103,10 @@ final class UsageModel {
         // the registry until that refresh actually confirms real
         // credentials (see `refresh(accountID:)`), so a Mac with no Claude
         // Code login never gets a phantom account.
-        if accounts.isEmpty {
+        // ...unless the user explicitly disconnected that mirrored login
+        // (`Preferences.autoDetectDeclined`), in which case re-mirroring it
+        // here would just undo the disconnect on every launch.
+        if accounts.isEmpty, !Preferences.autoDetectDeclined {
             let candidate = ConnectedAccount(
                 accountID: ClaudeKeychainCredentialSource.legacyAccountID, providerID: "claude",
                 displayName: "Claude", credentialStrategy: .autoDetected
@@ -123,20 +126,31 @@ final class UsageModel {
         guard let registry = AccountRegistryStore(suiteName: AppConfig.appGroupID) else { return }
         let allAccounts = registry.accounts()
         let label: (ConnectedAccount) -> String? = { allAccounts.count > 1 ? $0.displayName : nil }
-        await withTaskGroup(of: Void.self) { group in
+        let fetched = await withTaskGroup(of: Bool.self) { group in
             for account in allAccounts {
-                group.addTask { _ = try? await RefreshService(account: account).refresh(accountLabel: label(account)) }
+                group.addTask { @MainActor in
+                    var service = RefreshService(account: account)
+                    // ActivityKit refuses `Activity.request` from a
+                    // background task; updates to a running one still go
+                    // through.
+                    service.allowsLiveActivityStart = false
+                    return (try? await service.refresh(accountLabel: label(account))) != nil
+                }
             }
+            return await group.reduce(false) { $0 || $1 }
         }
+        if fetched { WidgetCenter.shared.reloadAllTimelines() }
     }
 
     func refreshAll() async {
         guard !isDemoMode else { return }
-        await withTaskGroup(of: Void.self) { group in
+        let fetched = await withTaskGroup(of: Bool.self) { group in
             for account in accounts.map(\.account) {
-                group.addTask { await self.refresh(accountID: account.accountID) }
+                group.addTask { await self.fetch(accountID: account.accountID) }
             }
+            return await group.reduce(false) { $0 || $1 }
         }
+        if fetched { WidgetCenter.shared.reloadAllTimelines() }
     }
 
     /// This account's current array index. Never captured across an
@@ -150,15 +164,27 @@ final class UsageModel {
     }
 
     func refresh(accountID: String) async {
+        if await fetch(accountID: accountID) {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
+
+    /// One account's fetch + bookkeeping. Returns whether a new snapshot
+    /// reached the store — the caller's cue to reload widget timelines,
+    /// which is deliberately *not* done here: the `refreshAll` sweeps fan
+    /// this out per account and reload once at the end, since each
+    /// `reloadAllTimelines()` draws on WidgetKit's per-kind budget and N
+    /// accounts would otherwise spend it N times per sweep.
+    private func fetch(accountID: String) async -> Bool {
         guard !isDemoMode, let service = services[accountID],
-              let startIndex = index(for: accountID), !accounts[startIndex].isRefreshing else { return }
+              let startIndex = index(for: accountID), !accounts[startIndex].isRefreshing else { return false }
         accounts[startIndex].isRefreshing = true
         defer {
             if let i = index(for: accountID) { accounts[i].isRefreshing = false }
         }
         do {
             let snapshot = try await service.refresh(accountLabel: accountLabel(for: accountID))
-            guard let i = index(for: accountID) else { return }
+            guard let i = index(for: accountID) else { return true }
             accounts[i].snapshot = snapshot
             accounts[i].lastError = nil
             accounts[i].needsReauthentication = false
@@ -176,6 +202,7 @@ final class UsageModel {
                 // screen until the next refresh.
                 propagateName(accountID: accountID)
             }
+            return true
         } catch let error as UsageError {
             if case .credentialsNotFound = error, registry?.account(for: accountID) == nil {
                 // The speculative macOS auto-detect candidate turned out to
@@ -197,6 +224,7 @@ final class UsageModel {
                 accounts[i].lastError = error.localizedDescription
             }
         }
+        return false
     }
 
     /// Foreground-activation refresh: skips accounts whose snapshot is
@@ -205,19 +233,37 @@ final class UsageModel {
     /// pushes new snapshots to the widgets immediately.
     func refreshAllIfStale(maxAge: TimeInterval = 60) async {
         guard !isDemoMode else { return }
-        await withTaskGroup(of: Void.self) { group in
+        let fetched = await withTaskGroup(of: Bool.self) { group in
             for entry in accounts {
                 let isFresh = entry.snapshot.map { Date().timeIntervalSince($0.fetchedAt) < maxAge } ?? false
                 guard !isFresh else { continue }
-                group.addTask { await self.refresh(accountID: entry.account.accountID) }
+                group.addTask { await self.fetch(accountID: entry.account.accountID) }
             }
+            return await group.reduce(false) { $0 || $1 }
         }
+        if fetched { WidgetCenter.shared.reloadAllTimelines() }
     }
 
     var isRefreshing: Bool { accounts.contains { $0.isRefreshing } }
     /// True when there are no usable accounts — dashboard shows the connect
     /// card instead of usage rows.
     var needsConnection: Bool { accounts.isEmpty }
+
+    #if os(macOS)
+    /// The disconnected Dashboard card's way back to the zero-setup path:
+    /// true once the user removed the CLI-mirrored account
+    /// (`Preferences.autoDetectDeclined`), which is what stops
+    /// `loadAccounts()` from re-mirroring it on every launch.
+    var canRedetectClaudeCodeLogin: Bool {
+        needsConnection && Preferences.autoDetectDeclined
+    }
+
+    func redetectClaudeCodeLogin() async {
+        Preferences.autoDetectDeclined = false
+        loadAccounts()
+        await refreshAll()
+    }
+    #endif
 
     /// This account's current `AccountUsage`, if still connected.
     func usage(for accountID: String) -> AccountUsage? {
@@ -298,9 +344,9 @@ final class UsageModel {
         // that just proved unusable. It also ends the refresh-token
         // standoff behind most of these failures: with its own pair,
         // AIMeter can rotate freely without invalidating the CLI's.
-        if account.credentialStrategy == .autoDetected {
+        let wasAutoDetected = account.credentialStrategy == .autoDetected
+        if wasAutoDetected {
             account.credentialStrategy = .managed
-            registry?.setCredentialStrategy(.managed, for: accountID)
         }
         let service = RefreshService(account: account)
         do {
@@ -310,6 +356,14 @@ final class UsageModel {
             return
         }
         connectionError = nil
+        // Only now that the credentials are stored. Flipping the registry
+        // first and then failing the save would leave a `.managed` account
+        // with nothing at its Keychain key — a permanent "no credentials"
+        // card on the next launch, with the CLI login it used to mirror
+        // no longer consulted either.
+        if wasAutoDetected {
+            registry?.setCredentialStrategy(.managed, for: accountID)
+        }
         NotificationScheduler.clearReauthenticationAlert(
             accountID: accountID, preferences: preferences(for: accountID)
         )
@@ -473,6 +527,11 @@ final class UsageModel {
         guard let service = services[accountID] else { return }
         do {
             try service.disconnect()
+            if service.account.credentialStrategy == .autoDetected {
+                // See `Preferences.autoDetectDeclined`: without this the
+                // CLI login comes right back on the next launch.
+                Preferences.autoDetectDeclined = true
+            }
             registry?.remove(accountID)
             removeAccount(accountID: accountID)
             if accounts.count == 1 {

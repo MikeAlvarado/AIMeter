@@ -27,6 +27,11 @@ enum WidgetRefresher {
     /// staleness check.
     private static let minInterval: TimeInterval = 5
 
+    /// How long an in-flight marker suppresses other instances' fetches
+    /// for the same account — comfortably longer than the 15 s request
+    /// timeout, short enough that a crashed extension can't block for long.
+    private static let inFlightWindow: TimeInterval = 60
+
     static func fetchIfStale(
         accountID: String,
         current: UsageSnapshot?,
@@ -35,6 +40,24 @@ enum WidgetRefresher {
         if let current, Date().timeIntervalSince(current.fetchedAt) < cadence {
             return nil
         }
+        // Every placed instance runs its own timeline in the same reload
+        // burst, so three widgets for one account would otherwise be three
+        // identical fetches (and three refresh-token rotations). Re-read the
+        // store first — another instance may have just saved — then claim
+        // the fetch with an in-flight stamp the others back off from.
+        let store = SnapshotStore(suiteName: AppConfig.appGroupID)
+        if let latest = store?.snapshot(for: accountID),
+           Date().timeIntervalSince(latest.fetchedAt) < cadence {
+            return latest
+        }
+        let defaults = UserDefaults(suiteName: AppConfig.appGroupID)
+        let stampKey = "widget.fetchInFlight.\(accountID)"
+        if let started = defaults?.object(forKey: stampKey) as? Date,
+           Date().timeIntervalSince(started) < inFlightWindow {
+            return nil
+        }
+        defaults?.set(Date(), forKey: stampKey)
+        defer { defaults?.removeObject(forKey: stampKey) }
         return await fetch(accountID: accountID, previous: current)
     }
 
@@ -65,14 +88,9 @@ enum WidgetRefresher {
         // Keep the usage history continuous even when only the widget fetches,
         // so the run-out predictor's recent-rate stays accurate.
         UsageHistoryStore(suiteName: AppConfig.appGroupID)?.record(snapshot, for: accountID)
-        // Same reasoning as the history record above: a running Live
-        // Activity should stay fresh even on cycles where only the widget
-        // (not the app) fetches. No-op when the account's toggle is off.
-        let accountName = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)?.displayName ?? "Claude"
-        LiveActivityManager.sync(
-            accountID: accountID, accountName: accountName, snapshot: snapshot,
-            enabled: LiveActivityPreferences(accountID: accountID).enabled
-        )
+        // Deliberately no Live Activity sync here: ActivityKit only exposes
+        // (and lets you update) activities from the app process, so the
+        // extension can't keep one fresh — the app's own next fetch does.
         return snapshot
     }
 }
