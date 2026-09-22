@@ -27,7 +27,7 @@ struct SessionLiveActivity: Widget {
                             planName: nil
                         )
                         if context.state.isPeak {
-                            peakBadge(size: 10)
+                            PeakBadge(size: 10)
                         }
                     }
                 }
@@ -49,7 +49,7 @@ struct SessionLiveActivity: Widget {
                 HStack(spacing: 4) {
                     percentText(context.state, size: 12)
                     if context.state.isPeak {
-                        peakBadge(size: 9)
+                        PeakBadge(size: 9)
                     }
                 }
             } minimal: {
@@ -67,15 +67,6 @@ struct SessionLiveActivity: Widget {
             .font(.system(size: size, weight: .semibold))
             .monospacedDigit()
             .foregroundStyle(Theme.ink)
-    }
-
-    /// Grouped with the account name (leading), not with the percentage
-    /// (trailing) — matches the Lock Screen banner's own arrangement, and
-    /// the "B — Detailed" concept this shipped from.
-    private func peakBadge(size: CGFloat) -> some View {
-        Image(systemName: "bolt.fill")
-            .font(.system(size: size))
-            .foregroundStyle(Theme.danger)
     }
 
     private func countdown(_ state: SessionActivityAttributes.ContentState, size: CGFloat) -> some View {
@@ -104,10 +95,11 @@ private struct LockScreenView: View {
                     nameColor: Theme.ink,
                     planName: nil
                 )
+                // Grouped with the account name (leading), not with the
+                // percentage (trailing): it's a property of the account,
+                // not of the number.
                 if state.isPeak {
-                    Image(systemName: "bolt.fill")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Theme.danger)
+                    PeakBadge(size: 11)
                 }
                 Spacer(minLength: 0)
                 Text("\(Int(state.usedPct))%")

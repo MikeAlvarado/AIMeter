@@ -142,7 +142,8 @@
   Lock Screen/Dynamic Island, off by default; Spend and Extra usage
   cards (label/value rows, currency formatted) for this account; per-window
   reset notification toggles plus a **Smart notifications** card
-  (`SmartNotificationTogglesCard`: Near-limit warnings with a threshold
+  (`SmartNotificationTogglesCard`, one toggle per `SmartAlert` case in
+  declaration order: Near-limit warnings with a threshold
   slider, Limit reached, Run-out warnings, Early-reset alerts, and
   Sign-in alerts — all five scoped to this one account, and Sign-in alerts
   the only toggle in the app that starts **on**, for the reason documented

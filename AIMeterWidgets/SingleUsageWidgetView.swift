@@ -42,9 +42,7 @@ struct SingleUsageWidgetView: View {
             // policy actually affects, so a Weekly/Credits/model pick
             // never shows a badge that would misattribute it.
             if entry.kind == .session, ClaudePeakStatus(at: entry.date).isPeak {
-                Image(systemName: "bolt.fill")
-                    .font(.system(size: 9))
-                    .foregroundStyle(Theme.danger)
+                PeakBadge(size: 9)
             }
             Text(entry.kind.shortName)
                 .font(.system(size: 11))

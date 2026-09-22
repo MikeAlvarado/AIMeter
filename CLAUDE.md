@@ -36,6 +36,32 @@ system, and behaviors. It should be enough to rebuild the app from zero.
 Both app targets sync the `Shared/` folder; the widget target also gets its
 assets and string catalog from there.
 
+- `AIMeter/Services/` — `UsageModel` is split by feature into
+  `UsageModel.swift` (state, loading, the refresh path),
+  `UsageModel+Connections.swift` (connect/reconnect/disconnect, demo mode,
+  the macOS redetect), `UsageModel+Naming.swift` (order and nicknames),
+  `UsageModel+Notifications.swift` (the per-account toggles) and
+  `UsageModel+macOS.swift` (refresh schedule, wake/activation observers,
+  `AppEnvironment`); members those extensions share are internal rather
+  than private, by necessity, and documented as such. Notifications are
+  three files: `NotificationPreferences.swift` (the toggles, plus
+  `SmartAlert` — the five per-account families addressed as one enum, so
+  the model and the toggles card have one getter/setter pair instead of
+  five), `NotificationScheduler.swift` (the fetch-driven families) and
+  `NotificationScheduler+Peak.swift`.
+- `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
+  `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
+  row builders, `ProviderDetailRows`) and `NotificationTogglesCards.swift`
+  (both notification cards). The Dashboard is `DashboardView.swift` plus
+  `DashboardView+Reorder.swift` (the hold-and-drag reorder, whose state
+  stays on the view — internal `@State`, for the same reason as above) and
+  `RoundIconButton.swift`.
+- `Shared/` — `PeakBadge.swift` is the one peak glyph every glance surface
+  composes (menu bar popover, both widget headers, the all-accounts
+  widget, the Live Activity); `PreferencesModel` keeps a single stored
+  `Preferences` value behind computed accessors, so the field list exists
+  once.
+
 ## Architecture rules (non-negotiable)
 
 - `Packages/UsageKit` must NOT import SwiftUI, WidgetKit, UIKit, or Combine.

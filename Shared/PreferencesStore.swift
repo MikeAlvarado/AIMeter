@@ -210,75 +210,65 @@ struct Preferences: Sendable {
 }
 
 /// Observable wrapper used by the app; every change writes through to the
-/// App Group immediately.
+/// App Group immediately. One stored `Preferences` value behind computed
+/// accessors, so the field list exists once (`Preferences` itself) rather
+/// than being repeated here in the properties, the initializer, and a
+/// snapshot builder; `@Observable` tracks reads and writes through the
+/// stored value, which is all the bindings need.
 @Observable
 final class PreferencesModel {
-    var displayMode: DisplayMode {
-        didSet { defaults.set(displayMode.rawValue, forKey: Preferences.Keys.displayMode); widgetsChanged() }
-    }
-    var resetStyle: ResetStyle {
-        didSet { defaults.set(resetStyle.rawValue, forKey: Preferences.Keys.resetStyle); widgetsChanged() }
-    }
-    var refreshCadence: RefreshCadence {
-        didSet { defaults.set(refreshCadence.rawValue, forKey: Preferences.Keys.refreshCadence); widgetsChanged() }
-    }
-    var appearance: AppearanceMode {
-        didSet { defaults.set(appearance.rawValue, forKey: Preferences.Keys.appearance) }
-    }
-    var modelSlotFallback: ModelSlotFallback {
-        didSet { defaults.set(modelSlotFallback.rawValue, forKey: Preferences.Keys.modelSlotFallback); widgetsChanged() }
-    }
-    var glanceMetric: UsageWindow.Kind {
-        didSet { defaults.set(glanceMetric.storageKey, forKey: Preferences.Keys.glanceMetric); widgetsChanged() }
-    }
-    var showCreditsAmount: Bool {
-        didSet { defaults.set(showCreditsAmount, forKey: Preferences.Keys.showCreditsAmount); widgetsChanged() }
-    }
-    var primaryAccountID: String? {
-        didSet { defaults.set(primaryAccountID, forKey: Preferences.Keys.primaryAccountID) }
-    }
-    var menuBarShowsPercentage: Bool {
-        didSet { defaults.set(menuBarShowsPercentage, forKey: Preferences.Keys.menuBarShowsPercentage) }
-    }
-    var statusItemVisible: Bool {
-        didSet { defaults.set(statusItemVisible, forKey: Preferences.Keys.statusItemVisible) }
-    }
-    var hideDockIcon: Bool {
-        didSet { defaults.set(hideDockIcon, forKey: Preferences.Keys.hideDockIcon) }
-    }
-
+    private var stored: Preferences
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private var widgetReload: Task<Void, Never>?
 
-    /// Widgets read these prefs straight from the App Group when they
-    /// render, but nothing re-renders them until their next timeline
-    /// reload — up to the refresh floor away, or on macOS until the app's
-    /// next scheduled fetch. One coalesced reload per burst of changes
-    /// (a segmented pill tapped three times in a row is one reload, not
-    /// three against WidgetKit's per-kind budget) closes that gap.
-    private func widgetsChanged() {
-        widgetReload?.cancel()
-        widgetReload = Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(500))
-            guard !Task.isCancelled else { return }
-            WidgetCenter.shared.reloadAllTimelines()
-        }
-    }
-
     init(defaults: UserDefaults = Preferences.groupDefaults) {
         self.defaults = defaults
-        let loaded = Preferences.load(from: defaults)
-        displayMode = loaded.displayMode
-        resetStyle = loaded.resetStyle
-        refreshCadence = loaded.refreshCadence
-        appearance = loaded.appearance
-        modelSlotFallback = loaded.modelSlotFallback
-        glanceMetric = loaded.glanceMetric
-        showCreditsAmount = loaded.showCreditsAmount
-        primaryAccountID = loaded.primaryAccountID
-        menuBarShowsPercentage = loaded.menuBarShowsPercentage
-        statusItemVisible = loaded.statusItemVisible
-        hideDockIcon = loaded.hideDockIcon
+        stored = Preferences.load(from: defaults)
+    }
+
+    var displayMode: DisplayMode {
+        get { stored.displayMode }
+        set { stored.displayMode = newValue; persist(newValue.rawValue, Preferences.Keys.displayMode, reloadsWidgets: true) }
+    }
+    var resetStyle: ResetStyle {
+        get { stored.resetStyle }
+        set { stored.resetStyle = newValue; persist(newValue.rawValue, Preferences.Keys.resetStyle, reloadsWidgets: true) }
+    }
+    var refreshCadence: RefreshCadence {
+        get { stored.refreshCadence }
+        set { stored.refreshCadence = newValue; persist(newValue.rawValue, Preferences.Keys.refreshCadence, reloadsWidgets: true) }
+    }
+    var appearance: AppearanceMode {
+        get { stored.appearance }
+        set { stored.appearance = newValue; persist(newValue.rawValue, Preferences.Keys.appearance, reloadsWidgets: false) }
+    }
+    var modelSlotFallback: ModelSlotFallback {
+        get { stored.modelSlotFallback }
+        set { stored.modelSlotFallback = newValue; persist(newValue.rawValue, Preferences.Keys.modelSlotFallback, reloadsWidgets: true) }
+    }
+    var glanceMetric: UsageWindow.Kind {
+        get { stored.glanceMetric }
+        set { stored.glanceMetric = newValue; persist(newValue.storageKey, Preferences.Keys.glanceMetric, reloadsWidgets: true) }
+    }
+    var showCreditsAmount: Bool {
+        get { stored.showCreditsAmount }
+        set { stored.showCreditsAmount = newValue; persist(newValue, Preferences.Keys.showCreditsAmount, reloadsWidgets: true) }
+    }
+    var primaryAccountID: String? {
+        get { stored.primaryAccountID }
+        set { stored.primaryAccountID = newValue; persist(newValue, Preferences.Keys.primaryAccountID, reloadsWidgets: false) }
+    }
+    var menuBarShowsPercentage: Bool {
+        get { stored.menuBarShowsPercentage }
+        set { stored.menuBarShowsPercentage = newValue; persist(newValue, Preferences.Keys.menuBarShowsPercentage, reloadsWidgets: false) }
+    }
+    var statusItemVisible: Bool {
+        get { stored.statusItemVisible }
+        set { stored.statusItemVisible = newValue; persist(newValue, Preferences.Keys.statusItemVisible, reloadsWidgets: false) }
+    }
+    var hideDockIcon: Bool {
+        get { stored.hideDockIcon }
+        set { stored.hideDockIcon = newValue; persist(newValue, Preferences.Keys.hideDockIcon, reloadsWidgets: false) }
     }
 
     var lastScheduledAt: Date? {
@@ -289,20 +279,29 @@ final class PreferencesModel {
         resetStyle = resetStyle == .relative ? .absolute : .relative
     }
 
+    /// The current values as a plain `Preferences`, for code paths written
+    /// against the value type (widgets' rendering helpers).
     var snapshot: Preferences {
-        var prefs = Preferences()
-        prefs.displayMode = displayMode
-        prefs.resetStyle = resetStyle
-        prefs.refreshCadence = refreshCadence
-        prefs.appearance = appearance
-        prefs.modelSlotFallback = modelSlotFallback
-        prefs.glanceMetric = glanceMetric
-        prefs.showCreditsAmount = showCreditsAmount
-        prefs.primaryAccountID = primaryAccountID
-        prefs.menuBarShowsPercentage = menuBarShowsPercentage
-        prefs.statusItemVisible = statusItemVisible
-        prefs.hideDockIcon = hideDockIcon
+        var prefs = stored
         prefs.lastScheduledAt = lastScheduledAt
         return prefs
+    }
+
+    /// Writes one key through to the App Group. `reloadsWidgets` is true
+    /// for the prefs widgets read when they render: nothing re-renders
+    /// them until their next timeline reload — up to the refresh floor
+    /// away, or on macOS until the app's next scheduled fetch — so one
+    /// coalesced reload per burst of changes (a segmented pill tapped three
+    /// times in a row is one reload, not three against WidgetKit's per-kind
+    /// budget) closes that gap.
+    private func persist(_ value: Any?, _ key: String, reloadsWidgets: Bool) {
+        defaults.set(value, forKey: key)
+        guard reloadsWidgets else { return }
+        widgetReload?.cancel()
+        widgetReload = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled else { return }
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 }
