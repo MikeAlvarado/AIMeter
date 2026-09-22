@@ -248,6 +248,13 @@ cd Packages/UsageKit && swift test
 (`AIMETER_LIVE_TEST=1 swift test --filter LiveClaudeProviderTests` runs an
 opt-in integration test against your real account.)
 
+The app's own unit tests (`AIMeterTests`, hosted in the app) run from
+Xcode with ⌘U, or:
+
+```sh
+xcodebuild test -project AIMeter.xcodeproj -scheme AIMeter -destination 'platform=macOS'
+```
+
 ## License
 
 [MIT](LICENSE)
