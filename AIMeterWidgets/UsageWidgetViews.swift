@@ -16,8 +16,6 @@ struct UsageWidgetView: View {
         Group {
             if let snapshot = entry.snapshot {
                 switch family {
-                case .systemMedium:
-                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
                 #if os(iOS)
                 case .accessoryCircular:
                     CircularUsageView(snapshot: snapshot, prefs: entry.prefs)
@@ -27,7 +25,9 @@ struct UsageWidgetView: View {
                     InlineUsageView(snapshot: snapshot, prefs: entry.prefs)
                 #endif
                 default:
-                    SmallUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
+                    // Small and medium render identically — the same three
+                    // rows, just wider — so one view serves both.
+                    SystemUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
                 }
             } else {
                 Text("Open AIMeter to load usage")
@@ -70,9 +70,7 @@ private struct WidgetHeader: View {
             )
             Spacer(minLength: 0)
             if ClaudePeakStatus(at: date).isPeak {
-                Image(systemName: "bolt.fill")
-                    .font(.system(size: 9))
-                    .foregroundStyle(Theme.danger)
+                PeakBadge(size: 9)
             }
             if snapshot.isStale {
                 HStack(spacing: 2) {
@@ -180,21 +178,8 @@ private struct WindowBarList: View {
     }
 }
 
-/// Small: header plus all three windows, same as medium but narrow.
-struct SmallUsageView: View {
-    let snapshot: UsageSnapshot
-    let prefs: Preferences
-    let date: Date
-    let accountID: String
-    var accountName: String = "Claude"
-
-    var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountID: accountID, accountName: accountName)
-    }
-}
-
-/// Medium: header plus all three windows as bars.
-struct MediumUsageView: View {
+/// Small and medium: header plus all three windows as bars.
+struct SystemUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
     let date: Date

@@ -20,8 +20,12 @@ struct AllAccountsWidgetView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            if ClaudePeakStatus(at: entry.date).isPeak {
-                peakBadge
+            let peak = ClaudePeakStatus(at: entry.date)
+            if peak.isPeak {
+                HStack {
+                    PeakBadge(size: 10, title: peak.title)
+                    Spacer(minLength: 0)
+                }
                 Divider().overlay(Theme.track)
             }
             if entry.rows.isEmpty {
@@ -49,18 +53,6 @@ struct AllAccountsWidgetView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .containerBackground(for: .widget) {
             Theme.card
-        }
-    }
-
-    private var peakBadge: some View {
-        HStack(spacing: 5) {
-            Image(systemName: "bolt.fill")
-                .font(.system(size: 10))
-                .foregroundStyle(Theme.danger)
-            Text(ClaudePeakStatus(at: entry.date).title)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Theme.ink)
-            Spacer(minLength: 0)
         }
     }
 }

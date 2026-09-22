@@ -166,12 +166,8 @@ struct MenuBarView: View {
     }
 
     private var peakBadgeRow: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "bolt.fill")
-                .foregroundStyle(Theme.danger)
-            Text(peak.title)
-                .font(Theme.sectionHeader)
-                .foregroundStyle(Theme.ink)
+        HStack {
+            PeakBadge(size: 13, title: peak.title, titleFont: Theme.sectionHeader)
             Spacer()
         }
         .help(peak.subtitle)
