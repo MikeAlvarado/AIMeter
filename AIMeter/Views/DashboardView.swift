@@ -113,6 +113,10 @@ struct DashboardView: View {
                 Task { await model.refreshAll() }
             }
             .accessibilityLabel(Text("Refresh"))
+            #if os(macOS)
+            // The one shortcut a Mac window is expected to have.
+            .keyboardShortcut("r", modifiers: .command)
+            #endif
         }
     }
 

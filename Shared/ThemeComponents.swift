@@ -126,6 +126,11 @@ struct UsageStatusFooter: View {
     /// user nothing they can act on, which is the opposite of the point of
     /// carrying raw bodies for every *other* error.
     var reauthenticate: (() -> Void)?
+    /// The error is a lost network, not a provider failure
+    /// (`UsageModel.AccountUsage.isOffline`): rendered quietly in the
+    /// secondary color, since the last snapshot is still valid and there
+    /// is nothing for the user to fix.
+    var offline = false
 
     var body: some View {
         if let reauthenticate {
@@ -142,9 +147,9 @@ struct UsageStatusFooter: View {
             }
         } else if let error {
             if showsDividers { Divider().overlay(Theme.track) }
-            Label(error, systemImage: "exclamationmark.triangle")
+            Label(error, systemImage: offline ? "wifi.slash" : "exclamationmark.triangle")
                 .font(Theme.caption)
-                .foregroundStyle(Theme.danger)
+                .foregroundStyle(offline ? Theme.inkSecondary : Theme.danger)
         }
         if let snapshot {
             if showsDividers { Divider().overlay(Theme.track) }

@@ -44,6 +44,11 @@ final class UsageModel {
         /// this account's history, notification preferences, Live Activity
         /// toggle, and every already-placed widget configured for it.
         var needsReauthentication = false
+        /// The last failure was the network, not the provider: the card
+        /// shows a quiet "offline, showing the last update" line instead of
+        /// the raw `URLError` in red, since nothing about the account is
+        /// wrong and the next successful fetch clears it.
+        var isOffline = false
         var isRefreshing = false
     }
 
@@ -218,6 +223,7 @@ final class UsageModel {
             accounts[i].snapshot = snapshot
             accounts[i].lastError = nil
             accounts[i].needsReauthentication = false
+            accounts[i].isOffline = false
             if registry?.account(for: accountID) == nil {
                 // The in-memory account rather than `service.account`: a
                 // rename during this fetch has already landed there.
@@ -243,12 +249,20 @@ final class UsageModel {
             } else if let i = index(for: accountID) {
                 accounts[i].lastError = error.errorDescription
                 accounts[i].needsReauthentication = error.requiresReauthentication
+                accounts[i].isOffline = false
             }
         } catch is CancellationError {
             // A superseded refresh (pull-to-refresh released, scene change)
             // is not an error worth showing.
         } catch let error as URLError where error.code == .cancelled {
             // Same: the URL task was cancelled by a newer refresh.
+        } catch let error as URLError where Self.offlineCodes.contains(error.code) {
+            // No route to the endpoint at all — nothing to act on, and the
+            // last snapshot is still the best information there is.
+            if let i = index(for: accountID) {
+                accounts[i].lastError = String(localized: "Offline — showing the last update.")
+                accounts[i].isOffline = true
+            }
         } catch {
             if let i = index(for: accountID) {
                 accounts[i].lastError = error.localizedDescription
@@ -256,6 +270,13 @@ final class UsageModel {
         }
         return false
     }
+
+    /// The `URLError`s that mean "the network, not the provider": shown as
+    /// the quiet offline line rather than a red error with the raw text.
+    private static let offlineCodes: Set<URLError.Code> = [
+        .notConnectedToInternet, .networkConnectionLost, .cannotFindHost, .cannotConnectToHost,
+        .dnsLookupFailed, .timedOut, .internationalRoamingOff, .dataNotAllowed,
+    ]
 
     /// Foreground-activation refresh: skips accounts whose snapshot is
     /// still fresh, so quick app switches don't refetch, but returning

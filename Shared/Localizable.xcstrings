@@ -1160,6 +1160,16 @@
         }
       }
     },
+    "Offline — showing the last update." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin conexión — se muestra la última actualización."
+          }
+        }
+      }
+    },
     "On pace" : {
       "localizations" : {
         "es" : {
