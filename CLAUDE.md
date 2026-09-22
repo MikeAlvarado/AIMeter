@@ -62,7 +62,11 @@ assets and string catalog from there.
   (dashboard, macOS menu bar popover, all-accounts widget, widget account
   pickers), which is what makes the dashboard's drag-reorder one
   `replaceAll` write rather than a per-surface preference (accountID,
-  providerID, a user-editable `displayName`, and `credentialStrategy`:
+  providerID, a user-editable `displayName` (set in the Connect sheet,
+  renamed in place any time later — `UsageModel.rename` — and unique across
+  accounts, case-insensitively, since it's all that tells them apart in
+  widget pickers and notification titles; see `AIMeter/CLAUDE.md` →
+  "Renaming"), and `credentialStrategy`:
   `.managed` for an app-owned Keychain copy from OAuth/paste, or macOS-only
   `.autoDetected` for the one login mirrored from Claude Code's own
   Keychain item — capped at exactly one account, since the CLI itself only
@@ -291,7 +295,14 @@ the account silently freezes at its last snapshot.
   `Preferences.bool(_:_:default:)`.) Once more than one account is connected,
   a notification's title is prefixed with that account's nickname (e.g.
   "Work — Session limit reset"); a single-account install's copy reads
-  exactly as it always has. Permission is a single OS-level toggle, not
+  exactly as it always has. A rename re-issues that account's pending
+  `reset.`/`runout.` requests from the stored snapshot
+  (`RefreshService.rescheduleNotifications`, no fetch) so titles already
+  queued don't keep the old nickname until the next refresh; connecting a
+  second account or disconnecting back to one does the same for every
+  *other* account (`UsageModel.relabelPendingNotifications`), since the
+  prefix rule flips at exactly that crossing. Permission is
+  a single OS-level toggle, not
   per account: it's handled honestly regardless of which account's card
   changed it — a denied system permission snaps every account's toggle
   back off and shows a warning row with an "Open Settings" shortcut;

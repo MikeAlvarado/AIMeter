@@ -81,6 +81,32 @@
       otherwise have to arbitrate between the two, and the menu is both the
       VoiceOver/Switch Control path and the only part of this that announces
       itself.
+  - **Renaming**: that same header context menu carries "Rename…" for
+    every account — one account is enough to want a name, so unlike Move
+    up/down it isn't gated on 2+ — opening `renameAccountAlert`
+    (`RenameAccountAlert.swift`): a plain alert with one field seeded with
+    the current nickname and Save disabled while it's empty or already
+    another account's name (case-insensitive, `UsageModel.isNameTaken` —
+    the nickname is all that tells accounts apart in widget pickers and
+    notification titles; the message line says which), landing on
+    `UsageModel.rename(_:to:)`. Alert buttons don't re-evaluate `.disabled`
+    live on every OS version, so `rename` also returns whether it accepted
+    the name, and a rejected Save re-presents the alert with the reason
+    instead of dismissing silently. Hidden in demo mode. The rename is in place
+    (same `accountID`, so nothing keyed by it moves — the mirror image of
+    why reconnect is in place too) and nudges every surface that caches
+    the name instead of leaving it to drift until the next fetch: the
+    account's `RefreshService` (`renamed(to:)`, keeping the provider and
+    its plan cache rather than rebuilding), every placed widget
+    (`reloadAllTimelines`), a running Live Activity (ended and restarted
+    under the new name — see `AIMeterWidgets/CLAUDE.md`), and the pending
+    reset/run-out notifications (`RefreshService.rescheduleNotifications`,
+    re-issued from the stored snapshot, no fetch) — all three through
+    `UsageModel.propagateName`, which `refresh(accountID:)` calls again
+    when it finds a rename landed while its fetch was in flight (that
+    fetch's `RefreshService` still carried the old name). Provider Detail's
+    Account card reaches the same alert, for anyone who never discovers
+    the context menu.
   - A card whose last refresh failed on credentials shows "Sign-in expired"
     + a **Sign in again** button instead of the raw error, opening the
     Connect sheet in reconnect mode (see "Connect sheet" below and "Losing
@@ -111,7 +137,10 @@
   slider, Limit reached, Run-out warnings, Early-reset alerts, and
   Sign-in alerts — all five scoped to this one account, and Sign-in alerts
   the only toggle in the app that starts **on**, for the reason documented
-  on `NotificationPreferences.reauthAlertsEnabled`); a disconnect button, on both
+  on `NotificationPreferences.reauthAlertsEnabled`); an **Account** card — a
+  Name row showing the current nickname, and tapping it opens the same
+  rename alert the Dashboard header's context menu uses (see "Renaming"
+  above), hidden in demo mode; a disconnect button, on both
   platforms (macOS previously had none — a gap multi-account made
   untenable, since it's now the only way to remove a non-primary account).
   All of these are Claude-specific display prefs, so they live here rather
@@ -161,9 +190,11 @@
 - **Connect sheet**: `ProviderMark` header (prominent tile), title "Connect
   your Claude account", explainer, "Open Claude Sign-In", a
   nickname field (only shown once at least one account is already
-  connected — a first connection needs no name; suggests "Claude 2" etc.
-  based on how many exist), paste field, Connect, then an independence
-  footnote (not affiliated with Anthropic, reads only your own limits,
+  connected — a first connection needs no name; the placeholder is the
+  first free "Claude N", `UsageModel.suggestedNickname`, and a typed name
+  another account already uses disables Connect with an inline hint — the
+  same `isNameTaken` rule renaming follows), paste field, Connect, then an
+  independence footnote (not affiliated with Anthropic, reads only your own limits,
   never sends prompts, token stays on this device — said at the moment of
   connecting, not only in Privacy & data). The paste field accepts the
   OAuth code; **on macOS only** it also accepts a full credentials JSON

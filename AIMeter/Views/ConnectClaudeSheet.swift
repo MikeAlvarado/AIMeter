@@ -70,6 +70,13 @@ struct ConnectClaudeSheet: View {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
                         .background(Theme.track.opacity(0.6), in: Capsule())
+
+                    if nicknameTaken {
+                        Text("Another account is already called that.")
+                            .font(Theme.caption)
+                            .foregroundStyle(Theme.danger)
+                            .multilineTextAlignment(.center)
+                    }
                 }
 
                 HStack(spacing: 8) {
@@ -184,14 +191,19 @@ struct ConnectClaudeSheet: View {
     }
 
     private var canConnect: Bool {
-        !code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isExchanging
+        !code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isExchanging && !nicknameTaken
     }
 
-    /// Suggested name for a newly connected account — there's no email or
-    /// name signal from Claude's API to derive one from, so the user has to
-    /// set it (or accept this placeholder).
+    /// Placeholder for the nickname field — see `UsageModel.suggestedNickname`.
     private var defaultNickname: String {
-        model.accounts.isEmpty ? "Claude" : "Claude \(model.accounts.count + 1)"
+        model.suggestedNickname()
+    }
+
+    /// The typed nickname collides with another account's: Connect is
+    /// disabled and the field says why. Never true for the placeholder,
+    /// which is chosen to be free.
+    private var nicknameTaken: Bool {
+        reconnecting == nil && model.isNameTaken(resolvedNickname)
     }
 
     private var resolvedNickname: String {

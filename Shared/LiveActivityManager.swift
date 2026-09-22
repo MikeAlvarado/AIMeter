@@ -17,32 +17,36 @@ enum LiveActivityManager {
     static func sync(accountID: String, accountName: String, snapshot: UsageSnapshot?, enabled: Bool) {
         let running = Activity<SessionActivityAttributes>.activities.first { $0.attributes.accountID == accountID }
 
-        guard enabled,
-              let window = snapshot?.sessionWindow,
-              window.usedPct > 0,
-              let resetsAt = window.resetsAt,
-              resetsAt > Date()
-        else {
+        guard let content = content(for: snapshot, enabled: enabled) else {
             guard let running else { return }
             Task { await running.end(nil, dismissalPolicy: .immediate) }
             return
         }
 
-        let content = ActivityContent(
-            state: SessionActivityAttributes.ContentState(
-                usedPct: window.usedPct,
-                resetsAt: resetsAt,
-                isPeak: ClaudePeakStatus().isPeak,
-                severity: window.severity
-            ),
-            staleDate: resetsAt
-        )
-
         if let running {
             Task { await running.update(content) }
         } else {
-            let attributes = SessionActivityAttributes(accountID: accountID, accountName: accountName)
-            _ = try? Activity.request(attributes: attributes, content: content, pushType: nil)
+            start(accountID: accountID, accountName: accountName, content: content)
+        }
+    }
+
+    /// Restarts a running activity under a new nickname. `attributes` (the
+    /// name among them) are fixed for an activity's lifetime, so a rename
+    /// can't ride on `update` the way every other change does: the old
+    /// activity ends and a fresh one starts in its place. Nothing to do
+    /// when none is running — the next `sync` picks the new name up on its
+    /// own. Called from the rename action only, so the app is in the
+    /// foreground, which `Activity.request` requires.
+    static func rename(accountID: String, accountName: String, snapshot: UsageSnapshot?, enabled: Bool) {
+        let running = Activity<SessionActivityAttributes>.activities.filter { $0.attributes.accountID == accountID }
+        guard !running.isEmpty else { return }
+        let content = content(for: snapshot, enabled: enabled)
+        Task {
+            for activity in running {
+                await activity.end(nil, dismissalPolicy: .immediate)
+            }
+            guard let content else { return }
+            start(accountID: accountID, accountName: accountName, content: content)
         }
     }
 
@@ -57,6 +61,36 @@ enum LiveActivityManager {
                 await activity.end(nil, dismissalPolicy: .immediate)
             }
         }
+    }
+
+    /// What a live session shows, or nil when there's nothing to show
+    /// (toggle off, no session window, an idle one, or one already past
+    /// its reset) — which `sync` reads as "end whatever is running".
+    private static func content(
+        for snapshot: UsageSnapshot?, enabled: Bool
+    ) -> ActivityContent<SessionActivityAttributes.ContentState>? {
+        guard enabled,
+              let window = snapshot?.sessionWindow,
+              window.usedPct > 0,
+              let resetsAt = window.resetsAt,
+              resetsAt > Date()
+        else { return nil }
+        return ActivityContent(
+            state: SessionActivityAttributes.ContentState(
+                usedPct: window.usedPct,
+                resetsAt: resetsAt,
+                isPeak: ClaudePeakStatus().isPeak,
+                severity: window.severity
+            ),
+            staleDate: resetsAt
+        )
+    }
+
+    private static func start(
+        accountID: String, accountName: String, content: ActivityContent<SessionActivityAttributes.ContentState>
+    ) {
+        let attributes = SessionActivityAttributes(accountID: accountID, accountName: accountName)
+        _ = try? Activity.request(attributes: attributes, content: content, pushType: nil)
     }
 }
 
