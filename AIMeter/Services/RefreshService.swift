@@ -7,7 +7,13 @@ import UsageKit
 /// notifications. One instance per `ConnectedAccount` — `UsageModel` holds
 /// one per registered account and fans refreshes out concurrently.
 struct RefreshService {
-    let account: ConnectedAccount
+    /// `private(set) var` rather than `let` for exactly one mutation,
+    /// `renamed(to:)`: `displayName` is the only field of an account that
+    /// can change without invalidating the credential source built in
+    /// `init`, which depends on `accountID` and `credentialStrategy`
+    /// alone. A strategy change still rebuilds the whole service
+    /// (`UsageModel.reconnect`).
+    private(set) var account: ConnectedAccount
     let provider: ClaudeProvider
     let credentialSource: any ClaudeCredentialSource
     private let store: SnapshotStore?
@@ -32,6 +38,17 @@ struct RefreshService {
 
     static var keychainStore: KeychainStore {
         KeychainStore(service: AppConfig.keychainService, accessGroup: AppConfig.keychainAccessGroup)
+    }
+
+    /// The same service under a new nickname. Keeps the provider — and with
+    /// it the in-memory plan cache the CLI-mirrored macOS account depends
+    /// on (see `ClaudeProvider`'s `PlanCache`) — where rebuilding the
+    /// service the way a reconnect must would throw that away for a change
+    /// that touches no credential.
+    func renamed(to displayName: String) -> RefreshService {
+        var copy = self
+        copy.account.displayName = displayName
+        return copy
     }
 
     /// One-time move of credentials saved before keychain sharing into the
@@ -115,6 +132,25 @@ struct RefreshService {
             await fireDetectionAlerts(previous: previous, current: snapshot, accountLabel: accountLabel, preferences: prefs)
         }
         return snapshot
+    }
+
+    /// Re-issues this account's two *scheduled* notification families
+    /// (`reset.`, `runout.`) from the stored snapshot, without fetching.
+    /// `refresh` already does this after every successful fetch; this is
+    /// for the one change that alters pending notification copy with no
+    /// fetch involved — a rename, whose new nickname would otherwise wait
+    /// for the next refresh to reach titles already queued under the old
+    /// one. The detection-based families fire immediately, so they have
+    /// nothing pending to rename.
+    func rescheduleNotifications(accountLabel: String?) async {
+        guard let snapshot = lastSnapshot() else { return }
+        let prefs = NotificationPreferences(accountID: account.accountID)
+        await NotificationScheduler.rescheduleResets(
+            for: snapshot, accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+        )
+        await NotificationScheduler.rescheduleRunOuts(
+            runOutProjections(for: snapshot), accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+        )
     }
 
     /// Immediate, detection-based alerts (compare previous vs new): early

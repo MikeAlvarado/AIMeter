@@ -28,12 +28,21 @@ struct AccountSectionView: View {
     /// about a card suggests it can be dragged.
     var moveUp: (() -> Void)?
     var moveDown: (() -> Void)?
+    /// Whether the header's context menu offers "Rename…" — on for the
+    /// Dashboard (every account: unlike the reorder actions it isn't gated
+    /// on 2+, since one account is enough to want a name), off for the
+    /// menu bar popover and landscape, which follow the Dashboard's edits
+    /// rather than making their own. The alert itself talks to
+    /// `UsageModel` directly (see `renameAccountAlert`).
+    var canRename = false
 
     /// The sheet is owned here rather than by each caller because all three
     /// surfaces that render an account (Dashboard, landscape, macOS menu
     /// bar popover) need the same recovery, and the failure they're
     /// recovering from belongs to this account, not to the screen.
     @State private var showingReconnect = false
+    @State private var showingRename = false
+    @State private var renameDraft = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -53,6 +62,7 @@ struct AccountSectionView: View {
         .sheet(isPresented: $showingReconnect) {
             ConnectClaudeSheet(reconnecting: usage.account)
         }
+        .renameAccountAlert(for: usage.account.accountID, isPresented: $showingRename, name: $renameDraft)
     }
 
     /// The context menu goes on the header alone, not the whole section:
@@ -62,10 +72,10 @@ struct AccountSectionView: View {
     /// drag it, hold the header for the menu.
     @ViewBuilder
     private var header: some View {
-        if moveUp == nil && moveDown == nil {
+        if !canRename && moveUp == nil && moveDown == nil {
             headerLink
         } else {
-            headerLink.contextMenu { reorderMenu }
+            headerLink.contextMenu { accountMenu }
         }
     }
 
@@ -82,7 +92,15 @@ struct AccountSectionView: View {
     }
 
     @ViewBuilder
-    private var reorderMenu: some View {
+    private var accountMenu: some View {
+        if canRename {
+            Button {
+                renameDraft = usage.account.displayName
+                showingRename = true
+            } label: {
+                Label("Rename…", systemImage: "pencil")
+            }
+        }
         if let moveUp {
             Button(action: moveUp) {
                 Label("Move up", systemImage: "arrow.up")

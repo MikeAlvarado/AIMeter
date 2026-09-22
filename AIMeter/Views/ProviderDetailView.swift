@@ -10,6 +10,8 @@ struct ProviderDetailView: View {
     @Environment(PreferencesModel.self) private var prefs
     @Environment(\.dismiss) private var dismiss
     @State private var showingReconnect = false
+    @State private var showingRename = false
+    @State private var renameDraft = ""
 
     private var usage: UsageModel.AccountUsage? {
         model.usage(for: accountID)
@@ -120,6 +122,39 @@ struct ProviderDetailView: View {
                 SmartNotificationTogglesCard(accountID: accountID)
                 SectionFootnote(text: SmartNotificationTogglesCard.footnote)
 
+                if !model.isDemoMode {
+                    // The discoverable route to the same rename the
+                    // Dashboard header's context menu offers — a context
+                    // menu announces nothing about itself.
+                    SectionHeader(title: String(localized: "Account"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    Card {
+                        Button {
+                            renameDraft = usage?.account.displayName ?? ""
+                            showingRename = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Text("Name")
+                                    .font(Theme.rowTitle)
+                                    .foregroundStyle(Theme.ink)
+                                Spacer()
+                                Text(usage?.account.displayName ?? "Claude")
+                                    .font(.body)
+                                    .foregroundStyle(Theme.inkSecondary)
+                                    .lineLimit(1)
+                                Image(systemName: "pencil")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Theme.inkSecondary)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Rename account"))
+                        .accessibilityValue(Text(usage?.account.displayName ?? "Claude"))
+                    }
+                    SectionFootnote(text: String(localized: "Shown on the dashboard, in widgets, and in notification titles."))
+                }
+
                 if model.isDemoMode {
                     Button(role: .destructive) {
                         model.exitDemoMode()
@@ -154,6 +189,7 @@ struct ProviderDetailView: View {
                 ConnectClaudeSheet(reconnecting: account)
             }
         }
+        .renameAccountAlert(for: accountID, isPresented: $showingRename, name: $renameDraft)
         .navigationTitle(usage?.account.displayName ?? "Claude")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)

@@ -184,6 +184,16 @@
         }
       }
     },
+    "A name can't be empty." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El nombre no puede estar vacío."
+          }
+        }
+      }
+    },
     "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -346,6 +356,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todas las cuentas"
+          }
+        }
+      }
+    },
+    "Another account is already called that." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra cuenta ya se llama así."
           }
         }
       }
@@ -928,6 +948,16 @@
         }
       }
     },
+    "Name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
     "Near-limit warnings" : {
       "localizations" : {
         "es" : {
@@ -1321,6 +1351,26 @@
         }
       }
     },
+    "Rename account" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar nombre de cuenta"
+          }
+        }
+      }
+    },
+    "Rename…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar nombre…"
+          }
+        }
+      }
+    },
     "Requested OAuth scope:" : {
       "localizations" : {
         "es" : {
@@ -1387,6 +1437,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se agota ~%@ antes"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
           }
         }
       }
@@ -1500,6 +1560,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar porcentaje"
+          }
+        }
+      }
+    },
+    "Shown on the dashboard, in widgets, and in notification titles." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se muestra en el panel, en los widgets y en los títulos de las notificaciones."
           }
         }
       }

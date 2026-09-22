@@ -11,8 +11,9 @@ can be added later.
 - **iOS 17+ / macOS 14+**, pure SwiftUI, no dependencies, no server, no
   analytics.
 - **Multiple accounts**: connect more than one Claude login (e.g. personal
-  + work) and refresh them all at once. Each gets a nickname, its own card
-  on the dashboard, its own Provider Detail screen, and its own
+  + work) and refresh them all at once. Each gets a nickname (rename it any
+  time from the card header's context menu or its detail screen), its own
+  card on the dashboard, its own Provider Detail screen, and its own
   notification/Live Activity toggles — nothing is shared between accounts
   except the handful of settings that are genuinely app-wide (appearance,
   refresh cadence, peak-hours alerts). Hold and drag a card to reorder
@@ -164,7 +165,8 @@ or written to disk. `Scripts/sample-response.json` is a captured example.
   browser (same PKCE flow Claude Code uses, any sign-in method works), you
   copy the code it shows and paste it back, and optionally give the
   account a nickname (only asked once you already have one connected — a
-  single account never needs a name). The app then owns its token copy —
+  single account never needs a name; either way you can rename it later
+  from the dashboard). The app then owns its token copy —
   including automatic refresh — stored only in the device Keychain, shared
   with the widget extension through the App Group keychain access group so
   widgets can update themselves in the background. On macOS only, the same

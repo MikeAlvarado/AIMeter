@@ -141,6 +141,10 @@ above); no new target, no push entitlement.
   each run their own concurrent activity if opted in separately; the
   Dynamic Island's own standard behavior (one compact/expanded at a time,
   others collapse to `.minimal`) handles that with no special-casing here.
+  A rename can't reach a running activity through `update` — `attributes`
+  (the account name among them) are fixed for an activity's lifetime — so
+  `LiveActivityManager.rename` ends it and starts a fresh one under the new
+  name; with none running, the next `sync` simply uses the new name.
 - `Shared/SessionActivityAttributes.swift` (`ActivityAttributes` +
   `ContentState: usedPct, resetsAt, isPeak, severity`) lives in `Shared/`,
   synced into both targets already like `Theme.swift`/`AppConfig.swift` —
