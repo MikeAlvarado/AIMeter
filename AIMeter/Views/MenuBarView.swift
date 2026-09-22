@@ -95,7 +95,9 @@ struct MenuBarView: View {
                                 showsStatusDividers: false
                             )
                         }
-                        addAccountButton
+                        if !model.isDemoMode {
+                            addAccountButton
+                        }
                     }
                 }
                 .frame(maxHeight: 360)
