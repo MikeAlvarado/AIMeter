@@ -8,8 +8,16 @@
   nickname + Pro/Max pill (trailing) → card with the three windows, error,
   "Updated X ago"; tapping a section's header pushes that account's
   Provider Detail (`NavigationLink(value: accountID)`). An "Add account"
-  row follows the list. Disconnected state (no accounts at all) shows a
-  Connect card instead.
+  row follows the list (hidden in demo mode, same as the menu bar's copy:
+  `completeConnection` would register a real account underneath the
+  fabricated row, invisible until Exit Demo). Disconnected state (no
+  accounts at all) shows a Connect card instead; on macOS, once the user
+  has disconnected the CLI-mirrored account, that card also offers "Use
+  Claude Code's login instead" (`UsageModel.redetectClaudeCodeLogin`, see
+  "Disconnect cascades" in the repo-root CLAUDE.md). The header's refresh
+  button and pull-to-refresh play a soft haptic, keyed on a
+  user-initiated request counter rather than `isRefreshing`, which also
+  flips for the foreground auto-refresh.
   - **Reordering** (2+ accounts only): hold a card to lift it, drag, and
     release over another section to take that section's place, with
     `AccountDropHighlight`'s accent outline marking the target. The order is

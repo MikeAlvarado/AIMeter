@@ -62,7 +62,13 @@ legacy sentinel if none — rather than each re-deriving it.
   popover already follows. On iOS, self-refreshes
   every shown account's stale snapshot concurrently (`withTaskGroup`, same
   pattern `UsageModel.refreshAll()` uses in the app) during timeline
-  generation, same as `AIMeterUsage` does for its one account.
+  generation, same as `AIMeterUsage` does for its one account. Every
+  placed instance of every kind runs its own timeline in the same reload
+  burst, so `WidgetRefresher.fetchIfStale` dedupes across them: it
+  re-reads the store right before fetching (another instance may have just
+  saved) and claims the fetch with an in-flight stamp in the App Group
+  (`widget.fetchInFlight.<accountID>`, 60 s), so three widgets for one
+  account are one fetch — and one refresh-token rotation — per reload.
 - `AIMeterSingleUsage` (small only): shows exactly one (account, window)
   pair the user picks from the widget's own Edit Widget UI
   (`SingleUsageConfigurationIntent`) — `UsageWindowOption`'s composite id
@@ -126,11 +132,18 @@ above); no new target, no push entitlement.
   should never start on its own the moment a session begins. Per account,
   not global, for the same reason every other per-account setting already
   is — with 2+ connected accounts there's no single unambiguous "the"
-  session. `LiveActivityManager` (`Shared/` — not `AIMeter/Services/`,
-  since `WidgetRefresher`'s self-fetch in *this* target needs to call it
-  too, same reason `SessionActivityAttributes` lives in `Shared/`) is the
-  one place
-  that starts/updates/ends: while a toggle is on, it starts one whenever
+  session. `LiveActivityManager` (`Shared/`, next to
+  `SessionActivityAttributes`, which both targets need) is the one place
+  that starts/updates/ends — and only the app process ever calls it:
+  ActivityKit exposes `Activity.activities` to the app alone, so the
+  widget extension can neither start nor update one, which is why
+  `WidgetRefresher`'s self-fetch deliberately doesn't try (a running
+  activity is refreshed by the app's own next fetch, not the widget's).
+  `Activity.request` is honoured only from the foreground app, so
+  `RefreshService.allowsLiveActivityStart` is false on the
+  `BGAppRefreshTask` path (updates still flow there), and `start` checks
+  `ActivityAuthorizationInfo().areActivitiesEnabled` first. While a toggle
+  is on, it starts one whenever
   that account has a session window with a future `resetsAt` and none is
   already running, and ends it (`dismissalPolicy: .immediate`) on
   toggle-off, on disconnect, or once a fresh fetch shows no active session
