@@ -162,7 +162,10 @@ the account silently freezes at its last snapshot.
   in-app OAuth exchange mints a token pair the app owns, so it both stops
   deferring to a CLI login that just proved unusable and ends the rotation
   standoff — AIMeter can refresh its own pair without invalidating Claude
-  Code's.
+  Code's. The registry flip is written only *after* the new credentials
+  are stored: the other order, with a failed save in between, leaves a
+  `.managed` account with nothing at its key — a permanent
+  `credentialsNotFound` card.
 - The `planName` write-back in `ClaudeProvider` re-reads the credential
   source before saving instead of persisting the value the fetch started
   with. It only owns `subscriptionType` and `planCheckedAt`; saving the
@@ -187,15 +190,38 @@ the account silently freezes at its last snapshot.
   account (`private var services: [String: RefreshService]`) plus
   `accounts: [AccountUsage]` (account + its own snapshot/error/isRefreshing).
   `RefreshService.refresh()`: fetch → shape → save to store (keyed by that
-  account's `accountID`) → record history → `WidgetCenter.reloadAllTimelines()`
-  → reschedule that account's notifications (resets + run-outs) → fire any
-  of that account's early-reset alerts. `UsageModel.refreshAll()` fans this
+  account's `accountID`) → record history → sync the Live Activity →
+  reschedule that account's notifications (resets + run-outs) → fire any
+  of that account's early-reset alerts. The widget reload is deliberately
+  *not* in there: `UsageModel.fetch(accountID:)` (private) wraps one
+  account's refresh and reports whether a snapshot landed, and each public
+  entry point — `refresh(accountID:)`, `refreshAll()`,
+  `refreshAllIfStale()`, `refreshAllInBackground()` — calls
+  `WidgetCenter.reloadAllTimelines()` **once** if any did, because every
+  reload draws on WidgetKit's per-kind budget (see "Widget timeline"
+  below) and N accounts would otherwise spend it N times per sweep.
+  `UsageModel.refreshAll()` fans this
   out to every account concurrently via `withTaskGroup` — safe, since each
   account uses a different bearer token (no shared rate-limit bucket) and
   `UsageModel` is `@MainActor`-isolated, so the per-account bookkeeping
   each task does on completion is serialized even though the network
   requests themselves run in parallel. `refresh(accountID:)` refreshes just
   one (Provider Detail's own pull-to-refresh, one account at a time).
+- Disconnect cascades (`RefreshService.disconnect()` from
+  `UsageModel.disconnect(accountID:)`): credentials, stored snapshot, usage
+  history, every notification still pending or delivered for that account
+  (`NotificationScheduler.removeAll(accountID:)` — a queued `reset.` would
+  otherwise fire at its `resetsAt` for an account that no longer exists),
+  and its per-account preference keys (`NotificationPreferences.clear()`,
+  `LiveActivityPreferences.clear()`), so a UUID's worth of keys doesn't
+  leak into the App Group forever. On macOS, disconnecting the
+  `.autoDetected` account also sets `Preferences.autoDetectDeclined`:
+  disconnecting only clears the app's fallback copy, the CLI's own
+  Keychain item is untouched, and without the tombstone `loadAccounts()`
+  would speculatively re-mirror it on the next launch — the account the
+  user just removed would quietly come back. The disconnected Dashboard
+  card offers "Use Claude Code's login instead"
+  (`UsageModel.redetectClaudeCodeLogin`) to clear it.
 - Migration: `AccountMigration.run(registry:)`, called once from
   `UsageModel.init` before accounts are loaded. Each step gates itself
   independently (not one shared "migrated" flag), so a crash between steps
@@ -443,7 +469,12 @@ the account silently freezes at its last snapshot.
     toggle changes.
 - Display prefs (App Group, shared with widgets): Remaining/Used,
   Relative/Absolute reset style (tap any reset line to toggle), appearance
-  System/Light/Dark, refresh cadence, and `glanceMetric` — the one window
+  System/Light/Dark, refresh cadence, and `glanceMetric`
+  (widgets read all of these straight from the App Group when they
+  render, but nothing re-renders them until their next timeline reload,
+  so `PreferencesModel` reloads timelines once per burst of changes to a
+  widget-visible pref — `widgetsChanged()`, coalesced over 0.5 s — rather
+  than leaving a Remaining/Used flip to wait for the next fetch) — the one window
   shown by the two single-number surfaces with no room for a fixed
   three-slot layout: the macOS menu bar label and iOS's Lock Screen
   circular gauge. One shared preference still drives both, unchanged by
