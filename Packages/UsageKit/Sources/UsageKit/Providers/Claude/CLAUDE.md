@@ -67,3 +67,16 @@ repo-root CLAUDE.md):
   credentials into the shared access group once, from `AccountMigration`
   at `UsageModel.init` — unrelated to the per-account keying above, and
   unchanged since before multi-account support.
+- Token rotation races: `ClaudeProvider.refreshed` treats a rejected
+  refresh as "someone else may have rotated this first" — it re-reads the
+  source and, if the stored refresh token differs from the one it sent,
+  uses the stored pair (refreshing it in turn if already expired) instead
+  of throwing `notAuthenticated`; an unchanged pair is a real rejection.
+  The token endpoint's 429 maps to `rateLimited` (refresh and exchange
+  alike), never to `notAuthenticated`, which would otherwise trip the
+  sign-in-expired alert on a throttle.
+- `ClaudeCredentialSource.invalidateCache()` (default no-op) is called by
+  the provider on a 401 from a source that can't refresh — i.e. the
+  macOS CLI mirror, whose `cachedLocal` copy would otherwise keep serving
+  a token Claude Code has since replaced (logout, account switch) until
+  it expired on its own.

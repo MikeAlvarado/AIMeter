@@ -51,6 +51,16 @@ public final class ClaudeAutoCredentialSource: ClaudeCredentialSource, @unchecke
         try await fallback.save(credentials)
     }
 
+    /// Forgets the cached CLI credentials without touching the Keychain,
+    /// so the next `load()` re-reads Claude Code's item — the recovery
+    /// path when the endpoint rejects the cached token because the CLI
+    /// logged out or signed into another account since it was read.
+    /// Without this, the stale copy is served until its own expiry (up to
+    /// ~8 h), each attempt failing the same way.
+    public func invalidateCache() {
+        lock.withLock { cachedLocal = nil }
+    }
+
     public func clear() throws {
         lock.withLock { cachedLocal = nil }
         try fallback.clear()

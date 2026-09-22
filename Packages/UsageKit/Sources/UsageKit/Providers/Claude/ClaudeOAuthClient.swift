@@ -25,11 +25,19 @@ struct ClaudeOAuthClient: Sendable {
 
         let (data, response) = try await transport.send(request)
         guard response.statusCode == 200 else {
+            // Throttled is not rejected: a 429 here would otherwise read
+            // as a dead login and trip the sign-in-expired alert.
+            if response.statusCode == 429 {
+                throw UsageError.rateLimited(
+                    retryAfter: response.value(forHTTPHeaderField: "Retry-After").flatMap(TimeInterval.init),
+                    body: Self.body(data)
+                )
+            }
             // A rejected refresh token means the login is gone for good.
             if (400...499).contains(response.statusCode) {
                 throw UsageError.notAuthenticated
             }
-            throw UsageError.httpError(statusCode: response.statusCode, body: String(data: data, encoding: .utf8))
+            throw UsageError.httpError(statusCode: response.statusCode, body: Self.body(data))
         }
 
         let refreshed: RefreshResponse
@@ -44,6 +52,14 @@ struct ClaudeOAuthClient: Sendable {
         updated.refreshToken = refreshed.refreshToken ?? credentials.refreshToken
         updated.expiresAt = refreshed.expiresIn.map { Date(timeIntervalSinceNow: $0) }
         return updated
+    }
+
+    /// Raw response text for error reporting, nil when there was none.
+    static func body(_ data: Data) -> String? {
+        guard let text = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+              !text.isEmpty else { return nil }
+        return String(text.prefix(400))
     }
 }
 

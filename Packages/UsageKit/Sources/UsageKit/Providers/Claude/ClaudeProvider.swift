@@ -46,9 +46,17 @@ public struct ClaudeProvider: UsageProvider {
 
         var (data, response) = try await send(with: credentials)
 
-        if response.statusCode == 401, credentialSource.allowsRefresh {
-            credentials = try await refreshed(credentials)
-            (data, response) = try await send(with: credentials)
+        if response.statusCode == 401 {
+            if credentialSource.allowsRefresh {
+                credentials = try await refreshed(credentials)
+                (data, response) = try await send(with: credentials)
+            } else {
+                // A read-only source may be serving a cached copy of a
+                // login its owner (Claude Code) has since replaced. Drop
+                // it so the next attempt reads the current one instead of
+                // failing identically until the cache expires on its own.
+                credentialSource.invalidateCache()
+            }
         }
 
         switch response.statusCode {
@@ -162,9 +170,33 @@ public struct ClaudeProvider: UsageProvider {
             // the next load may pick up a token Claude Code refreshed itself.
             throw UsageError.tokenExpired
         }
-        let updated = try await ClaudeOAuthClient(transport: transport).refresh(credentials)
-        try await credentialSource.save(updated)
-        return updated
+        let client = ClaudeOAuthClient(transport: transport)
+        do {
+            let updated = try await client.refresh(credentials)
+            try await credentialSource.save(updated)
+            return updated
+        } catch UsageError.notAuthenticated {
+            // Anthropic rotates the refresh token on every use, so a
+            // rejection doesn't only mean the login is dead: another
+            // process may have refreshed the same login while this fetch
+            // was in flight — on iOS the widget refreshes against the same
+            // shared Keychain item as the app, and both fire on foreground
+            // when the snapshot is stale. If the store now holds a
+            // different pair than the one that was just rejected, the
+            // loser of that race uses the winner's instead of declaring
+            // the account broken. Same token as before means the rejection
+            // is real.
+            let latest = try await credentialSource.load()
+            guard latest.refreshToken != credentials.refreshToken else {
+                throw UsageError.notAuthenticated
+            }
+            if !latest.isExpired {
+                return latest
+            }
+            let updated = try await client.refresh(latest)
+            try await credentialSource.save(updated)
+            return updated
+        }
     }
 }
 

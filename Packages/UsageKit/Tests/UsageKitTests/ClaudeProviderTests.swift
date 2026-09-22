@@ -64,6 +64,71 @@ final class ClaudeProviderTests: XCTestCase {
         XCTAssertEqual(usageRequests.last?.value(forHTTPHeaderField: "Authorization"), "Bearer new-token")
     }
 
+    func testRejectedRefreshUsesCredentialsRotatedElsewhere() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeOAuthClient.tokenEndpoint, responses: [
+            (400, "{}"),
+        ])
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        // The widget rotated the same login while this fetch was in
+        // flight: the store now holds a different, still-valid pair.
+        let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
+        source.rotateAfterFirstLoad = .rotatedElsewhere
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let snapshot = try await provider.fetchUsage()
+
+        XCTAssertEqual(snapshot.windows.count, 2)
+        let usageRequest = try XCTUnwrap(transport.requests.first { $0.url == ClaudeProvider.usageEndpoint })
+        XCTAssertEqual(usageRequest.value(forHTTPHeaderField: "Authorization"), "Bearer rotated-token")
+        XCTAssertEqual(transport.requests.filter { $0.url == ClaudeOAuthClient.tokenEndpoint }.count, 1)
+        // Nothing to write back: the winner's pair is already stored.
+        XCTAssertTrue(source.saved.isEmpty)
+    }
+
+    func testRejectedRefreshWithUnchangedCredentialsThrowsNotAuthenticated() async {
+        let transport = StubTransport()
+        transport.route(url: ClaudeOAuthClient.tokenEndpoint, responses: [
+            (400, "{}"),
+        ])
+        let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        await assertThrows(UsageError.notAuthenticated) {
+            _ = try await provider.fetchUsage()
+        }
+        XCTAssertTrue(transport.requests.allSatisfy { $0.url == ClaudeOAuthClient.tokenEndpoint })
+    }
+
+    func testThrottledRefreshThrowsRateLimitedNotNotAuthenticated() async {
+        let transport = StubTransport()
+        transport.route(url: ClaudeOAuthClient.tokenEndpoint, responses: [
+            (429, "", ["Retry-After": "30"]),
+        ])
+        let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        await assertThrows(UsageError.rateLimited(retryAfter: 30, body: nil)) {
+            _ = try await provider.fetchUsage()
+        }
+    }
+
+    func test401WithoutRefreshInvalidatesTheSourceCache() async {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (401, "{}"),
+        ])
+        let source = StubCredentialSource(credentials: .valid, allowsRefresh: false)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        await assertThrows(UsageError.notAuthenticated) {
+            _ = try await provider.fetchUsage()
+        }
+        XCTAssertEqual(source.invalidations, 1)
+    }
+
     func testExpiredTokenWithoutRefreshThrowsTokenExpired() async {
         let transport = StubTransport()
         let source = StubCredentialSource(credentials: .expired, allowsRefresh: false)
@@ -295,6 +360,16 @@ private extension ClaudeCredentials {
         planCheckedAt: Date()
     )
 
+    /// What the shared store holds after another process refreshed the
+    /// same login: a different pair, still valid.
+    static let rotatedElsewhere = ClaudeCredentials(
+        accessToken: "rotated-token",
+        refreshToken: "rotated-refresh",
+        expiresAt: Date(timeIntervalSinceNow: 3600),
+        subscriptionType: "pro",
+        planCheckedAt: Date()
+    )
+
     /// A plan cached longer ago than `planRecheckInterval` — or, with
     /// `planCheckedAt` nil, one cached by a build that never re-checked at
     /// all. Both are what an account that changed plan looks like.
@@ -318,6 +393,7 @@ private extension ClaudeCredentials {
 private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sendable {
     let allowsRefresh: Bool
     private(set) var saved: [ClaudeCredentials] = []
+    private(set) var invalidations = 0
     private var credentials: ClaudeCredentials
     /// Replaces the stored credentials right after the first `load()`,
     /// standing in for another process rotating the token mid-fetch.
@@ -342,6 +418,10 @@ private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sen
     func save(_ credentials: ClaudeCredentials) async throws {
         saved.append(credentials)
         self.credentials = credentials
+    }
+
+    func invalidateCache() {
+        invalidations += 1
     }
 }
 

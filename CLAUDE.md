@@ -142,6 +142,15 @@ the account silently freezes at its last snapshot.
   every other error — see the typed-errors rule above; this is the one case
   where the raw text ("The provider rejected the credentials") is faithful
   and useless at the same time.
+- A rejected refresh is not taken at face value: `ClaudeProvider.refreshed`
+  re-reads the credential source and, if the stored pair differs from the
+  one just rejected, uses that instead. The two processes that share a
+  Keychain item on iOS (app and widget) both refresh on foreground when
+  the snapshot is stale, and Anthropic rotates on every use, so the loser
+  of that race would otherwise announce a broken login that the winner
+  just rotated fine. Only a rejection of the pair the store still holds
+  is a real `notAuthenticated`; a 429 from the token endpoint is
+  `rateLimited`, never a dead login.
 - Recovery is **reconnect in place** (`UsageModel.reconnect(accountID:credentials:)`),
   never disconnect-then-add: the accountID is the key for the stored
   snapshot, usage history (and its pace warm-up anchor), notification
