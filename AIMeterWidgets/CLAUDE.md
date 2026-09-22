@@ -24,7 +24,8 @@ legacy sentinel if none — rather than each re-deriving it.
   Type and overflow the fixed widget height on real devices. Rows sit in
   equal flexible slices so the layout fills any family height. The
   header also shows a small peak-hours badge (see "Peak hours" in the
-  repo-root CLAUDE.md); Lock Screen accessories don't. On iOS, the header
+  repo-root CLAUDE.md — never while the policy is retired, as it is
+  today); Lock Screen accessories don't. On iOS, the header
   also carries an always-visible manual refresh button (`RefreshAccountIntent`,
   `Button(intent:)`) — deliberately not conditioned on staleness, same
   "predictable, always-available" philosophy as the app's own Dashboard
@@ -56,8 +57,9 @@ legacy sentinel if none — rather than each re-deriving it.
   use, and the one a Dashboard drag-reorder rewrites, which is why a
   reorder reloads timelines) with a "+N more" line beyond that — deliberately not a
   `ScrollView`; static content is the safer choice for widgets. One
-  peak-hours badge for the whole widget, not repeated per account — same
-  rule the macOS menu bar popover already follows. On iOS, self-refreshes
+  peak-hours badge for the whole widget (hidden while the policy is
+  retired), not repeated per account — same rule the macOS menu bar
+  popover already follows. On iOS, self-refreshes
   every shown account's stale snapshot concurrently (`withTaskGroup`, same
   pattern `UsageModel.refreshAll()` uses in the app) during timeline
   generation, same as `AIMeterUsage` does for its one account.
@@ -72,8 +74,9 @@ legacy sentinel if none — rather than each re-deriving it.
   baked in at build time. The displayed label includes the account's
   nickname ("Personal · Weekly") so same-provider accounts are
   distinguishable in the picker. Its header shows the same peak-hours
-  badge, but only when the picked window is `.session` — the only
-  window the documented policy actually affects.
+  badge (hidden while the policy is retired), but only when the picked
+  window is `.session` — the only window the documented policy actually
+  affects.
 - A pre-multi-account widget instance's persisted selection
   (`"claude|kind"`) keeps resolving unchanged after an upgrade — the
   migrated legacy account's literal accountID is `"claude"`, so the
@@ -161,7 +164,8 @@ above); no new target, no push entitlement.
   name via `ProviderIdentityView` (same small icon size this extension's
   other headers use), percentage, `UsageBarView` (already shared), and the
   countdown. The peak badge (bolt icon, `Theme.danger`, shown when
-  `isPeak` — see "Peak hours" in the repo-root CLAUDE.md) is grouped with
+  `isPeak` — see "Peak hours" in the repo-root CLAUDE.md; never while the
+  policy is retired) is grouped with
   the account name on the *leading* side, not with the percentage on the
   trailing side — deliberate: it's a property of the account/window, not
   of the number, so it reads as "this account, right now, is in peak

@@ -54,7 +54,8 @@ struct UsageTimelineProvider: AppIntentTimelineProvider {
     /// wall-clock moment — no extra refresh or network call, since peak
     /// state is a pure function of the entry's own `date`.
     private func peakTransitionEntry(after entry: UsageEntry, before next: Date) -> [UsageEntry] {
-        guard let transition = PeakCalculator.nextTransition(after: entry.date, schedule: ClaudePeakSchedule.current),
+        guard let schedule = ClaudePeakSchedule.current,
+              let transition = PeakCalculator.nextTransition(after: entry.date, schedule: schedule),
               transition < next else { return [] }
         return [UsageEntry(date: transition, snapshot: entry.snapshot, accountID: entry.accountID, accountName: entry.accountName, prefs: entry.prefs)]
     }

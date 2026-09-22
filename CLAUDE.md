@@ -249,8 +249,9 @@ the account silently freezes at its last snapshot.
   account-independent (see below). Five families are rescheduled/
   re-evaluated from scratch after every successful fetch, scoped to just
   that fetch's account; two more sit outside that sweep — `peak.` (see
-  "Peak hours" below), which depends only on a fixed weekday schedule and
-  never on what a fetch returns, so it's rescheduled once at
+  "Peak hours" below — retired today, so the family only clears its own
+  stale pending requests), which depends only on a fixed weekday schedule
+  and never on what a fetch returns, so it's rescheduled once at
   `UsageModel.init` and whenever its toggle changes instead, and `reauth.`,
   which fires from the *failure* path rather than a successful fetch. Two
   of the five fetch-driven families are *scheduled* to a future trigger:
@@ -284,7 +285,8 @@ the account silently freezes at its last snapshot.
   family with a single toggle shared by every account (`UsageModel`'s
   dedicated `peakPreferences`, constructed with a documented placeholder
   accountID since `peakEnabled` never actually reads it), since it's one
-  Claude-wide policy, not tied to a specific login. All off by default;
+  Claude-wide policy, not tied to a specific login — the toggle is hidden
+  while no schedule is in force. All off by default;
   toggles live in the App Group — except `reauthAlertsEnabled`, the one
   family that defaults to **on**: the other five announce usage the user
   can always go look at, while this one announces that AIMeter has stopped
@@ -370,26 +372,47 @@ the account silently freezes at its last snapshot.
   `ResetDetector.earlyResets` compares consecutive snapshots for an early
   refill (used% dropped well before the known reset) to fire the
   early-reset alert.
-- Peak hours: Anthropic has repeatedly introduced/reverted a policy where
-  Claude session usage burns faster during documented weekday-morning
-  windows (currently 5-11 AM PT; the exact hours have changed before and
-  will again). `docs/design/peak-hours-investigation.md` confirms
-  empirically — by diffing a live response captured inside the window
-  against one captured outside it — that neither `/api/oauth/usage` nor
-  `/api/oauth/profile` carries any peak-related field in either state, so
-  there is nothing server-side to key off. `PeakCalculator` (UsageKit
-  core, pure — `isPeak(at:schedule:)` / `nextTransition(after:schedule:)`)
-  computes it instead, entirely on-device and with zero network cost,
-  since peak state is a deterministic function of the clock. The
-  mechanism is provider-agnostic; the concrete PT/weekday/5-11 values are
-  Claude's own policy and live in `ClaudePeakSchedule`
-  (`Providers/Claude/`) alongside a `lastVerified` date — the honesty
-  mechanism for a policy known to change: it's surfaced in the UI
-  (Provider Detail's "Peak hours" card) so a schedule that goes stale
-  between releases is never presented as live truth. Deliberately
-  hardcoded and release-updated rather than remote-fetched (this project
-  has no server, by design) or user-editable (most users can't verify a
-  schedule they'd hand-edit).
+- Peak hours — **retired** (`ClaudePeakSchedule.current` is nil since
+  2026-09-22). Anthropic introduced a policy in March 2026 where Claude
+  Code session usage on Pro and Max burned faster 5-11 AM PT on weekdays,
+  and announced its removal on 2026-05-06 ("removing the peak hours limit
+  reduction on Claude Code for Pro and Max accounts",
+  anthropic.com/news/higher-limits-spacex). No Anthropic help page — Pro,
+  Max, Team, or "Usage limit best practices" — has described a peak window
+  for any plan since, and Team/Enterprise never had one documented. The
+  schedule's 2026-08-03 re-verification rested on a scheduler warning, not
+  documentation, and that day's captures found no server-side signal
+  either. That absence of a signal is the crux: `docs/design/peak-hours-investigation.md`
+  confirms empirically — by diffing a live response captured inside the
+  window against one captured outside it — that neither `/api/oauth/usage`
+  nor `/api/oauth/profile` carries any peak-related field, so the app can
+  never notice on its own that the policy stopped applying, and a
+  hardcoded schedule silently keeps announcing "Peak hours now" every
+  weekday morning to users whose limits no longer change. Showing nothing
+  beats that, so the schedule is nil rather than re-dated.
+  - What stays, so a return is a one-line change (assign a re-verified
+    `ClaudePeakSchedule.lastKnown` to `current`): `PeakCalculator`
+    (UsageKit core, pure — `isPeak(at:schedule:)` /
+    `nextTransition(after:schedule:)`, provider-agnostic; the concrete
+    PT/weekday/5-11 values are Claude's own policy and live in
+    `ClaudePeakSchedule` alongside a `lastVerified` date, the honesty
+    mechanism for a policy known to change, surfaced in the UI so a stale
+    schedule is never presented as live truth), `ClaudePeakStatus`
+    (Shared/, wraps the calculator with the copy shared by every surface —
+    with a nil schedule it reports off-peak with no next transition, which
+    is what hides every badge without each surface checking the schedule
+    itself), the badge views in the menu bar popover, both widget headers,
+    and the Live Activity, the widget timelines' extra `TimelineEntry` at
+    `nextTransition` (skipped while nil), and the off-by-default `peak.`
+    notification family (`NotificationScheduler.reschedulePeakNotifications`,
+    10 recurring `UNCalendarNotificationTrigger`s pinned to the schedule's
+    zone; while nil it only removes pending `peak.` requests, so an install
+    upgrading with the toggle on stops getting alerts — and both its
+    Settings toggle and Provider Detail's "Peak hours" card are gated on a
+    non-nil schedule, so neither renders today). Deliberately hardcoded
+    and release-updated rather than remote-fetched (this project has no
+    server, by design) or user-editable (most users can't verify a schedule
+    they'd hand-edit).
   - The named-timezone rule is load-bearing: `PeakCalculator` evaluates
     weekday/hour through `TimeZone(identifier: "America/Los_Angeles")` —
     never `TimeZone.current` — so the result is identical regardless of
@@ -398,31 +421,17 @@ the account silently freezes at its last snapshot.
     offset would silently break twice a year). `PeakCalculatorTests`
     checks both DST transition dates and an explicit
     device-timezone-independence case.
-  - `ClaudePeakStatus` (Shared/) wraps the calculator with the copy
-    ("Peak hours now" / "Off-peak now", next-transition countdown,
-    `lastVerified` label) shared by Provider Detail, the menu bar, and
-    both widget headers.
-  - Glance surfaces, all zero-network since peak is time-derived: Provider
-    Detail shows a dedicated card; the macOS menu bar popover header shows
-    a bolt badge, while the status item itself (`MenuBarLabel`) folds peak
-    into the tooltip/accessibility text only, not a second glyph, to
-    avoid disturbing its carefully-tuned single gauge; both widgets
+  - Surface rules, for when it returns: Provider Detail shows a dedicated
+    card; the macOS menu bar popover header shows a bolt badge, while the
+    status item itself (`MenuBarLabel`) folds peak into the
+    tooltip/accessibility text only, not a second glyph; both widgets
     (`AIMeterUsage` header, `AIMeterSingleUsage` header when the picked
-    window is `.session`) show the same badge. Widget timelines add a
-    second `TimelineEntry` dated exactly at `nextTransition` (when it
-    falls before the next scheduled reload) so WidgetKit flips the badge
-    on its own at the right wall-clock moment — no extra refresh, no
-    widened refresh budget. Lock Screen accessories deliberately don't
-    show it (too cramped, lowest value).
-  - Notifications: an off-by-default `peak.` family
-    (`NotificationScheduler.reschedulePeakNotifications`) — "Peak hours
-    started"/"ended", 10 recurring `UNCalendarNotificationTrigger`s (5
-    weekdays × start/end) with `DateComponents.timeZone` pinned to the
-    schedule's zone for the same DST-correctness reason as the calculator.
-    Deliberately **not** part of the "reschedule every fetch" convention
-    the other families follow: this schedule never depends on a fetched
+    window is `.session`) show the same badge, flipped by WidgetKit at the
+    transition entry with no extra refresh; Lock Screen accessories don't
+    (too cramped). `peak.` is deliberately **not** part of the "reschedule
+    every fetch" convention: the schedule never depends on a fetched
     snapshot, so `UsageModel` reschedules it once at init and whenever the
-    toggle changes, not on every refresh.
+    toggle changes.
 - Display prefs (App Group, shared with widgets): Remaining/Used,
   Relative/Absolute reset style (tap any reset line to toggle), appearance
   System/Light/Dark, refresh cadence, and `glanceMetric` — the one window
