@@ -13,10 +13,13 @@ import UsageKit
 /// unscoped regardless of which account's `NotificationPreferences` reads it.
 struct NotificationPreferences {
     let accountID: String
-    private let defaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
+    private let defaults: UserDefaults
 
-    init(accountID: String) {
+    /// `defaults` is the App Group suite in the app; tests hand in a
+    /// throwaway suite.
+    init(accountID: String, defaults: UserDefaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard) {
         self.accountID = accountID
+        self.defaults = defaults
     }
 
     func isEnabled(for kind: UsageWindow.Kind) -> Bool {

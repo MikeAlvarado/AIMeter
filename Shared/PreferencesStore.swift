@@ -214,7 +214,13 @@ struct Preferences: Sendable {
 /// accessors, so the field list exists once (`Preferences` itself) rather
 /// than being repeated here in the properties, the initializer, and a
 /// snapshot builder; `@Observable` tracks reads and writes through the
-/// stored value, which is all the bindings need.
+/// stored value, which is all the bindings need. Every setter skips a
+/// write of the value already held: with one stored struct, any write
+/// invalidates every reader of every field, and a scene that writes its
+/// binding back during body evaluation (`MenuBarExtra(isInserted:)`)
+/// would otherwise re-evaluate the App body forever — a launch crash by
+/// stack overflow. The guard also keeps no-op writes from reloading
+/// widget timelines.
 @Observable
 final class PreferencesModel {
     private var stored: Preferences
@@ -228,47 +234,47 @@ final class PreferencesModel {
 
     var displayMode: DisplayMode {
         get { stored.displayMode }
-        set { stored.displayMode = newValue; persist(newValue.rawValue, Preferences.Keys.displayMode, reloadsWidgets: true) }
+        set { guard stored.displayMode != newValue else { return }; stored.displayMode = newValue; persist(newValue.rawValue, Preferences.Keys.displayMode, reloadsWidgets: true) }
     }
     var resetStyle: ResetStyle {
         get { stored.resetStyle }
-        set { stored.resetStyle = newValue; persist(newValue.rawValue, Preferences.Keys.resetStyle, reloadsWidgets: true) }
+        set { guard stored.resetStyle != newValue else { return }; stored.resetStyle = newValue; persist(newValue.rawValue, Preferences.Keys.resetStyle, reloadsWidgets: true) }
     }
     var refreshCadence: RefreshCadence {
         get { stored.refreshCadence }
-        set { stored.refreshCadence = newValue; persist(newValue.rawValue, Preferences.Keys.refreshCadence, reloadsWidgets: true) }
+        set { guard stored.refreshCadence != newValue else { return }; stored.refreshCadence = newValue; persist(newValue.rawValue, Preferences.Keys.refreshCadence, reloadsWidgets: true) }
     }
     var appearance: AppearanceMode {
         get { stored.appearance }
-        set { stored.appearance = newValue; persist(newValue.rawValue, Preferences.Keys.appearance, reloadsWidgets: false) }
+        set { guard stored.appearance != newValue else { return }; stored.appearance = newValue; persist(newValue.rawValue, Preferences.Keys.appearance, reloadsWidgets: false) }
     }
     var modelSlotFallback: ModelSlotFallback {
         get { stored.modelSlotFallback }
-        set { stored.modelSlotFallback = newValue; persist(newValue.rawValue, Preferences.Keys.modelSlotFallback, reloadsWidgets: true) }
+        set { guard stored.modelSlotFallback != newValue else { return }; stored.modelSlotFallback = newValue; persist(newValue.rawValue, Preferences.Keys.modelSlotFallback, reloadsWidgets: true) }
     }
     var glanceMetric: UsageWindow.Kind {
         get { stored.glanceMetric }
-        set { stored.glanceMetric = newValue; persist(newValue.storageKey, Preferences.Keys.glanceMetric, reloadsWidgets: true) }
+        set { guard stored.glanceMetric != newValue else { return }; stored.glanceMetric = newValue; persist(newValue.storageKey, Preferences.Keys.glanceMetric, reloadsWidgets: true) }
     }
     var showCreditsAmount: Bool {
         get { stored.showCreditsAmount }
-        set { stored.showCreditsAmount = newValue; persist(newValue, Preferences.Keys.showCreditsAmount, reloadsWidgets: true) }
+        set { guard stored.showCreditsAmount != newValue else { return }; stored.showCreditsAmount = newValue; persist(newValue, Preferences.Keys.showCreditsAmount, reloadsWidgets: true) }
     }
     var primaryAccountID: String? {
         get { stored.primaryAccountID }
-        set { stored.primaryAccountID = newValue; persist(newValue, Preferences.Keys.primaryAccountID, reloadsWidgets: false) }
+        set { guard stored.primaryAccountID != newValue else { return }; stored.primaryAccountID = newValue; persist(newValue, Preferences.Keys.primaryAccountID, reloadsWidgets: false) }
     }
     var menuBarShowsPercentage: Bool {
         get { stored.menuBarShowsPercentage }
-        set { stored.menuBarShowsPercentage = newValue; persist(newValue, Preferences.Keys.menuBarShowsPercentage, reloadsWidgets: false) }
+        set { guard stored.menuBarShowsPercentage != newValue else { return }; stored.menuBarShowsPercentage = newValue; persist(newValue, Preferences.Keys.menuBarShowsPercentage, reloadsWidgets: false) }
     }
     var statusItemVisible: Bool {
         get { stored.statusItemVisible }
-        set { stored.statusItemVisible = newValue; persist(newValue, Preferences.Keys.statusItemVisible, reloadsWidgets: false) }
+        set { guard stored.statusItemVisible != newValue else { return }; stored.statusItemVisible = newValue; persist(newValue, Preferences.Keys.statusItemVisible, reloadsWidgets: false) }
     }
     var hideDockIcon: Bool {
         get { stored.hideDockIcon }
-        set { stored.hideDockIcon = newValue; persist(newValue, Preferences.Keys.hideDockIcon, reloadsWidgets: false) }
+        set { guard stored.hideDockIcon != newValue else { return }; stored.hideDockIcon = newValue; persist(newValue, Preferences.Keys.hideDockIcon, reloadsWidgets: false) }
     }
 
     var lastScheduledAt: Date? {

@@ -661,10 +661,24 @@ region to the project's `knownRegions`.
   non-drag equivalent: the dashboard's reorder pairs its drag with
   "Move up"/"Move down" in the account header's context menu, which
   VoiceOver and Switch Control surface as actions.
-- Tests live in UsageKit (`swift test`); fixture
+- Tests: UsageKit's (`swift test`; fixture
   `Tests/UsageKitTests/Fixtures/claude-usage-response.json` is a real
-  captured response — mapping tests assert against it.
-  `AIMETER_LIVE_TEST=1` enables an opt-in live test.
+  captured response — mapping tests assert against it;
+  `AIMETER_LIVE_TEST=1` enables an opt-in live test) and the app's own
+  `AIMeterTests` target (`xcodebuild test -scheme AIMeter`, hosted in
+  `AIMeter.app` on either platform, `@testable import AIMeter`), which
+  covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
+  grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
+  `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
+  `ProviderCatalog`, and `UsageModel`'s naming/ordering/demo paths. Two
+  seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
+  with `platformServices: false` (no migration — it probes the real
+  Keychain — no scheduler/observers, no notification sweep) and
+  `NotificationPreferences(accountID:defaults:)`; every test writes only to
+  a throwaway `UserDefaults` suite (`ScratchDefaults`), never the App
+  Group the host app opens. Not covered on purpose: anything that fetches
+  (`RefreshService`, `WidgetRefresher`) or touches the Keychain
+  (disconnect, connect, `AccountMigration`).
 
 ## Open source hygiene
 
@@ -731,7 +745,9 @@ region to the project's `knownRegions`.
   guess wire formats.
 - Before large changes, propose the plan and wait for approval.
 - Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
-  `swift test` in `Packages/UsageKit` must pass warning-free.
+  `swift test` in `Packages/UsageKit` must pass warning-free, and
+  `xcodebuild test -scheme AIMeter` (the app's own unit tests) on at
+  least one of them.
 - Docs follow reality, same as the data model: any change that touches
   behavior, config, file layout, or a new feature's shape is not done
   until every doc that describes it is updated too — this file, the
