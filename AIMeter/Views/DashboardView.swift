@@ -8,6 +8,8 @@ struct DashboardView: View {
     #endif
     @State private var showingSettings = false
     @State private var showingConnect = false
+    /// Bumped per user-initiated refresh; drives the haptic only.
+    @State private var refreshRequests = 0
     /// The section being dragged, how far it has moved, and which section
     /// it would drop onto — see `accountSection(_:)` for why the reorder
     /// carries this state itself instead of using SwiftUI's drag and drop.
@@ -52,10 +54,11 @@ struct DashboardView: View {
         // press when this flips, so there is never a pan in progress to cut.
         .scrollDisabled(draggingID != nil)
         .background(Theme.background)
-        // Soft tap when a refresh kicks off — pull gesture or button alike.
-        .sensoryFeedback(.impact(flexibility: .soft), trigger: model.isRefreshing) { _, isRefreshing in
-            isRefreshing
-        }
+        // Soft tap when the *user* starts a refresh — pull gesture or
+        // button alike. Keyed on the request count, not `isRefreshing`:
+        // that also flips for the foreground auto-refresh, which would
+        // buzz the phone for something the user didn't do.
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: refreshRequests)
         // And a firmer one the moment a card lifts, which is the only
         // confirmation that the hold registered — the card hasn't moved yet.
         .sensoryFeedback(.impact(weight: .medium), trigger: draggingID) { was, now in
@@ -65,7 +68,10 @@ struct DashboardView: View {
             ProviderDetailView(accountID: accountID)
         }
         #if os(iOS)
-        .refreshable { await model.refreshAll() }
+        .refreshable {
+            refreshRequests += 1
+            await model.refreshAll()
+        }
         .sheet(isPresented: $showingSettings) {
             SettingsSheet()
         }
@@ -101,6 +107,7 @@ struct DashboardView: View {
             .accessibilityLabel(Text("Settings"))
             Spacer()
             RoundIconButton(systemName: "arrow.clockwise", isBusy: model.isRefreshing) {
+                refreshRequests += 1
                 Task { await model.refreshAll() }
             }
             .accessibilityLabel(Text("Refresh"))
@@ -115,6 +122,22 @@ struct DashboardView: View {
                         DisconnectedPrompt(buttonLabel: "Connect", verticalPadding: 12) {
                             showingConnect = true
                         }
+                        #if os(macOS)
+                        // The way back to the zero-setup path after the
+                        // user disconnected the CLI-mirrored account (see
+                        // `Preferences.autoDetectDeclined`).
+                        if model.canRedetectClaudeCodeLogin {
+                            Button {
+                                Task { await model.redetectClaudeCodeLogin() }
+                            } label: {
+                                Text("Use Claude Code's login instead")
+                                    .font(Theme.caption)
+                                    .foregroundStyle(Theme.accent)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        #endif
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -122,7 +145,12 @@ struct DashboardView: View {
                 ForEach(model.accounts) { usage in
                     accountSection(usage)
                 }
-                addAccountButton
+                // Not in demo mode: `completeConnection` would register a
+                // real account underneath the fabricated row, invisible
+                // until Exit Demo.
+                if !model.isDemoMode {
+                    addAccountButton
+                }
             }
         }
         .coordinateSpace(name: Self.reorderSpace)

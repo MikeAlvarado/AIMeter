@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import SwiftUI
 import UsageKit
+import WidgetKit
 
 enum DisplayMode: String, CaseIterable {
     case used, remaining
@@ -143,6 +144,7 @@ struct Preferences: Sendable {
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
         static let lastScheduledAt = "pref.lastScheduledAt"
+        static let autoDetectDeclined = "pref.autoDetectDeclined"
     }
 
     static var groupDefaults: UserDefaults {
@@ -192,6 +194,19 @@ struct Preferences: Sendable {
     static func recordScheduled(_ date: Date = Date()) {
         groupDefaults.set(date, forKey: Keys.lastScheduledAt)
     }
+
+    /// macOS only in meaning: the user explicitly disconnected the account
+    /// that mirrors Claude Code's own login. Without this tombstone
+    /// `UsageModel.loadAccounts()` would speculatively re-mirror that login
+    /// on the very next launch (the CLI's Keychain item is still there —
+    /// disconnecting only clears the app's fallback copy), so the account
+    /// the user just removed would quietly come back. Cleared by the
+    /// "Use Claude Code's login instead" affordance on the disconnected
+    /// Dashboard card.
+    static var autoDetectDeclined: Bool {
+        get { groupDefaults.bool(forKey: Keys.autoDetectDeclined) }
+        set { groupDefaults.set(newValue, forKey: Keys.autoDetectDeclined) }
+    }
 }
 
 /// Observable wrapper used by the app; every change writes through to the
@@ -199,25 +214,25 @@ struct Preferences: Sendable {
 @Observable
 final class PreferencesModel {
     var displayMode: DisplayMode {
-        didSet { defaults.set(displayMode.rawValue, forKey: Preferences.Keys.displayMode) }
+        didSet { defaults.set(displayMode.rawValue, forKey: Preferences.Keys.displayMode); widgetsChanged() }
     }
     var resetStyle: ResetStyle {
-        didSet { defaults.set(resetStyle.rawValue, forKey: Preferences.Keys.resetStyle) }
+        didSet { defaults.set(resetStyle.rawValue, forKey: Preferences.Keys.resetStyle); widgetsChanged() }
     }
     var refreshCadence: RefreshCadence {
-        didSet { defaults.set(refreshCadence.rawValue, forKey: Preferences.Keys.refreshCadence) }
+        didSet { defaults.set(refreshCadence.rawValue, forKey: Preferences.Keys.refreshCadence); widgetsChanged() }
     }
     var appearance: AppearanceMode {
         didSet { defaults.set(appearance.rawValue, forKey: Preferences.Keys.appearance) }
     }
     var modelSlotFallback: ModelSlotFallback {
-        didSet { defaults.set(modelSlotFallback.rawValue, forKey: Preferences.Keys.modelSlotFallback) }
+        didSet { defaults.set(modelSlotFallback.rawValue, forKey: Preferences.Keys.modelSlotFallback); widgetsChanged() }
     }
     var glanceMetric: UsageWindow.Kind {
-        didSet { defaults.set(glanceMetric.storageKey, forKey: Preferences.Keys.glanceMetric) }
+        didSet { defaults.set(glanceMetric.storageKey, forKey: Preferences.Keys.glanceMetric); widgetsChanged() }
     }
     var showCreditsAmount: Bool {
-        didSet { defaults.set(showCreditsAmount, forKey: Preferences.Keys.showCreditsAmount) }
+        didSet { defaults.set(showCreditsAmount, forKey: Preferences.Keys.showCreditsAmount); widgetsChanged() }
     }
     var primaryAccountID: String? {
         didSet { defaults.set(primaryAccountID, forKey: Preferences.Keys.primaryAccountID) }
@@ -233,6 +248,22 @@ final class PreferencesModel {
     }
 
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private var widgetReload: Task<Void, Never>?
+
+    /// Widgets read these prefs straight from the App Group when they
+    /// render, but nothing re-renders them until their next timeline
+    /// reload — up to the refresh floor away, or on macOS until the app's
+    /// next scheduled fetch. One coalesced reload per burst of changes
+    /// (a segmented pill tapped three times in a row is one reload, not
+    /// three against WidgetKit's per-kind budget) closes that gap.
+    private func widgetsChanged() {
+        widgetReload?.cancel()
+        widgetReload = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled else { return }
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
 
     init(defaults: UserDefaults = Preferences.groupDefaults) {
         self.defaults = defaults

@@ -27,6 +27,7 @@ struct RefreshAccountIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         _ = await WidgetRefresher.refreshNow(accountID: accountID)
         WidgetCenter.shared.reloadTimelines(ofKind: AppConfig.widgetKind)
+        WidgetCenter.shared.reloadTimelines(ofKind: AppConfig.singleWidgetKind)
         WidgetCenter.shared.reloadTimelines(ofKind: AppConfig.allAccountsWidgetKind)
         return .result()
     }
