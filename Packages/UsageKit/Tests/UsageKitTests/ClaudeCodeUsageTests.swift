@@ -144,10 +144,10 @@ final class ClaudeCodeUsageTests: XCTestCase {
 
         let today = ClaudeCodeUsageAggregate(entries: ClaudeCodeUsageAggregate.entries(ledger.entries, in: ClaudeCodeUsageAggregate.today(now: now, calendar: utc)))
         XCTAssertEqual(today.messages, 1, "only the 01:00 subagent message is on Oct 2 UTC")
-        let week = ClaudeCodeUsageAggregate(entries: ClaudeCodeUsageAggregate.entries(ledger.entries, in: ClaudeCodeUsageAggregate.thisWeek(now: now, calendar: utc)))
-        XCTAssertEqual(week.messages, 3, "Oct 2 2026 is a Friday; the week started Mon Sep 28")
-        let month = ClaudeCodeUsageAggregate(entries: ClaudeCodeUsageAggregate.entries(ledger.entries, in: ClaudeCodeUsageAggregate.thisMonth(now: now, calendar: utc)))
-        XCTAssertEqual(month.messages, 3, "Sep 15 is out")
+        let week = ClaudeCodeUsageAggregate(entries: ClaudeCodeUsageAggregate.entries(ledger.entries, in: ClaudeCodeUsageAggregate.last(days: 7, now: now)))
+        XCTAssertEqual(week.messages, 3, "Sep 25 12:00 → Oct 2 12:00: the three October messages")
+        let month = ClaudeCodeUsageAggregate(entries: ClaudeCodeUsageAggregate.entries(ledger.entries, in: ClaudeCodeUsageAggregate.last(days: 30, now: now)))
+        XCTAssertEqual(month.messages, 4, "Sep 2 → Oct 2: Sep 15 is in too — rolling windows nest, so the month row never reads smaller than the week row")
 
         // Time zones move the day boundary: at UTC-6, the 23:30Z message is still Oct 1 local.
         var mexico = utc
