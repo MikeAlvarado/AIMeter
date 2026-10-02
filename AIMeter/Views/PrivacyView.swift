@@ -37,6 +37,12 @@ struct PrivacyView: View {
                         #if os(macOS)
                         Divider().overlay(Theme.track)
                         PrivacyRow(
+                            systemName: "terminal",
+                            title: String(localized: "Claude Code usage is opt-in"),
+                            text: String(localized: "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields — never your prompts or the replies — keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere.")
+                        )
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
                             systemName: "power",
                             title: String(localized: "Opening at login is yours to choose"),
                             text: String(localized: "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS — which asks you to approve it — and turning it back off removes it. All it does when it starts is read your usage.")
