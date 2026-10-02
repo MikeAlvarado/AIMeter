@@ -355,6 +355,7 @@ final class PreferencesModel {
     var checksServiceStatus: Bool {
         get { stored.checksServiceStatus }
         set { guard stored.checksServiceStatus != newValue else { return }; stored.checksServiceStatus = newValue; persist(newValue, Preferences.Keys.checksServiceStatus, reloadsWidgets: false) }
+    }
     var claudeCodeUsageEnabled: Bool {
         get { stored.claudeCodeUsageEnabled }
         set { guard stored.claudeCodeUsageEnabled != newValue else { return }; stored.claudeCodeUsageEnabled = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageEnabled, reloadsWidgets: false) }
