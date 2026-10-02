@@ -270,10 +270,10 @@
     leaves two clients fighting over one rotating refresh token.
 - **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
   `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
-  usage — and `DemoUsageData.timeline()`, seven days of samples per window
+  usage — and `DemoUsageData.timeline()`, thirty days of samples per window
   ending on those exact figures (a 5-hour session sawtooth of varying
-  height, the weekly windows resetting once where the snapshot says the
-  week began), and on macOS `DemoUsageData.codingSessions` (the Claude
+  height, the weekly windows resetting where the snapshot says the
+  week began and once a week before that, sessions idle at night), and on macOS `DemoUsageData.codingSessions` (the Claude
   Code section under its neutral demo title), so every screen (rate
   limits, sparklines, history chart, pace, forecast, spend/extra cards,
   coding sessions) can be explored without a real Claude account. Its
