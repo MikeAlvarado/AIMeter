@@ -50,7 +50,12 @@ can be added later.
   from, the percentage itself refreshes opportunistically whenever the app
   or a widget happens to fetch next, not instantly.
 - Dashboard with one card per connected account (plan badge, per-window
-  reset countdowns), and a fullscreen landscape mode on iPhone.
+  reset countdowns, a small 24-hour sparkline per window), and a
+  fullscreen landscape mode on iPhone.
+- A **History** chart on each account's detail screen: the percent of
+  each limit used over the last day, week, or month, with every reset
+  marked — drawn from samples the app and widgets already record, kept on
+  the device for 30 days.
 - macOS menu bar styles: gauge with or without the number, number only, a
   bar, a battery, or two or three windows side by side — plus an optional
   reset countdown, the account's name, and red once a window passes 80 %.
@@ -145,6 +150,9 @@ no analytics, no crash reporting, no third-party SDKs, no server of ours.
 - The last usage snapshot (percentages, reset dates, spend numbers) and
   your display preferences: the App Group container, so widgets can render
   without fetching.
+- Up to 30 days of usage percentages per window (just the numbers, their
+  dates, and the reset dates), as a small JSON file per account in the
+  same container, for the history chart. Deleted when you disconnect.
 - Nothing is ever written to UserDefaults outside the App Group, to disk
   unencrypted, or to the repo.
 
