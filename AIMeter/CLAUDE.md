@@ -196,7 +196,8 @@
   `setChecksServiceStatus`, same shape as the refresh-cadence handler),
   and refresh
   cadence menu (all app-wide, not per account), a "Privacy & data" link,
-  and an "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet
+  an "Open Source" row (GitHub mark, opens the repo URL), and — for a
+  connected install — the "Demo mode" card last. iOS: sheet
   with Done; macOS: Settings scene
   (wrapped in a NavigationStack so the link can push), plus the macOS-only
   `MacChromeSettings` block — "Menu bar" (`MenuBarSettings`: a live
@@ -293,9 +294,12 @@
   `reset.`/`runout.` notification while in demo mode is a deliberate no-op
   (`UsageModel` passes `nil` in place of the demo snapshot) so a fake
   reset date can never produce a real notification. Entry and exit both
-  live in Settings only — a "Demo mode" section at the top of the list
-  (shown while disconnected or while demo is active, hidden once a real
-  account is connected) offers "View Demo" or "Exit Demo" accordingly; the
+  live in Settings only — a "Demo mode" section offers "View Demo" or
+  "Exit Demo": at the top of the list while disconnected or while demo is
+  active, and at the very end once a real account is connected (entering
+  the demo is in-memory only and `exitDemoMode` reloads the real accounts
+  untouched, so there is no reason to hide it — it is also how the
+  App Store screenshots get taken on a Mac that has a login); the
   dashboard's disconnected card stays just Connect, no demo affordance, to
   keep it from looking like a second, competing call to action. Provider
   Detail's bottom button also becomes "Exit Demo" (both platforms) instead

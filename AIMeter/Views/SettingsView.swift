@@ -40,28 +40,10 @@ struct SettingsView: View {
                 } else if model.needsConnection {
                     // Demo mode's only entry point — the dashboard's
                     // disconnected card stays just Connect, so Settings is
-                    // the one place to find "View Demo".
-                    SectionHeader(title: String(localized: "Demo mode"))
-                    Card {
-                        Button {
-                            model.enterDemoMode()
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: "eye")
-                                    .font(.footnote.weight(.semibold))
-                                    .foregroundStyle(Theme.accent)
-                                    .frame(width: 28, height: 28)
-                                    .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                Text("View Demo")
-                                    .font(.body.weight(.medium))
-                                    .foregroundStyle(Theme.ink)
-                                Spacer()
-                            }
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    SectionFootnote(text: String(localized: "Explore every screen with sample data before connecting your real Claude account."))
+                    // the one place to find "View Demo". Leads the list
+                    // while there is nothing connected; a connected
+                    // install gets the same card at the very end instead.
+                    viewDemoSection
                     sectionGap
                 }
 
@@ -232,6 +214,11 @@ struct SettingsView: View {
                     .buttonStyle(.plain)
                 }
                 SectionFootnote(text: String(localized: "AIMeter is free and open source. Visit the repository to read the code, file an issue, or contribute."))
+
+                if !model.isDemoMode, !model.needsConnection {
+                    sectionGap
+                    viewDemoSection
+                }
             }
             .padding(20)
         }
@@ -251,6 +238,37 @@ struct SettingsView: View {
 
     private var sectionGap: some View {
         Spacer().frame(height: Theme.sectionSpacing - 16)
+    }
+
+    /// "View Demo": swaps in the fabricated account in memory only
+    /// (`UsageModel.enterDemoMode`), so it is safe to offer even with real
+    /// accounts connected — Exit Demo reloads them untouched. Connected
+    /// installs find it at the end of the list, disconnected ones at the top.
+    @ViewBuilder
+    private var viewDemoSection: some View {
+        SectionHeader(title: String(localized: "Demo mode"))
+        Card {
+            Button {
+                model.enterDemoMode()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "eye")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(Theme.accent)
+                        .frame(width: 28, height: 28)
+                        .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    Text("View Demo")
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(Theme.ink)
+                    Spacer()
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+        SectionFootnote(text: model.needsConnection
+            ? String(localized: "Explore every screen with sample data before connecting your real Claude account.")
+            : String(localized: "Explore every screen with sample data. Your real accounts come back untouched when you exit."))
     }
 
     private var refreshFootnote: String {

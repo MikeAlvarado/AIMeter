@@ -64,6 +64,16 @@
         }
       }
     },
+    "Explore every screen with sample data. Your real accounts come back untouched when you exit." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explora todas las pantallas con datos de ejemplo. Tus cuentas reales vuelven intactas al salir."
+          }
+        }
+      }
+    },
     "Fast model" : {
       "localizations" : {
         "es" : {
