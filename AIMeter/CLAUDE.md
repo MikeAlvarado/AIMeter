@@ -344,7 +344,18 @@
   popover itself has no navigation stack — it reopens the Dashboard window
   even after `AppDelegate` closed it at launch, because the scene registers
   the reopen hook on first appearance, before that close ever runs.
-  "Refresh" calls `refreshAll()` (every account, concurrently). Peak-hours
+  "Refresh" calls `refreshAll()` (every account, concurrently). The popover
+  presents **no sheets of its own**: a sheet attached to a `MenuBarExtra`
+  window renders clipped and floating beside it, so "Connect", "Add
+  account" and an account's "Sign in again" all go through
+  `AppChrome.connect(.add / .reconnect(account))`, which reveals the
+  Dashboard window and hands it the request (`AppChrome.presentConnect`,
+  the Dashboard's live hook, set on appear and cleared on disappear; a
+  request made while the window is closed waits in
+  `AppChrome.pendingConnect` for the Dashboard's `onAppear`). The Usage
+  menu's "Add Account…" uses the same route. `AccountSectionView(presentsSheets: false)`
+  is how the popover's copy of the account card opts out of its own
+  reconnect sheet. Peak-hours
   state folds into the status item's
   tooltip/accessibility text rather than a second glyph there (see "Peak
   hours" in the repo-root CLAUDE.md); the popover's top badge row is the
