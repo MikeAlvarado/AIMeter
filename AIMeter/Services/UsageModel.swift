@@ -83,6 +83,10 @@ final class UsageModel {
     /// nil in unit tests (no App Group); the last fetched status survives a
     /// relaunch through it so the popover isn't blank until the first check.
     let serviceStatusStore: ServiceStatusStore?
+    /// The chart's samples per account, keyed by `Kind.storageKey` — see
+    /// `UsageModel+History.swift`. nil store in unit tests.
+    var timelines: [String: [String: [TimelineSample]]] = [:]
+    let timelineStore: UsageTimelineStore?
     /// `peakEnabled` is the one field on `NotificationPreferences` that
     /// ignores `accountID` (peak hours is a Claude-wide policy, not tied to
     /// any one account) — "global" is a documented placeholder, never used
@@ -115,6 +119,7 @@ final class UsageModel {
     init(registry: AccountRegistryStore?, platformServices: Bool) {
         self.registry = registry
         serviceStatusStore = platformServices ? ServiceStatusStore(suiteName: AppConfig.appGroupID) : nil
+        timelineStore = platformServices ? UsageTimelineStore(appGroupID: AppConfig.appGroupID) : nil
         if platformServices {
             AccountMigration.run(registry: registry)
             checksServiceStatus = Preferences.load().checksServiceStatus
@@ -167,6 +172,7 @@ final class UsageModel {
             accounts = [AccountUsage(account: candidate, snapshot: service.lastSnapshot())]
         }
         #endif
+        reloadTimelines()
     }
 
     // MARK: - Refresh
@@ -244,6 +250,7 @@ final class UsageModel {
             accounts[i].lastError = nil
             accounts[i].needsReauthentication = false
             accounts[i].isOffline = false
+            reloadTimeline(for: accountID)
             if registry?.account(for: accountID) == nil {
                 // The in-memory account rather than `service.account`: a
                 // rename during this fetch has already landed there.
@@ -304,6 +311,8 @@ final class UsageModel {
     /// pushes new snapshots to the widgets immediately.
     func refreshAllIfStale(maxAge: TimeInterval = 60) async {
         guard !isDemoMode else { return }
+        // A widget may have recorded samples while the app was away.
+        reloadTimelines()
         async let status: Void = refreshServiceStatus()
         let fetched = await withTaskGroup(of: Bool.self) { group in
             for entry in accounts {
