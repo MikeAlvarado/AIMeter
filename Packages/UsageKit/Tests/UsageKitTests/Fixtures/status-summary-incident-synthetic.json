@@ -1,0 +1,89 @@
+{
+    "page": {
+        "id": "tymt9n04zgry",
+        "name": "Claude",
+        "url": "https://status.claude.com",
+        "time_zone": "Etc/UTC",
+        "updated_at": "2026-10-02T11:00:00.000Z"
+    },
+    "components": [
+        {
+            "id": "rwppv331jlwc",
+            "name": "claude.ai",
+            "status": "degraded_performance",
+            "position": 1,
+            "group_id": null,
+            "group": false
+        },
+        {
+            "id": "0qbwn08sd68x",
+            "name": "Claude Console (platform.claude.com)",
+            "status": "operational",
+            "position": 2,
+            "group_id": null,
+            "group": false
+        },
+        {
+            "id": "k8w3r06qmzrp",
+            "name": "Claude API (api.anthropic.com)",
+            "status": "partial_outage",
+            "position": 3,
+            "group_id": null,
+            "group": false
+        },
+        {
+            "id": "yyzkbfz2thpt",
+            "name": "Claude Code",
+            "status": "operational",
+            "position": 4,
+            "group_id": null,
+            "group": false
+        },
+        {
+            "id": "groupxxxxxxx",
+            "name": "Platform",
+            "status": "partial_outage",
+            "position": 5,
+            "group_id": null,
+            "group": true
+        }
+    ],
+    "incidents": [
+        {
+            "id": "abc123",
+            "name": "Elevated error rates on the API",
+            "status": "monitoring",
+            "created_at": "2026-10-02T10:12:00.000Z",
+            "updated_at": "2026-10-02T10:48:00.000Z",
+            "monitoring_at": "2026-10-02T10:48:00.000Z",
+            "resolved_at": null,
+            "impact": "major",
+            "shortlink": "https://stspg.io/abc123",
+            "started_at": "2026-10-02T10:10:00.000Z",
+            "page_id": "tymt9n04zgry",
+            "incident_updates": [
+                {
+                    "id": "upd1",
+                    "status": "monitoring",
+                    "body": "A fix has been implemented and we are monitoring the results.",
+                    "created_at": "2026-10-02T10:48:00.000Z"
+                }
+            ],
+            "components": []
+        },
+        {
+            "id": "def456",
+            "name": "Older incident still open",
+            "status": "investigating",
+            "impact": "minor",
+            "shortlink": "https://stspg.io/def456",
+            "incident_updates": [],
+            "components": []
+        }
+    ],
+    "scheduled_maintenances": [],
+    "status": {
+        "indicator": "major",
+        "description": "Partial System Outage"
+    }
+}
