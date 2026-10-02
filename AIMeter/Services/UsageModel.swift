@@ -70,6 +70,10 @@ final class UsageModel {
     /// own files should touch either.
     var services: [String: RefreshService] = [:]
     let registry: AccountRegistryStore?
+    /// The chart's samples per account, keyed by `Kind.storageKey` — see
+    /// `UsageModel+History.swift`. nil store in unit tests.
+    var timelines: [String: [String: [TimelineSample]]] = [:]
+    let timelineStore: UsageTimelineStore?
     /// `peakEnabled` is the one field on `NotificationPreferences` that
     /// ignores `accountID` (peak hours is a Claude-wide policy, not tied to
     /// any one account) — "global" is a documented placeholder, never used
@@ -101,6 +105,7 @@ final class UsageModel {
     /// notification sweep — just the registry handed in.
     init(registry: AccountRegistryStore?, platformServices: Bool) {
         self.registry = registry
+        timelineStore = platformServices ? UsageTimelineStore(appGroupID: AppConfig.appGroupID) : nil
         if platformServices {
             AccountMigration.run(registry: registry)
         }
@@ -151,6 +156,7 @@ final class UsageModel {
             accounts = [AccountUsage(account: candidate, snapshot: service.lastSnapshot())]
         }
         #endif
+        reloadTimelines()
     }
 
     // MARK: - Refresh
@@ -224,6 +230,7 @@ final class UsageModel {
             accounts[i].lastError = nil
             accounts[i].needsReauthentication = false
             accounts[i].isOffline = false
+            reloadTimeline(for: accountID)
             if registry?.account(for: accountID) == nil {
                 // The in-memory account rather than `service.account`: a
                 // rename during this fetch has already landed there.
@@ -284,6 +291,8 @@ final class UsageModel {
     /// pushes new snapshots to the widgets immediately.
     func refreshAllIfStale(maxAge: TimeInterval = 60) async {
         guard !isDemoMode else { return }
+        // A widget may have recorded samples while the app was away.
+        reloadTimelines()
         let fetched = await withTaskGroup(of: Bool.self) { group in
             for entry in accounts {
                 let isFresh = entry.snapshot.map { Date().timeIntervalSince($0.fetchedAt) < maxAge } ?? false
