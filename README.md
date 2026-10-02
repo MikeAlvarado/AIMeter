@@ -67,6 +67,12 @@ can be added later.
   single exception that starts on — a broken login is the one thing you
   can't notice by looking. All with honest permission handling, no
   silent failures.
+- Service status: when Anthropic's public status page reports an
+  incident, the dashboard and the macOS menu bar popover show a banner
+  (tap it for the incident page), and an account whose refresh is
+  failing at the same time says so under its error — so an outage reads
+  as their outage, not as a problem with your account. On a normal day
+  nothing is shown; the check can be turned off in Settings.
 - Peak hours: earlier versions showed Anthropic's weekday peak window,
   during which Claude session usage burned faster. Anthropic removed that
   policy in May 2026 and no plan documents one today, so the indicator
@@ -118,7 +124,10 @@ reading the code (it's small) or probing the endpoints yourself.
 (`/api/oauth/usage` for the windows/spend data, `/api/oauth/profile` to
 resolve your plan name, re-checked at most every 6 hours so a plan change
 shows up) and, for the iOS sign-in flow, the standard
-OAuth exchange with `claude.ai` / `console.anthropic.com`. Nothing else:
+OAuth exchange with `claude.ai` / `console.anthropic.com` — plus one
+anonymous GET of the public status page (`status.claude.com/api/v2/summary.json`,
+no parameters, nothing about you in it; off with the "Check service
+status" toggle in Settings). Nothing else:
 no analytics, no crash reporting, no third-party SDKs, no server of ours.
 
 **What is stored, and where**
@@ -148,6 +157,7 @@ removes the registration. All it does when it starts is read your usage.
 **Audit it**: `Scripts/probe-usage-endpoint.sh` prints the exact raw JSON
 the app consumes, using your own local login; the token is never printed
 or written to disk. `Scripts/sample-response.json` is a captured example.
+`Scripts/probe-status-endpoint.sh` does the same for the status page.
 
 ## How it gets your usage
 
@@ -205,6 +215,8 @@ Scripts/probe-usage-endpoint.sh
 
 prints the raw JSON response for your account using your local Claude Code
 login. The token is never printed or written to disk.
+`Scripts/probe-status-endpoint.sh` prints the status page summary the app
+reads (no login involved).
 
 ## Architecture
 
