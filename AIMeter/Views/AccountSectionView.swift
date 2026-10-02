@@ -35,6 +35,11 @@ struct AccountSectionView: View {
     /// rather than making their own. The alert itself talks to
     /// `UsageModel` directly (see `renameAccountAlert`).
     var canRename = false
+    /// Whether this view presents the reconnect sheet itself. The menu bar
+    /// popover passes `false`: a sheet attached to a `MenuBarExtra` window
+    /// renders clipped and floating, so its "Sign in again" routes through
+    /// `AppChrome.connect(.reconnect(_:))` to the Dashboard instead.
+    var presentsSheets = true
     /// Whether each usage row carries its 24-hour sparkline — on for the
     /// Dashboard, off for the popover and landscape, which stay a glance.
     var showsSparklines = false
@@ -58,7 +63,7 @@ struct AccountSectionView: View {
                         snapshot: usage.snapshot,
                         error: usage.lastError,
                         showsDividers: showsStatusDividers,
-                        reauthenticate: usage.needsReauthentication ? { showingReconnect = true } : nil,
+                        reauthenticate: usage.needsReauthentication ? { reconnect() } : nil,
                         offline: usage.isOffline,
                         serviceIncident: model.incidentNote(for: usage)
                     )
@@ -69,6 +74,16 @@ struct AccountSectionView: View {
             ConnectClaudeSheet(reconnecting: usage.account)
         }
         .renameAccountAlert(for: usage.account.accountID, isPresented: $showingRename, name: $renameDraft)
+    }
+
+    private func reconnect() {
+        #if os(macOS)
+        guard presentsSheets else {
+            AppChrome.connect(.reconnect(usage.account))
+            return
+        }
+        #endif
+        showingReconnect = true
     }
 
     /// The context menu goes on the header alone, not the whole section:

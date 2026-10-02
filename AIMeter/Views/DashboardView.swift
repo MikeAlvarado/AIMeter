@@ -8,6 +8,9 @@ struct DashboardView: View {
     #endif
     @State private var showingSettings = false
     @State private var showingConnect = false
+    /// Reconnect requested from a surface that can't present the sheet
+    /// itself (the menu bar popover) — see `AppChrome.connect(_:)`.
+    @State private var reconnecting: ConnectedAccount?
     /// Bumped per user-initiated refresh; drives the haptic only.
     @State private var refreshRequests = 0
     /// The section being dragged, how far it has moved, and which section
@@ -101,6 +104,9 @@ struct DashboardView: View {
         .sheet(isPresented: $showingConnect) {
             ConnectClaudeSheet()
         }
+        .sheet(item: $reconnecting) { account in
+            ConnectClaudeSheet(reconnecting: account)
+        }
     }
 
     private var header: some View {
@@ -138,7 +144,16 @@ struct DashboardView: View {
         }
         #if os(macOS)
         .onAppear {
-            AppChrome.requestAddAccount = { showingConnect = true }
+            AppChrome.presentConnect = { request in
+                switch request {
+                case .add: showingConnect = true
+                case .reconnect(let account): reconnecting = account
+                }
+            }
+            AppChrome.deliverPendingConnect()
+        }
+        .onDisappear {
+            AppChrome.presentConnect = nil
         }
         #endif
     }
