@@ -2,66 +2,6 @@
 import SwiftUI
 import UsageKit
 
-/// Label shown in the macOS menu bar: one window's usage at a glance —
-/// Session by default, or whichever window the user picked as
-/// `glanceMetric` in Claude's Provider Detail (e.g. Credits, or a
-/// per-model window on Max) — honoring the Remaining/Used display
-/// preference.
-///
-/// The gauge is always drawn; `showsPercentage` (Settings → Menu bar) only
-/// decides whether the number is spelled out beside it. Its variable value
-/// tracks the same figure the text would show, so the two never disagree
-/// and icon-only mode still reads as a rough level rather than a static
-/// glyph. Either way the exact value stays reachable through the tooltip
-/// and the accessibility label — a menu bar with no room to spare is
-/// exactly where that matters.
-struct MenuBarLabel: View {
-    let snapshot: UsageSnapshot?
-    let displayMode: DisplayMode
-    let metric: UsageWindow.Kind
-    let showsPercentage: Bool
-
-    var body: some View {
-        HStack(spacing: 3) {
-            Image(systemName: "gauge.with.needle", variableValue: gaugeValue)
-            if showsPercentage, let percent {
-                Text(verbatim: "\(percent)%")
-                    .monospacedDigit()
-            }
-        }
-        .help(valueLabel)
-        .accessibilityLabel(valueLabel)
-    }
-
-    private var window: UsageWindow? { snapshot?.window(for: metric) }
-
-    private var percent: Int? {
-        window.map { Int($0.displayedPct(displayMode)) }
-    }
-
-    /// 0–1 for the symbol's variable rendering. Follows the *displayed*
-    /// figure rather than raw usage, so a "Remaining" reading of 58% shows a
-    /// gauge that's 58% full instead of contradicting its own label.
-    private var gaugeValue: Double {
-        guard let window else { return 0 }
-        return min(max(window.displayedPct(displayMode) / 100, 0), 1)
-    }
-
-    /// Peak state folds into the tooltip/accessibility text only — the
-    /// status item itself is a carefully tuned single gauge (see the type
-    /// doc above), and this is the smallest way to surface "why is this
-    /// moving faster than usual" without adding a second glyph to the
-    /// smallest surface in the app. The popover header shows a visible
-    /// badge instead, where there's room (`MenuBarView.header`).
-    private var valueLabel: String {
-        let peak = ClaudePeakStatus()
-        let base = percent.map {
-            String(localized: "\(metric.shortName): \($0)% \(displayMode.label)")
-        } ?? String(localized: "AIMeter — no usage data yet")
-        return peak.isPeak ? "\(base) · \(peak.title)" : base
-    }
-}
-
 struct MenuBarView: View {
     @Environment(UsageModel.self) private var model
     @Environment(\.openSettings) private var openSettings
@@ -136,14 +76,19 @@ struct MenuBarView: View {
 
                 Spacer()
 
+                // The popover is its own window with no main menu, so the
+                // two shortcuts a Mac user reaches for blind are declared
+                // here as well as in the app's Usage menu.
                 Button("Settings…") {
                     openSettings()
                     NSApp.activate(ignoringOtherApps: true)
                 }
+                .keyboardShortcut(",", modifiers: .command)
 
                 Button("Quit") {
                     NSApp.terminate(nil)
                 }
+                .keyboardShortcut("q", modifiers: .command)
             }
             .controlSize(.small)
         }

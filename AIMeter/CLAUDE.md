@@ -1,8 +1,9 @@
 ## Screens
 
 - **Dashboard**: floating gear + refresh buttons (refresh icon spins while
-  busy; soft haptic on refresh start; ⌘R on macOS, here and in the menu
-  bar popover; refresh fans out to every account
+  busy; soft haptic on refresh start; on macOS ⌘R comes from the Usage
+  menu — see "Conventions" in the repo-root CLAUDE.md — and from the menu
+  bar popover's own button; refresh fans out to every account
   concurrently via `UsageModel.refreshAll()`), small centered serif
   "AIMeter" title, then one section per *connected account*
   (`AccountSectionView`, shared with the macOS menu bar popover): logo +
@@ -176,9 +177,15 @@
   and an "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet
   with Done; macOS: Settings scene
   (wrapped in a NavigationStack so the link can push), plus the macOS-only
-  `MacChromeSettings` block — "Menu bar" (which account and window the
-  status item reads, only shown/relevant once >1 account is connected for
-  the account picker, plus Show percentage), "Hiding AIMeter" (Hide Dock
+  `MacChromeSettings` block — "Menu bar" (`MenuBarSettings`: a live
+  preview of the status item label on a light and a dark strip, rendered
+  from the very same `MenuBarLabelModel.current` the `MenuBarExtra` uses,
+  so the preview is the truth; the account pill (2+ accounts only); the
+  Style menu (`MenuBarStyle`); the window pill for single styles or the
+  multi-select window chips for `multi` (1–3, options' order kept);
+  then the "Red at 80% used", "Reset countdown" (not for `multi`) and
+  "Account name" (2+ only) toggles; the footnote also points at the
+  Shortcuts-app route to a system-wide key), "Hiding AIMeter" (Hide Dock
   icon / Hide menu bar icon, with a warning row once both are hidden), and
   "Startup" (Open at Login, with a pending-approval row and a nudge when
   the Dock icon is hidden but the login item is off).
@@ -265,14 +272,23 @@
   dashboard for a fullscreen card with the same stacked rows.
 - **macOS menu bar**: one status item regardless of how many accounts are
   connected — `MenuBarExtra` has no per-instance configuration the way
-  widgets do. The label (`MenuBarLabel`) is a variable-value
-  `gauge.with.needle` whose fill tracks the *primary* account's
-  `glanceMetric` window's **displayed** percentage (`UsageModel.primaryAccountUsage(preferredID:)`,
-  so a "Remaining" reading never contradicts its own gauge), with the
-  number spelled out beside it only when `menuBarShowsPercentage` is on.
-  Either way the exact value stays in the `.help` tooltip and the
-  accessibility label — icon-only mode must never be the only place the
-  number lived. The whole status item disappears when `statusItemVisible`
+  widgets do. The label (`MenuBarLabel`, drawing a `MenuBarLabelModel`)
+  shows the *primary* account (`UsageModel.primaryAccountUsage(preferredID:)`)
+  in the user's `menuBarStyle`: the variable-value `gauge.with.needle`
+  with or without the number, the number alone, a drawn bar or battery
+  that fills with the figure, or 2–3 windows as compact text ("S 42% ·
+  W 18%", `menuBarMetrics`). Fill and number always follow the
+  **displayed** percentage, so a "Remaining" reading never contradicts
+  its own glyph (the battery therefore drains as you use under Remaining
+  and fills under Used). Optional: the primary window's reset countdown
+  appended ("· 1h 20m", ticking once a minute), the account's nickname in
+  front (cut to 8 characters; the full name stays in the accessibility
+  label), and a red label once the window would be red on the dashboard.
+  Whatever the style, the exact value(s) stay in the `.help` tooltip and
+  the accessibility label — icon-only mode must never be the only place
+  the number lived. See "macOS chrome prefs" in the repo-root CLAUDE.md
+  for the keys, defaults and the migration from the old "Show
+  percentage" toggle. The whole status item disappears when `statusItemVisible`
   is off (`MenuBarExtra(isInserted:)`). The popover shows a peak-hours
   badge row at the top only while peak is active (never, while the policy
   is retired; peak is Claude-wide, not per account, so this isn't
@@ -316,7 +332,11 @@
     the dashboard without clearing the hidden prefs: needing to relaunch
     once shouldn't permanently undo the user's chosen chrome. There is no
     global hotkey, deliberately — it would cost an Accessibility/Input
-    Monitoring TCC permission to guard a path that already works.
+    Monitoring TCC permission to guard a path that already works. The
+    permission-free equivalent is the `ShowUsageIntent` App Intent
+    (`AIMeter/Intents/`): the user adds "Show Usage" to the Shortcuts app
+    and assigns it a key there; it calls `AppChrome.revealMainWindow()`
+    the same way a relaunch does.
   - AppKit callbacks can't reach SwiftUI's `openWindow`, so the dashboard
     scene publishes it to `AppChrome.openDashboard` on appear — same
     bridging shape as `AppEnvironment.shared` for the refresh schedule.

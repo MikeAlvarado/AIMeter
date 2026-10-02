@@ -25,6 +25,96 @@
         }
       }
     },
+    "Absolute Reset Times" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de reinicio absolutas"
+          }
+        }
+      }
+    },
+    "Account name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la cuenta"
+          }
+        }
+      }
+    },
+    "Add Account…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir cuenta…"
+          }
+        }
+      }
+    },
+    "Bar" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra"
+          }
+        }
+      }
+    },
+    "Battery" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batería"
+          }
+        }
+      }
+    },
+    "C" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        }
+      }
+    },
+    "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there — no extra permissions needed." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para un atajo global, añade \"Refresh Usage\" o \"Show Usage\" en la app Atajos y asígnale una tecla ahí; no requiere permisos extra."
+          }
+        }
+      }
+    },
+    "Gauge and percentage" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador y porcentaje"
+          }
+        }
+      }
+    },
+    "Gauge only" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo indicador"
+          }
+        }
+      }
+    },
     "%@ limit reached" : {
       "localizations" : {
         "es" : {
@@ -65,12 +155,92 @@
         }
       }
     },
+    "Percentage only" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo porcentaje"
+          }
+        }
+      }
+    },
+    "Pick up to three windows to list side by side. The exact values are always in the tooltip." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige hasta tres ventanas para mostrarlas juntas. Los valores exactos siempre están en el tooltip."
+          }
+        }
+      }
+    },
+    "Pick which window the menu bar reads. Whatever the style, the exact value is always in the tooltip." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige qué ventana lee la barra de menús. Sea cual sea el estilo, el valor exacto siempre está en el tooltip."
+          }
+        }
+      }
+    },
+    "Red at 80% used" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rojo al 80 % usado"
+          }
+        }
+      }
+    },
     "%@ refilled early" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ se recargó antes"
+          }
+        }
+      }
+    },
+    "Refresh All" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar todo"
+          }
+        }
+      }
+    },
+    "Relative Reset Times" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de reinicio relativas"
+          }
+        }
+      }
+    },
+    "Reset countdown" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta atrás del reinicio"
+          }
+        }
+      }
+    },
+    "resets in %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "se reinicia en %@"
           }
         }
       }
@@ -1531,6 +1701,16 @@
         }
       }
     },
+    "S" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S"
+          }
+        }
+      }
+    },
     "Save" : {
       "localizations" : {
         "es" : {
@@ -1624,6 +1804,16 @@
         }
       }
     },
+    "Several windows" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varias ventanas"
+          }
+        }
+      }
+    },
     "Severity" : {
       "localizations" : {
         "es" : {
@@ -1650,6 +1840,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar porcentaje"
+          }
+        }
+      }
+    },
+    "Show Remaining" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar restante"
+          }
+        }
+      }
+    },
+    "Show Used" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar usado"
           }
         }
       }
@@ -1808,6 +2018,16 @@
         }
       }
     },
+    "Style" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilo"
+          }
+        }
+      }
+    },
     "System" : {
       "localizations" : {
         "es" : {
@@ -1923,6 +2143,16 @@
         }
       }
     },
+    "Usage" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso"
+          }
+        }
+      }
+    },
     "Usage Window" : {
       "comment" : "The display name for a usage window option.",
       "isCommentAutoGenerated" : true,
@@ -1981,6 +2211,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver demo"
+          }
+        }
+      }
+    },
+    "W" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem"
           }
         }
       }
