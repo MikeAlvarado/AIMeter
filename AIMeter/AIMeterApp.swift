@@ -32,6 +32,39 @@ struct AIMeterApp: App {
             await UsageModel.refreshAllInBackground()
         }
         #endif
+        #if os(macOS)
+        // A "Usage" menu so the shortcuts are discoverable, not just
+        // memorized. ⌘R lives here (and in the popover, which has no main
+        // menu); the Dashboard's refresh button no longer declares its own.
+        .commands {
+            CommandMenu("Usage") {
+                Button("Refresh All") {
+                    Task { await model.refreshAll() }
+                }
+                .keyboardShortcut("r", modifiers: .command)
+                .disabled(model.isRefreshing || model.isDemoMode)
+
+                Button("Add Account…") {
+                    AppChrome.revealMainWindow()
+                    AppChrome.requestAddAccount?()
+                }
+                .keyboardShortcut("n", modifiers: .command)
+                .disabled(model.isDemoMode)
+
+                Divider()
+
+                Button(prefs.displayMode == .used ? "Show Remaining" : "Show Used") {
+                    prefs.displayMode = prefs.displayMode == .used ? .remaining : .used
+                }
+                .keyboardShortcut("u", modifiers: [.command, .shift])
+
+                Button(prefs.resetStyle == .relative ? "Absolute Reset Times" : "Relative Reset Times") {
+                    prefs.toggleResetStyle()
+                }
+                .keyboardShortcut("a", modifiers: [.command, .shift])
+            }
+        }
+        #endif
 
         #if os(macOS)
         MenuBarExtra(isInserted: $prefs.statusItemVisible) {
@@ -41,12 +74,16 @@ struct AIMeterApp: App {
                 .tint(Theme.accent)
                 .preferredColorScheme(prefs.appearance.colorScheme)
         } label: {
-            MenuBarLabel(
-                snapshot: model.primaryAccountUsage(preferredID: prefs.primaryAccountID)?.snapshot,
-                displayMode: prefs.displayMode,
-                metric: prefs.glanceMetric,
-                showsPercentage: prefs.menuBarShowsPercentage
-            )
+            // The countdown style ticks: nothing else in the label changes
+            // between fetches, so only then is the label re-evaluated on a
+            // clock (once a minute, the countdown's own resolution).
+            if prefs.menuBarShowsResetCountdown {
+                TimelineView(.everyMinute) { context in
+                    MenuBarLabel(model: .current(model: model, prefs: prefs, now: context.date))
+                }
+            } else {
+                MenuBarLabel(model: .current(model: model, prefs: prefs))
+            }
         }
         .menuBarExtraStyle(.window)
 
