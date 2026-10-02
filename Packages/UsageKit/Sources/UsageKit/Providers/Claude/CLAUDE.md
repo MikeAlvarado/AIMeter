@@ -89,3 +89,55 @@ repo-root CLAUDE.md):
   every mapped window with its length (5 h sessions, 7-day weeks) so
   `UsageWindow.effectiveDuration` never has to fall back to the kind's
   default for a Claude window.
+
+## Claude Code local logs (`ClaudeCode/`, macOS app only)
+
+- Source: `~/.claude/projects/<encoded-cwd>/<sessionId>.jsonl`, one JSON
+  record per line, plus nested `…/<sessionId>/subagents/agent-*.jsonl`
+  (enumerated recursively). Undocumented and versioned by Claude Code
+  itself; `Scripts/probe-claude-code-logs.sh` prints the shape seen on a
+  machine (record types, keys, models, versions — never content). Shape
+  as of Claude Code 2.1.28x (2026-10-02):
+  - `type: "assistant"` lines carry `timestamp` (ISO 8601 with
+    fractional seconds), `requestId`, `sessionId` (absent in subagent
+    files → the enclosing file's name is used), and `message.id`,
+    `message.model`, `message.usage` (`input_tokens`, `output_tokens` —
+    which already includes `output_tokens_details.thinking_tokens` —
+    `cache_creation_input_tokens` with its `cache_creation.ephemeral_5m_input_tokens`
+    / `ephemeral_1h_input_tokens` split, `cache_read_input_tokens`,
+    `server_tool_use.web_search_requests` / `web_fetch_requests`).
+    **Streaming writes one message as several lines with identical
+    `usage`** (measured: 3,999 lines for ~1,600 messages) — dedupe on
+    `message.id` + `requestId`, keeping the first. A line whose message
+    has no `usage` (an API error record, `isApiErrorMessage`) is skipped;
+    a `<synthetic>` model id prices to nil like any unknown model.
+  - `type: "cost-state"` lines (one per file in practice, no timestamp):
+    `sessionId`, `totalCostUSD` (cumulative — the last one is the
+    session's total), `modelUsage` per model (`inputTokens`,
+    `outputTokens`, `thinkingTokens`, `cacheReadInputTokens`,
+    `cacheCreationInputTokens`, `webSearchRequests`, `costUSD`) and
+    `hasUnknownModelCost`. Claude Code's own price table, used as the
+    cross-check (`ClaudeCodeUsageModel.pricingDrift`), not as the
+    displayed figure (no time → no buckets).
+  - Everything else (`user`, `attachment`, `queue-operation`, …) is
+    ignored, and only the fields above are declared on the `Decodable`s,
+    so conversation content is never decoded.
+- `ClaudeCodeLogReader` (actor): per file, reads only the bytes appended
+  since the last scan — tracked by **size** and byte offset in its own
+  index (`ClaudeCodeUsageLedger`, JSON at the app's
+  `Application Support/AIMeter/claude-code-usage.json`), never by
+  modification date (a required-reason API) — re-reads from zero when a
+  file shrank, leaves a trailing partial line for the next scan, keeps
+  the deduplicated entries and the `seen` keys in the ledger so a
+  relaunch doesn't re-parse gigabytes. `reset()` deletes the index.
+- `ClaudeModelPricing`: USD per MTok per model-id *prefix* (a dated
+  snapshot `claude-opus-4-5-20251101` matches `claude-opus-4-5`; the
+  longest whole-component match wins, so `claude-opus-5` never swallows
+  `claude-opus-5-5`), with 5-minute / 1-hour cache writes, cache reads
+  and web searches ($10 per 1,000). Verified against
+  platform.claude.com/docs/en/about-claude/pricing on `lastVerified`
+  (2026-10-02); an unknown model prices to nil.
+- Fixtures: `Tests/UsageKitTests/Fixtures/claude-code/` is synthetic on
+  the real shape (two sessions, a subagent file, a duplicate line, a
+  non-JSON line, two cumulative `cost-state`s, an unknown model, a
+  trailing partial line).
