@@ -111,7 +111,7 @@ struct RefreshService {
         NotificationScheduler.clearReauthenticationAlert(accountID: account.accountID, preferences: prefs)
 
         try store?.save(snapshot, for: account.accountID)
-        historyStore?.record(snapshot, for: account.accountID)
+        UsageRecorder.record(snapshot, for: account.accountID)
         // No `reloadAllTimelines()` here: the caller reloads once per sweep
         // (see `UsageModel.fetch(accountID:)`), not once per account.
         #if os(iOS)
@@ -232,7 +232,7 @@ struct RefreshService {
         // without this type knowing which.
         try credentialSource.clear()
         store?.removeSnapshot(for: account.accountID)
-        historyStore?.clear(for: account.accountID)
+        UsageRecorder.clear(accountID: account.accountID)
         WidgetCenter.shared.reloadAllTimelines()
         // Everything else keyed by this accountID goes too: the reset/
         // run-out requests still queued for it (they'd fire at their
