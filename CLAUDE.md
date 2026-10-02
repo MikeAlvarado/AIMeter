@@ -40,7 +40,8 @@ assets and string catalog from there.
   `UsageModel.swift` (state, loading, the refresh path),
   `UsageModel+Connections.swift` (connect/reconnect/disconnect, demo mode,
   the macOS redetect), `UsageModel+Naming.swift` (order and nicknames),
-  `UsageModel+Notifications.swift` (the per-account toggles) and
+  `UsageModel+Notifications.swift` (the per-account toggles),
+  `UsageModel+History.swift` (the chart's in-memory timeline cache) and
   `UsageModel+macOS.swift` (refresh schedule, wake/activation observers,
   `AppEnvironment`); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
@@ -51,14 +52,18 @@ assets and string catalog from there.
   `NotificationScheduler+Peak.swift`.
 - `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
   `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
-  row builders, `ProviderDetailRows`) and `NotificationTogglesCards.swift`
-  (both notification cards). The Dashboard is `DashboardView.swift` plus
+  row builders, `ProviderDetailRows`), `HistoryCard.swift` (the Swift
+  Charts history card and the Dashboard row's `Sparkline`) and
+  `NotificationTogglesCards.swift` (both notification cards). The Dashboard is `DashboardView.swift` plus
   `DashboardView+Reorder.swift` (the hold-and-drag reorder, whose state
   stays on the view — internal `@State`, for the same reason as above) and
   `RoundIconButton.swift`.
 - `Shared/` — `PeakBadge.swift` is the one peak glyph every glance surface
   composes (menu bar popover, both widget headers, the all-accounts
-  widget, the Live Activity); `PreferencesModel` keeps a single stored
+  widget, the Live Activity); `UsageRecorder.swift` is the one call that
+  writes a persisted snapshot into both history stores;
+  `HistoryChartData.swift` shapes a timeline into what the chart and the
+  sparkline draw (pure, tested); `PreferencesModel` keeps a single stored
   `Preferences` value behind computed accessors, so the field list exists
   once.
 
@@ -264,8 +269,9 @@ the account silently freezes at its last snapshot.
   requests themselves run in parallel. `refresh(accountID:)` refreshes just
   one (Provider Detail's own pull-to-refresh, one account at a time).
 - Disconnect cascades (`RefreshService.disconnect()` from
-  `UsageModel.disconnect(accountID:)`): credentials, stored snapshot, usage
-  history, every notification still pending or delivered for that account
+  `UsageModel.disconnect(accountID:)`): credentials, stored snapshot, both
+  usage histories (`UsageRecorder.clear` — the predictor's series and the
+  chart's timeline file), every notification still pending or delivered for that account
   (`NotificationScheduler.removeAll(accountID:)` — a queued `reset.` would
   otherwise fire at its `resetsAt` for an account that no longer exists),
   and its per-account preference keys (`NotificationPreferences.clear()`,
@@ -323,13 +329,31 @@ the account silently freezes at its last snapshot.
   when its stored snapshot is older than that interval, via a short-timeout
   (`timeoutIntervalForRequest = 15`, `waitsForConnectivity = false`)
   URLSession so a slow request fails fast instead of wasting the refresh.
-- Usage history: `UsageHistoryStore` (App Group, keyed by `accountID`)
+- Usage history: two stores, written together by `UsageRecorder.record`
+  wherever a fetch persists a snapshot (the app refresh *and* the iOS
+  widget self-fetch, so both stay continuous when only the widget runs)
+  and cleared together on disconnect.
+  `UsageHistoryStore` (App Group `UserDefaults`, keyed by `accountID`)
   keeps a bounded, reset-aware ring of `(timestamp, usedPct)` samples per
   window — the extra data (beyond the single latest snapshot) the
-  recent-rate run-out predictor needs. Recorded wherever a fetch persists
-  a snapshot (the app refresh *and* the iOS widget self-fetch, so it stays
-  continuous when only the widget runs); a used%-drop discards a kind's
-  prior samples so a rate never spans a reset. Cleared on disconnect. Each
+  recent-rate run-out predictor needs; a used%-drop discards a kind's
+  prior samples so a rate never spans a reset. That reset-awareness is
+  exactly why it can't feed a chart, so `UsageTimelineStore` (a JSON file
+  per account in the App Group container, `usage-timeline/<accountID>.json`)
+  keeps the long, reset-*preserving* series of `TimelineSample`s
+  (`timestamp`, `usedPct`, `resetsAt`) per window: raw for 48 hours, one
+  sample per hour (the hour's highest) before that, nothing past 30 days
+  (`UsageTimeline.compacted`, applied on every write — tens of KB per
+  account). Resets are derived at read time, never stored:
+  `UsageTimeline.isReset` says a sample starts a new window when its
+  `resetsAt` moved later by more than a minute (weekly boundaries are
+  fixed anchors) or its figure fell by the same 10-point threshold the
+  predictor uses. Writes are atomic; the app and the widget may both
+  append, and a rarely lost sample is accepted over a lock. The app reads
+  the file once per account into `UsageModel.timelines`
+  (`UsageModel+History.swift`), reloaded after each successful fetch and
+  on each foreground sweep (the widget may have appended), so the
+  Dashboard's sparklines never read a file inside a body evaluation. Each
   account's `observingSince` (the pace warm-up anchor) is independent, so
   an account added later starts its own warm-up clock rather than
   inheriting an existing account's history.
@@ -463,6 +487,24 @@ the account silently freezes at its last snapshot.
   `ResetDetector.earlyResets` compares consecutive snapshots for an early
   refill (used% dropped well before the known reset) to fire the
   early-reset alert.
+- History (Provider Detail → "History", `HistoryCard`): the % of limit
+  used over time for one of the account's reported windows (window and
+  24 h / 7 days / 30 days pills), from `HistoryChartData` over the
+  timeline above — one Swift Charts area + line per window segment, so
+  the curve breaks at a reset instead of drawing a cliff, a dashed rule at
+  each reset, and a faint dashed line at 80 % (the same threshold that
+  turns a bar red; the curve itself stays one color). Y is fixed 0–100 and
+  labeled "% of limit" in the footnote — the data is never tokens.
+  Until the range holds two samples an hour apart the card shows
+  "Recording since …" instead of asserting a shape from one point. The
+  chart is one VoiceOver element with a spoken summary
+  (`HistoryChartData.summary`: span, peak, resets). The Dashboard's usage
+  rows carry a 44×14 pt `Sparkline` of the same 24-hour data before the
+  percentage, only once three points exist, decorative and in the
+  secondary color (`WindowRowsList(showsSparklines:)`, true only from the
+  Dashboard — the popover, landscape, detail and widget rows don't). Demo
+  mode draws from `DemoUsageData.timeline()`, seven fabricated days
+  ending exactly on the demo snapshot's figures.
 - Peak hours — **retired** (`ClaudePeakSchedule.current` is nil since
   2026-09-22). Anthropic introduced a policy in March 2026 where Claude
   Code session usage on Pro and Max burned faster 5-11 AM PT on weekdays,
@@ -639,7 +681,9 @@ exactly this (see `AIMeterWidgets/CLAUDE.md`).
 English source, Spanish complete; the device language picks automatically.
 Three catalogs: `Shared/Localizable.xcstrings` (app + widget UI),
 `Packages/UsageKit/Sources/UsageKit/Resources/Localizable.xcstrings`
-(errors, via `String(localized:bundle:.module)`). Brand words (Claude,
+(errors, via `String(localized:bundle:.module)`); `AIMeter` links
+Swift Charts for the history chart (a system framework, still no
+third-party dependency). Brand words (Claude,
 Pro, Max, AIMeter) are never translated. Dates/currency use system
 formatters. To add a language: add translations to both catalogs and the
 region to the project's `knownRegions`.
@@ -675,7 +719,9 @@ region to the project's `knownRegions`.
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
   grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
-  `ProviderCatalog`, and `UsageModel`'s naming/ordering/demo paths. Two
+  `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, and
+  `HistoryChartData` (readiness, clipping, segments, resets, the spoken
+  summary, and that the demo timeline ends on the demo snapshot). Two
   seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
   with `platformServices: false` (no migration — it probes the real
   Keychain — no scheduler/observers, no notification sweep) and
