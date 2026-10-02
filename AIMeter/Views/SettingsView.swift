@@ -121,6 +121,7 @@ struct SettingsView: View {
                 sectionGap
                 MacChromeSettings()
 
+                if !model.isDemoMode {
                 sectionGap
                 SectionHeader(title: String(localized: "Claude Code"))
                 Card {
@@ -146,6 +147,7 @@ struct SettingsView: View {
                     model.claudeCode?.setEnabled(enabled)
                 }
                 SectionFootnote(text: String(localized: "Adds up the tokens in ~/.claude/projects on this Mac, per model, and prices them at Anthropic's API list rates. Only the usage fields are decoded — never your prompts or Claude's replies — and nothing leaves this Mac. Off by default."))
+                }
                 #endif
 
                 sectionGap

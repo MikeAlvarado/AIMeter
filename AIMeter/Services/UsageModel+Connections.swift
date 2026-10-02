@@ -149,12 +149,18 @@ extension UsageModel {
             ),
             snapshot: DemoUsageData.snapshot()
         )]
+        #if os(macOS)
+        claudeCode?.enterDemo()
+        #endif
     }
 
     func exitDemoMode() {
         guard isDemoMode else { return }
         isDemoMode = false
         connectionError = nil
+        #if os(macOS)
+        claudeCode?.exitDemo()
+        #endif
         loadAccounts()
     }
 

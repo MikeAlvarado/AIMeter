@@ -10,20 +10,20 @@ enum ClaudeCodeUsageRoute: Hashable {
 
 /// Dashboard → "Claude Code on this Mac": the invitation while the
 /// feature is off (only if Claude Code has logs here, and until
-/// dismissed), the three-bucket summary once it's on. Hidden in demo mode
-/// — there is nothing neutral to fabricate for it, and screenshots
-/// shouldn't carry a third-party product name.
+/// dismissed), the three-bucket summary once it's on. In demo mode the
+/// summary shows fabricated figures under a neutral title — screenshots
+/// are store metadata and may not carry a third-party product name.
 struct ClaudeCodeSection: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
 
     var body: some View {
-        if let usage = model.claudeCode, !model.isDemoMode {
-            if usage.enabled {
-                SectionHeader(title: String(localized: "Claude Code on this Mac"))
+        if let usage = model.claudeCode {
+            if usage.isShowing {
+                SectionHeader(title: ClaudeCodeFormatting.sectionTitle(demo: usage.isDemo))
                 ClaudeCodeSummaryCard(usage: usage)
-            } else if !prefs.claudeCodeUsageDismissed, usage.logsExist {
-                SectionHeader(title: String(localized: "Claude Code on this Mac"))
+            } else if !prefs.claudeCodeUsageDismissed, usage.logsExist, !model.isDemoMode {
+                SectionHeader(title: ClaudeCodeFormatting.sectionTitle(demo: false))
                 ClaudeCodeInviteCard()
             }
         }
@@ -114,6 +114,11 @@ private struct ClaudeCodeSummaryCard: View {
 }
 
 enum ClaudeCodeFormatting {
+    /// The real name in-app (nominative use), a neutral one in the demo.
+    static func sectionTitle(demo: Bool) -> String {
+        demo ? String(localized: "Coding sessions on this Mac") : String(localized: "Claude Code on this Mac")
+    }
+
     /// "1.2M tokens · ≈ $4.10", or "—" for an empty bucket.
     static func summary(_ aggregate: ClaudeCodeUsageAggregate) -> String {
         guard aggregate.messages > 0 else { return "—" }

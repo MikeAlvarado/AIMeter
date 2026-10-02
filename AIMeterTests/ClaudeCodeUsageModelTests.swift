@@ -61,3 +61,42 @@ final class ClaudeCodeUsageModelTests: XCTestCase {
     }
 }
 #endif
+
+#if os(macOS)
+final class ClaudeCodeDemoTests: XCTestCase {
+    func testDemoAggregatesNestAndStayNeutral() {
+        var buckets: [ClaudeCodeUsageAggregate] = []
+        for key in ["today", "week", "month", "all"] { buckets.append(DemoUsageData.codingSessions(key)) }
+        for (smaller, larger) in zip(buckets, buckets.dropFirst()) {
+            XCTAssertLessThan(smaller.tokens.total, larger.tokens.total)
+            XCTAssertLessThan(smaller.cost ?? 0, larger.cost ?? 0)
+            XCTAssertLessThan(smaller.sessions, larger.sessions)
+        }
+        for bucket in buckets {
+            XCTAssertEqual(bucket.byModel.count, 3)
+            XCTAssertFalse(bucket.hasUnpricedModels)
+            for row in bucket.byModel {
+                XCTAssertFalse(row.model.lowercased().contains("claude"), "no third-party name in demo data: \(row.model)")
+                XCTAssertFalse(row.model.lowercased().contains("anthropic"))
+                XCTAssertGreaterThan(row.tokens.total, 0)
+            }
+        }
+        XCTAssertFalse(ClaudeCodeFormatting.sectionTitle(demo: true).contains("Claude"))
+        XCTAssertTrue(ClaudeCodeFormatting.sectionTitle(demo: false).contains("Claude Code"))
+    }
+
+    func testDemoSwitchReplacesTheLedgerWithoutTouchingIt() async {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("cc-demo-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let model = ClaudeCodeUsageModel(root: root, indexURL: root.appendingPathComponent("i.json"), enabled: false)
+        XCTAssertFalse(model.isShowing)
+        model.enterDemo()
+        XCTAssertTrue(model.isShowing)
+        XCTAssertEqual(model.aggregate(.today).byModel.first?.model, "Top model")
+        XCTAssertNil(model.menuBarLine(), "the popover line stays out of the demo")
+        model.exitDemo()
+        XCTAssertFalse(model.isShowing)
+        XCTAssertEqual(model.aggregate(.today).messages, 0)
+    }
+}
+#endif
