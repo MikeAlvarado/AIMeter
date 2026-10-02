@@ -89,7 +89,7 @@ can be added later.
   nothing is shown; the check can be turned off in Settings.
 - **Claude Code on this Mac** (macOS, opt-in, off by default): what your
   Claude Code sessions would have cost at API list prices — tokens per
-  model for today, this week, this month and all time — read from the
+  model for today, the last 7 days, the last 30 days and all time — read from the
   session logs the CLI keeps in `~/.claude/projects`. Only the usage
   fields are decoded, never your prompts or the replies, and nothing
   leaves the Mac. Not a bill: your subscription already covers it.
