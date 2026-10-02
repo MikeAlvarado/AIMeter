@@ -26,3 +26,5 @@ DerivedData/
 
 # Local design references (copyrighted app screenshots, do not commit)
 docs/design/reference/
+# LLVM coverage output from xcodebuild test
+*.profraw
