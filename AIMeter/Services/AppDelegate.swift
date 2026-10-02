@@ -1,6 +1,7 @@
 #if os(macOS)
 import AppKit
 import SwiftUI
+import UsageKit
 
 /// The project's only AppDelegate. SwiftUI exposes no scene-level hook for
 /// the activation policy, nor for "the user launched AIMeter while it was
@@ -59,10 +60,36 @@ enum AppChrome {
     /// actions, so this is the bridge — the same shape as `AppEnvironment`,
     /// which the refresh schedule already relies on.
     static var openDashboard: (() -> Void)?
-    /// Presents the Dashboard's Connect sheet — set by the Dashboard on
-    /// appear, called by the Usage menu's "Add Account…" (⌘N) after
-    /// `revealMainWindow()`.
-    static var requestAddAccount: (() -> Void)?
+    /// A Connect sheet to present on the Dashboard: a new account, or a
+    /// reconnect of an existing one. Every surface that can't present the
+    /// sheet itself — the menu bar popover (a sheet on a `MenuBarExtra`
+    /// window renders clipped and floating), the Usage menu — routes
+    /// through `connect(_:)`, which reveals the Dashboard and hands it the
+    /// request. The Dashboard consumes it from its live hook when it is
+    /// already up, else from `onAppear` once the window exists — a request
+    /// queued while the window is closed is never lost.
+    enum ConnectRequest {
+        case add
+        case reconnect(ConnectedAccount)
+    }
+
+    /// Set by the Dashboard on appear, cleared on disappear, so a stale
+    /// closure from a closed window is never called.
+    static var presentConnect: ((ConnectRequest) -> Void)?
+    static var pendingConnect: ConnectRequest?
+
+    static func connect(_ request: ConnectRequest) {
+        pendingConnect = request
+        revealMainWindow()
+        deliverPendingConnect()
+    }
+
+    /// Hands the queued request to the live Dashboard, if there is one.
+    static func deliverPendingConnect() {
+        guard let request = pendingConnect, let present = presentConnect else { return }
+        pendingConnect = nil
+        present(request)
+    }
 
     static func revealMainWindow() {
         // Prefer an existing window: ordering it front keeps the user's

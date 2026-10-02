@@ -830,8 +830,8 @@ region to the project's `knownRegions`.
   Dashboard's own button as well: both firing was the bug. The popover
   also declares ⌘, and ⌘Q on its Settings…/Quit buttons for the same
   reason. "Add Account…" reaches the Dashboard's Connect sheet through
-  `AppChrome.requestAddAccount`, the same bridge shape as
-  `AppChrome.openDashboard`. There is no global hotkey of the app's own
+  `AppChrome.connect(.add)` (see "macOS menu bar" in `AIMeter/CLAUDE.md`),
+  the same bridge shape as `AppChrome.openDashboard`. There is no global hotkey of the app's own
   (see "macOS hiding & re-entry" in `AIMeter/CLAUDE.md`); the sanctioned
   route is the App Intents: `RefreshUsageIntent` (refreshes every account
   and speaks a one-line summary per account, `UsageSummary.spoken`) and

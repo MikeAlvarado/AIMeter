@@ -11,7 +11,6 @@ struct MenuBarView: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
     @Environment(\.openSettings) private var openSettings
-    @State private var showingConnect = false
     /// The account list's natural height, measured — see `accountList`.
     @State private var listHeight: CGFloat = 0
     /// Past this the list scrolls instead of growing the popover.
@@ -41,7 +40,7 @@ struct MenuBarView: View {
 
             if model.needsConnection {
                 DisconnectedPrompt(buttonLabel: "Connect Claude account", verticalPadding: 10) {
-                    showingConnect = true
+                    AppChrome.connect(.add)
                 }
             } else {
                 accountList
@@ -94,9 +93,6 @@ struct MenuBarView: View {
         .padding(14)
         .frame(width: 320)
         .background(Theme.background)
-        .sheet(isPresented: $showingConnect) {
-            ConnectClaudeSheet()
-        }
     }
 
     /// The accounts, in a `ScrollView` whose height is the content's own
@@ -118,7 +114,8 @@ struct MenuBarView: View {
                         iconCornerRadius: 5,
                         font: Theme.sectionHeader,
                         linksToDetail: false,
-                        showsStatusDividers: false
+                        showsStatusDividers: false,
+                        presentsSheets: false
                     )
                 }
                 if !model.isDemoMode {
@@ -148,7 +145,7 @@ struct MenuBarView: View {
     /// is the common case for a menu-bar-first setup.
     private var addAccountButton: some View {
         Button {
-            showingConnect = true
+            AppChrome.connect(.add)
         } label: {
             Label("Add account", systemImage: "plus.circle")
                 .font(Theme.rowTitle)
