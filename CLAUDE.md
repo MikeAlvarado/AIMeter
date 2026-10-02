@@ -40,7 +40,9 @@ assets and string catalog from there.
   `UsageModel.swift` (state, loading, the refresh path),
   `UsageModel+Connections.swift` (connect/reconnect/disconnect, demo mode,
   the macOS redetect), `UsageModel+Naming.swift` (order and nicknames),
-  `UsageModel+Notifications.swift` (the per-account toggles) and
+  `UsageModel+Notifications.swift` (the per-account toggles),
+  `UsageModel+ServiceStatus.swift` (the provider's status page check, see
+  "Service status" below) and
   `UsageModel+macOS.swift` (refresh schedule, wake/activation observers,
   `AppEnvironment`); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
@@ -58,9 +60,10 @@ assets and string catalog from there.
   `RoundIconButton.swift`.
 - `Shared/` — `PeakBadge.swift` is the one peak glyph every glance surface
   composes (menu bar popover, both widget headers, the all-accounts
-  widget, the Live Activity); `PreferencesModel` keeps a single stored
-  `Preferences` value behind computed accessors, so the field list exists
-  once.
+  widget, the Live Activity); `ServiceStatusBanner.swift` is the one
+  incident notice (dashboard, menu bar popover); `PreferencesModel` keeps
+  a single stored `Preferences` value behind computed accessors, so the
+  field list exists once.
 
 ## Architecture rules (non-negotiable)
 
@@ -81,7 +84,10 @@ assets and string catalog from there.
   `legacyAccount` sentinel every widget fallback uses, and
   `makeProvider(for:keychain:transport:)`, the one switch on
   `providerID` that builds a `UsageProvider` plus the `CredentialStore`
-  to clear on disconnect. `RefreshService` holds only those two
+  to clear on disconnect, and `statusSource(for:)` /
+  `statusPageURL(for:)`, which resolve the family's public status page
+  (`ServiceStatusSource`, UsageKit core) or nil for a provider without
+  one — the app then simply shows no status for it. `RefreshService` holds only those two
   existentials and never names a provider; `WidgetRefresher` builds its
   self-fetch provider through the same catalog. The literal `"claude"`
   lives in `ClaudeProvider.providerID` (with `providerDisplayName`) and
@@ -263,6 +269,30 @@ the account silently freezes at its last snapshot.
   each task does on completion is serialized even though the network
   requests themselves run in parallel. `refresh(accountID:)` refreshes just
   one (Provider Detail's own pull-to-refresh, one account at a time).
+- **Service status** (`UsageModel+ServiceStatus.swift`): every sweep
+  (`refreshAll`, `refreshAllIfStale`, `refresh(accountID:)`) also asks
+  each connected provider *family*'s status page for its health — once per
+  family, never per account, concurrently with the fetches and never
+  blocking them, and at most every 5 minutes
+  (`serviceStatusMinimumInterval`). Claude's is the Atlassian Statuspage
+  at status.claude.com (`ClaudeStatusSource`, `summary.json`; shape and
+  fixtures in the Claude provider's CLAUDE.md). The result is a
+  `ServiceStatus` per `providerID` (`UsageModel.serviceStatus`, persisted
+  in the App Group through `ServiceStatusStore` so a relaunch shows the
+  last confirmed state until the first check lands). The rule is that
+  nothing is ever announced that wasn't confirmed: a failed or
+  unparseable check is `unknown`, treated exactly like operational; a
+  last-known status outlives failing checks for 30 minutes
+  (`serviceStatusMaxAge`) and is then dropped rather than asserted
+  stale. `Preferences.checksServiceStatus` (default **on**, presence-
+  checked like the other true-default bools; Settings → "Service
+  status") turns the check off and clears what's shown immediately —
+  Settings mirrors it into `UsageModel.checksServiceStatus` through
+  `setChecksServiceStatus`, so the model never reads the App Group
+  directly (the tests drive it with an injected `ServiceStatusSource`).
+  Demo mode never checks and never shows one. Not in the widget
+  extension or the iOS background task: there is no surface for it
+  there, and a stale status in a widget would be worse than none.
 - Disconnect cascades (`RefreshService.disconnect()` from
   `UsageModel.disconnect(accountID:)`): credentials, stored snapshot, usage
   history, every notification still pending or delivered for that account
@@ -586,6 +616,25 @@ the account silently freezes at its last snapshot.
   (`AccountUsage.isOffline` → `UsageStatusFooter(offline:)`) — nothing is
   wrong with the account, the last snapshot still stands, and the next
   successful fetch clears it.
+- Service incidents (see "Service status" above) render in three places,
+  and only while the provider reports one (`ServiceStatus.isDegraded`) —
+  on a normal day nothing is added anywhere: a `ServiceStatusBanner`
+  above the account list on the Dashboard and at the top of the macOS
+  menu bar popover (provider name + the page's own description, the
+  incident title or the affected components under it, tap opens the
+  incident's page or the status page; `Theme.danger` tint for
+  major/critical, the accent for minor/maintenance — still two colors);
+  and one quiet secondary-color line under a failing account's raw error
+  (`UsageStatusFooter(serviceIncident:)` ← `UsageModel.incidentNote(for:)`,
+  "Claude reports an incident: …") — only when that account's refresh is
+  actually failing, not offline (the device's network, not their outage)
+  and not a dead login (an incident doesn't invalidate credentials). The
+  raw body stays underneath it, per the typed-errors rule. Provider
+  Detail alone shows the status even when fine: a footnote under the
+  rate-limit card, "Service status: All Systems Operational · checked
+  3 min ago" (`serviceStatusFootnote`), so the user can see the check
+  exists and how fresh it is. The status item (`MenuBarLabel`) never
+  gains a glyph for it.
 
 ## Screens
 
@@ -675,7 +724,10 @@ region to the project's `knownRegions`.
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
   grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
-  `ProviderCatalog`, and `UsageModel`'s naming/ordering/demo paths. Two
+  `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, and the
+  service-status throttle, aging, banner and footer-line rules
+  (`ServiceStatusTests`, with a stub `ServiceStatusSource` injected
+  through `UsageModel.serviceStatusSources`). Two
   seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
   with `platformServices: false` (no migration — it probes the real
   Keychain — no scheduler/observers, no notification sweep) and
@@ -688,8 +740,10 @@ region to the project's `knownRegions`.
 ## Open source hygiene
 
 - MIT license. README includes: undocumented-endpoint disclaimer, privacy
-  /data-transparency section, build instructions with the user's own team
-  ID, no affiliation with Anthropic.
+  /data-transparency section (which lists every host the app talks to —
+  the usage/profile endpoints, the OAuth page on iOS, and the public
+  status page), build instructions with the user's own team ID, no
+  affiliation with Anthropic.
 - The App Store Connect app record's **Name** is `AIMeter: Usage Tracker`,
   not the bare `AIMeter` — that exact string is already registered to
   another app (`Name` must be globally unique across every developer in
@@ -746,8 +800,9 @@ region to the project's `knownRegions`.
 ## Workflow
 
 - Data model follows reality: before changing endpoint-related code, run
-  `Scripts/probe-usage-endpoint.sh` and check the captured fixtures. Never
-  guess wire formats.
+  `Scripts/probe-usage-endpoint.sh` (usage) or
+  `Scripts/probe-status-endpoint.sh` (the status page) and check the
+  captured fixtures. Never guess wire formats.
 - Before large changes, propose the plan and wait for approval.
 - Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
   `swift test` in `Packages/UsageKit` must pass warning-free, and
