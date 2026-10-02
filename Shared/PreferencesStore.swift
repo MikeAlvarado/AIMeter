@@ -152,6 +152,16 @@ struct Preferences: Sendable {
     /// Privacy & data — which means it must load through the presence
     /// check like the macOS chrome bools above.
     var checksServiceStatus: Bool = true
+    // MARK: Claude Code usage (macOS)
+    //
+    // Off by default and opt-in: the CLI's logs are another app's files.
+    /// Whether AIMeter reads `~/.claude/projects` for token counts.
+    var claudeCodeUsageEnabled: Bool = false
+    /// The Dashboard's invitation was dismissed ("Not now") — a
+    /// tombstone, same shape as `autoDetectDeclined`.
+    var claudeCodeUsageDismissed: Bool = false
+    /// One "Claude Code today: …" line under the popover's accounts.
+    var menuBarShowsClaudeCodeLine: Bool = false
 
     var lastScheduledAt: Date?
 
@@ -173,6 +183,9 @@ struct Preferences: Sendable {
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
         static let checksServiceStatus = "pref.checksServiceStatus"
+        static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
+        static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
+        static let menuBarShowsClaudeCodeLine = "pref.menuBarShowsClaudeCodeLine"
         static let lastScheduledAt = "pref.lastScheduledAt"
         static let autoDetectDeclined = "pref.autoDetectDeclined"
     }
@@ -220,6 +233,9 @@ struct Preferences: Sendable {
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
+        prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
+        prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
+        prefs.menuBarShowsClaudeCodeLine = defaults.bool(forKey: Keys.menuBarShowsClaudeCodeLine)
         if let timestamp = defaults.object(forKey: Keys.lastScheduledAt) as? Date {
             prefs.lastScheduledAt = timestamp
         }
@@ -339,6 +355,17 @@ final class PreferencesModel {
     var checksServiceStatus: Bool {
         get { stored.checksServiceStatus }
         set { guard stored.checksServiceStatus != newValue else { return }; stored.checksServiceStatus = newValue; persist(newValue, Preferences.Keys.checksServiceStatus, reloadsWidgets: false) }
+    var claudeCodeUsageEnabled: Bool {
+        get { stored.claudeCodeUsageEnabled }
+        set { guard stored.claudeCodeUsageEnabled != newValue else { return }; stored.claudeCodeUsageEnabled = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageEnabled, reloadsWidgets: false) }
+    }
+    var claudeCodeUsageDismissed: Bool {
+        get { stored.claudeCodeUsageDismissed }
+        set { guard stored.claudeCodeUsageDismissed != newValue else { return }; stored.claudeCodeUsageDismissed = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageDismissed, reloadsWidgets: false) }
+    }
+    var menuBarShowsClaudeCodeLine: Bool {
+        get { stored.menuBarShowsClaudeCodeLine }
+        set { guard stored.menuBarShowsClaudeCodeLine != newValue else { return }; stored.menuBarShowsClaudeCodeLine = newValue; persist(newValue, Preferences.Keys.menuBarShowsClaudeCodeLine, reloadsWidgets: false) }
     }
 
     var lastScheduledAt: Date? {

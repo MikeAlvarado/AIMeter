@@ -87,6 +87,12 @@ can be added later.
   failing at the same time says so under its error — so an outage reads
   as their outage, not as a problem with your account. On a normal day
   nothing is shown; the check can be turned off in Settings.
+- **Claude Code on this Mac** (macOS, opt-in, off by default): what your
+  Claude Code sessions would have cost at API list prices — tokens per
+  model for today, this week, this month and all time — read from the
+  session logs the CLI keeps in `~/.claude/projects`. Only the usage
+  fields are decoded, never your prompts or the replies, and nothing
+  leaves the Mac. Not a bill: your subscription already covers it.
 - Peak hours: earlier versions showed Anthropic's weekday peak window,
   during which Claude session usage burned faster. Anthropic removed that
   policy in May 2026 and no plan documents one today, so the indicator
@@ -155,6 +161,14 @@ no analytics, no crash reporting, no third-party SDKs, no server of ours.
   same container, for the history chart. Deleted when you disconnect.
 - Nothing is ever written to UserDefaults outside the App Group, to disk
   unencrypted, or to the repo.
+
+**Claude Code logs (macOS, opt-in)**: off by default. If you turn on
+"Read Claude Code's local usage logs" in Settings, AIMeter reads
+`~/.claude/projects` on that Mac to add up tokens per model; it decodes
+only the usage fields of each record (never conversation content), keeps
+a small index of counts in `~/Library/Application Support/AIMeter/`, and
+deletes that index when you turn it off. `Scripts/probe-claude-code-logs.sh`
+prints exactly which fields it looks at.
 
 **Notifications** are generated locally on the device
 (`UNUserNotificationCenter`) from the reset dates already in the snapshot
