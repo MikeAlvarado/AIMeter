@@ -55,7 +55,14 @@ assets and string catalog from there.
   (both notification cards). The Dashboard is `DashboardView.swift` plus
   `DashboardView+Reorder.swift` (the hold-and-drag reorder, whose state
   stays on the view — internal `@State`, for the same reason as above) and
-  `RoundIconButton.swift`.
+  `RoundIconButton.swift`. The macOS status item is `MenuBarLabel.swift`
+  (the view, the drawn bar/battery glyphs, and `MenuBarLabelModel.current`)
+  over `Shared/MenuBarLabelModel.swift` (the pure model: text, fill, tint,
+  accessibility — the part that is unit-tested); its Settings section is
+  `MenuBarSettings.swift`, split out of `MacChromeSettings.swift`.
+- `AIMeter/Intents/` — the App Intents (`RefreshUsageIntent`,
+  `ShowUsageIntent`, `AIMeterShortcuts`), both platforms; see
+  "Conventions" for why they exist.
 - `Shared/` — `PeakBadge.swift` is the one peak glyph every glance surface
   composes (menu bar popover, both widget headers, the all-accounts
   widget, the Live Activity); `PreferencesModel` keeps a single stored
@@ -563,15 +570,37 @@ the account silently freezes at its last snapshot.
   path that reads them, for a cosmetic edge case (two accounts wanting
   different third-row fallback behavior) that hasn't come up.
 - macOS chrome prefs (same App Group store, macOS-only meaning):
-  `menuBarShowsPercentage` (default **true**), `statusItemVisible`
-  (default **true**), `hideDockIcon` (default **false**). All three default
-  to the behavior that shipped before they existed, so an upgrade never
-  changes an existing install. Bools whose default is `true` must load
+  `statusItemVisible` (default **true**), `hideDockIcon` (default
+  **false**), and the status item's own: `menuBarStyle` (`MenuBarStyle` —
+  `gaugeWithPercent` (the default and what shipped first), `gaugeOnly`,
+  `percentOnly`, `bar`, `battery`, `multi`), `menuBarMetrics` (the 1–3
+  windows `multi` lists, default session + weekly, filtered at render
+  time to what the primary account reports — the same live-options rule
+  as `glanceMetric`), `menuBarTintsAtDanger` (red at ≥ 80 % used or a
+  critical severity, default off), `menuBarShowsResetCountdown` (default
+  off; the label is wrapped in a once-a-minute `TimelineView` only while
+  on) and `menuBarShowsAccountName` (default off, offered only with 2+
+  accounts). All default to the behavior that shipped before they
+  existed, so an upgrade never changes an existing install — including
+  the one migration: `menuBarShowsPercentage`, the pre-style bool, is
+  only read at load now, to derive `menuBarStyle` for an install that
+  never chose one (`false` → `gaugeOnly`); a stored style wins over it,
+  and the old key is left inert, never deleted (the same rule as the
+  migrated notification keys). Bools whose default is `true` must load
   through `Preferences.bool(_:_:default:)`, which presence-checks the key —
   `UserDefaults.bool(forKey:)` reports `false` for an unwritten key and
   would silently flip them. Unlike `glanceMetric` (account-dependent, so it
-  lives in Claude's Provider Detail) these are provider-agnostic app chrome
-  and surface in app-wide Settings via `MacChromeSettings`.
+  lives in Claude's Provider Detail on iOS) these are provider-agnostic app
+  chrome and surface in app-wide Settings via `MacChromeSettings` /
+  `MenuBarSettings`. The label itself is computed once per state change
+  by `MenuBarLabelModel` (Shared, pure) and only drawn by `MenuBarLabel`:
+  the gauge styles are the variable-value SF Symbol as always, `bar` and
+  `battery` are rendered to an `NSImage` with `ImageRenderer` (a status
+  item flattens arbitrary SwiftUI shapes but draws an `Image(nsImage:)`
+  faithfully) — a *template* image, so it follows a light or dark menu
+  bar, except under the danger tint, where it carries the real
+  `Theme.danger` and is marked non-template. Whatever the style, the exact
+  value(s) stay in the tooltip and the accessibility label.
 - "Open at Login" has **no preference key**: `SMAppService.mainApp.status`
   is the state, read live by `LoginItemManager`. A mirrored bool would drift
   the moment the user revoked it in System Settings.
@@ -650,6 +679,27 @@ region to the project's `knownRegions`.
 - Keep files under ~300 lines; split by feature, not by type.
 - Accessibility: every usage row is one combined VoiceOver element; bars
   are decorative (`accessibilityHidden`); icon-only buttons carry labels.
+- Keyboard shortcuts (macOS): a "Usage" menu in the main menu bar
+  (`AIMeterApp.commands`) carries them so they are discoverable — ⌘R
+  Refresh All, ⌘N Add Account…, ⌘⇧U Used/Remaining, ⌘⇧A relative/absolute
+  reset times. ⌘R is declared there and on the popover's Refresh button
+  (the popover is its own window with no main menu), never on the
+  Dashboard's own button as well: both firing was the bug. The popover
+  also declares ⌘, and ⌘Q on its Settings…/Quit buttons for the same
+  reason. "Add Account…" reaches the Dashboard's Connect sheet through
+  `AppChrome.requestAddAccount`, the same bridge shape as
+  `AppChrome.openDashboard`. There is no global hotkey of the app's own
+  (see "macOS hiding & re-entry" in `AIMeter/CLAUDE.md`); the sanctioned
+  route is the App Intents: `RefreshUsageIntent` (refreshes every account
+  and speaks a one-line summary per account, `UsageSummary.spoken`) and
+  `ShowUsageIntent` (`openAppWhenRun`, reveals the dashboard), registered
+  by `AIMeterShortcuts` with phrases, so the user can give either a
+  system-wide key in the Shortcuts app with no extra permission. They
+  reach the live model through `AppEnvironment.shared`, which
+  `UsageModel.init` now sets on both platforms (iOS gets the same two
+  Shortcuts/Siri actions for free). Their `perform()` is `@MainActor`:
+  AppIntents calls it from an arbitrary executor and everything they
+  touch is main-actor state.
 - Hit areas: a `.plain`-style `Button` hit-tests its *label*, and a
   transparent frame, padding, or `Spacer` is not opaque content — so any
   button whose background is drawn outside the label (the capsule buttons,
@@ -675,7 +725,9 @@ region to the project's `knownRegions`.
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
   grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
-  `ProviderCatalog`, and `UsageModel`'s naming/ordering/demo paths. Two
+  `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, and the
+  menu bar label's text/fill/tint rules plus the style migration
+  (`MenuBarLabelModelTests`). Two
   seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
   with `platformServices: false` (no migration — it probes the real
   Keychain — no scheduler/observers, no notification sweep) and

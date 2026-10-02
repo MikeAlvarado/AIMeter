@@ -51,6 +51,15 @@ can be added later.
   or a widget happens to fetch next, not instantly.
 - Dashboard with one card per connected account (plan badge, per-window
   reset countdowns), and a fullscreen landscape mode on iPhone.
+- macOS menu bar styles: gauge with or without the number, number only, a
+  bar, a battery, or two or three windows side by side — plus an optional
+  reset countdown, the account's name, and red once a window passes 80 %.
+  Settings shows a live preview on a light and a dark menu bar.
+- Keyboard shortcuts on the Mac (a "Usage" menu: ⌘R refresh, ⌘N add
+  account, ⌘⇧U used/remaining, ⌘⇧A reset-time style) and two
+  Shortcuts/Siri actions on both platforms, "Refresh Usage" and "Show
+  Usage" — give either a system-wide key in the Shortcuts app; AIMeter
+  asks for no Accessibility permission to do it itself.
 - Detail screen with the raw provider data: spend cap and extra-usage
   credits, exactly as the endpoint reports them; a **Forecast** card
   projecting which windows are on track to run out early, plus a per-row
