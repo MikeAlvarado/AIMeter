@@ -27,6 +27,15 @@ final class ClaudeCodeUsageModel {
             }
         }
 
+        var demoKey: String {
+            switch self {
+            case .today: "today"
+            case .week: "week"
+            case .month: "month"
+            case .all: "all"
+            }
+        }
+
         func interval(now: Date, calendar: Calendar) -> DateInterval? {
             switch self {
             case .today: ClaudeCodeUsageAggregate.today(now: now, calendar: calendar)
@@ -40,6 +49,10 @@ final class ClaudeCodeUsageModel {
     private(set) var ledger = ClaudeCodeUsageLedger()
     private(set) var isScanning = false
     private(set) var enabled: Bool
+    /// "View Demo": fabricated aggregates in place of the logs, with
+    /// neutral model names and a neutral section title (see
+    /// `DemoUsageData.codingSessions`). The real ledger is untouched.
+    private(set) var isDemo = false
     let root: URL
     let indexURL: URL
     @ObservationIgnored private let reader: ClaudeCodeLogReader
@@ -115,14 +128,21 @@ final class ClaudeCodeUsageModel {
     }
 
     func aggregate(_ bucket: Bucket, now: Date = Date(), calendar: Calendar = .current) -> ClaudeCodeUsageAggregate {
+        if isDemo { return DemoUsageData.codingSessions(bucket.demoKey) }
         let entries = ClaudeCodeUsageAggregate.entries(ledger.entries, in: bucket.interval(now: now, calendar: calendar))
         return ClaudeCodeUsageAggregate(entries: entries)
     }
 
+    /// The section shows while the feature is on *or* the demo is.
+    var isShowing: Bool { enabled || isDemo }
+
+    func enterDemo() { isDemo = true }
+    func exitDemo() { isDemo = false }
+
     /// The popover's optional one-liner; nil until there is something to
     /// say today.
     func menuBarLine(now: Date = Date()) -> String? {
-        guard enabled else { return nil }
+        guard enabled, !isDemo else { return nil }
         let today = aggregate(.today, now: now)
         guard today.messages > 0 else { return nil }
         let tokens = UsageFormatting.tokens(today.tokens.total)

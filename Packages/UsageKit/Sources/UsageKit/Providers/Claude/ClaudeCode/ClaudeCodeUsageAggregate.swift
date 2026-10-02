@@ -9,6 +9,13 @@ public struct ClaudeCodeUsageAggregate: Equatable, Sendable {
         /// nil when the pricing table doesn't know this model.
         public let cost: Double?
         public let messages: Int
+
+        public init(model: String, tokens: ClaudeCodeTokenCounts, cost: Double?, messages: Int) {
+            self.model = model
+            self.tokens = tokens
+            self.cost = cost
+            self.messages = messages
+        }
     }
 
     public let tokens: ClaudeCodeTokenCounts
@@ -22,6 +29,18 @@ public struct ClaudeCodeUsageAggregate: Equatable, Sendable {
     public let sessions: Int
     /// Most tokens first.
     public let byModel: [ModelUsage]
+
+    /// A ready-made aggregate — the app's demo mode fabricates these with
+    /// neutral model names, since nothing in a screenshot may name a
+    /// third-party product.
+    public init(tokens: ClaudeCodeTokenCounts, cost: Double?, hasUnpricedModels: Bool = false, messages: Int, sessions: Int, byModel: [ModelUsage]) {
+        self.tokens = tokens
+        self.cost = cost
+        self.hasUnpricedModels = hasUnpricedModels
+        self.messages = messages
+        self.sessions = sessions
+        self.byModel = byModel
+    }
 
     public init(entries: [ClaudeCodeUsageEntry]) {
         var perModel: [String: (tokens: ClaudeCodeTokenCounts, cost: Double?, priced: Bool, messages: Int)] = [:]
