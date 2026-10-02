@@ -80,4 +80,26 @@ nonisolated enum ProviderCatalog {
             return makeProvider(for: claude, keychain: keychain, transport: transport)
         }
     }
+
+    /// Where this family publishes its service health, if anywhere. nil
+    /// for a provider without a status page: the app then shows nothing
+    /// for it — there is nothing to show, and a guess is worse than
+    /// silence.
+    static func statusSource(for providerID: String, transport: (any HTTPTransport)? = nil) -> (any ServiceStatusSource)? {
+        switch providerID {
+        case ClaudeProvider.providerID:
+            transport.map { ClaudeStatusSource(transport: $0) } ?? ClaudeStatusSource()
+        default:
+            nil
+        }
+    }
+
+    /// The human status page, for a banner whose incident carries no link
+    /// of its own.
+    static func statusPageURL(for providerID: String) -> URL? {
+        switch providerID {
+        case ClaudeProvider.providerID: ClaudeStatusSource.pageURL
+        default: nil
+        }
+    }
 }

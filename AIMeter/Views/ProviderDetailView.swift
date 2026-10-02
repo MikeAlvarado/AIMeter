@@ -38,9 +38,13 @@ struct ProviderDetailView: View {
                             snapshot: usage?.snapshot,
                             error: usage?.lastError,
                             reauthenticate: usage?.needsReauthentication == true ? { showingReconnect = true } : nil,
-                            offline: usage?.isOffline == true
+                            offline: usage?.isOffline == true,
+                            serviceIncident: usage.flatMap(model.incidentNote(for:))
                         )
                     }
+                }
+                if let usage, let note = model.serviceStatusFootnote(for: usage.account.providerID) {
+                    SectionFootnote(text: note)
                 }
 
                 // Only while a peak schedule is in force — none is today

@@ -80,6 +80,14 @@ struct MenuBarView: View {
                 peakBadgeRow
                 Divider().overlay(Theme.track)
             }
+            if let incident = model.activeIncident {
+                ServiceStatusBanner(
+                    providerName: ProviderCatalog.displayName(for: incident.providerID),
+                    status: incident.status,
+                    fallbackURL: ProviderCatalog.statusPageURL(for: incident.providerID),
+                    compact: true
+                )
+            }
 
             if model.needsConnection {
                 DisconnectedPrompt(buttonLabel: "Connect Claude account", verticalPadding: 10) {

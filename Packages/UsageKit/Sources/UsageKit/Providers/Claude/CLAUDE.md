@@ -89,3 +89,29 @@ repo-root CLAUDE.md):
   every mapped window with its length (5 h sessions, 7-day weeks) so
   `UsageWindow.effectiveDuration` never has to fall back to the kind's
   default for a Claude window.
+
+## Service status (Statuspage)
+
+- `ClaudeStatusSource` reads Claude's public status page, an Atlassian
+  Statuspage: `GET https://status.claude.com/api/v2/summary.json`
+  (status.anthropic.com 301s there; the code uses the canonical host).
+  No auth, no parameters, `Accept: application/json`, 10 s timeout. It is
+  the one request in this package that carries nothing about the user.
+- Fields read (everything else is ignored by construction — the
+  `Decodable`s only declare these): `status.indicator` (`none` →
+  `.operational`, `minor`/`major`/`critical`/`maintenance` → same, anything
+  else → `.unknown`) and `status.description` (shown verbatim);
+  `components[].name` / `status` / `group` (non-operational,
+  non-group names become `affectedComponents`, page order); the first
+  `incidents[]` entry's `name` and `shortlink` (Statuspage lists only
+  unresolved incidents in the summary, newest first), falling back to
+  `scheduled_maintenances[0]` when the indicator is `maintenance`.
+- Fixtures: `Tests/UsageKitTests/Fixtures/status-summary-operational.json`
+  is a real capture (2026-10-02, `Scripts/probe-status-endpoint.sh -o`);
+  `status-summary-incident-synthetic.json` is hand-built on the same
+  schema because an incident can't be captured on demand — re-run the
+  probe during a real one and replace it. Non-200 → `UsageError.httpError`;
+  a body that doesn't decode → `invalidResponse`. The app turns either
+  into "unknown", never into an incident.
+- `ClaudeStatusSource.pageURL` is the human page the banner opens when an
+  incident has no `shortlink` of its own.

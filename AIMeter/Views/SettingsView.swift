@@ -123,6 +123,18 @@ struct SettingsView: View {
                 #endif
 
                 sectionGap
+                SectionHeader(title: String(localized: "Service status"))
+                Card {
+                    Toggle(isOn: $prefs.checksServiceStatus) {
+                        Text("Check service status")
+                            .font(Theme.rowTitle)
+                            .foregroundStyle(Theme.ink)
+                    }
+                    .tint(Theme.accent)
+                }
+                SectionFootnote(text: String(localized: "Reads the provider's public status page whenever AIMeter refreshes, so an outage shows as an incident instead of an account error. Nothing about you is sent."))
+
+                sectionGap
                 SectionHeader(title: String(localized: "Background refresh"))
                 Card {
                     HStack {
@@ -203,6 +215,9 @@ struct SettingsView: View {
             #else
             model.rebuildRefreshSchedule(interval: newValue.interval)
             #endif
+        }
+        .onChange(of: prefs.checksServiceStatus) { _, newValue in
+            model.setChecksServiceStatus(newValue)
         }
     }
 

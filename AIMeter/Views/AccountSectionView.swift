@@ -43,6 +43,7 @@ struct AccountSectionView: View {
     @State private var showingReconnect = false
     @State private var showingRename = false
     @State private var renameDraft = ""
+    @Environment(UsageModel.self) private var model
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -55,7 +56,8 @@ struct AccountSectionView: View {
                         error: usage.lastError,
                         showsDividers: showsStatusDividers,
                         reauthenticate: usage.needsReauthentication ? { showingReconnect = true } : nil,
-                        offline: usage.isOffline
+                        offline: usage.isOffline,
+                        serviceIncident: model.incidentNote(for: usage)
                     )
                 }
             }

@@ -129,6 +129,13 @@ struct Preferences: Sendable {
     /// running and refreshing either way.
     var hideDockIcon: Bool = false
 
+    /// Whether refreshes also read the provider's public status page, so
+    /// an outage shows as an incident instead of an account error. On by
+    /// default — it is an anonymous GET of a public page, disclosed in
+    /// Privacy & data — which means it must load through the presence
+    /// check like the macOS chrome bools above.
+    var checksServiceStatus: Bool = true
+
     var lastScheduledAt: Date?
 
     enum Keys {
@@ -143,6 +150,7 @@ struct Preferences: Sendable {
         static let menuBarShowsPercentage = "pref.menuBarShowsPercentage"
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
+        static let checksServiceStatus = "pref.checksServiceStatus"
         static let lastScheduledAt = "pref.lastScheduledAt"
         static let autoDetectDeclined = "pref.autoDetectDeclined"
     }
@@ -176,6 +184,7 @@ struct Preferences: Sendable {
         prefs.menuBarShowsPercentage = bool(defaults, Keys.menuBarShowsPercentage, default: true)
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
+        prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
         if let timestamp = defaults.object(forKey: Keys.lastScheduledAt) as? Date {
             prefs.lastScheduledAt = timestamp
         }
@@ -275,6 +284,10 @@ final class PreferencesModel {
     var hideDockIcon: Bool {
         get { stored.hideDockIcon }
         set { guard stored.hideDockIcon != newValue else { return }; stored.hideDockIcon = newValue; persist(newValue, Preferences.Keys.hideDockIcon, reloadsWidgets: false) }
+    }
+    var checksServiceStatus: Bool {
+        get { stored.checksServiceStatus }
+        set { guard stored.checksServiceStatus != newValue else { return }; stored.checksServiceStatus = newValue; persist(newValue, Preferences.Keys.checksServiceStatus, reloadsWidgets: false) }
     }
 
     var lastScheduledAt: Date? {
