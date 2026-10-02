@@ -70,11 +70,12 @@ final class HistoryChartDataTests: XCTestCase {
             let series = try? XCTUnwrap(timeline[window.kind.storageKey])
             XCTAssertEqual(series?.last?.usedPct, window.usedPct, "\(window.kind)")
             XCTAssertEqual(series?.last?.timestamp, now)
-            XCTAssertGreaterThan(series?.count ?? 0, 300, "7 days every 30 minutes")
+            XCTAssertGreaterThan(series?.count ?? 0, 1400, "30 days every 30 minutes")
         }
         let sessions = HistoryChartData(samples: timeline["session"] ?? [], range: .week, now: now)
         XCTAssertGreaterThan(sessions.resets.count, 20, "about 33 five-hour cycles in a week")
         XCTAssertEqual(HistoryChartData(samples: timeline["weekly"] ?? [], range: .week, now: now).resets.count, 1)
+        XCTAssertEqual(HistoryChartData(samples: timeline["weekly"] ?? [], range: .month, now: now).resets.count, 4, "one weekly reset per week over 30 days")
         XCTAssertTrue(sessions.isReady)
         XCTAssertLessThanOrEqual(sessions.peak?.usedPct ?? 101, 100)
     }
