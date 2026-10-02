@@ -183,6 +183,24 @@ enum UsageFormatting {
         return String(localized: "now")
     }
 
+    /// "840", "12.3K", "1.2M" — token counts at a glance.
+    static func tokens(_ count: Int) -> String {
+        let value = Double(count)
+        func scaled(_ divisor: Double, _ suffix: String) -> String {
+            let number = (value / divisor).formatted(.number.precision(.fractionLength(0...1)))
+            return number + suffix
+        }
+        if value >= 1_000_000_000 { return scaled(1_000_000_000, "B") }
+        if value >= 1_000_000 { return scaled(1_000_000, "M") }
+        if value >= 10_000 { return scaled(1_000, "K") }
+        return count.formatted(.number)
+    }
+
+    /// "$4.10" — the equivalent-cost figures are always USD list prices.
+    static func usd(_ amount: Double) -> String {
+        amount.formatted(.currency(code: "USD").precision(.fractionLength(2)))
+    }
+
     /// "Updated 2 min ago" footer text.
     static func updatedLabel(_ fetchedAt: Date, now: Date = Date()) -> String {
         let seconds = max(0, now.timeIntervalSince(fetchedAt))

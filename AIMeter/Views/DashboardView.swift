@@ -33,6 +33,12 @@ struct DashboardView: View {
             VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
                 header
                 providerSection
+                #if os(macOS)
+                // Per machine, not per account — see `ClaudeCodeUsageModel`.
+                VStack(alignment: .leading, spacing: 10) {
+                    ClaudeCodeSection()
+                }
+                #endif
             }
             .padding(20)
             .background {
@@ -69,6 +75,11 @@ struct DashboardView: View {
         .navigationDestination(for: String.self) { accountID in
             ProviderDetailView(accountID: accountID)
         }
+        #if os(macOS)
+        .navigationDestination(for: ClaudeCodeUsageRoute.self) { _ in
+            ClaudeCodeUsageView()
+        }
+        #endif
         #if os(iOS)
         .refreshable {
             refreshRequests += 1

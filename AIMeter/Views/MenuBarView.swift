@@ -64,6 +64,7 @@ struct MenuBarLabel: View {
 
 struct MenuBarView: View {
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @Environment(\.openSettings) private var openSettings
     @State private var showingConnect = false
 
@@ -102,6 +103,12 @@ struct MenuBarView: View {
                         }
                         if !model.isDemoMode {
                             addAccountButton
+                        }
+                        if prefs.menuBarShowsClaudeCodeLine, !model.isDemoMode, let line = model.claudeCode?.menuBarLine() {
+                            Divider().overlay(Theme.track)
+                            Label(line, systemImage: "terminal")
+                                .font(Theme.caption)
+                                .foregroundStyle(Theme.inkSecondary)
                         }
                     }
                 }

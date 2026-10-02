@@ -129,6 +129,17 @@ struct Preferences: Sendable {
     /// running and refreshing either way.
     var hideDockIcon: Bool = false
 
+    // MARK: Claude Code usage (macOS)
+    //
+    // Off by default and opt-in: the CLI's logs are another app's files.
+    /// Whether AIMeter reads `~/.claude/projects` for token counts.
+    var claudeCodeUsageEnabled: Bool = false
+    /// The Dashboard's invitation was dismissed ("Not now") — a
+    /// tombstone, same shape as `autoDetectDeclined`.
+    var claudeCodeUsageDismissed: Bool = false
+    /// One "Claude Code today: …" line under the popover's accounts.
+    var menuBarShowsClaudeCodeLine: Bool = false
+
     var lastScheduledAt: Date?
 
     enum Keys {
@@ -143,6 +154,9 @@ struct Preferences: Sendable {
         static let menuBarShowsPercentage = "pref.menuBarShowsPercentage"
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
+        static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
+        static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
+        static let menuBarShowsClaudeCodeLine = "pref.menuBarShowsClaudeCodeLine"
         static let lastScheduledAt = "pref.lastScheduledAt"
         static let autoDetectDeclined = "pref.autoDetectDeclined"
     }
@@ -176,6 +190,9 @@ struct Preferences: Sendable {
         prefs.menuBarShowsPercentage = bool(defaults, Keys.menuBarShowsPercentage, default: true)
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
+        prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
+        prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
+        prefs.menuBarShowsClaudeCodeLine = defaults.bool(forKey: Keys.menuBarShowsClaudeCodeLine)
         if let timestamp = defaults.object(forKey: Keys.lastScheduledAt) as? Date {
             prefs.lastScheduledAt = timestamp
         }
@@ -275,6 +292,18 @@ final class PreferencesModel {
     var hideDockIcon: Bool {
         get { stored.hideDockIcon }
         set { guard stored.hideDockIcon != newValue else { return }; stored.hideDockIcon = newValue; persist(newValue, Preferences.Keys.hideDockIcon, reloadsWidgets: false) }
+    }
+    var claudeCodeUsageEnabled: Bool {
+        get { stored.claudeCodeUsageEnabled }
+        set { guard stored.claudeCodeUsageEnabled != newValue else { return }; stored.claudeCodeUsageEnabled = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageEnabled, reloadsWidgets: false) }
+    }
+    var claudeCodeUsageDismissed: Bool {
+        get { stored.claudeCodeUsageDismissed }
+        set { guard stored.claudeCodeUsageDismissed != newValue else { return }; stored.claudeCodeUsageDismissed = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageDismissed, reloadsWidgets: false) }
+    }
+    var menuBarShowsClaudeCodeLine: Bool {
+        get { stored.menuBarShowsClaudeCodeLine }
+        set { guard stored.menuBarShowsClaudeCodeLine != newValue else { return }; stored.menuBarShowsClaudeCodeLine = newValue; persist(newValue, Preferences.Keys.menuBarShowsClaudeCodeLine, reloadsWidgets: false) }
     }
 
     var lastScheduledAt: Date? {

@@ -25,6 +25,156 @@
         }
       }
     },
+    "Adds up the tokens in ~/.claude/projects on this Mac, per model, and prices them at Anthropic's API list rates. Only the usage fields are decoded — never your prompts or Claude's replies — and nothing leaves this Mac. Off by default." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suma los tokens de ~/.claude/projects en este Mac, por modelo, y los valora a los precios de lista de la API de Anthropic. Solo se decodifican los campos de uso (nunca tus prompts ni las respuestas de Claude) y nada sale de este Mac. Desactivado por defecto."
+          }
+        }
+      }
+    },
+    "All time" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        }
+      }
+    },
+    "By model" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por modelo"
+          }
+        }
+      }
+    },
+    "Cache reads" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecturas de caché"
+          }
+        }
+      }
+    },
+    "Cache writes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrituras en caché"
+          }
+        }
+      }
+    },
+    "Claude Code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code"
+          }
+        }
+      }
+    },
+    "Claude Code on this Mac" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code en este Mac"
+          }
+        }
+      }
+    },
+    "Claude Code today: %@ · ≈ %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code hoy: %1$@ · ≈ %2$@"
+          }
+        }
+      }
+    },
+    "Claude Code usage is opt-in" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El uso de Claude Code es opcional"
+          }
+        }
+      }
+    },
+    "Claude Code's own totals for the same sessions come to %@ (%@ apart)." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los totales del propio Claude Code para las mismas sesiones suman %1$@ (%2$@ de diferencia)."
+          }
+        }
+      }
+    },
+    "Enable" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar"
+          }
+        }
+      }
+    },
+    "Equivalent API cost" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coste equivalente en API"
+          }
+        }
+      }
+    },
+    "Equivalent cost at Anthropic's list prices as of %@. Your subscription already covers this usage — it is not a bill. Read from %@." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coste equivalente a los precios de lista de Anthropic a fecha de %1$@. Tu suscripción ya cubre este uso: no es una factura. Leído de %2$@."
+          }
+        }
+      }
+    },
+    "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields — never your prompts or the replies — keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si lo activas en Ajustes, AIMeter lee los registros de sesión que Claude Code guarda en ~/.claude/projects para sumar tokens por modelo y valorarlos a precios de lista de la API. Solo decodifica los campos de uso (nunca tus prompts ni las respuestas), guarda un pequeño índice de recuentos en su propia carpeta de Application Support, lo borra al desactivarlo y no envía nada a ningún sitio."
+          }
+        }
+      }
+    },
+    "Input" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrada"
+          }
+        }
+      }
+    },
     "%@ limit reached" : {
       "localizations" : {
         "es" : {
@@ -45,12 +195,42 @@
         }
       }
     },
+    "Messages" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensajes"
+          }
+        }
+      }
+    },
     "%@ nearing its limit" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ cerca de su límite"
+          }
+        }
+      }
+    },
+    "No messages in this period." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin mensajes en este periodo."
+          }
+        }
+      }
+    },
+    "Not now" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
           }
         }
       }
@@ -65,12 +245,42 @@
         }
       }
     },
+    "Output (incl. thinking)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salida (incl. razonamiento)"
+          }
+        }
+      }
+    },
+    "Read Claude Code's local usage logs" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer los registros locales de uso de Claude Code"
+          }
+        }
+      }
+    },
     "%@ refilled early" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ se recargó antes"
+          }
+        }
+      }
+    },
+    "Rescan" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a analizar"
           }
         }
       }
@@ -1541,6 +1751,16 @@
         }
       }
     },
+    "Scanning…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizando…"
+          }
+        }
+      }
+    },
     "Schedule as of %@." : {
       "localizations" : {
         "es" : {
@@ -1557,6 +1777,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programado hace %lld minutos."
+          }
+        }
+      }
+    },
+    "See what your Claude Code sessions on this Mac would cost at API prices. AIMeter reads only the token counts from its local logs — never what you wrote or what it answered." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira cuánto costarían a precio de API tus sesiones de Claude Code en este Mac. AIMeter lee solo los recuentos de tokens de sus registros locales, nunca lo que escribiste ni lo que respondió."
           }
         }
       }
@@ -1600,6 +1830,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ventanas de uso de sesión, semanal y del modelo principal."
+          }
+        }
+      }
+    },
+    "Sessions" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesiones"
           }
         }
       }
@@ -1650,6 +1890,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar porcentaje"
+          }
+        }
+      }
+    },
+    "Show today's total in the menu bar" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el total de hoy en la barra de menús"
           }
         }
       }
@@ -1863,6 +2113,56 @@
         }
       }
     },
+    "This month" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este mes"
+          }
+        }
+      }
+    },
+    "This week" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta semana"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy"
+          }
+        }
+      }
+    },
+    "%@ tokens" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ tokens"
+          }
+        }
+      }
+    },
+    "Tokens" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tokens"
+          }
+        }
+      }
+    },
     "Tokens live in the Keychain" : {
       "localizations" : {
         "es" : {
@@ -2011,6 +2311,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Advertencia"
+          }
+        }
+      }
+    },
+    "Web searches" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Búsquedas web"
           }
         }
       }
