@@ -44,6 +44,36 @@
         }
       }
     },
+    "24 h" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24 h"
+          }
+        }
+      }
+    },
+    "30 days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 días"
+          }
+        }
+      }
+    },
+    "7 days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 días"
+          }
+        }
+      }
+    },
     "Absolute Reset Times" : {
       "localizations" : {
         "es" : {
@@ -167,6 +197,16 @@
         }
       }
     },
+    "History" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial"
+          }
+        }
+      }
+    },
     "%@ limit reached" : {
       "localizations" : {
         "es" : {
@@ -197,12 +237,42 @@
         }
       }
     },
+    "No resets." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin reinicios."
+          }
+        }
+      }
+    },
     "%@ of %@" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ de %@"
+          }
+        }
+      }
+    },
+    "Peaked at %lld% at %@." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máximo de %1$lld % a las %2$@."
+          }
+        }
+      }
+    },
+    "Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 30 days. Dashed lines mark resets; the red line is the 80% mark." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porcentaje del límite usado, muestreado cada vez que AIMeter o un widget actualiza y guardado en este dispositivo 30 días. Las líneas discontinuas marcan reinicios; la línea roja es el 80 %."
           }
         }
       }
@@ -243,6 +313,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consulta la página pública de estado del proveedor cada vez que AIMeter actualiza, para que una caída se muestre como incidente y no como un error de tu cuenta. No se envía nada sobre ti."
+          }
+        }
+      }
+    },
+    "Recording since %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrando desde %@"
+          }
+        }
+      }
+    },
+    "Recording starts with the next refresh" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El registro empieza con la próxima actualización"
           }
         }
       }
@@ -297,12 +387,32 @@
         }
       }
     },
+    "Reset %lld times." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld reinicios."
+          }
+        }
+      }
+    },
     "Reset countdown" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cuenta atrás del reinicio"
+          }
+        }
+      }
+    },
+    "Reset once." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un reinicio."
           }
         }
       }
@@ -2141,6 +2251,46 @@
         }
       }
     },
+    "The chart appears once an hour of samples exists in this range." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La gráfica aparece cuando haya una hora de muestras en este rango."
+          }
+        }
+      }
+    },
+    "the last 24 hours" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "las últimas 24 horas"
+          }
+        }
+      }
+    },
+    "the last 30 days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "los últimos 30 días"
+          }
+        }
+      }
+    },
+    "the last 7 days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "los últimos 7 días"
+          }
+        }
+      }
+    },
     "The menu bar always shows a gauge that fills with your usage. Pick which window it reads above. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip." : {
       "comment" : "Footnote for the menu bar label.",
       "isCommentAutoGenerated" : true,
@@ -2186,6 +2336,16 @@
         }
       }
     },
+    "To draw the history chart, AIMeter keeps the percentages it has already fetched — just the numbers and their dates, nothing about what you did — on this device for 30 days. Disconnecting an account deletes its history." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para dibujar la gráfica de historial, AIMeter guarda los porcentajes que ya obtuvo (solo los números y sus fechas, nada sobre lo que hiciste) en este dispositivo durante 30 días. Desconectar una cuenta borra su historial."
+          }
+        }
+      }
+    },
     "Tokens live in the Keychain" : {
       "localizations" : {
         "es" : {
@@ -2213,6 +2373,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "hasta el reinicio"
+          }
+        }
+      }
+    },
+    "Up to 30 days of history" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta 30 días de historial"
           }
         }
       }
@@ -2263,6 +2433,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uso"
+          }
+        }
+      }
+    },
+    "%@ usage over %@." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso de %1$@ en %2$@."
           }
         }
       }

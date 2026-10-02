@@ -35,6 +35,9 @@ struct AccountSectionView: View {
     /// rather than making their own. The alert itself talks to
     /// `UsageModel` directly (see `renameAccountAlert`).
     var canRename = false
+    /// Whether each usage row carries its 24-hour sparkline — on for the
+    /// Dashboard, off for the popover and landscape, which stay a glance.
+    var showsSparklines = false
 
     /// The sheet is owned here rather than by each caller because all three
     /// surfaces that render an account (Dashboard, landscape, macOS menu
@@ -50,7 +53,7 @@ struct AccountSectionView: View {
             header
             Card {
                 VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                    WindowRowsList(snapshot: usage.snapshot)
+                    WindowRowsList(snapshot: usage.snapshot, accountID: usage.account.accountID, showsSparklines: showsSparklines)
                     UsageStatusFooter(
                         snapshot: usage.snapshot,
                         error: usage.lastError,
