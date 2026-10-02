@@ -32,6 +32,15 @@ struct DashboardView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
                 header
+                // Only while the provider itself reports a problem — on a
+                // normal day the dashboard looks exactly as it always has.
+                if let incident = model.activeIncident {
+                    ServiceStatusBanner(
+                        providerName: ProviderCatalog.displayName(for: incident.providerID),
+                        status: incident.status,
+                        fallbackURL: ProviderCatalog.statusPageURL(for: incident.providerID)
+                    )
+                }
                 providerSection
             }
             .padding(20)

@@ -131,6 +131,12 @@ struct UsageStatusFooter: View {
     /// secondary color, since the last snapshot is still valid and there
     /// is nothing for the user to fix.
     var offline = false
+    /// Set when the provider itself reports an incident while this
+    /// account's refresh is failing (`UsageModel.incidentNote(for:)`): one
+    /// quiet line under the raw error saying so. The raw body stays — the
+    /// typed-errors rule — this only adds the context that makes it
+    /// readable as "their outage", not "your account".
+    var serviceIncident: String?
 
     var body: some View {
         if let reauthenticate {
@@ -150,6 +156,11 @@ struct UsageStatusFooter: View {
             Label(error, systemImage: offline ? "wifi.slash" : "exclamationmark.triangle")
                 .font(Theme.caption)
                 .foregroundStyle(offline ? Theme.inkSecondary : Theme.danger)
+            if let serviceIncident {
+                Label(serviceIncident, systemImage: "exclamationmark.icloud")
+                    .font(Theme.caption)
+                    .foregroundStyle(Theme.inkSecondary)
+            }
         }
         if let snapshot {
             if showsDividers { Divider().overlay(Theme.track) }

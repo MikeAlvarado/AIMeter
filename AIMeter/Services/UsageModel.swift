@@ -70,6 +70,19 @@ final class UsageModel {
     /// own files should touch either.
     var services: [String: RefreshService] = [:]
     let registry: AccountRegistryStore?
+    /// Last known service health per provider family — see
+    /// `UsageModel+ServiceStatus.swift`. Keyed by `providerID`, never by
+    /// account: an outage belongs to the service.
+    var serviceStatus: [String: ServiceStatus] = [:]
+    /// Whether refreshes also check the status page
+    /// (`Preferences.checksServiceStatus`, mirrored here by Settings so the
+    /// model never reads the App Group behind the tests' back).
+    var checksServiceStatus = true
+    @ObservationIgnored var serviceStatusCheckedAt: [String: Date] = [:]
+    @ObservationIgnored var serviceStatusSources: [String: any ServiceStatusSource] = [:]
+    /// nil in unit tests (no App Group); the last fetched status survives a
+    /// relaunch through it so the popover isn't blank until the first check.
+    let serviceStatusStore: ServiceStatusStore?
     /// `peakEnabled` is the one field on `NotificationPreferences` that
     /// ignores `accountID` (peak hours is a Claude-wide policy, not tied to
     /// any one account) — "global" is a documented placeholder, never used
@@ -101,10 +114,13 @@ final class UsageModel {
     /// notification sweep — just the registry handed in.
     init(registry: AccountRegistryStore?, platformServices: Bool) {
         self.registry = registry
+        serviceStatusStore = platformServices ? ServiceStatusStore(suiteName: AppConfig.appGroupID) : nil
         if platformServices {
             AccountMigration.run(registry: registry)
+            checksServiceStatus = Preferences.load().checksServiceStatus
         }
         loadAccounts()
+        loadStoredServiceStatus()
         guard platformServices else { return }
         #if os(macOS)
         AppEnvironment.shared = self
@@ -179,12 +195,14 @@ final class UsageModel {
 
     func refreshAll() async {
         guard !isDemoMode else { return }
+        async let status: Void = refreshServiceStatus()
         let fetched = await withTaskGroup(of: Bool.self) { group in
             for account in accounts.map(\.account) {
                 group.addTask { await self.fetch(accountID: account.accountID) }
             }
             return await group.reduce(false) { $0 || $1 }
         }
+        await status
         if fetched { WidgetCenter.shared.reloadAllTimelines() }
     }
 
@@ -199,9 +217,11 @@ final class UsageModel {
     }
 
     func refresh(accountID: String) async {
+        async let status: Void = refreshServiceStatus()
         if await fetch(accountID: accountID) {
             WidgetCenter.shared.reloadAllTimelines()
         }
+        await status
     }
 
     /// One account's fetch + bookkeeping. Returns whether a new snapshot
@@ -284,6 +304,7 @@ final class UsageModel {
     /// pushes new snapshots to the widgets immediately.
     func refreshAllIfStale(maxAge: TimeInterval = 60) async {
         guard !isDemoMode else { return }
+        async let status: Void = refreshServiceStatus()
         let fetched = await withTaskGroup(of: Bool.self) { group in
             for entry in accounts {
                 let isFresh = entry.snapshot.map { Date().timeIntervalSince($0.fetchedAt) < maxAge } ?? false
@@ -292,6 +313,7 @@ final class UsageModel {
             }
             return await group.reduce(false) { $0 || $1 }
         }
+        await status
         if fetched { WidgetCenter.shared.reloadAllTimelines() }
     }
 

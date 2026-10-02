@@ -4,7 +4,9 @@
   busy; soft haptic on refresh start; ⌘R on macOS, here and in the menu
   bar popover; refresh fans out to every account
   concurrently via `UsageModel.refreshAll()`), small centered serif
-  "AIMeter" title, then one section per *connected account*
+  "AIMeter" title, then — only while the provider reports an incident
+  (`UsageModel.activeIncident`, see "Service status" in the repo-root
+  CLAUDE.md) — a `ServiceStatusBanner`, then one section per *connected account*
   (`AccountSectionView`, shared with the macOS menu bar popover): logo +
   nickname + Pro/Max pill (trailing) → card with the three windows, error,
   "Updated X ago"; tapping a section's header pushes that account's
@@ -124,7 +126,11 @@
     shared `AccountSectionView`/`UsageStatusFooter`, not per screen.
 - **Provider detail** (push, one per account — `ProviderDetailView(accountID:)`):
   rate-limit rows for that account (with the same "Sign in again" recovery
-  row when this account's credentials stopped working); a **Peak hours** card
+  row when this account's credentials stopped working, and the same
+  incident line under a failing refresh), followed by the one always-on
+  service-status footnote in the app ("Service status: … · checked X
+  ago", `UsageModel.serviceStatusFootnote`, absent until the first check
+  of a launch lands or while the check is turned off); a **Peak hours** card
   (`PeakHoursCard`, see "Peak hours" in the repo-root CLAUDE.md, identical
   content regardless of account since the policy is Claude-wide, not
   account-specific) with a live status line and a "schedule as of"
@@ -171,7 +177,11 @@
   Claude-wide policy with nothing account-specific to scope it to; see
   "Peak hours" in the repo-root CLAUDE.md — the whole card is gated on
   `ClaudePeakSchedule.current` being non-nil, so it doesn't render while
-  the policy is retired), and refresh
+  the policy is retired), a "Service status" card with the one
+  "Check service status" toggle (`Preferences.checksServiceStatus`,
+  default on; its `onChange` mirrors the value into the model through
+  `setChecksServiceStatus`, same shape as the refresh-cadence handler),
+  and refresh
   cadence menu (all app-wide, not per account), a "Privacy & data" link,
   and an "Open Source" row (GitHub mark, opens the repo URL). iOS: sheet
   with Done; macOS: Settings scene
@@ -185,7 +195,8 @@
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
   Keychain, no tracking, and on macOS the opt-in login item), how connecting
   works (per platform), the one requested OAuth scope (`user:profile`) as a
-  chip + the two read-only endpoints called, and the independence/MIT/
+  chip + the two read-only endpoints called + the anonymous status-page
+  check and where to turn it off, and the independence/MIT/
   trademark footer. Every claim must stay true to the code — the scope chip
   in particular must match `ClaudeOAuth.scope`.
 - The GitHub mark is a bundled PNG (`Shared/Media.xcassets/GitHubIcon`,
@@ -276,7 +287,9 @@
   is off (`MenuBarExtra(isInserted:)`). The popover shows a peak-hours
   badge row at the top only while peak is active (never, while the policy
   is retired; peak is Claude-wide, not per account, so this isn't
-  repeated per section) + divider, then **every**
+  repeated per section) + divider, a compact `ServiceStatusBanner` only
+  while the provider reports an incident (same rule as the Dashboard's),
+  then **every**
   connected account as its own `AccountSectionView` (shared with the
   Dashboard, `linksToDetail: false` here since the popover has no
   navigation stack to push into — tapping a section header does nothing,
