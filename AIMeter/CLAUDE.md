@@ -24,7 +24,9 @@
   accounts, the "Claude Code on this Mac" section (`ClaudeCodeSection` —
   see "Claude Code local usage" in the repo-root CLAUDE.md): the
   invitation card while the feature is off, the three-bucket summary
-  pushing `ClaudeCodeUsageView` while on; nothing in demo mode. The header's refresh
+  pushing `ClaudeCodeUsageView` while on; in demo mode, the same summary
+  and detail over `DemoUsageData.codingSessions` under the neutral title
+  "Coding sessions on this Mac". The header's refresh
   button and pull-to-refresh play a soft haptic, keyed on a
   user-initiated request counter rather than `isRefreshing`, which also
   flips for the foreground auto-refresh.
@@ -271,9 +273,10 @@
   usage — and `DemoUsageData.timeline()`, seven days of samples per window
   ending on those exact figures (a 5-hour session sawtooth of varying
   height, the weekly windows resetting once where the snapshot says the
-  week began), so every screen (rate limits, sparklines, history chart,
-  pace, forecast, spend/extra cards) can be explored without a real
-  Claude account. Its
+  week began), and on macOS `DemoUsageData.codingSessions` (the Claude
+  Code section under its neutral demo title), so every screen (rate
+  limits, sparklines, history chart, pace, forecast, spend/extra cards,
+  coding sessions) can be explored without a real Claude account. Its
   names are deliberately neutral — the account is nicknamed "Personal" and
   the per-model window is "Top model", never a provider or product name —
   because demo mode is where App Store screenshots come from, and

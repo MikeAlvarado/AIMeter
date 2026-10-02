@@ -573,8 +573,13 @@ the account silently freezes at its last snapshot.
   bar", one `Claude Code today: 300K · ≈ $2.00` line under the popover's
   accounts); Privacy & data has its row. `UsageModel.claudeCode` owns
   the model and rescans it on every refresh sweep while enabled; off
-  clears what's shown *and* deletes the reader's index. Hidden in demo
-  mode. Rules: only the usage fields are decoded (the `Decodable`s
+  clears what's shown *and* deletes the reader's index. In demo mode the
+  section shows `DemoUsageData.codingSessions` — fabricated, nesting
+  aggregates with neutral model names ("Top model", "Everyday model",
+  "Fast model") under the neutral title "Coding sessions on this Mac",
+  no Rescan, a "Sample data" footnote — so screenshots can show the
+  feature without a third-party product name; the Settings card and the
+  popover line stay out of the demo. Rules: only the usage fields are decoded (the `Decodable`s
   declare nothing else — content is never read, by construction); the
   reader is incremental by file **size** and byte offset, never by
   modification date (a required-reason API); duplicates are the norm

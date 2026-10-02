@@ -34,16 +34,18 @@ struct ClaudeCodeUsageView: View {
                         DetailRowsCard(rows: aggregate.byModel.map { entry in (entry.model, modelValue(entry)) })
                     }
 
-                    Button {
-                        usage.rescan()
-                    } label: {
-                        Label(String(localized: "Rescan"), systemImage: "arrow.clockwise")
-                            .font(Theme.caption.weight(.semibold))
-                            .foregroundStyle(Theme.accent)
+                    if !usage.isDemo {
+                        Button {
+                            usage.rescan()
+                        } label: {
+                            Label(String(localized: "Rescan"), systemImage: "arrow.clockwise")
+                                .font(Theme.caption.weight(.semibold))
+                                .foregroundStyle(Theme.accent)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(usage.isScanning)
+                        .padding(.top, 4)
                     }
-                    .buttonStyle(.plain)
-                    .disabled(usage.isScanning)
-                    .padding(.top, 4)
 
                     SectionFootnote(text: footnote(usage))
                         .padding(.top, 4)
@@ -52,7 +54,7 @@ struct ClaudeCodeUsageView: View {
             .padding(20)
         }
         .background(Theme.background)
-        .navigationTitle(Text("Claude Code on this Mac"))
+        .navigationTitle(Text(ClaudeCodeFormatting.sectionTitle(demo: model.claudeCode?.isDemo == true)))
     }
 
     private func rows(_ aggregate: ClaudeCodeUsageAggregate) -> [(String, String)] {
@@ -81,6 +83,9 @@ struct ClaudeCodeUsageView: View {
 
     private func footnote(_ usage: ClaudeCodeUsageModel) -> String {
         let verified = ClaudeModelPricing.lastVerified.formatted(date: .abbreviated, time: .omitted)
+        if usage.isDemo {
+            return String(localized: "Sample data. Equivalent cost at list prices as of \(verified) — your subscription already covers this usage; it is not a bill.")
+        }
         let path = usage.root.path.replacingOccurrences(of: FileManager.default.homeDirectoryForCurrentUser.path, with: "~")
         var text = String(localized: "Equivalent cost at Anthropic's list prices as of \(verified). Your subscription already covers this usage — it is not a bill. Read from \(path).")
         if let drift = usage.pricingDrift, drift.theirs > 0 {

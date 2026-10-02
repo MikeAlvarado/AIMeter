@@ -110,4 +110,43 @@ enum DemoUsageData {
             UsageWindow.Kind.modelSpecific(String(localized: "Top model")).storageKey: model,
         ]
     }
+
+    /// Fabricated "coding sessions on this Mac" figures for the macOS
+    /// demo (the Claude Code section), one aggregate per bucket, nesting
+    /// the way rolling windows do. Model names are neutral stand-ins for
+    /// the same reason the account is "Personal": screenshots are store
+    /// metadata.
+    static func codingSessions(_ bucket: String) -> ClaudeCodeUsageAggregate {
+        func model(_ name: String, _ total: Int, _ cost: Double, _ messages: Int) -> ClaudeCodeUsageAggregate.ModelUsage {
+            let tokens = ClaudeCodeTokenCounts(
+                input: total / 20, output: total / 40, thinking: total / 200,
+                cacheWrite5m: total / 10, cacheWrite1h: total / 50, cacheRead: total - total / 20 - total / 40 - total / 10 - total / 50,
+                webSearches: messages / 12
+            )
+            return .init(model: name, tokens: tokens, cost: cost, messages: messages)
+        }
+        let rows: [ClaudeCodeUsageAggregate.ModelUsage]
+        let sessions: Int
+        switch bucket {
+        case "today":
+            rows = [model(String(localized: "Top model"), 9_400_000, 7.10, 118), model(String(localized: "Everyday model"), 2_600_000, 1.45, 61), model(String(localized: "Fast model"), 410_000, 0.12, 24)]
+            sessions = 3
+        case "week":
+            rows = [model(String(localized: "Top model"), 61_200_000, 44.80, 702), model(String(localized: "Everyday model"), 19_700_000, 10.95, 388), model(String(localized: "Fast model"), 3_600_000, 1.05, 190)]
+            sessions = 17
+        case "month":
+            rows = [model(String(localized: "Top model"), 226_000_000, 163.20, 2_610), model(String(localized: "Everyday model"), 71_300_000, 39.60, 1_422), model(String(localized: "Fast model"), 12_900_000, 3.70, 690)]
+            sessions = 64
+        default:
+            rows = [model(String(localized: "Top model"), 812_000_000, 585.00, 9_380), model(String(localized: "Everyday model"), 254_000_000, 141.20, 5_061), model(String(localized: "Fast model"), 47_500_000, 13.60, 2_480)]
+            sessions = 231
+        }
+        return ClaudeCodeUsageAggregate(
+            tokens: rows.reduce(ClaudeCodeTokenCounts()) { $0 + $1.tokens },
+            cost: rows.compactMap(\.cost).reduce(0, +),
+            messages: rows.reduce(0) { $0 + $1.messages },
+            sessions: sessions,
+            byModel: rows
+        )
+    }
 }
