@@ -21,8 +21,8 @@ final class ClaudeCodeUsageModel {
         var label: String {
             switch self {
             case .today: String(localized: "Today")
-            case .week: String(localized: "This week")
-            case .month: String(localized: "This month")
+            case .week: String(localized: "Last 7 days")
+            case .month: String(localized: "Last 30 days")
             case .all: String(localized: "All time")
             }
         }
@@ -30,8 +30,8 @@ final class ClaudeCodeUsageModel {
         func interval(now: Date, calendar: Calendar) -> DateInterval? {
             switch self {
             case .today: ClaudeCodeUsageAggregate.today(now: now, calendar: calendar)
-            case .week: ClaudeCodeUsageAggregate.thisWeek(now: now, calendar: calendar)
-            case .month: ClaudeCodeUsageAggregate.thisMonth(now: now, calendar: calendar)
+            case .week: ClaudeCodeUsageAggregate.last(days: 7, now: now)
+            case .month: ClaudeCodeUsageAggregate.last(days: 30, now: now)
             case .all: nil
             }
         }

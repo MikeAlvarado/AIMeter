@@ -44,315 +44,22 @@
         }
       }
     },
-    "24 h" : {
+    "Last 30 days" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "24 h"
+            "value" : "Últimos 30 días"
           }
         }
       }
     },
-    "30 days" : {
+    "Last 7 days" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30 días"
-          }
-        }
-      }
-    },
-    "7 days" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 días"
-          }
-        }
-      }
-    },
-    "Absolute Reset Times" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Horas de reinicio absolutas"
-          }
-        }
-      }
-    },
-    "Account name" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre de la cuenta"
-          }
-        }
-      }
-    },
-    "Add Account…" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añadir cuenta…"
-          }
-        }
-      }
-    },
-    "Adds up the tokens in ~/.claude/projects on this Mac, per model, and prices them at Anthropic's API list rates. Only the usage fields are decoded — never your prompts or Claude's replies — and nothing leaves this Mac. Off by default." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suma los tokens de ~/.claude/projects en este Mac, por modelo, y los valora a los precios de lista de la API de Anthropic. Solo se decodifican los campos de uso (nunca tus prompts ni las respuestas de Claude) y nada sale de este Mac. Desactivado por defecto."
-          }
-        }
-      }
-    },
-    "Affected: %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afectado: %@"
-          }
-        }
-      }
-    },
-    "AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous — nothing about you or your account is sent — and you can turn it off in Settings." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter también consulta la página pública de estado del proveedor al actualizar, para distinguir una caída del servicio de un problema con tu cuenta. Esa petición es anónima (no se envía nada sobre ti ni sobre tu cuenta) y puedes desactivarla en Ajustes."
-          }
-        }
-      }
-    },
-    "All time" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total"
-          }
-        }
-      }
-    },
-    "Bar" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Barra"
-          }
-        }
-      }
-    },
-    "Battery" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Batería"
-          }
-        }
-      }
-    },
-    "By model" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Por modelo"
-          }
-        }
-      }
-    },
-    "C" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cr"
-          }
-        }
-      }
-    },
-    "Cache reads" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lecturas de caché"
-          }
-        }
-      }
-    },
-    "Cache writes" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escrituras en caché"
-          }
-        }
-      }
-    },
-    "Check service status" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comprobar el estado del servicio"
-          }
-        }
-      }
-    },
-    "Claude" : {
-      "shouldTranslate" : false
-    },
-    "Claude Code" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude Code"
-          }
-        }
-      }
-    },
-    "Claude Code on this Mac" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude Code en este Mac"
-          }
-        }
-      }
-    },
-    "Claude Code today: %@ · ≈ %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude Code hoy: %1$@ · ≈ %2$@"
-          }
-        }
-      }
-    },
-    "Claude Code usage is opt-in" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El uso de Claude Code es opcional"
-          }
-        }
-      }
-    },
-    "Claude Code's own totals for the same sessions come to %@ (%@ apart)." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Los totales del propio Claude Code para las mismas sesiones suman %1$@ (%2$@ de diferencia)."
-          }
-        }
-      }
-    },
-    "Enable" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activar"
-          }
-        }
-      }
-    },
-    "Equivalent API cost" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coste equivalente en API"
-          }
-        }
-      }
-    },
-    "Equivalent cost at Anthropic's list prices as of %@. Your subscription already covers this usage — it is not a bill. Read from %@." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coste equivalente a los precios de lista de Anthropic a fecha de %1$@. Tu suscripción ya cubre este uso: no es una factura. Leído de %2$@."
-          }
-        }
-      }
-    },
-    "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there — no extra permissions needed." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para un atajo global, añade \"Refresh Usage\" o \"Show Usage\" en la app Atajos y asígnale una tecla ahí; no requiere permisos extra."
-          }
-        }
-      }
-    },
-    "Gauge and percentage" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indicador y porcentaje"
-          }
-        }
-      }
-    },
-    "Gauge only" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo indicador"
-          }
-        }
-      }
-    },
-    "History" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Historial"
-          }
-        }
-      }
-    },
-    "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields — never your prompts or the replies — keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si lo activas en Ajustes, AIMeter lee los registros de sesión que Claude Code guarda en ~/.claude/projects para sumar tokens por modelo y valorarlos a precios de lista de la API. Solo decodifica los campos de uso (nunca tus prompts ni las respuestas), guarda un pequeño índice de recuentos en su propia carpeta de Application Support, lo borra al desactivarlo y no envía nada a ningún sitio."
-          }
-        }
-      }
-    },
-    "Input" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entrada"
+            "value" : "Últimos 7 días"
           }
         }
       }
@@ -377,52 +84,12 @@
         }
       }
     },
-    "Messages" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mensajes"
-          }
-        }
-      }
-    },
     "%@ nearing its limit" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ cerca de su límite"
-          }
-        }
-      }
-    },
-    "No messages in this period." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin mensajes en este periodo."
-          }
-        }
-      }
-    },
-    "No resets." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin reinicios."
-          }
-        }
-      }
-    },
-    "Not now" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ahora no"
           }
         }
       }
@@ -437,142 +104,12 @@
         }
       }
     },
-    "Output (incl. thinking)" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salida (incl. razonamiento)"
-          }
-        }
-      }
-    },
-    "Peaked at %lld% at %@." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Máximo de %1$lld % a las %2$@."
-          }
-        }
-      }
-    },
-    "Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 30 days. Dashed lines mark resets; the red line is the 80% mark." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Porcentaje del límite usado, muestreado cada vez que AIMeter o un widget actualiza y guardado en este dispositivo 30 días. Las líneas discontinuas marcan reinicios; la línea roja es el 80 %."
-          }
-        }
-      }
-    },
-    "Percentage only" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo porcentaje"
-          }
-        }
-      }
-    },
-    "Pick up to three windows to list side by side. The exact values are always in the tooltip." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elige hasta tres ventanas para mostrarlas juntas. Los valores exactos siempre están en el tooltip."
-          }
-        }
-      }
-    },
-    "Pick which window the menu bar reads. Whatever the style, the exact value is always in the tooltip." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elige qué ventana lee la barra de menús. Sea cual sea el estilo, el valor exacto siempre está en el tooltip."
-          }
-        }
-      }
-    },
-    "Read Claude Code's local usage logs" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leer los registros locales de uso de Claude Code"
-          }
-        }
-      }
-    },
-    "Reads the provider's public status page whenever AIMeter refreshes, so an outage shows as an incident instead of an account error. Nothing about you is sent." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Consulta la página pública de estado del proveedor cada vez que AIMeter actualiza, para que una caída se muestre como incidente y no como un error de tu cuenta. No se envía nada sobre ti."
-          }
-        }
-      }
-    },
-    "Recording since %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Registrando desde %@"
-          }
-        }
-      }
-    },
-    "Recording starts with the next refresh" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El registro empieza con la próxima actualización"
-          }
-        }
-      }
-    },
-    "Red at 80% used" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rojo al 80 % usado"
-          }
-        }
-      }
-    },
     "%@ refilled early" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ se recargó antes"
-          }
-        }
-      }
-    },
-    "Refresh All" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualizar todo"
-          }
-        }
-      }
-    },
-    "Relative Reset Times" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Horas de reinicio relativas"
           }
         }
       }
@@ -587,62 +124,32 @@
         }
       }
     },
-    "Rescan" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volver a analizar"
-          }
-        }
-      }
-    },
-    "Reset %lld times." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld reinicios."
-          }
-        }
-      }
-    },
-    "Reset countdown" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta atrás del reinicio"
-          }
-        }
-      }
-    },
-    "Reset once." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un reinicio."
-          }
-        }
-      }
-    },
-    "resets in %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "se reinicia en %@"
-          }
-        }
-      }
-    },
     "%@ running low" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ por agotarse"
+          }
+        }
+      }
+    },
+    "%@ tokens" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ tokens"
+          }
+        }
+      }
+    },
+    "%@ usage over %@." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso de %1$@ en %2$@."
           }
         }
       }
@@ -768,6 +275,16 @@
         }
       }
     },
+    "7 days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 días"
+          }
+        }
+      }
+    },
     "7d" : {
       "comment" : "Compact subtitle under the Lock Screen circular gauge when it shows the weekly window.",
       "localizations" : {
@@ -775,6 +292,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7d"
+          }
+        }
+      }
+    },
+    "24 h" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24 h"
+          }
+        }
+      }
+    },
+    "30 days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 días"
           }
         }
       }
@@ -809,6 +346,16 @@
         }
       }
     },
+    "Absolute Reset Times" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de reinicio absolutas"
+          }
+        }
+      }
+    },
     "Account" : {
       "comment" : "The parameter title for the account picker in the widget configuration UI.",
       "isCommentAutoGenerated" : true,
@@ -821,6 +368,16 @@
         }
       }
     },
+    "Account name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la cuenta"
+          }
+        }
+      }
+    },
     "Add account" : {
       "comment" : "A button that adds a new account.",
       "isCommentAutoGenerated" : true,
@@ -829,6 +386,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agregar cuenta"
+          }
+        }
+      }
+    },
+    "Add Account…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir cuenta…"
+          }
+        }
+      }
+    },
+    "Adds up the tokens in ~/.claude/projects on this Mac, per model, and prices them at Anthropic's API list rates. Only the usage fields are decoded — never your prompts or Claude's replies — and nothing leaves this Mac. Off by default." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suma los tokens de ~/.claude/projects en este Mac, por modelo, y los valora a los precios de lista de la API de Anthropic. Solo se decodifican los campos de uso (nunca tus prompts ni las respuestas de Claude) y nada sale de este Mac. Desactivado por defecto."
+          }
+        }
+      }
+    },
+    "Affected: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afectado: %@"
           }
         }
       }
@@ -849,6 +436,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AIMeter: aún no hay datos de uso"
+          }
+        }
+      }
+    },
+    "AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous — nothing about you or your account is sent — and you can turn it off in Settings." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter también consulta la página pública de estado del proveedor al actualizar, para distinguir una caída del servicio de un problema con tu cuenta. Esa petición es anónima (no se envía nada sobre ti ni sobre tu cuenta) y puedes desactivarla en Ajustes."
           }
         }
       }
@@ -903,6 +500,9 @@
           }
         }
       }
+    },
+    "AIMeter isn't running." : {
+
     },
     "AIMeter keeps running and refreshing your usage either way — hiding only changes what you see. Quit still quits." : {
       "localizations" : {
@@ -965,6 +565,16 @@
         }
       }
     },
+    "All time" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        }
+      }
+    },
     "Another account is already called that." : {
       "localizations" : {
         "es" : {
@@ -1015,6 +625,26 @@
         }
       }
     },
+    "Bar" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra"
+          }
+        }
+      }
+    },
+    "Battery" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batería"
+          }
+        }
+      }
+    },
     "Behind pace" : {
       "localizations" : {
         "es" : {
@@ -1025,12 +655,62 @@
         }
       }
     },
+    "By model" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por modelo"
+          }
+        }
+      }
+    },
+    "C" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        }
+      }
+    },
+    "Cache reads" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecturas de caché"
+          }
+        }
+      }
+    },
+    "Cache writes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrituras en caché"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancelar"
+          }
+        }
+      }
+    },
+    "Check service status" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobar el estado del servicio"
           }
         }
       }
@@ -1081,6 +761,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cuenta de Claude"
+          }
+        }
+      }
+    },
+    "Claude Code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code"
+          }
+        }
+      }
+    },
+    "Claude Code on this Mac" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code en este Mac"
+          }
+        }
+      }
+    },
+    "Claude Code today: %@ · ≈ %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code hoy: %1$@ · ≈ %2$@"
+          }
+        }
+      }
+    },
+    "Claude Code usage is opt-in" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El uso de Claude Code es opcional"
+          }
+        }
+      }
+    },
+    "Claude Code's own totals for the same sessions come to %@ (%@ apart)." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los totales del propio Claude Code para las mismas sesiones suman %1$@ (%2$@ de diferencia)."
           }
         }
       }
@@ -1248,12 +978,42 @@
         }
       }
     },
+    "Enable" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar"
+          }
+        }
+      }
+    },
     "Enabled" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activado"
+          }
+        }
+      }
+    },
+    "Equivalent API cost" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coste equivalente en API"
+          }
+        }
+      }
+    },
+    "Equivalent cost at Anthropic's list prices as of %@. Your subscription already covers this usage — it is not a bill. Read from %@." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coste equivalente a los precios de lista de Anthropic a fecha de %1$@. Tu suscripción ya cubre este uso: no es una factura. Leído de %2$@."
           }
         }
       }
@@ -1370,6 +1130,19 @@
         }
       }
     },
+    "Fetches the latest usage for every connected account and updates the widgets." : {
+
+    },
+    "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there — no extra permissions needed." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para un atajo global, añade \"Refresh Usage\" o \"Show Usage\" en la app Atajos y asígnale una tecla ahí; no requiere permisos extra."
+          }
+        }
+      }
+    },
     "Forecast" : {
       "localizations" : {
         "es" : {
@@ -1386,6 +1159,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seguir usando ahora consume tus créditos de uso."
+          }
+        }
+      }
+    },
+    "Gauge and percentage" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador y porcentaje"
+          }
+        }
+      }
+    },
+    "Gauge only" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo indicador"
           }
         }
       }
@@ -1430,6 +1223,16 @@
         }
       }
     },
+    "History" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial"
+          }
+        }
+      }
+    },
     "How connecting works" : {
       "localizations" : {
         "es" : {
@@ -1446,6 +1249,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cómo funciona la conexión, a qué puede acceder la app y dónde viven tus datos."
+          }
+        }
+      }
+    },
+    "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields — never your prompts or the replies — keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si lo activas en Ajustes, AIMeter lee los registros de sesión que Claude Code guarda en ~/.claude/projects para sumar tokens por modelo y valorarlos a precios de lista de la API. Solo decodifica los campos de uso (nunca tus prompts ni las respuestas), guarda un pequeño índice de recuentos en su propia carpeta de Application Support, lo borra al desactivarlo y no envía nada a ningún sitio."
+          }
+        }
+      }
+    },
+    "Input" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrada"
           }
         }
       }
@@ -1537,6 +1360,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Barra de menú"
+          }
+        }
+      }
+    },
+    "Messages" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensajes"
           }
         }
       }
@@ -1642,6 +1475,26 @@
         }
       }
     },
+    "No messages in this period." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin mensajes en este periodo."
+          }
+        }
+      }
+    },
+    "No resets." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin reinicios."
+          }
+        }
+      }
+    },
     "No tracking, no analytics" : {
       "localizations" : {
         "es" : {
@@ -1669,6 +1522,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Normal"
+          }
+        }
+      }
+    },
+    "Not now" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
           }
         }
       }
@@ -1824,6 +1687,19 @@
         }
       }
     },
+    "Opens AIMeter's dashboard." : {
+
+    },
+    "Output (incl. thinking)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salida (incl. razonamiento)"
+          }
+        }
+      }
+    },
     "Paste" : {
       "localizations" : {
         "es" : {
@@ -1894,12 +1770,73 @@
         }
       }
     },
+    "Peaked at %lld% at %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máximo de %1$lld % a las %2$@."
+          }
+        }
+      }
+    },
+    "Peaked at %lld%% at %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Peaked at %1$lld%% at %2$@."
+          }
+        }
+      }
+    },
     "Percent" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Porcentaje"
+          }
+        }
+      }
+    },
+    "Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 30 days. Dashed lines mark resets; the red line is the 80% mark." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porcentaje del límite usado, muestreado cada vez que AIMeter o un widget actualiza y guardado en este dispositivo 30 días. Las líneas discontinuas marcan reinicios; la línea roja es el 80 %."
+          }
+        }
+      }
+    },
+    "Percentage only" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo porcentaje"
+          }
+        }
+      }
+    },
+    "Pick up to three windows to list side by side. The exact values are always in the tooltip." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige hasta tres ventanas para mostrarlas juntas. Los valores exactos siempre están en el tooltip."
+          }
+        }
+      }
+    },
+    "Pick which window the menu bar reads. Whatever the style, the exact value is always in the tooltip." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige qué ventana lee la barra de menús. Sea cual sea el estilo, el valor exacto siempre está en el tooltip."
           }
         }
       }
@@ -1954,12 +1891,72 @@
         }
       }
     },
+    "Read Claude Code's local usage logs" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer los registros locales de uso de Claude Code"
+          }
+        }
+      }
+    },
+    "Reads the provider's public status page whenever AIMeter refreshes, so an outage shows as an incident instead of an account error. Nothing about you is sent." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta la página pública de estado del proveedor cada vez que AIMeter actualiza, para que una caída se muestre como incidente y no como un error de tu cuenta. No se envía nada sobre ti."
+          }
+        }
+      }
+    },
+    "Recording since %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrando desde %@"
+          }
+        }
+      }
+    },
+    "Recording starts with the next refresh" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El registro empieza con la próxima actualización"
+          }
+        }
+      }
+    },
+    "Red at 80% used" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rojo al 80 % usado"
+          }
+        }
+      }
+    },
     "Refresh" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Actualizar"
+          }
+        }
+      }
+    },
+    "Refresh All" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar todo"
           }
         }
       }
@@ -1973,6 +1970,9 @@
           }
         }
       }
+    },
+    "Refresh Usage" : {
+
     },
     "Relative" : {
       "localizations" : {
@@ -1990,6 +1990,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Relativo muestra la cuenta regresiva al reinicio. Absoluto muestra la hora local. Toca cualquier etiqueta de reinicio en el panel para cambiar."
+          }
+        }
+      }
+    },
+    "Relative Reset Times" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de reinicio relativas"
           }
         }
       }
@@ -2034,6 +2044,49 @@
         }
       }
     },
+    "Rescan" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a analizar"
+          }
+        }
+      }
+    },
+    "Reset" : {
+
+    },
+    "Reset %lld times." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld reinicios."
+          }
+        }
+      }
+    },
+    "Reset countdown" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta atrás del reinicio"
+          }
+        }
+      }
+    },
+    "Reset once." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un reinicio."
+          }
+        }
+      }
+    },
     "Reset timers" : {
       "localizations" : {
         "es" : {
@@ -2060,6 +2113,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se reinicia a las %@"
+          }
+        }
+      }
+    },
+    "resets in %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "se reinicia en %@"
           }
         }
       }
@@ -2288,6 +2351,7 @@
       }
     },
     "Show percentage" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -2316,6 +2380,9 @@
           }
         }
       }
+    },
+    "Show Usage" : {
+
     },
     "Show Used" : {
       "localizations" : {
@@ -2511,6 +2578,16 @@
         }
       }
     },
+    "the last 7 days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "los últimos 7 días"
+          }
+        }
+      }
+    },
     "the last 24 hours" : {
       "localizations" : {
         "es" : {
@@ -2531,18 +2608,9 @@
         }
       }
     },
-    "the last 7 days" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "los últimos 7 días"
-          }
-        }
-      }
-    },
     "The menu bar always shows a gauge that fills with your usage. Pick which window it reads above. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip." : {
       "comment" : "Footnote for the menu bar label.",
+      "extractionState" : "stale",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "es" : {
@@ -2566,6 +2634,7 @@
     },
     "The menu bar shows one account and one window at a time — pick which above. Turn on the percentage to spell it out beside the gauge; with it off, the value is still in the tooltip." : {
       "comment" : "Footnote for the menu bar label.",
+      "extractionState" : "stale",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "es" : {
@@ -2586,25 +2655,11 @@
         }
       }
     },
-    "This month" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este mes"
-          }
-        }
-      }
+    "Threshold" : {
+
     },
-    "This week" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esta semana"
-          }
-        }
-      }
+    "Time" : {
+
     },
     "To draw the history chart, AIMeter keeps the percentages it has already fetched — just the numbers and their dates, nothing about what you did — on this device for 30 days. Disconnecting an account deletes its history." : {
       "localizations" : {
@@ -2622,16 +2677,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoy"
-          }
-        }
-      }
-    },
-    "%@ tokens" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tokens"
           }
         }
       }
@@ -2733,16 +2778,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uso"
-          }
-        }
-      }
-    },
-    "%@ usage over %@." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uso de %1$@ en %2$@."
           }
         }
       }
@@ -2949,6 +2984,9 @@
           }
         }
       }
+    },
+    "Window" : {
+
     },
     "With both hidden, AIMeter has no visible controls. Open it again from Finder or Spotlight to bring this window back." : {
       "localizations" : {

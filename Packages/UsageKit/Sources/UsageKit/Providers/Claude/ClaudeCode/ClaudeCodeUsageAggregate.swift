@@ -58,19 +58,18 @@ public struct ClaudeCodeUsageAggregate: Equatable, Sendable {
 
     // MARK: - The buckets
 
-    /// Calendar-local "today", "this week" (the calendar's first weekday)
-    /// and "this month", ending at `now`.
+    /// Calendar-local "today" (since local midnight), ending at `now`.
     public static func today(now: Date = Date(), calendar: Calendar = .current) -> DateInterval {
         DateInterval(start: calendar.startOfDay(for: now), end: now)
     }
 
-    public static func thisWeek(now: Date = Date(), calendar: Calendar = .current) -> DateInterval {
-        let start = calendar.dateInterval(of: .weekOfYear, for: now)?.start ?? calendar.startOfDay(for: now)
-        return DateInterval(start: start, end: now)
-    }
-
-    public static func thisMonth(now: Date = Date(), calendar: Calendar = .current) -> DateInterval {
-        let start = calendar.dateInterval(of: .month, for: now)?.start ?? calendar.startOfDay(for: now)
-        return DateInterval(start: start, end: now)
+    /// The last `days` × 24 hours, ending at `now`. Rolling rather than
+    /// calendar weeks/months on purpose: on the 2nd of a month a calendar
+    /// "this month" holds two days while "this week" holds five, and the
+    /// month row reads smaller than the week row — true, and baffling.
+    /// Rolling windows nest (today ⊂ 7 days ⊂ 30 days), so the rows only
+    /// ever grow downwards, and they match the History chart's ranges.
+    public static func last(days: Int, now: Date = Date()) -> DateInterval {
+        DateInterval(start: now.addingTimeInterval(-Double(days) * 86_400), end: now)
     }
 }
