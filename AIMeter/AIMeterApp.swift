@@ -45,8 +45,7 @@ struct AIMeterApp: App {
                 .disabled(model.isRefreshing || model.isDemoMode)
 
                 Button("Add Account…") {
-                    AppChrome.revealMainWindow()
-                    AppChrome.requestAddAccount?()
+                    AppChrome.connect(.add)
                 }
                 .keyboardShortcut("n", modifiers: .command)
                 .disabled(model.isDemoMode)
