@@ -63,6 +63,9 @@ struct HistoryChartData: Equatable {
     static let minimumSpan: TimeInterval = 3600
     /// The dashed guide line, the dashboard's own red threshold.
     static let dangerLine: Double = 80
+    /// Reset rules are drawn only up to this many in range — beyond it
+    /// they hatch the chart instead of marking anything.
+    static let maxResetRules = 12
 
     let range: HistoryRange
     let start: Date

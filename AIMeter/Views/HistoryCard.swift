@@ -67,10 +67,15 @@ struct HistoryCard: View {
                 .lineStyle(StrokeStyle(lineWidth: 1.5))
                 .interpolationMethod(.monotone)
             }
-            ForEach(data.resets, id: \.self) { reset in
-                RuleMark(x: .value("Reset", reset))
-                    .foregroundStyle(Theme.inkSecondary.opacity(0.5))
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
+            // Past a dozen resets in range (a week of 5-hour sessions is
+            // ~33) the rules would hatch the whole chart; the sawtooth
+            // itself shows the resets then.
+            if data.resets.count <= HistoryChartData.maxResetRules {
+                ForEach(data.resets, id: \.self) { reset in
+                    RuleMark(x: .value("Reset", reset))
+                        .foregroundStyle(Theme.inkSecondary.opacity(0.5))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
+                }
             }
             RuleMark(y: .value("Threshold", HistoryChartData.dangerLine))
                 .foregroundStyle(Theme.danger.opacity(0.35))
@@ -129,29 +134,32 @@ struct HistoryCard: View {
     }
 }
 
-/// The Dashboard row's 24-hour trace: the same points, no axes, no resets,
-/// no interaction, in the secondary color so it reads as texture rather
-/// than a second figure. Decorative — the row already speaks its value.
+/// The Dashboard row's 24-hour trace: the same points, no axes, no
+/// interaction, in the secondary color so it reads as texture rather than
+/// a second figure. Unlike the card's chart it is drawn as **one**
+/// continuous line with a faint fill, not one segment per window: at
+/// 56×16 pt a session's five-hour sawtooth split at every reset came out
+/// as a row of hatch marks, while a connected waveform still reads as
+/// "rose, reset, rose". Decorative — the row already speaks its value.
 struct Sparkline: View {
     let data: HistoryChartData
 
     var body: some View {
         Chart(data.points) { point in
-            LineMark(
-                x: .value("Time", point.date),
-                y: .value("Used", point.usedPct),
-                series: .value("Window", point.segment)
-            )
-            .foregroundStyle(Theme.inkSecondary)
-            .lineStyle(StrokeStyle(lineWidth: 1))
-            .interpolationMethod(.monotone)
+            AreaMark(x: .value("Time", point.date), y: .value("Used", point.usedPct))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.14))
+                .interpolationMethod(.linear)
+            LineMark(x: .value("Time", point.date), y: .value("Used", point.usedPct))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.8))
+                .lineStyle(StrokeStyle(lineWidth: 1, lineJoin: .round))
+                .interpolationMethod(.linear)
         }
         .chartXScale(domain: data.start...data.end)
         .chartYScale(domain: 0...100)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
-        .frame(width: 44, height: 14)
+        .frame(width: 56, height: 16)
         .accessibilityHidden(true)
     }
 }
