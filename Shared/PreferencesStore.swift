@@ -116,10 +116,27 @@ struct Preferences: Sendable {
     // All three default to the behavior shipped before they existed, so an
     // upgrade never changes what an existing install looks like.
 
-    /// Whether the menu bar label spells out the `glanceMetric` percentage
-    /// next to the gauge, or shows the gauge alone. Icon-only still carries
-    /// the number in the tooltip and the accessibility label.
+    /// Pre-`menuBarStyle` installs' one choice — gauge with or without the
+    /// number. Only read at load time now, to derive `menuBarStyle` for an
+    /// install that never picked a style; never written again (same
+    /// "old keys stay inert" rule as the migrated notification keys).
     var menuBarShowsPercentage: Bool = true
+    /// How the status item draws the primary account's usage. Defaults to
+    /// what shipped first (gauge + number); see `MenuBarStyle.migrated`.
+    var menuBarStyle: MenuBarStyle = .gaugeWithPercent
+    /// The windows the `multi` style lists, in order (1–3, filtered at
+    /// render time to the ones the primary account actually reports —
+    /// same live-options rule as `glanceMetric`).
+    var menuBarMetrics: [UsageWindow.Kind] = [.session, .weekly]
+    /// Draws the label in `Theme.danger` once the window would be red on
+    /// the dashboard (≥ 80 % used or provider-flagged critical). Off by
+    /// default: the menu bar stays monochrome unless asked.
+    var menuBarTintsAtDanger: Bool = false
+    /// Appends the primary window's reset countdown ("· 1h 20m").
+    var menuBarShowsResetCountdown: Bool = false
+    /// Prefixes the primary account's nickname — only meaningful with
+    /// two or more accounts, and only offered then.
+    var menuBarShowsAccountName: Bool = false
     /// Whether the menu bar status item is present at all. Hiding it and the
     /// Dock icon together leaves no visible UI — relaunching the app is the
     /// way back in (see `AppDelegate.applicationShouldHandleReopen`).
@@ -148,6 +165,11 @@ struct Preferences: Sendable {
         static let showCreditsAmount = "pref.showCreditsAmount"
         static let primaryAccountID = "pref.primaryAccountID"
         static let menuBarShowsPercentage = "pref.menuBarShowsPercentage"
+        static let menuBarStyle = "pref.menuBarStyle"
+        static let menuBarMetrics = "pref.menuBarMetrics"
+        static let menuBarTintsAtDanger = "pref.menuBarTintsAtDanger"
+        static let menuBarShowsResetCountdown = "pref.menuBarShowsResetCountdown"
+        static let menuBarShowsAccountName = "pref.menuBarShowsAccountName"
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
         static let checksServiceStatus = "pref.checksServiceStatus"
@@ -182,6 +204,19 @@ struct Preferences: Sendable {
         prefs.showCreditsAmount = defaults.bool(forKey: Keys.showCreditsAmount)
         prefs.primaryAccountID = defaults.string(forKey: Keys.primaryAccountID)
         prefs.menuBarShowsPercentage = bool(defaults, Keys.menuBarShowsPercentage, default: true)
+        if let raw = defaults.string(forKey: Keys.menuBarStyle), let value = MenuBarStyle(rawValue: raw) {
+            prefs.menuBarStyle = value
+        } else {
+            // No style ever chosen: keep exactly what the old toggle showed.
+            prefs.menuBarStyle = MenuBarStyle.migrated(showsPercentage: prefs.menuBarShowsPercentage)
+        }
+        if let raw = defaults.stringArray(forKey: Keys.menuBarMetrics) {
+            let kinds = raw.compactMap(UsageWindow.Kind.init(storageKey:))
+            if !kinds.isEmpty { prefs.menuBarMetrics = kinds }
+        }
+        prefs.menuBarTintsAtDanger = defaults.bool(forKey: Keys.menuBarTintsAtDanger)
+        prefs.menuBarShowsResetCountdown = defaults.bool(forKey: Keys.menuBarShowsResetCountdown)
+        prefs.menuBarShowsAccountName = defaults.bool(forKey: Keys.menuBarShowsAccountName)
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
@@ -273,9 +308,25 @@ final class PreferencesModel {
         get { stored.primaryAccountID }
         set { guard stored.primaryAccountID != newValue else { return }; stored.primaryAccountID = newValue; persist(newValue, Preferences.Keys.primaryAccountID, reloadsWidgets: false) }
     }
-    var menuBarShowsPercentage: Bool {
-        get { stored.menuBarShowsPercentage }
-        set { guard stored.menuBarShowsPercentage != newValue else { return }; stored.menuBarShowsPercentage = newValue; persist(newValue, Preferences.Keys.menuBarShowsPercentage, reloadsWidgets: false) }
+    var menuBarStyle: MenuBarStyle {
+        get { stored.menuBarStyle }
+        set { guard stored.menuBarStyle != newValue else { return }; stored.menuBarStyle = newValue; persist(newValue.rawValue, Preferences.Keys.menuBarStyle, reloadsWidgets: false) }
+    }
+    var menuBarMetrics: [UsageWindow.Kind] {
+        get { stored.menuBarMetrics }
+        set { guard stored.menuBarMetrics != newValue else { return }; stored.menuBarMetrics = newValue; persist(newValue.map(\.storageKey), Preferences.Keys.menuBarMetrics, reloadsWidgets: false) }
+    }
+    var menuBarTintsAtDanger: Bool {
+        get { stored.menuBarTintsAtDanger }
+        set { guard stored.menuBarTintsAtDanger != newValue else { return }; stored.menuBarTintsAtDanger = newValue; persist(newValue, Preferences.Keys.menuBarTintsAtDanger, reloadsWidgets: false) }
+    }
+    var menuBarShowsResetCountdown: Bool {
+        get { stored.menuBarShowsResetCountdown }
+        set { guard stored.menuBarShowsResetCountdown != newValue else { return }; stored.menuBarShowsResetCountdown = newValue; persist(newValue, Preferences.Keys.menuBarShowsResetCountdown, reloadsWidgets: false) }
+    }
+    var menuBarShowsAccountName: Bool {
+        get { stored.menuBarShowsAccountName }
+        set { guard stored.menuBarShowsAccountName != newValue else { return }; stored.menuBarShowsAccountName = newValue; persist(newValue, Preferences.Keys.menuBarShowsAccountName, reloadsWidgets: false) }
     }
     var statusItemVisible: Bool {
         get { stored.statusItemVisible }
