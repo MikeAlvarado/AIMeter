@@ -966,6 +966,18 @@ region to the project's `knownRegions`.
   `Scripts/probe-claude-code-logs.sh` (shape only). Never guess wire
   formats.
 - Before large changes, propose the plan and wait for approval.
+- **Git history is linear: rebase and merge, always.** One feature or
+  fix per branch, branched from its base (`papa` while an integration
+  branch is open, else `main`), with plain commit messages and no
+  Co-Authored-By line. To land it, rebase the branch onto its base and
+  fast-forward (`git rebase <base>` then `git merge --ff-only`, or
+  GitHub's "Rebase and merge"); never `git merge --no-ff`, never a
+  "merge:" commit, never a squash that loses the per-feature commits.
+  Conflicts are resolved during the rebase, commit by commit, so every
+  commit still builds. Branches whose commits are all on the base get
+  deleted on the remote once landed — a stale branch with no PR only
+  invites GitHub's "Compare & pull request" noise. `rerere` is on for
+  this clone so a conflict resolved once is replayed automatically.
 - Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
   `swift test` in `Packages/UsageKit` must pass warning-free, and
   `xcodebuild test -scheme AIMeter` (the app's own unit tests) on at
