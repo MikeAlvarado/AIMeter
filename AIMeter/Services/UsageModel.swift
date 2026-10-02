@@ -122,8 +122,8 @@ final class UsageModel {
         loadAccounts()
         loadStoredServiceStatus()
         guard platformServices else { return }
-        #if os(macOS)
         AppEnvironment.shared = self
+        #if os(macOS)
         rebuildRefreshSchedule(interval: Preferences.load().refreshCadence.interval)
         observeWake()
         observeActivation()

@@ -122,11 +122,14 @@ struct DashboardView: View {
                 Task { await model.refreshAll() }
             }
             .accessibilityLabel(Text("Refresh"))
-            #if os(macOS)
-            // The one shortcut a Mac window is expected to have.
-            .keyboardShortcut("r", modifiers: .command)
-            #endif
+            // ⌘R is the Usage menu's (`AIMeterApp.commands`), not this
+            // button's: declaring it here too fired both.
         }
+        #if os(macOS)
+        .onAppear {
+            AppChrome.requestAddAccount = { showingConnect = true }
+        }
+        #endif
     }
 
     private var providerSection: some View {

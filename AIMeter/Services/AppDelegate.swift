@@ -59,6 +59,10 @@ enum AppChrome {
     /// actions, so this is the bridge — the same shape as `AppEnvironment`,
     /// which the refresh schedule already relies on.
     static var openDashboard: (() -> Void)?
+    /// Presents the Dashboard's Connect sheet — set by the Dashboard on
+    /// appear, called by the Usage menu's "Add Account…" (⌘N) after
+    /// `revealMainWindow()`.
+    static var requestAddAccount: (() -> Void)?
 
     static func revealMainWindow() {
         // Prefer an existing window: ordering it front keeps the user's
