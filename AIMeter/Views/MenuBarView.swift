@@ -2,11 +2,20 @@
 import SwiftUI
 import UsageKit
 
+private struct PopoverListHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
 struct MenuBarView: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
     @Environment(\.openSettings) private var openSettings
     @State private var showingConnect = false
+    /// The account list's natural height, measured — see `accountList`.
+    @State private var listHeight: CGFloat = 0
+    /// Past this the list scrolls instead of growing the popover.
+    private static let maxListHeight: CGFloat = 360
 
     /// Peak is Claude's policy: shown when any connected account is a
     /// Claude account, off-peak otherwise.
@@ -35,32 +44,7 @@ struct MenuBarView: View {
                     showingConnect = true
                 }
             } else {
-                // Height-capped rather than growing unbounded — a handful
-                // of accounts should still fit the popover; more scrolls.
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
-                        ForEach(model.accounts) { usage in
-                            AccountSectionView(
-                                usage: usage,
-                                iconSize: 20,
-                                iconCornerRadius: 5,
-                                font: Theme.sectionHeader,
-                                linksToDetail: false,
-                                showsStatusDividers: false
-                            )
-                        }
-                        if !model.isDemoMode {
-                            addAccountButton
-                        }
-                        if prefs.menuBarShowsClaudeCodeLine, !model.isDemoMode, let line = model.claudeCode?.menuBarLine() {
-                            Divider().overlay(Theme.track)
-                            Label(line, systemImage: "terminal")
-                                .font(Theme.caption)
-                                .foregroundStyle(Theme.inkSecondary)
-                        }
-                    }
-                }
-                .frame(maxHeight: 360)
+                accountList
             }
 
             Divider().overlay(Theme.track)
@@ -113,6 +97,48 @@ struct MenuBarView: View {
         .sheet(isPresented: $showingConnect) {
             ConnectClaudeSheet()
         }
+    }
+
+    /// The accounts, in a `ScrollView` whose height is the content's own
+    /// measured height up to `maxListHeight` — a handful of accounts fit
+    /// the popover, more scroll. Measured explicitly rather than
+    /// `.frame(maxHeight:)` on the scroll view: a `MenuBarExtra` window
+    /// sizes itself to its content's *ideal* size, and a `ScrollView`
+    /// reports an ideal height of zero for this content, which collapsed
+    /// the whole list to a two-pixel strip under the divider (seen on
+    /// macOS 26 with the 1.5 popover; the dashboard, in a regular window,
+    /// was unaffected).
+    private var accountList: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
+                ForEach(model.accounts) { usage in
+                    AccountSectionView(
+                        usage: usage,
+                        iconSize: 20,
+                        iconCornerRadius: 5,
+                        font: Theme.sectionHeader,
+                        linksToDetail: false,
+                        showsStatusDividers: false
+                    )
+                }
+                if !model.isDemoMode {
+                    addAccountButton
+                }
+                if prefs.menuBarShowsClaudeCodeLine, !model.isDemoMode, let line = model.claudeCode?.menuBarLine() {
+                    Divider().overlay(Theme.track)
+                    Label(line, systemImage: "terminal")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+            }
+            .background {
+                GeometryReader { proxy in
+                    Color.clear.preference(key: PopoverListHeightKey.self, value: proxy.size.height)
+                }
+            }
+        }
+        .onPreferenceChange(PopoverListHeightKey.self) { listHeight = $0 }
+        .frame(height: min(listHeight, Self.maxListHeight))
     }
 
     /// Once at least one account is connected, this is the *only* way to add
