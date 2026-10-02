@@ -20,7 +20,11 @@
   accounts at all) shows a Connect card instead; on macOS, once the user
   has disconnected the CLI-mirrored account, that card also offers "Use
   Claude Code's login instead" (`UsageModel.redetectClaudeCodeLogin`, see
-  "Disconnect cascades" in the repo-root CLAUDE.md). The header's refresh
+  "Disconnect cascades" in the repo-root CLAUDE.md). On macOS, below the
+  accounts, the "Claude Code on this Mac" section (`ClaudeCodeSection` —
+  see "Claude Code local usage" in the repo-root CLAUDE.md): the
+  invitation card while the feature is off, the three-bucket summary
+  pushing `ClaudeCodeUsageView` while on; nothing in demo mode. The header's refresh
   button and pull-to-refresh play a soft haptic, keyed on a
   user-initiated request counter rather than `isRefreshing`, which also
   flips for the foreground auto-refresh.
@@ -204,9 +208,13 @@
   Shortcuts-app route to a system-wide key), "Hiding AIMeter" (Hide Dock
   icon / Hide menu bar icon, with a warning row once both are hidden), and
   "Startup" (Open at Login, with a pending-approval row and a nudge when
-  the Dock icon is hidden but the login item is off).
+  the Dock icon is hidden but the login item is off) — and, after it, the
+  macOS-only "Claude Code" card: "Read Claude Code's local usage logs"
+  (off by default; its `onChange` drives `UsageModel.claudeCode?.setEnabled`)
+  and, once on, "Show today's total in the menu bar".
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
-  Keychain, no tracking, and on macOS the opt-in login item), how connecting
+  Keychain, no tracking, and on macOS the opt-in Claude Code log reading
+  and the opt-in login item), how connecting
   works (per platform), the one requested OAuth scope (`user:profile`) as a
   chip + the two read-only endpoints called + the anonymous status-page
   check and where to turn it off, and the independence/MIT/
@@ -323,7 +331,10 @@
   either: the popover follows the registry order the Dashboard writes,
   it doesn't set it) inside a height-capped
   `ScrollView` so a handful of accounts still fit and more scrolls, then an
-  "Add account" row (same affordance and copy as the Dashboard's own —
+  "Add account" row — then, only with "Show today's total in the menu
+  bar" on and something to show, one `Claude Code today: …` line
+  (`ClaudeCodeUsageModel.menuBarLine`) — (the "Add account" row has the
+  same affordance and copy as the Dashboard's own —
   this is the only way to add another account once the Dock icon is
   hidden, since the Dashboard window stays closed by default in that case;
   see "macOS hiding & re-entry" below), then divider + an icon-only "Open
