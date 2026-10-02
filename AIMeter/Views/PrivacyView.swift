@@ -78,6 +78,9 @@ struct PrivacyView: View {
                         Text("When you sign in through AIMeter it requests only the profile scope — what the usage and profile endpoints need — and never the inference scope, so a token issued to AIMeter can't send prompts or spend usage on your behalf even in theory. Either way it only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). The source is open if you want to verify.")
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
+                        Text("AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous — nothing about you or your account is sent — and you can turn it off in Settings.")
+                            .font(Theme.caption)
+                            .foregroundStyle(Theme.inkSecondary)
                     }
                 }
 
