@@ -88,9 +88,10 @@ enum WidgetRefresher {
         guard let fetched = try? await provider.fetchUsage() else { return nil }
         let snapshot = fetched.fillingMissingResets(from: previous)
         try? SnapshotStore(suiteName: AppConfig.appGroupID)?.save(snapshot, for: accountID)
-        // Keep the usage history continuous even when only the widget fetches,
-        // so the run-out predictor's recent-rate stays accurate.
-        UsageHistoryStore(suiteName: AppConfig.appGroupID)?.record(snapshot, for: accountID)
+        // Keep both histories continuous even when only the widget fetches
+        // — the run-out predictor's recent-rate series and the chart's
+        // timeline (`UsageRecorder` writes the two together).
+        UsageRecorder.record(snapshot, for: accountID)
         // Deliberately no Live Activity sync here: ActivityKit only exposes
         // (and lets you update) activities from the app process, so the
         // extension can't keep one fresh — the app's own next fetch does.
