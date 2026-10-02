@@ -559,8 +559,10 @@ the account silently freezes at its last snapshot.
   it has its own Dashboard section ("Claude Code on this Mac",
   `ClaudeCodeSection`): while off, an invitation card (only if the logs
   folder exists, and until "Not now" sets the
-  `claudeCodeUsageDismissed` tombstone); while on, Today / This week /
-  This month rows ("1.2M tokens · ≈ $4.10") pushing `ClaudeCodeUsageView`
+  `claudeCodeUsageDismissed` tombstone); while on, Today / Last 7 days /
+  Last 30 days rows ("1.2M tokens · ≈ $4.10" — rolling windows, not
+  calendar week/month, so the rows nest and never read smaller going
+  down; see `ClaudeCodeUsageAggregate.last(days:)`) pushing `ClaudeCodeUsageView`
   (bucket pill incl. All time, token breakdown, per-model rows, Rescan,
   and the honesty footnote: list prices as of
   `ClaudeModelPricing.lastVerified`, "your subscription already covers
