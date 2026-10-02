@@ -94,6 +94,9 @@ final class UsageModel {
     let peakPreferences = NotificationPreferences(accountID: "global")
     #if os(macOS)
     @ObservationIgnored var refreshScheduler: NSBackgroundActivityScheduler?
+    /// Claude Code's local usage on this Mac (see `ClaudeCodeUsageModel`);
+    /// nil in unit tests. Rescanned on every refresh sweep while enabled.
+    var claudeCode: ClaudeCodeUsageModel?
     #endif
 
     /// True when the user denied notification permission in the system
@@ -129,6 +132,7 @@ final class UsageModel {
         guard platformServices else { return }
         AppEnvironment.shared = self
         #if os(macOS)
+        claudeCode = ClaudeCodeUsageModel(enabled: Preferences.load().claudeCodeUsageEnabled)
         rebuildRefreshSchedule(interval: Preferences.load().refreshCadence.interval)
         observeWake()
         observeActivation()
@@ -201,6 +205,9 @@ final class UsageModel {
 
     func refreshAll() async {
         guard !isDemoMode else { return }
+        #if os(macOS)
+        claudeCode?.rescanIfEnabled()
+        #endif
         async let status: Void = refreshServiceStatus()
         let fetched = await withTaskGroup(of: Bool.self) { group in
             for account in accounts.map(\.account) {
@@ -311,6 +318,9 @@ final class UsageModel {
     /// pushes new snapshots to the widgets immediately.
     func refreshAllIfStale(maxAge: TimeInterval = 60) async {
         guard !isDemoMode else { return }
+        #if os(macOS)
+        claudeCode?.rescanIfEnabled()
+        #endif
         // A widget may have recorded samples while the app was away.
         reloadTimelines()
         async let status: Void = refreshServiceStatus()
