@@ -19,6 +19,10 @@ struct WindowRowView: View {
     /// warm-up gate into this flag too, so it's already both "this surface
     /// wants pace" and "pace has warmed up".
     var showsPace = false
+    /// The last 24 hours as a small trace before the percentage, when the
+    /// caller supplies one with enough points (`HistoryChartData.showsSparkline`).
+    /// Only the Dashboard does; the widget's own row has no such thing.
+    var sparkline: HistoryChartData? = nil
 
     var body: some View {
         // Pace is per-window (unlike the grouped reset line): each window
@@ -32,6 +36,10 @@ struct WindowRowView: View {
                     .font(Theme.rowTitle)
                     .foregroundStyle(Theme.ink)
                 Spacer()
+                if let sparkline, sparkline.showsSparkline {
+                    Sparkline(data: sparkline)
+                        .padding(.trailing, 6)
+                }
                 Text(percentText)
                     .font(Theme.percent)
                     .foregroundStyle(Theme.ink)
@@ -95,10 +103,14 @@ struct WindowRowsList: View {
     /// Only the Claude detail screen passes `true`; the dashboard, menu
     /// bar, and landscape leave it off so pace stays out of the glance.
     var showsPace = false
+    /// Only the Dashboard passes `true` (with its `accountID`): each row
+    /// gets its 24-hour sparkline from `UsageModel.timeline(for:kind:)`.
+    var showsSparklines = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.rowSpacing) {
             let slots = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
+            let now = Date()
             // Only ever multiplied against `showsPace`, which is only ever
             // true together with a non-nil accountID (see the doc comment
             // above), so a nil accountID's value here never affects render.
@@ -112,7 +124,10 @@ struct WindowRowsList: View {
                     window: slot.window,
                     showsReset: WindowSlots.showsReset(at: index, in: slots),
                     moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot),
-                    showsPace: showsPace && paceReady
+                    showsPace: showsPace && paceReady,
+                    sparkline: showsSparklines ? accountID.map {
+                        HistoryChartData(samples: model.timeline(for: $0, kind: slot.kind), range: .day, now: now)
+                    } : nil
                 )
             }
         }

@@ -6,7 +6,9 @@
   concurrently via `UsageModel.refreshAll()`), small centered serif
   "AIMeter" title, then one section per *connected account*
   (`AccountSectionView`, shared with the macOS menu bar popover): logo +
-  nickname + Pro/Max pill (trailing) → card with the three windows, error,
+  nickname + Pro/Max pill (trailing) → card with the three windows (each
+  with a small 24-hour sparkline before its percentage once three samples
+  exist — see "History" in the repo-root CLAUDE.md), error,
   "Updated X ago"; tapping a section's header pushes that account's
   Provider Detail (`NavigationLink(value: accountID)`). An "Add account"
   row follows the list (hidden in demo mode, same as the menu bar's copy:
@@ -124,7 +126,11 @@
     shared `AccountSectionView`/`UsageStatusFooter`, not per screen.
 - **Provider detail** (push, one per account — `ProviderDetailView(accountID:)`):
   rate-limit rows for that account (with the same "Sign in again" recovery
-  row when this account's credentials stopped working); a **Peak hours** card
+  row when this account's credentials stopped working); a **History** card
+  (`HistoryCard`: window pill, 24 h / 7 days / 30 days pill, the Swift
+  Charts curve with reset rules and the 80 % line, or "Recording since …"
+  until an hour of samples exists — see "History" in the repo-root
+  CLAUDE.md); a **Peak hours** card
   (`PeakHoursCard`, see "Peak hours" in the repo-root CLAUDE.md, identical
   content regardless of account since the policy is Claude-wide, not
   account-specific) with a live status line and a "schedule as of"
@@ -236,8 +242,12 @@
     leaves two clients fighting over one rotating refresh token.
 - **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
   `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
-  usage — so every screen (rate limits, pace, forecast, spend/extra
-  cards) can be explored without a real Claude account. Its
+  usage — and `DemoUsageData.timeline()`, seven days of samples per window
+  ending on those exact figures (a 5-hour session sawtooth of varying
+  height, the weekly windows resetting once where the snapshot says the
+  week began), so every screen (rate limits, sparklines, history chart,
+  pace, forecast, spend/extra cards) can be explored without a real
+  Claude account. Its
   names are deliberately neutral — the account is nicknamed "Personal" and
   the per-model window is "Top model", never a provider or product name —
   because demo mode is where App Store screenshots come from, and

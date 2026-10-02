@@ -43,6 +43,13 @@ struct ProviderDetailView: View {
                     }
                 }
 
+                if let snapshot = usage?.snapshot, !snapshot.windows.isEmpty {
+                    SectionHeader(title: String(localized: "History"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    HistoryCard(accountID: accountID, snapshot: snapshot)
+                    SectionFootnote(text: String(localized: "Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 30 days. Dashed lines mark resets; the red line is the 80% mark."))
+                }
+
                 // Only while a peak schedule is in force — none is today
                 // (the policy is retired, see `ClaudePeakSchedule`).
                 if let schedule = ClaudePeakSchedule.current {

@@ -18,6 +18,12 @@ struct PrivacyView: View {
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(
+                            systemName: "chart.xyaxis.line",
+                            title: String(localized: "Up to 30 days of history"),
+                            text: String(localized: "To draw the history chart, AIMeter keeps the percentages it has already fetched — just the numbers and their dates, nothing about what you did — on this device for 30 days. Disconnecting an account deletes its history.")
+                        )
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
                             systemName: "key.fill",
                             title: String(localized: "Tokens live in the Keychain"),
                             text: keychainRowText
