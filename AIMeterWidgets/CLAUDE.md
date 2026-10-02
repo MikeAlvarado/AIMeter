@@ -122,7 +122,7 @@ above); no new target, no push entitlement.
   calls, this is one more step there) and `WidgetRefresher.fetch()`
   (this target's shared iOS self-fetch helper, behind both `fetchIfStale`
   and `refreshNow`) — same reasoning already documented for why
-  `UsageHistoryStore.record` happens in both places: "stays continuous
+  `UsageRecorder.record` (both history stores — the predictor's and the chart's timeline) happens in both places: "stays continuous
   when only the widget runs." A running activity gets fresher the same
   way the rest of the app does; no new budget to manage.
 - **Session only, not Weekly/Credits.** ~5h comfortably fits ActivityKit's
