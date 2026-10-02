@@ -49,6 +49,13 @@ assets and string catalog from there.
   the model and the toggles card have one getter/setter pair instead of
   five), `NotificationScheduler.swift` (the fetch-driven families) and
   `NotificationScheduler+Peak.swift`.
+- `AIMeter/Services/ClaudeCodeUsageModel.swift` (macOS) — Claude Code's
+  local token usage on this Mac, see "Claude Code local usage" below;
+  its views are `AIMeter/Views/ClaudeCodeUsageCard.swift` (the Dashboard
+  section: invitation or summary) and `ClaudeCodeUsageView.swift` (the
+  detail). The reading itself is UsageKit's
+  `Providers/Claude/ClaudeCode/` (pricing table, line parser,
+  incremental reader, aggregates).
 - `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
   `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
   row builders, `ProviderDetailRows`) and `NotificationTogglesCards.swift`
@@ -463,6 +470,43 @@ the account silently freezes at its last snapshot.
   `ResetDetector.earlyResets` compares consecutive snapshots for an early
   refill (used% dropped well before the known reset) to fire the
   early-reset alert.
+- Claude Code local usage (macOS, **opt-in**, off by default —
+  `Preferences.claudeCodeUsageEnabled`): what Claude Code's sessions on
+  this Mac would have cost at API list prices, from the JSONL logs the
+  CLI keeps in `~/.claude/projects` (format and fixtures in the Claude
+  provider's CLAUDE.md; `Scripts/probe-claude-code-logs.sh` prints the
+  shape, never content). It is a property of the *machine*, not of a
+  connected account — the CLI's login may or may not be one of them — so
+  it has its own Dashboard section ("Claude Code on this Mac",
+  `ClaudeCodeSection`): while off, an invitation card (only if the logs
+  folder exists, and until "Not now" sets the
+  `claudeCodeUsageDismissed` tombstone); while on, Today / This week /
+  This month rows ("1.2M tokens · ≈ $4.10") pushing `ClaudeCodeUsageView`
+  (bucket pill incl. All time, token breakdown, per-model rows, Rescan,
+  and the honesty footnote: list prices as of
+  `ClaudeModelPricing.lastVerified`, "your subscription already covers
+  this — it is not a bill", the folder read, and — when Claude Code's own
+  `cost-state` totals exist for fully-priced sessions — how far the table
+  is from them, the early warning that the table went stale). Settings →
+  "Claude Code" holds the toggle (and "Show today's total in the menu
+  bar", one `Claude Code today: 300K · ≈ $2.00` line under the popover's
+  accounts); Privacy & data has its row. `UsageModel.claudeCode` owns
+  the model and rescans it on every refresh sweep while enabled; off
+  clears what's shown *and* deletes the reader's index. Hidden in demo
+  mode. Rules: only the usage fields are decoded (the `Decodable`s
+  declare nothing else — content is never read, by construction); the
+  reader is incremental by file **size** and byte offset, never by
+  modification date (a required-reason API); duplicates are the norm
+  (streaming writes one message as several identical lines — dedupe by
+  `message.id` + `requestId`); `cost-state` is cumulative per session
+  (last record wins) and carries no time, so the buckets come from
+  per-message tokens × the pricing table and `cost-state` is the
+  cross-check; an unknown model shows tokens and no cost, and makes the
+  bucket's cost a lower bound ("> $…"). The pricing table is hardcoded
+  and release-updated like `ClaudePeakSchedule` was — no server, not
+  user-editable — and verifying it against the pricing page is part of
+  every release. iOS: nothing, deliberately (no logs there, and the iOS
+  build never reads another app's files).
 - Peak hours — **retired** (`ClaudePeakSchedule.current` is nil since
   2026-09-22). Anthropic introduced a policy in March 2026 where Claude
   Code session usage on Pro and Max burned faster 5-11 AM PT on weekdays,
@@ -562,6 +606,10 @@ the account silently freezes at its last snapshot.
   also mean threading an account identity through every widget rendering
   path that reads them, for a cosmetic edge case (two accounts wanting
   different third-row fallback behavior) that hasn't come up.
+- Claude Code prefs (App Group, macOS-only meaning): `claudeCodeUsageEnabled`
+  (default **false**), `claudeCodeUsageDismissed` (default false),
+  `menuBarShowsClaudeCodeLine` (default false) — see "Claude Code local
+  usage" above.
 - macOS chrome prefs (same App Group store, macOS-only meaning):
   `menuBarShowsPercentage` (default **true**), `statusItemVisible`
   (default **true**), `hideDockIcon` (default **false**). All three default
@@ -675,7 +723,9 @@ region to the project's `knownRegions`.
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
   grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
-  `ProviderCatalog`, and `UsageModel`'s naming/ordering/demo paths. Two
+  `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, and on
+  macOS `ClaudeCodeUsageModel` over a scratch logs folder (scan, buckets,
+  the popover line, off deletes the index) plus the token/USD formatters. Two
   seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
   with `platformServices: false` (no migration — it probes the real
   Keychain — no scheduler/observers, no notification sweep) and
@@ -706,7 +756,9 @@ region to the project's `knownRegions`.
   file-system-synchronized `Shared/` group) declares no tracking and the
   one required-reason API category actually used — `UserDefaults`, reason
   `1C8F.1` (App Group only). Update it if a new required-reason API is
-  ever introduced.
+  ever introduced — which is why the Claude Code log reader keys files
+  by size and byte offset and never reads a modification date (file
+  timestamps are a required-reason category).
 - App Review posture. Version 1.0 was rejected under 4.1(c) (Copycats —
   the store subtitle named Claude) and 5.2.2 (Legal — "requests, displays,
   or distributes third-party account information"). The code-side answer,
@@ -746,8 +798,10 @@ region to the project's `knownRegions`.
 ## Workflow
 
 - Data model follows reality: before changing endpoint-related code, run
-  `Scripts/probe-usage-endpoint.sh` and check the captured fixtures. Never
-  guess wire formats.
+  `Scripts/probe-usage-endpoint.sh` and check the captured fixtures;
+  before touching the Claude Code log reader, run
+  `Scripts/probe-claude-code-logs.sh` (shape only). Never guess wire
+  formats.
 - Before large changes, propose the plan and wait for approval.
 - Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
   `swift test` in `Packages/UsageKit` must pass warning-free, and
