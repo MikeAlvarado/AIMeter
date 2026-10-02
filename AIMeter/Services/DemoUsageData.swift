@@ -62,15 +62,16 @@ enum DemoUsageData {
         )
     }
 
-    /// Seven days of fabricated samples per window, ending exactly on the
+    /// Thirty days of fabricated samples per window, ending exactly on the
     /// figures `snapshot()` reports now, so the History card and the
     /// dashboard sparklines have something to draw in demo mode (and in
     /// screenshots). Sessions are a 5-hour sawtooth with a different
     /// height each cycle; the weekly windows reset once, where the
-    /// snapshot's own reset date says the current week began.
+    /// snapshot's own reset date says the current week began, and once a
+    /// week before that at varying heights.
     static func timeline(now: Date = Date()) -> [String: [TimelineSample]] {
         let step: TimeInterval = 30 * 60
-        let span: TimeInterval = 7 * 86400
+        let span: TimeInterval = 30 * 86400
         let sessionLength: TimeInterval = 5 * 3600
         // The current session is 42% through its 5 hours (2h59m to go).
         let sessionStart = now.addingTimeInterval(-(sessionLength - (2 * 3600 + 59 * 60)))
@@ -92,16 +93,26 @@ enum DemoUsageData {
             // cycles vary in height so the chart isn't a flat sawtooth.
             let height = cycle == 0 ? liveHeight : 55 + 40 * abs(sin(cycle * 1.7))
             let resetsAt = sessionStart.addingTimeInterval((cycle + 1) * sessionLength)
-            session.append(TimelineSample(timestamp: t, usedPct: (position * height).rounded(), resetsAt: resetsAt))
+            // Nights are idle — no session, 0 %, no reset date — so a week
+            // reads as days of work, not one unbroken comb. The last
+            // sample is always the live figure, whatever the hour.
+            let hour = Calendar.current.component(.hour, from: t)
+            let idle = (hour < 8 || hour >= 22) && t < now
+            session.append(idle
+                ? TimelineSample(timestamp: t, usedPct: 0, resetsAt: nil)
+                : TimelineSample(timestamp: t, usedPct: (position * height).rounded(), resetsAt: resetsAt))
 
-            let inCurrentWeek = t >= weekStart
-            let weekAnchor = inCurrentWeek ? weekStart : weekStart.addingTimeInterval(-7 * 86400)
+            // Week 0 is the live one (ending exactly on 61 % / 18 %);
+            // earlier weeks (-1, -2, …) each top out at a different height.
+            let weekIndex = floor(t.timeIntervalSince(weekStart) / (7 * 86400))
+            let weekAnchor = weekStart.addingTimeInterval(weekIndex * 7 * 86400)
             let weekPosition = t.timeIntervalSince(weekAnchor) / (7 * 86400)
-            let weeklyTarget = inCurrentWeek ? 61.0 / (now.timeIntervalSince(weekStart) / (7 * 86400)) : 78
-            let modelTarget = inCurrentWeek ? 18.0 / (now.timeIntervalSince(weekStart) / (7 * 86400)) : 31
+            let livePosition = now.timeIntervalSince(weekStart) / (7 * 86400)
+            let weeklyTarget = weekIndex == 0 ? 61.0 / livePosition : 62 + 30 * abs(sin(weekIndex * 1.3))
+            let modelTarget = weekIndex == 0 ? 18.0 / livePosition : 18 + 16 * abs(sin(weekIndex * 0.9))
             let weekReset = weekAnchor.addingTimeInterval(7 * 86400)
-            weekly.append(TimelineSample(timestamp: t, usedPct: min(99, weekPosition * weeklyTarget).rounded(), resetsAt: weekReset))
-            model.append(TimelineSample(timestamp: t, usedPct: min(99, weekPosition * modelTarget).rounded(), resetsAt: weekReset))
+            weekly.append(TimelineSample(timestamp: t, usedPct: (min(99, weekPosition * weeklyTarget) * 10).rounded() / 10, resetsAt: weekReset))
+            model.append(TimelineSample(timestamp: t, usedPct: (min(99, weekPosition * modelTarget) * 10).rounded() / 10, resetsAt: weekReset))
             t = t.addingTimeInterval(step)
         }
         return [

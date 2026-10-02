@@ -536,18 +536,21 @@ the account silently freezes at its last snapshot.
   24 h / 7 days / 30 days pills), from `HistoryChartData` over the
   timeline above — one Swift Charts area + line per window segment, so
   the curve breaks at a reset instead of drawing a cliff, a dashed rule at
-  each reset, and a faint dashed line at 80 % (the same threshold that
+  each reset (only up to `HistoryChartData.maxResetRules`, 12, in range —
+  a week of sessions would otherwise hatch the chart), and a faint dashed line at 80 % (the same threshold that
   turns a bar red; the curve itself stays one color). Y is fixed 0–100 and
   labeled "% of limit" in the footnote — the data is never tokens.
   Until the range holds two samples an hour apart the card shows
   "Recording since …" instead of asserting a shape from one point. The
   chart is one VoiceOver element with a spoken summary
   (`HistoryChartData.summary`: span, peak, resets). The Dashboard's usage
-  rows carry a 44×14 pt `Sparkline` of the same 24-hour data before the
+  rows carry a 56×16 pt `Sparkline` of the same 24-hour data before the
   percentage, only once three points exist, decorative and in the
-  secondary color (`WindowRowsList(showsSparklines:)`, true only from the
+  secondary color — drawn as one continuous line with a faint fill rather
+  than one segment per window (a session's sawtooth split at every reset
+  rendered as hatch marks at that size) (`WindowRowsList(showsSparklines:)`, true only from the
   Dashboard — the popover, landscape, detail and widget rows don't). Demo
-  mode draws from `DemoUsageData.timeline()`, seven fabricated days
+  mode draws from `DemoUsageData.timeline()`, thirty fabricated days
   ending exactly on the demo snapshot's figures.
 - Claude Code local usage (macOS, **opt-in**, off by default —
   `Preferences.claudeCodeUsageEnabled`): what Claude Code's sessions on
