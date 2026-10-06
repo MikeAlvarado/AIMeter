@@ -29,9 +29,10 @@ can be added later.
   working, unlike disconnecting and adding it back. Signing in through the
   app also gets AIMeter a token of its own, so it stops competing with
   Claude Code's.
-- Widgets: `systemSmall` and `systemMedium` show all three Claude windows
-  for one account, with grouped reset countdowns and an always-visible
-  manual refresh button (iOS); Lock Screen accessories (circular,
+- Widgets: "Usage Limits" shows one account's windows — `systemSmall`
+  as rows with grouped reset countdowns, `systemMedium` as side-by-side
+  columns with a big "42% left" figure, bar and reset line each — with
+  an always-visible manual refresh button (iOS); Lock Screen accessories (circular,
   rectangular, inline) — the circular gauge follows whichever window you
   pick as your glance metric. A `systemLarge` widget shows every connected
   account at once instead of picking one. On iOS widgets refresh
@@ -260,7 +261,7 @@ Packages/UsageKit      provider-agnostic Swift Package (no UI imports)
 AIMeter/                multiplatform SwiftUI app (iOS + macOS);
                         AccountMigration upgrades a pre-multi-account
                         install in place
-AIMeterWidgets/         AIMeterUsage (3-window), AIMeterSingleUsage (one
+AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage (one
                         number), AIMeterAllAccounts (every account at
                         once), and a Live Activity (iOS) — all render App
                         Group snapshots and, on iOS, refresh themselves

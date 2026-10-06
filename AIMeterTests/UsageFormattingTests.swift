@@ -49,4 +49,10 @@ final class UsageFormattingTests: XCTestCase {
         XCTAssertTrue(UsageSnapshot.glanceOptions(for: withCredits, modelSlotFallback: .auto).contains(.credits))
         XCTAssertFalse(UsageSnapshot.glanceOptions(for: withCredits, modelSlotFallback: .hidden).contains(.credits))
     }
+
+    func testDisplayModeSuffixIsOneLowercaseWord() {
+        // The medium widget sets it after a big figure: "42% left".
+        XCTAssertEqual(DisplayMode.remaining.suffix, "left")
+        XCTAssertEqual(DisplayMode.used.suffix, "used")
+    }
 }

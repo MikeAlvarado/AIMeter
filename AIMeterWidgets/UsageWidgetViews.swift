@@ -5,9 +5,10 @@ import UsageKit
 import AppIntents
 #endif
 
-/// System families show a "Claude" header plus capsule bars with reset
-/// times, mirroring the dashboard rows. All views honor the
-/// Remaining/Used and Relative/Absolute preferences from the App Group.
+/// System families show the account header plus capsule bars with reset
+/// times: the small family as stacked rows mirroring the dashboard, the
+/// medium as side-by-side columns with a big figure each. All views honor
+/// the Remaining/Used and Relative/Absolute preferences from the App Group.
 struct UsageWidgetView: View {
     @Environment(\.widgetFamily) private var family
     let entry: UsageEntry
@@ -24,9 +25,9 @@ struct UsageWidgetView: View {
                 case .accessoryInline:
                     InlineUsageView(snapshot: snapshot, prefs: entry.prefs)
                 #endif
+                case .systemMedium:
+                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
                 default:
-                    // Small and medium render identically — the same three
-                    // rows, just wider — so one view serves both.
                     SystemUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
                 }
             } else {
@@ -44,11 +45,12 @@ struct UsageWidgetView: View {
 
 // MARK: - System families
 
-/// "Claude" title with the logo; shows a staleness hint on the trailing
+/// Account name with the mark; shows a staleness hint on the trailing
 /// edge so it never costs an extra row. Widget fonts are fixed sizes on
 /// purpose: text styles scale with the device's Dynamic Type and overflow
-/// the fixed widget height on real hardware.
-private struct WidgetHeader: View {
+/// the fixed widget height on real hardware. Internal: `MediumUsageView`
+/// (its own file) uses the same header over its columns.
+struct WidgetHeader: View {
     let snapshot: UsageSnapshot
     /// The rendered timeline entry's own date — not `Date()` — so the
     /// peak badge matches whichever entry WidgetKit is currently
@@ -57,6 +59,8 @@ private struct WidgetHeader: View {
     let date: Date
     let accountID: String
     let accountName: String
+    /// The plan pill; the small family leaves it out for room.
+    var planName: String? = nil
 
     var body: some View {
         HStack(spacing: 5) {
@@ -66,7 +70,7 @@ private struct WidgetHeader: View {
                 iconCornerRadius: 3.5,
                 font: .system(size: 12, weight: .semibold),
                 nameColor: Theme.ink,
-                planName: nil
+                planName: planName
             )
             Spacer(minLength: 0)
             if ClaudePeakStatus.forProvider(snapshot.providerID, at: date).isPeak {
@@ -178,7 +182,8 @@ private struct WindowBarList: View {
     }
 }
 
-/// Small and medium: header plus all three windows as bars.
+/// Small: header plus the windows as stacked rows (the medium family is
+/// `MediumUsageView`, columns).
 struct SystemUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences

@@ -1,5 +1,11 @@
 ## Widgets
 
+The gallery lists them in `AIMeterWidgetsBundle` order: `AIMeterUsage`
+first (the account's limits, the one most people place), then
+`AIMeterSingleUsage`, then `AIMeterAllAccounts`. Display names are
+feature names ("Usage Limits", "Single Limit", "All Accounts"), never a
+provider's — the gallery is a screenshot-able surface like any other.
+
 `AIMeterUsage` and `AIMeterSingleUsage` are `AppIntentConfiguration`, so
 every placed instance — Home Screen or Lock Screen — has its own
 independent account selection; an empty `AccountRegistryStore` (nothing
@@ -11,11 +17,26 @@ nil-configuration fallback (the timing edge case right after a widget is
 first placed, before the intent's default has resolved) through
 `WidgetAccountFallback.resolve()` — the first connected account, or the
 legacy sentinel if none — rather than each re-deriving it.
-- `AIMeterUsage` (small & medium, `UsageAccountConfigurationIntent`):
-  header (logo + the picked account's nickname) + all three bars with
-  reset lines; Lock Screen accessories (circular gauge, rectangular
-  list, inline) belong to this same widget kind, so they inherit the
-  same per-instance account picker. Rectangular and inline show all
+- `AIMeterUsage` ("Usage Limits" in the gallery; small & medium,
+  `UsageAccountConfigurationIntent`): header (mark + the picked
+  account's nickname) over the account's `WindowSlots`. The small family
+  stacks them as rows with reset lines (`SystemUsageView`); the medium
+  family (`MediumUsageView`, its own file) lays them out as columns —
+  window name, a big figure with the display mode as a one-word suffix
+  ("42% left" / "42% used", `DisplayMode.suffix`), the bar, and under it
+  the reset line, the optional credits amount, or "Not available" for a
+  slot the account doesn't report (a dash where the figure would be).
+  Two or three columns, whatever the slots yield; the figure drops from
+  28 pt to 22 pt for three so "100% left" still fits. Each column shows
+  its own reset line — the grouped-reset rule (`WindowSlots.showsReset`)
+  is for stacked rows, where one line can sit under a group; side by
+  side, a column with nothing under its bar reads as unfinished. The
+  value row has a fixed height so the bars align across columns whatever
+  the glyphs above them. The medium header also carries the plan pill
+  (`WidgetHeader(planName:)`); the small one leaves it out for room.
+  Lock Screen accessories (circular gauge, rectangular list, inline)
+  belong to this same widget kind, so they inherit the same per-instance
+  account picker. Rectangular and inline show all
   three `WindowSlots` for that account, credits included under the
   third-row fallback; the circular gauge has room for one number, so it
   shows whichever window the shared `glanceMetric` preference points at,

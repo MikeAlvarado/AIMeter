@@ -25,7 +25,8 @@ system, and behaviors. It should be enough to rebuild the app from zero.
   builds and even codesigns fine without the Keychain entitlement; it only
   fails at runtime on a real device (the Simulator is lenient about it).
 - Background task ID: `com.mikealvarado.aimeter.refresh`
-- Widget kinds: `AIMeterUsage` (the three-window widget),
+- Widget kinds: `AIMeterUsage` ("Usage Limits": the account's windows,
+  rows in the small family, columns with a big figure each in the medium),
   `AIMeterSingleUsage` (single-window widget, user-configurable via
   WidgetKit's `AppIntentConfiguration`), and `AIMeterAllAccounts`
   (`.systemLarge`-only, every connected account at once, no per-instance
@@ -495,7 +496,10 @@ the account silently freezes at its last snapshot.
   toggle is always disabled (no reset date to schedule against).
 - Reset lines: consecutive windows sharing one reset date show
   "Resets in …" once, under the last of the group (`WindowSlots.showsReset`)
-  — applies to dashboard, detail, menu bar, widgets, landscape. Credits has
+  — applies to dashboard, detail, menu bar, widgets, landscape: every
+  surface that stacks the windows. The one surface that doesn't, the
+  medium widget's side-by-side columns, shows each column's own line
+  (see `AIMeterWidgets/CLAUDE.md`). Credits has
   no reset date, so `showCreditsAmount` (off by default, Provider Detail)
   optionally fills that same line with `SpendStatus.amountLabel`
   ("$14.27 of $25.00") instead of leaving it blank.
