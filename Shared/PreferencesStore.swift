@@ -13,6 +13,15 @@ enum DisplayMode: String, CaseIterable {
         case .remaining: return String(localized: "Remaining")
         }
     }
+
+    /// The word after a big figure: "42% left" / "42% used" (the medium
+    /// widget's columns).
+    var suffix: String {
+        switch self {
+        case .used: return String(localized: "used")
+        case .remaining: return String(localized: "left")
+        }
+    }
 }
 
 enum ResetStyle: String, CaseIterable {

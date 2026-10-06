@@ -104,6 +104,17 @@
         }
       }
     },
+    "left" : {
+      "comment" : "Suffix after a big percentage in the medium widget when showing remaining: \"42% left\".",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "restante"
+          }
+        }
+      }
+    },
     "%@ limit reached" : {
       "localizations" : {
         "es" : {
@@ -130,6 +141,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ cerca de su límite"
+          }
+        }
+      }
+    },
+    "Not available" : {
+      "comment" : "Medium widget column subtitle for a window the account does not report.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No disponible"
           }
         }
       }
@@ -190,6 +212,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ tokens"
+          }
+        }
+      }
+    },
+    "Usage Limits" : {
+      "comment" : "Configuration display name of the account-limits widget (small, medium, Lock Screen).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límites de uso"
           }
         }
       }
@@ -2860,6 +2893,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usado"
+          }
+        }
+      }
+    },
+    "used" : {
+      "comment" : "Suffix after a big percentage in the medium widget when showing used: \"42% used\".",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "usado"
           }
         }
       }
