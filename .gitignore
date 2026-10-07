@@ -31,3 +31,6 @@ docs/design/reference/
 
 # Claude Code local session settings
 .claude/settings.local.json
+
+# The website's hosting config holds no secrets (base path and public URL)
+!site/.env
