@@ -28,3 +28,6 @@ DerivedData/
 docs/design/reference/
 # LLVM coverage output from xcodebuild test
 *.profraw
+
+# Claude Code local session settings
+.claude/settings.local.json

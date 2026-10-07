@@ -983,6 +983,14 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   over demo-mode simulator captures; `Scripts/StoreFrames/CLAUDE.md` is
   the record of sizes, rules, style and the upload procedure, and is kept
   current like every other doc here.
+- The website (`site/`: product page, privacy policy, support page, in
+  English and Spanish) is a static React + Vite app deployed to GitHub
+  Pages by `.github/workflows/site.yml`; its `CLAUDE.md` holds the
+  structure, the content rules (the landing page follows the store's
+  no-third-party-names posture; the privacy and support pages name the
+  hosts, factually) and the three URLs App Store Connect points at
+  (marketing, support, privacy policy). Its images come from the store
+  pipeline above (`site/scripts/images.mjs`).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 - App Store notes for the macOS background work: the `SMAppService` login

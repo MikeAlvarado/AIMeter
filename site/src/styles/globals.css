@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+
+/* The app's own palette (Shared/Theme.swift): terracotta over warm ivory in
+   light, warm charcoal in dark. The hero and closing cards keep the store
+   backdrop (dark, warm, a terracotta glow) in both schemes. */
+@theme {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-track: var(--track);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-accent: var(--accent);
+  --color-accent-wash: var(--accent-wash);
+  --color-danger: var(--danger);
+  --color-hairline: var(--hairline);
+
+  --color-night: #14110f;
+  --color-night-2: #221d19;
+  --color-night-3: #3d2b22;
+  --color-ivory: #faf9f5;
+  --color-blush: #f3d9cc;
+  --color-ember: #d97757;
+  --color-ember-2: #e08b6d;
+
+  --font-display: 'Instrument Serif', 'Times New Roman', Times, serif;
+  --font-ui: 'Mona Sans Variable', 'Mona Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --radius-shell: 24px;
+  --radius-nav: 16px;
+  --radius-cta: 10px;
+  --radius-tile: 14px;
+
+  --spacing-inset: 36px;
+  --spacing-inset-sm: 16px;
+
+  --breakpoint-tab: 50.625rem;
+  --breakpoint-nav: 56.25rem;
+
+  --text-hero: clamp(2.6rem, 1.2rem + 4.6vw, 5rem);
+  --text-section: clamp(2.4rem, 1.4rem + 3vw, 3.8rem);
+  --text-statement: clamp(2rem, 1rem + 3.4vw, 3.6rem);
+
+  --animate-grain: grain 0.8s steps(1, end) infinite;
+
+  @keyframes grain {
+    0% { background-position: 0 0; }
+    12.5% { background-position: -42px -26px; }
+    25% { background-position: 18px -64px; }
+    37.5% { background-position: -31px 41px; }
+    50% { background-position: 61px 12px; }
+    62.5% { background-position: -15px -58px; }
+    75% { background-position: 44px 33px; }
+    87.5% { background-position: -8px 56px; }
+    100% { background-position: 0 0; }
+  }
+}
+
+:root {
+  --bg: #faf9f5;
+  --card: #ffffff;
+  --track: #edeae1;
+  --ink: #1f1e1d;
+  --ink-2: #87867f;
+  --accent: #d97757;
+  --accent-wash: rgb(217 119 87 / 0.14);
+  --danger: #b3261e;
+  --hairline: rgb(31 30 29 / 0.1);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #262624;
+    --card: #30302e;
+    --track: #3e3d3a;
+    --ink: #faf9f5;
+    --ink-2: #9b9a93;
+    --accent: #e08b6d;
+    --accent-wash: rgb(224 139 109 / 0.16);
+    --danger: #e5695e;
+    --hairline: rgb(250 249 245 / 0.1);
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-grain {
+    animation: none;
+  }
+}
+
+html {
+  background: var(--bg);
+  scrollbar-width: thin;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--color-ivory);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1.4px, transparent 1.5px);
+  background-size: 44px 44px;
+}
+
+@utility night-gradient {
+  background-color: var(--color-night-2);
+  background-image:
+    radial-gradient(55% 60% at 50% 0%, rgb(217 119 87 / 0.55) 0%, transparent 70%),
+    radial-gradient(70% 70% at 80% 100%, var(--color-night-3) 0%, transparent 65%),
+    linear-gradient(180deg, var(--color-night-2) 0%, var(--color-night) 100%);
+}
+
+@utility edge-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}

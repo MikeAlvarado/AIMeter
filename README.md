@@ -117,6 +117,14 @@ can be added later.
 - English, Spanish, German, French, Japanese, Korean, Brazilian Portuguese
   and Simplified Chinese, following the device language.
 
+## Website
+
+[mikealvarado.github.io/AIMeter](https://mikealvarado.github.io/AIMeter/)
+is the product page, with the [privacy policy](https://mikealvarado.github.io/AIMeter/privacy/)
+and a [support page](https://mikealvarado.github.io/AIMeter/support/), in
+English and Spanish. It lives in [`site/`](site/) (React + Vite +
+TypeScript, static, no analytics) and deploys to GitHub Pages from `main`.
+
 ## ⚠️ Disclaimer
 
 AIMeter reads usage from an **undocumented endpoint**
@@ -276,14 +284,18 @@ AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage 
 Scripts/StoreFrames/    renders the App Store screenshots, header and
                         search-results card from the app's own views
                         (`Scripts/store-frames.sh`; see its CLAUDE.md)
+site/                   the website (product page, privacy policy,
+                        support page; React + Vite + TypeScript),
+                        deployed to GitHub Pages by
+                        .github/workflows/site.yml
 Shared/                 config + presentation helpers used by app and
                         widgets, including PrivacyInfo.xcprivacy (bundled
                         into both targets) and the shared provider header
                         component
 ```
 
-Each of `AIMeter/`, `AIMeterWidgets/`, and `Packages/UsageKit/Sources/UsageKit/Providers/Claude/`
-has its own `CLAUDE.md` with the detail specific to that folder — the
+Each of `AIMeter/`, `AIMeterWidgets/`, `Packages/UsageKit/Sources/UsageKit/Providers/Claude/`,
+`Scripts/StoreFrames/` and `site/` has its own `CLAUDE.md` with the detail specific to that folder — the
 repo-root `CLAUDE.md` is the full spec that ties them together.
 
 Adding a provider = implementing `UsageProvider` (one folder under
