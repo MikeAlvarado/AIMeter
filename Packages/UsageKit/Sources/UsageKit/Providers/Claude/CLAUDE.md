@@ -160,9 +160,12 @@ repo-root CLAUDE.md):
   snapshot `claude-opus-4-5-20251101` matches `claude-opus-4-5`; the
   longest whole-component match wins, so `claude-opus-5` never swallows
   `claude-opus-5-5`), with 5-minute / 1-hour cache writes, cache reads
-  and web searches ($10 per 1,000). Verified against
+  and web searches ($10 per 1,000); Haiku 5.5 carries a second
+  `longPrompt` set that applies when a message's prompt (input plus
+  every cache category) exceeds `longPromptThreshold` (100,000 tokens),
+  the one model the page prices by prompt length. Verified against
   platform.claude.com/docs/en/about-claude/pricing on `lastVerified`
-  (2026-10-02); an unknown model prices to nil.
+  (2026-10-07); an unknown model prices to nil.
 - Fixtures: `Tests/UsageKitTests/Fixtures/claude-code/` is synthetic on
   the real shape (two sessions, a subagent file, a duplicate line, a
   non-JSON line, two cumulative `cost-state`s, an unknown model, a
