@@ -23,6 +23,12 @@ struct ProviderIdentityView: View {
         Text(name)
             .font(font)
             .foregroundStyle(nameColor)
+            // A header name never wraps: the small widget has ~126 pt for
+            // icon, name and window label, and "Personal" split across two
+            // lines read as a bug. Truncation with an ellipsis is the
+            // honest fallback for a long nickname, after shrinking a little.
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
         if let planName {
             Text(planName.capitalized)
                 .font(.caption.weight(.semibold))
