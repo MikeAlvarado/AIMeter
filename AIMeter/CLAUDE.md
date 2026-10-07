@@ -101,6 +101,17 @@
       otherwise have to arbitrate between the two, and the menu is both the
       VoiceOver/Switch Control path and the only part of this that announces
       itself.
+  - **Icon**: the header context menu also carries "Change icon…" (only
+    where this view may present sheets — the macOS popover routes its
+    edits to the Dashboard), opening `AccountIconPicker` for that account;
+    Provider Detail's Account card has the discoverable "Icon" row to the
+    same sheet. The choice (`AccountIcon`: an SF Symbol name, or the
+    Claude / Claude Code mark) lands on `UsageModel.setIcon(_:for:)`, in
+    place like a rename, and shows wherever `ProviderIdentityView` draws
+    the account: dashboard, landscape, menu bar popover, every widget, the
+    Live Activity. Hidden in demo mode (demo accounts keep the default
+    mark on purpose: screenshots). See "Design system" in the repo-root
+    CLAUDE.md for the marks and the review posture behind them.
   - **Renaming**: that same header context menu carries "Rename…" for
     every account — one account is enough to want a name, so unlike Move
     up/down it isn't gated on 2+ — opening `renameAccountAlert`

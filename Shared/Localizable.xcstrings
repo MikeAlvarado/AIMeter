@@ -44,12 +44,78 @@
         }
       }
     },
+    "Account icon" : {
+      "comment" : "Title of the icon picker sheet.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icono de la cuenta"
+          }
+        }
+      }
+    },
+    "Any symbol" : {
+      "comment" : "Icon picker section: free-text SF Symbol name.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cualquier símbolo"
+          }
+        }
+      }
+    },
+    "Browse SF Symbols" : {
+      "comment" : "Link to Apple's SF Symbols page under the icon picker.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorar SF Symbols"
+          }
+        }
+      }
+    },
+    "Change icon" : {
+      "comment" : "Accessibility label of Provider Detail's Icon row.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar icono"
+          }
+        }
+      }
+    },
+    "Change icon…" : {
+      "comment" : "Dashboard header context menu: opens the account icon picker.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar icono…"
+          }
+        }
+      }
+    },
     "Coding sessions on this Mac" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sesiones de código en este Mac"
+          }
+        }
+      }
+    },
+    "Default" : {
+      "comment" : "The app's default account mark in the icon picker.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predeterminado"
           }
         }
       }
@@ -80,6 +146,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelo rápido"
+          }
+        }
+      }
+    },
+    "Icon" : {
+      "comment" : "Provider Detail → Account card row that opens the icon picker.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icono"
           }
         }
       }
@@ -135,12 +212,34 @@
         }
       }
     },
+    "Marks" : {
+      "comment" : "Icon picker section: the bundled marks (default, Claude, Claude Code).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcas"
+          }
+        }
+      }
+    },
     "%@ nearing its limit" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ cerca de su límite"
+          }
+        }
+      }
+    },
+    "No symbol with that name." : {
+      "comment" : "Shown under the free-text field when the typed name is not an SF Symbol.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay ningún símbolo con ese nombre."
           }
         }
       }
@@ -206,12 +305,56 @@
         }
       }
     },
+    "Shown wherever the account appears: dashboard, menu bar, widgets, Live Activity." : {
+      "comment" : "Caption under the icon picker's preview.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se muestra donde aparece la cuenta: panel, barra de menú, widgets y Live Activity."
+          }
+        }
+      }
+    },
+    "Symbol name, e.g. bolt.fill" : {
+      "comment" : "Placeholder of the free-text SF Symbol field.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre del símbolo, p. ej. bolt.fill"
+          }
+        }
+      }
+    },
+    "Symbols" : {
+      "comment" : "Icon picker section: the SF Symbols grid.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Símbolos"
+          }
+        }
+      }
+    },
     "%@ tokens" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ tokens"
+          }
+        }
+      }
+    },
+    "Type any SF Symbol name. The full catalog is in Apple's SF Symbols app." : {
+      "comment" : "Footnote under the free-text symbol field.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe el nombre de cualquier SF Symbol. El catálogo completo está en la app SF Symbols de Apple."
           }
         }
       }
@@ -2873,6 +3016,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ventana de uso"
+          }
+        }
+      }
+    },
+    "Use" : {
+      "comment" : "Applies the typed SF Symbol name as the account icon.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar"
           }
         }
       }

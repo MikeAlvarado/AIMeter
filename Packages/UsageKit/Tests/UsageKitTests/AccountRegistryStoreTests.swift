@@ -124,4 +124,40 @@ final class AccountRegistryStoreTests: XCTestCase {
         XCTAssertEqual(store.account(for: "claude")?.credentialStrategy, .autoDetected)
         XCTAssertEqual(store.account(for: "work-uuid")?.credentialStrategy, .managed)
     }
+
+    // MARK: Icons
+
+    func testIconRoundTripsAndClears() {
+        let store = AccountRegistryStore(userDefaults: defaults)
+        store.add(account("a"))
+        XCTAssertNil(store.account(for: "a")?.icon, "an account starts on the default mark")
+
+        store.setIcon(.symbol("bolt.fill"), for: "a")
+        XCTAssertEqual(store.account(for: "a")?.icon, .symbol("bolt.fill"))
+
+        store.setIcon(.mark(.claudeCode), for: "a")
+        XCTAssertEqual(store.account(for: "a")?.icon, .mark(.claudeCode))
+
+        store.setIcon(nil, for: "a")
+        XCTAssertNil(store.account(for: "a")?.icon)
+    }
+
+    func testRegistryWrittenBeforeIconsDecodesWithoutOne() throws {
+        // The exact JSON a 1.5 build wrote: no `icon` key at all.
+        let legacy = """
+        [{"accountID":"a","providerID":"claude","displayName":"Work","credentialStrategy":"managed","connectedAt":"2027-01-15T00:00:00Z"}]
+        """
+        defaults.set(Data(legacy.utf8), forKey: "usage.accounts")
+        let store = AccountRegistryStore(userDefaults: defaults)
+        let decoded = store.accounts()
+        XCTAssertEqual(decoded.map(\.displayName), ["Work"])
+        XCTAssertNil(decoded.first?.icon)
+    }
+
+    func testIconEncodesAsKindAndValue() throws {
+        let data = try JSONEncoder().encode(AccountIcon.mark(.claude))
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: String])
+        XCTAssertEqual(json, ["kind": "mark", "value": "claude"])
+        XCTAssertEqual(try JSONDecoder().decode(AccountIcon.self, from: data), .mark(.claude))
+    }
 }

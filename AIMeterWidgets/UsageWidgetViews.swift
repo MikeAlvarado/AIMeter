@@ -26,9 +26,9 @@ struct UsageWidgetView: View {
                     InlineUsageView(snapshot: snapshot, prefs: entry.prefs)
                 #endif
                 case .systemMedium:
-                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
+                    MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName, accountIcon: entry.accountIcon)
                 default:
-                    SystemUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName)
+                    SystemUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName, accountIcon: entry.accountIcon)
                 }
             } else {
                 Text("Open AIMeter to load usage")
@@ -61,6 +61,7 @@ struct WidgetHeader: View {
     let accountName: String
     /// The plan pill; the small family leaves it out for room.
     var planName: String? = nil
+    var accountIcon: AccountIcon? = nil
 
     var body: some View {
         HStack(spacing: 5) {
@@ -70,7 +71,8 @@ struct WidgetHeader: View {
                 iconCornerRadius: 3.5,
                 font: .system(size: 12, weight: .semibold),
                 nameColor: Theme.ink,
-                planName: planName
+                planName: planName,
+                icon: accountIcon
             )
             Spacer(minLength: 0)
             if ClaudePeakStatus.forProvider(snapshot.providerID, at: date).isPeak {
@@ -162,11 +164,12 @@ private struct WindowBarList: View {
     let date: Date
     let accountID: String
     let accountName: String
+    var accountIcon: AccountIcon? = nil
 
     var body: some View {
         let slots = Array(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.prefix(count))
         VStack(alignment: .leading, spacing: 0) {
-            WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName)
+            WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName, accountIcon: accountIcon)
             ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
                 WindowBarRow(
                     kind: slot.kind,
@@ -190,9 +193,10 @@ struct SystemUsageView: View {
     let date: Date
     let accountID: String
     let accountName: String
+    var accountIcon: AccountIcon? = nil
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountID: accountID, accountName: accountName)
+        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountID: accountID, accountName: accountName, accountIcon: accountIcon)
     }
 }
 

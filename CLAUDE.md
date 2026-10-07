@@ -785,17 +785,31 @@ font, and name color so it fits the dashboard, landscape header, menu bar,
 and both widgets without re-typing the composition per surface; each
 caller still wraps it in its own `HStack` for whatever trailing content
 (chevron, "Updated X ago", a staleness hint, or nothing) that surface needs.
-The icon it draws is `Shared/ProviderMark.swift` — an SF Symbol
-(`sparkle`) on the app's own accent wash (or a filled accent tile,
+The icon it draws is `Shared/ProviderMark.swift`: by default an SF
+Symbol (`sparkle`) on the app's own accent wash (or a filled accent tile,
 `prominent: true`, for the Connect sheet header), also used directly by
-Privacy & data and the Live Activity's compact/minimal islands. It is
-deliberately **not** the provider's logo: Anthropic's trademark guidelines
-reserve the Claude logo for uses approved in writing, and App Review
-(4.1(c)/5.2.1) treats a third party's icon the same way — the app was
-rejected once over brand use. The provider is identified by its *name*
-alone, plain-text referential use, which is what both permit; no
-third-party logo ships in the bundle (the GitHub mark in Settings is the
-one exception, used as a link glyph to the app's own repository).
+Privacy & data and the Live Activity's compact/minimal islands. Since
+1.6 the user can pick a glyph **per account** (`ConnectedAccount.icon`,
+an `AccountIcon`: any SF Symbol by name, or one of two bundled marks —
+`ClaudeMark` and `ClaudeCodeMark` in `Shared/Media.xcassets`, the
+Claude and Claude Code logos as single-path template SVGs). Every choice
+is drawn the same way, a template glyph in the accent on the wash at the
+same size, so headers keep one shape and weight whatever the pick. The
+picker is `AIMeter/Views/AccountIconPicker.swift` (Dashboard header
+context menu "Change icon…", Provider Detail → Account → Icon): the
+three marks, a curated SF Symbols grid, and a free-text field validated
+against the OS's symbol set, applying immediately through
+`UsageModel.setIcon`, which writes the registry and nudges the same
+cached surfaces a rename does (widgets reload; a running Live Activity
+restarts, since its `attributes` carry the icon like the name). The
+default stays the sparkle, so nothing changes for an account that never
+picks one. Bundling the two marks was a deliberate product decision on
+2026-10-07, taken knowing the history below: Anthropic's trademark
+guidelines reserve the Claude logo for uses approved in writing, App
+Review (4.1(c)/5.2.1) treats a third party's icon the same way, and the
+app was rejected once over brand use. The provider is still identified
+by its *name* in every header the user hasn't customized; the GitHub
+mark in Settings is a link glyph to the app's own repository.
 Two more `Shared/ThemeComponents.swift` views follow the same rule for
 other repeated pieces: `UsageStatusFooter` (the error label + "Updated X
 ago" caption under the rate-limit rows — dashboard, provider detail, menu
@@ -928,8 +942,11 @@ region to the project's `knownRegions`.
 - App Review posture. Version 1.0 was rejected under 4.1(c) (Copycats —
   the store subtitle named Claude) and 5.2.2 (Legal — "requests, displays,
   or distributes third-party account information"). The code-side answer,
-  all of which must hold for every later submission: no third-party logo in
-  the bundle (`ProviderMark`, not Anthropic's Claude/Claude Code icons);
+  all of which must hold for every later submission: no third-party logo
+  on any *default* surface (`ProviderMark` draws the sparkle unless the
+  user picks otherwise — the two Anthropic marks bundled since 1.6 for
+  the per-account icon picker are opt-in and never appear in demo data or
+  screenshots; a knowing exception, see "Design system");
   "Claude" only as plain-text nominative use *inside* the app, never in
   the App Store name, subtitle, icon, or keywords, with the store
   description carrying the not-affiliated/trademark line the Privacy

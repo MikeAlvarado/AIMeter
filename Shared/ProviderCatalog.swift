@@ -75,7 +75,7 @@ nonisolated enum ProviderCatalog {
             claude = ConnectedAccount(
                 accountID: claude.accountID, providerID: ClaudeProvider.providerID,
                 displayName: claude.displayName, credentialStrategy: claude.credentialStrategy,
-                connectedAt: claude.connectedAt
+                connectedAt: claude.connectedAt, icon: claude.icon
             )
             return makeProvider(for: claude, keychain: keychain, transport: transport)
         }

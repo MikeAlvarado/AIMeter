@@ -112,6 +112,21 @@ extension UsageModel {
         return true
     }
 
+    /// Sets or clears the account's glyph (`AccountIcon`) — the other thing
+    /// about an account the user can change after connecting, with the
+    /// same in-place rule as `rename`: nothing keyed by `accountID` moves.
+    /// Reaches the same cached surfaces a rename does (widgets, a running
+    /// Live Activity); notifications carry no icon, so the reschedule in
+    /// `propagateName` is a harmless no-op for them.
+    func setIcon(_ icon: AccountIcon?, for accountID: String) {
+        guard !isDemoMode, let i = index(for: accountID) else { return }
+        guard accounts[i].account.icon != icon else { return }
+        accounts[i].account.icon = icon
+        registry?.setIcon(icon, for: accountID)
+        services[accountID] = services[accountID]?.withIcon(icon)
+        propagateName(accountID: accountID)
+    }
+
     /// Pushes an account's *current* nickname to the surfaces that cache
     /// it outside `accounts`: every placed widget (headers and the
     /// all-accounts widget read the name from the registry; one discrete
@@ -126,7 +141,7 @@ extension UsageModel {
         WidgetCenter.shared.reloadAllTimelines()
         #if os(iOS)
         LiveActivityManager.rename(
-            accountID: accountID, accountName: usage.account.displayName,
+            accountID: accountID, accountName: usage.account.displayName, accountIcon: usage.account.icon,
             providerID: usage.account.providerID, snapshot: usage.snapshot,
             enabled: LiveActivityPreferences(accountID: accountID).enabled
         )

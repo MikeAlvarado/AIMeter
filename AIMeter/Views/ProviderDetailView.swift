@@ -14,6 +14,7 @@ struct ProviderDetailView: View {
     @State private var showingReconnect = false
     @State private var showingRename = false
     @State private var renameDraft = ""
+    @State private var showingIconPicker = false
 
     private var usage: UsageModel.AccountUsage? {
         model.usage(for: accountID)
@@ -175,6 +176,24 @@ struct ProviderDetailView: View {
                         .buttonStyle(.plain)
                         .accessibilityLabel(Text("Rename account"))
                         .accessibilityValue(Text(accountName))
+                        Divider().overlay(Theme.track)
+                        Button {
+                            showingIconPicker = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Text("Icon")
+                                    .font(Theme.rowTitle)
+                                    .foregroundStyle(Theme.ink)
+                                Spacer()
+                                ProviderMark(size: 24, cornerRadius: 6, icon: usage?.account.icon)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Theme.inkSecondary)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Change icon"))
                     }
                     SectionFootnote(text: String(localized: "Shown on the dashboard, in widgets, and in notification titles."))
                 }
@@ -208,6 +227,9 @@ struct ProviderDetailView: View {
             .padding(20)
         }
         .background(Theme.background)
+        .sheet(isPresented: $showingIconPicker) {
+            AccountIconPicker(accountID: accountID)
+        }
         .sheet(isPresented: $showingReconnect) {
             if let account = usage?.account {
                 ConnectClaudeSheet(reconnecting: account)
@@ -243,6 +265,7 @@ struct ProviderDetailView: View {
                     LiveActivityManager.sync(
                         accountID: accountID,
                         accountName: accountName,
+                        accountIcon: usage?.account.icon,
                         providerID: usage?.account.providerID ?? ProviderCatalog.defaultProviderID,
                         snapshot: usage?.snapshot,
                         enabled: true

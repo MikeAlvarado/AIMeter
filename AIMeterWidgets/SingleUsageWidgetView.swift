@@ -35,7 +35,8 @@ struct SingleUsageWidgetView: View {
                 iconCornerRadius: 3.5,
                 font: .system(size: 12, weight: .semibold),
                 nameColor: Theme.ink,
-                planName: nil
+                planName: nil,
+                icon: entry.accountIcon
             )
             Spacer(minLength: 4)
             // Scoped to .session: that's the window the documented peak
