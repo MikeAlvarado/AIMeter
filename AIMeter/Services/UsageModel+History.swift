@@ -9,7 +9,11 @@ import UsageKit
 /// iOS widget may have appended in between).
 extension UsageModel {
     func timeline(for accountID: String, kind: UsageWindow.Kind) -> [TimelineSample] {
-        if isDemoMode { return DemoUsageData.timeline()[kind.storageKey] ?? [] }
+        if isDemoMode {
+            // Each demo account's series ends on its own snapshot's figures.
+            let snapshot = accounts.first { $0.account.accountID == accountID }?.snapshot
+            return DemoUsageData.timeline(for: snapshot)[kind.storageKey] ?? []
+        }
         return timelines[accountID]?[kind.storageKey] ?? []
     }
 

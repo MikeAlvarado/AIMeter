@@ -554,8 +554,9 @@ the account silently freezes at its last snapshot.
   than one segment per window (a session's sawtooth split at every reset
   rendered as hatch marks at that size) (`WindowRowsList(showsSparklines:)`, true only from the
   Dashboard — the popover, landscape, detail and widget rows don't). Demo
-  mode draws from `DemoUsageData.timeline()`, thirty fabricated days
-  ending exactly on the demo snapshot's figures.
+  mode draws from `DemoUsageData.timeline(for:)`, thirty fabricated days
+  ending exactly on that demo account's snapshot figures (the demo has
+  two accounts, see `AIMeter/CLAUDE.md` → "Demo mode").
 - Claude Code local usage (macOS, **opt-in**, off by default —
   `Preferences.claudeCodeUsageEnabled`): what Claude Code's sessions on
   this Mac would have cost at API list prices, from the JSONL logs the

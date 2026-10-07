@@ -280,17 +280,24 @@
     from Claude Code's) is the honest counterpart to the paste-the-JSON
     hint right above it: pasting the CLI's credentials is exactly what
     leaves two clients fighting over one rotating refresh token.
-- **Demo mode**: `UsageModel.enterDemoMode()` loads a fabricated
-  `DemoUsageData.snapshot()` — one of each window kind, spend, and extra
-  usage — and `DemoUsageData.timeline()`, thirty days of samples per window
-  ending on those exact figures (a 5-hour session sawtooth of varying
-  height, the weekly windows resetting where the snapshot says the
-  week began and once a week before that, sessions idle at night), and on macOS `DemoUsageData.codingSessions` (the Claude
-  Code section under its neutral demo title), so every screen (rate
-  limits, sparklines, history chart, pace, forecast, spend/extra cards,
-  coding sessions) can be explored without a real Claude account. Its
-  names are deliberately neutral — the account is nicknamed "Personal" and
-  the per-model window is "Top model", never a provider or product name —
+- **Demo mode**: `UsageModel.enterDemoMode()` loads two fabricated
+  accounts (`DemoUsageData.accounts()`): "Personal" on the default mark
+  with `DemoUsageData.snapshot()` — one of each window kind, spend, and
+  extra usage — and "Work" on a symbol icon (`briefcase.fill`) with
+  `secondSnapshot()`, a busier session, a quieter week and no per-model
+  window, so its third row is the credits fallback and the dashboard
+  reads as two genuinely different accounts (and shows the per-account
+  icon without a brand mark). Each gets `DemoUsageData.timeline(for:)`,
+  thirty days of samples per window ending on that snapshot's exact
+  figures (a 5-hour session sawtooth of varying height, the weekly
+  windows resetting where the snapshot says the week began and once a
+  week before that, sessions idle at night), and on macOS
+  `DemoUsageData.codingSessions` (the Claude Code section under its
+  neutral demo title), so every screen (rate limits, sparklines, history
+  chart, pace, forecast, spend/extra cards, coding sessions) can be
+  explored without a real Claude account. Its names are deliberately
+  neutral — "Personal", "Work", and the per-model window "Top model",
+  never a provider or product name —
   because demo mode is where App Store screenshots come from, and
   screenshots are store metadata: the third rejection (4.1(a)) was for
   third-party names in metadata, and "Claude"/"Fable 5" in every card

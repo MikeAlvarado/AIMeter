@@ -79,4 +79,14 @@ final class HistoryChartDataTests: XCTestCase {
         XCTAssertTrue(sessions.isReady)
         XCTAssertLessThanOrEqual(sessions.peak?.usedPct ?? 101, 100)
     }
+
+    func testSecondDemoTimelineEndsOnItsOwnSnapshot() {
+        let snapshot = DemoUsageData.secondSnapshot(now: now)
+        let timeline = DemoUsageData.timeline(now: now, for: snapshot)
+        for window in snapshot.windows {
+            XCTAssertEqual(timeline[window.kind.storageKey]?.last?.usedPct, window.usedPct, "\(window.kind)")
+        }
+        XCTAssertNil(timeline["model.Top model"], "no per-model window, no per-model series")
+        XCTAssertEqual(DemoUsageData.accounts(now: now).map(\.account.displayName), ["Personal", "Work"])
+    }
 }
