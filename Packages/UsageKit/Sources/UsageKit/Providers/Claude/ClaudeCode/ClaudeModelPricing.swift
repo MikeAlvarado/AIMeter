@@ -11,10 +11,12 @@ import Foundation
 /// pricing" and "Prompt caching" (5-minute writes 1.25× input, 1-hour
 /// writes 2× input, cache reads 0.1× — 0.025× on Fable 5.1 / Mythos 5.1,
 /// 0.05× on Opus 5.5), and "Web search tool" ($10 per 1,000 searches;
-/// web fetch is free).
+/// web fetch is free). Haiku 5.5 is the one model priced by prompt
+/// length: a second set of rates applies to a request whose prompt
+/// (input plus every cache category) exceeds 100,000 tokens.
 public enum ClaudeModelPricing {
     /// When the table below was last checked against the pricing page.
-    public static let lastVerified = Date(timeIntervalSince1970: 1_790_899_200) // 2026-10-02
+    public static let lastVerified = Date(timeIntervalSince1970: 1_791_331_200) // 2026-10-07
 
     /// USD per million tokens.
     public struct Rates: Equatable, Sendable {
@@ -23,15 +25,40 @@ public enum ClaudeModelPricing {
         public let cacheWrite1h: Double
         public let cacheRead: Double
         public let output: Double
+        /// The rates for a request whose prompt exceeds `longPromptThreshold`
+        /// tokens, for the models priced by prompt length; nil when one
+        /// price applies regardless.
+        public let longPrompt: LongPrompt?
 
-        public init(input: Double, cacheWrite5m: Double, cacheWrite1h: Double, cacheRead: Double, output: Double) {
+        public struct LongPrompt: Equatable, Sendable {
+            public let input: Double
+            public let cacheWrite5m: Double
+            public let cacheWrite1h: Double
+            public let cacheRead: Double
+            public let output: Double
+
+            public init(input: Double, cacheWrite5m: Double, cacheWrite1h: Double, cacheRead: Double, output: Double) {
+                self.input = input
+                self.cacheWrite5m = cacheWrite5m
+                self.cacheWrite1h = cacheWrite1h
+                self.cacheRead = cacheRead
+                self.output = output
+            }
+        }
+
+        public init(input: Double, cacheWrite5m: Double, cacheWrite1h: Double, cacheRead: Double, output: Double, longPrompt: LongPrompt? = nil) {
             self.input = input
             self.cacheWrite5m = cacheWrite5m
             self.cacheWrite1h = cacheWrite1h
             self.cacheRead = cacheRead
             self.output = output
+            self.longPrompt = longPrompt
         }
     }
+
+    /// Prompt size (input + cache writes + cache reads) above which a
+    /// model's `longPrompt` rates apply.
+    public static let longPromptThreshold = 100_000
 
     /// USD per web search request.
     public static let webSearchRequest = 10.0 / 1000
@@ -59,6 +86,10 @@ public enum ClaudeModelPricing {
         "claude-sonnet-4-6": Rates(input: 3, cacheWrite5m: 3.75, cacheWrite1h: 6, cacheRead: 0.30, output: 15),
         "claude-sonnet-4-5": Rates(input: 3, cacheWrite5m: 3.75, cacheWrite1h: 6, cacheRead: 0.30, output: 15),
         "claude-sonnet-4": Rates(input: 3, cacheWrite5m: 3.75, cacheWrite1h: 6, cacheRead: 0.30, output: 15),
+        "claude-haiku-5-5": Rates(
+            input: 0.10, cacheWrite5m: 0.125, cacheWrite1h: 0.20, cacheRead: 0.01, output: 0.50,
+            longPrompt: .init(input: 0.50, cacheWrite5m: 0.625, cacheWrite1h: 1, cacheRead: 0.05, output: 2.50)
+        ),
         "claude-haiku-4-5": Rates(input: 1, cacheWrite5m: 1.25, cacheWrite1h: 2, cacheRead: 0.10, output: 5),
         "claude-3-5-haiku": Rates(input: 0.80, cacheWrite5m: 1, cacheWrite1h: 1.60, cacheRead: 0.08, output: 4),
     ]
@@ -90,6 +121,15 @@ public enum ClaudeModelPricing {
     public static func cost(_ tokens: ClaudeCodeTokenCounts, model: String) -> Double? {
         guard let rates = rates(for: model) else { return nil }
         let perToken = 1.0 / 1_000_000
+        let prompt = tokens.input + tokens.cacheWrite5m + tokens.cacheWrite1h + tokens.cacheRead
+        if let long = rates.longPrompt, prompt > longPromptThreshold {
+            return Double(tokens.input) * long.input * perToken
+                + Double(tokens.cacheWrite5m) * long.cacheWrite5m * perToken
+                + Double(tokens.cacheWrite1h) * long.cacheWrite1h * perToken
+                + Double(tokens.cacheRead) * long.cacheRead * perToken
+                + Double(tokens.output) * long.output * perToken
+                + Double(tokens.webSearches) * webSearchRequest
+        }
         return Double(tokens.input) * rates.input * perToken
             + Double(tokens.cacheWrite5m) * rates.cacheWrite5m * perToken
             + Double(tokens.cacheWrite1h) * rates.cacheWrite1h * perToken

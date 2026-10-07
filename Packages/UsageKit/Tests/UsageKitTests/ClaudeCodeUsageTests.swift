@@ -26,6 +26,16 @@ final class ClaudeCodeUsageTests: XCTestCase {
         XCTAssertLessThan(ClaudeModelPricing.lastVerified, Date())
     }
 
+    func testHaiku55PricesByPromptLength() {
+        let short = ClaudeCodeTokenCounts(input: 50_000, output: 1_000, cacheRead: 40_000)
+        let long = ClaudeCodeTokenCounts(input: 50_000, output: 1_000, cacheRead: 60_000)
+        // 50K × $0.10 + 40K × $0.01 + 1K × $0.50 per MTok
+        XCTAssertEqual(ClaudeModelPricing.cost(short, model: "claude-haiku-5-5")!, 0.005 + 0.0004 + 0.0005, accuracy: 1e-9)
+        // Over 100K of prompt: 50K × $0.50 + 60K × $0.05 + 1K × $2.50
+        XCTAssertEqual(ClaudeModelPricing.cost(long, model: "claude-haiku-5-5-20260901")!, 0.025 + 0.003 + 0.0025, accuracy: 1e-9)
+        XCTAssertNil(ClaudeModelPricing.rates(for: "claude-haiku-4-5")?.longPrompt, "only Haiku 5.5 is tiered")
+    }
+
     func testCostAddsEveryCategoryAtListPrice() {
         let tokens = ClaudeCodeTokenCounts(input: 1_000_000, output: 1_000_000, cacheWrite5m: 1_000_000, cacheWrite1h: 1_000_000, cacheRead: 1_000_000, webSearches: 1000)
         // Fable 5.1: 10 + 50 + 12.5 + 20 + 0.25 + 10 (searches)
