@@ -6,11 +6,13 @@
 	<array>
 		<string>com.mikealvarado.aimeter.refresh</string>
 	</array>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
 	</array>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
 </dict>
 </plist>
