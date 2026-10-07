@@ -40,6 +40,9 @@ can be added later.
   widgets show up automatically in Notification Center / the desktop and
   are fed by the menu bar app, which is why AIMeter can keep running with
   no icons visible (see below) — that's what keeps them from going stale.
+- In eight languages: English, Spanish, German, French, Japanese,
+  Korean, Brazilian Portuguese and Simplified Chinese, picked from the
+  device language.
 - Each account gets a name and an icon of your choosing: any SF Symbol,
   or the Claude / Claude Code mark, drawn in the same style, shown on the
   dashboard, in the menu bar, in every widget and in the Live Activity.
@@ -111,7 +114,8 @@ can be added later.
   refreshing and feeding widgets with no icon on screen at all.
 - Background refresh at a configurable cadence (30 min / 1 h / 3 h); widgets
   keep the last known data (with a staleness hint) when a fetch fails.
-- English and Spanish, following the device language.
+- English, Spanish, German, French, Japanese, Korean, Brazilian Portuguese
+  and Simplified Chinese, following the device language.
 
 ## ⚠️ Disclaimer
 

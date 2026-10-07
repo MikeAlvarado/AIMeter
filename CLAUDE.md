@@ -833,15 +833,27 @@ exactly this (see `AIMeterWidgets/CLAUDE.md`).
 
 ## Localization
 
-English source, Spanish complete; the device language picks automatically.
-Three catalogs: `Shared/Localizable.xcstrings` (app + widget UI),
+English source; complete translations in Spanish, German, French,
+Japanese, Korean, Brazilian Portuguese and Simplified Chinese (the six
+added for 1.6.1 were written in-house on 2026-10-07 against the English
+key, its comment and the Spanish, and are open to native review); the
+device language picks automatically. Two catalogs:
+`Shared/Localizable.xcstrings` (app + widget UI) and
 `Packages/UsageKit/Sources/UsageKit/Resources/Localizable.xcstrings`
 (errors, via `String(localized:bundle:.module)`); `AIMeter` links
 Swift Charts for the history chart (a system framework, still no
-third-party dependency). Brand words (Claude,
-Pro, Max, AIMeter) are never translated. Dates/currency use system
-formatters. To add a language: add translations to both catalogs and the
-region to the project's `knownRegions`.
+third-party dependency). Brand words (Claude, Claude Code, Pro, Max,
+AIMeter, SF Symbols) are never translated; Apple's own terms follow
+Apple's glossary per language (Keychain, Lock Screen, Live Activity,
+Dynamic Island, Shortcuts, menu bar). A handful of keys are left
+untranslated in every language on purpose — the Shortcuts action titles
+("Refresh Usage", "Show Usage"), which the Settings footnote quotes
+verbatim — and the compact menu-bar letters ("S", "W", "C") and
+countdown units ("%lldh %lldm") are localized as short as each script
+allows. Dates/currency use system formatters. To add a language: add
+translations to both catalogs (every key that has a Spanish value) and
+the region to the project's `knownRegions`; placeholders must match the
+key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
 
 ## Conventions
 
