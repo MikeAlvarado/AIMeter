@@ -91,7 +91,7 @@ final class UsageModelNamingTests: XCTestCase {
         let model = makeModel()
         model.enterDemoMode()
         XCTAssertTrue(model.isDemoMode)
-        XCTAssertEqual(model.accounts.map(\.account.displayName), ["Personal"])
+        XCTAssertEqual(model.accounts.map(\.account.displayName), ["Personal", "Work"])
         // Demo ignores renames silently (the UI hides the affordance) — not
         // a rejection, so the alert never re-presents, but nothing changes.
         model.rename("demo", to: "X")
