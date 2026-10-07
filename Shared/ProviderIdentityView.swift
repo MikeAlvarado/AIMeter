@@ -1,4 +1,5 @@
 import SwiftUI
+import UsageKit
 
 /// Icon + name + optional plan pill — the repeated first part of every
 /// provider header across the dashboard, landscape view, menu bar, and
@@ -13,9 +14,12 @@ struct ProviderIdentityView: View {
     let font: Font
     let nameColor: Color
     let planName: String?
+    /// The account's chosen glyph (`ConnectedAccount.icon`); nil is the
+    /// default mark.
+    var icon: AccountIcon? = nil
 
     var body: some View {
-        ProviderMark(size: iconSize, cornerRadius: iconCornerRadius)
+        ProviderMark(size: iconSize, cornerRadius: iconCornerRadius, icon: icon)
         Text(name)
             .font(font)
             .foregroundStyle(nameColor)

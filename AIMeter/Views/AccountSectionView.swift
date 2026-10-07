@@ -51,6 +51,7 @@ struct AccountSectionView: View {
     @State private var showingReconnect = false
     @State private var showingRename = false
     @State private var renameDraft = ""
+    @State private var showingIconPicker = false
     @Environment(UsageModel.self) private var model
 
     var body: some View {
@@ -74,6 +75,9 @@ struct AccountSectionView: View {
             ConnectClaudeSheet(reconnecting: usage.account)
         }
         .renameAccountAlert(for: usage.account.accountID, isPresented: $showingRename, name: $renameDraft)
+        .sheet(isPresented: $showingIconPicker) {
+            AccountIconPicker(accountID: usage.account.accountID)
+        }
     }
 
     private func reconnect() {
@@ -121,6 +125,13 @@ struct AccountSectionView: View {
             } label: {
                 Label("Rename…", systemImage: "pencil")
             }
+            if presentsSheets {
+                Button {
+                    showingIconPicker = true
+                } label: {
+                    Label("Change icon…", systemImage: "sparkle")
+                }
+            }
         }
         if let moveUp {
             Button(action: moveUp) {
@@ -142,7 +153,8 @@ struct AccountSectionView: View {
                 iconCornerRadius: iconCornerRadius,
                 font: font,
                 nameColor: Theme.inkSecondary,
-                planName: usage.snapshot?.planName
+                planName: usage.snapshot?.planName,
+                icon: usage.account.icon
             )
             Spacer()
             if showsChevron {

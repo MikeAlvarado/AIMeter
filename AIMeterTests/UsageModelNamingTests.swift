@@ -99,4 +99,16 @@ final class UsageModelNamingTests: XCTestCase {
         model.exitDemoMode()
         XCTAssertEqual(model.accounts.map(\.id), ["acc-work", "acc-home"])
     }
+
+    func testSetIconWritesTheAccountAndTheRegistry() {
+        let model = makeModel()
+        model.setIcon(.mark(.claude), for: "acc-work")
+        XCTAssertEqual(model.usage(for: "acc-work")?.account.icon, .mark(.claude))
+        XCTAssertEqual(registry.account(for: "acc-work")?.icon, .mark(.claude))
+        XCTAssertNil(registry.account(for: "acc-home")?.icon, "only the named account changes")
+
+        model.setIcon(nil, for: "acc-work")
+        XCTAssertNil(model.usage(for: "acc-work")?.account.icon)
+        XCTAssertNil(registry.account(for: "acc-work")?.icon)
+    }
 }

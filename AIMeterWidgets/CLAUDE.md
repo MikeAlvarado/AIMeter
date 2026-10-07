@@ -6,6 +6,13 @@ first (the account's limits, the one most people place), then
 feature names ("Usage Limits", "Single Limit", "All Accounts"), never a
 provider's — the gallery is a screenshot-able surface like any other.
 
+Every header draws the account's chosen glyph (`ConnectedAccount.icon`,
+see "Design system" in the repo-root CLAUDE.md): `AIMeterAllAccounts`
+has the `ConnectedAccount` in its rows, and the two configured widgets
+read it into their entries (`accountIcon`) through
+`WidgetAccountFallback.icon(for:)` — the registry lookup next to the name
+— so a change in the app shows on the next reload the app triggers.
+
 `AIMeterUsage` and `AIMeterSingleUsage` are `AppIntentConfiguration`, so
 every placed instance — Home Screen or Lock Screen — has its own
 independent account selection; an empty `AccountRegistryStore` (nothing
@@ -184,9 +191,10 @@ above); no new target, no push entitlement.
   Dynamic Island's own standard behavior (one compact/expanded at a time,
   others collapse to `.minimal`) handles that with no special-casing here.
   A rename can't reach a running activity through `update` — `attributes`
-  (the account name among them) are fixed for an activity's lifetime — so
-  `LiveActivityManager.rename` ends it and starts a fresh one under the new
-  name; with none running, the next `sync` simply uses the new name.
+  (the account name and its icon among them) are fixed for an activity's
+  lifetime — so `LiveActivityManager.rename` ends it and starts a fresh
+  one under the new name or icon; with none running, the next `sync`
+  simply uses the new ones.
 - `Shared/SessionActivityAttributes.swift` (`ActivityAttributes` +
   `ContentState: usedPct, resetsAt, isPeak, severity`) lives in `Shared/`,
   synced into both targets already like `Theme.swift`/`AppConfig.swift` —

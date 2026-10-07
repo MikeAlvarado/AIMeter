@@ -8,6 +8,8 @@ struct UsageEntry: TimelineEntry {
     let accountID: String
     let accountName: String
     let prefs: Preferences
+    /// The account's chosen glyph, read from the registry with the name.
+    var accountIcon: AccountIcon? = nil
 }
 
 /// Serves the last snapshot from the App Group, for whichever account the
@@ -42,7 +44,7 @@ struct UsageTimelineProvider: AppIntentTimelineProvider {
             current: current.snapshot,
             cadence: interval
         ) {
-            current = UsageEntry(date: .now, snapshot: fresh, accountID: current.accountID, accountName: current.accountName, prefs: current.prefs)
+            current = UsageEntry(date: .now, snapshot: fresh, accountID: current.accountID, accountName: current.accountName, prefs: current.prefs, accountIcon: current.accountIcon)
         }
         #endif
         let next = Date(timeIntervalSinceNow: interval)
@@ -58,7 +60,7 @@ struct UsageTimelineProvider: AppIntentTimelineProvider {
         guard let schedule = ClaudePeakSchedule.current,
               let transition = PeakCalculator.nextTransition(after: entry.date, schedule: schedule),
               transition < next else { return [] }
-        return [UsageEntry(date: transition, snapshot: entry.snapshot, accountID: entry.accountID, accountName: entry.accountName, prefs: entry.prefs)]
+        return [UsageEntry(date: transition, snapshot: entry.snapshot, accountID: entry.accountID, accountName: entry.accountName, prefs: entry.prefs, accountIcon: entry.accountIcon)]
     }
 
     private func entry(for configuration: UsageAccountConfigurationIntent) -> UsageEntry {
@@ -75,7 +77,8 @@ struct UsageTimelineProvider: AppIntentTimelineProvider {
             snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: accountID),
             accountID: accountID,
             accountName: accountName,
-            prefs: Preferences.load()
+            prefs: Preferences.load(),
+            accountIcon: WidgetAccountFallback.icon(for: accountID)
         )
     }
 }

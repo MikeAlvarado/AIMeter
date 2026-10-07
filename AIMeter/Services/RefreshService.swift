@@ -49,6 +49,14 @@ struct RefreshService {
         return copy
     }
 
+    /// Same one-field copy as `renamed(to:)`, for the chosen glyph — the
+    /// other display-only field a fetch feeds to the Live Activity.
+    func withIcon(_ icon: AccountIcon?) -> RefreshService {
+        var copy = self
+        copy.account.icon = icon
+        return copy
+    }
+
     /// One-time move of credentials saved before keychain sharing into the
     /// shared access group, so the widget extension can read them too. Runs
     /// once at startup (`AccountMigration`), before any account is loaded —
@@ -116,7 +124,7 @@ struct RefreshService {
         // (see `UsageModel.fetch(accountID:)`), not once per account.
         #if os(iOS)
         LiveActivityManager.sync(
-            accountID: account.accountID, accountName: account.displayName,
+            accountID: account.accountID, accountName: account.displayName, accountIcon: account.icon,
             providerID: account.providerID, snapshot: snapshot,
             enabled: LiveActivityPreferences(accountID: account.accountID).enabled,
             mayStart: allowsLiveActivityStart

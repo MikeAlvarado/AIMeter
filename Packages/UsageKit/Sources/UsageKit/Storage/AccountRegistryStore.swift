@@ -22,19 +22,74 @@ public struct ConnectedAccount: Codable, Hashable, Sendable, Identifiable {
     public var displayName: String
     public var credentialStrategy: CredentialStrategy
     public var connectedAt: Date
+    /// The glyph the user picked for this account, or nil for the app's
+    /// default mark. Optional and absent from any registry written before
+    /// it existed, so an upgrade decodes unchanged.
+    public var icon: AccountIcon?
 
     public init(
         accountID: String,
         providerID: String,
         displayName: String,
         credentialStrategy: CredentialStrategy,
-        connectedAt: Date = Date()
+        connectedAt: Date = Date(),
+        icon: AccountIcon? = nil
     ) {
         self.accountID = accountID
         self.providerID = providerID
         self.displayName = displayName
         self.credentialStrategy = credentialStrategy
         self.connectedAt = connectedAt
+        self.icon = icon
+    }
+}
+
+/// What an account's header glyph shows: an SF Symbol by name, or one of
+/// the bundled marks. Pure data — the drawing is the app's
+/// (`ProviderMark`), and the widget extension reads it from the registry
+/// like every other account field. Encoded as `{"kind": …, "value": …}`
+/// so the stored form stays readable and a future kind can't collide with
+/// the synthesized associated-value layout.
+public enum AccountIcon: Codable, Hashable, Sendable {
+    /// An SF Symbol, by its system name ("bolt.fill").
+    case symbol(String)
+    /// One of the marks shipped in the app's asset catalog.
+    case mark(Mark)
+
+    public enum Mark: String, Codable, Hashable, Sendable, CaseIterable {
+        case claude
+        case claudeCode
+    }
+
+    private enum CodingKeys: String, CodingKey { case kind, value }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let kind = try container.decode(String.self, forKey: .kind)
+        let value = try container.decode(String.self, forKey: .value)
+        switch kind {
+        case "symbol":
+            self = .symbol(value)
+        case "mark":
+            guard let mark = Mark(rawValue: value) else {
+                throw DecodingError.dataCorruptedError(forKey: .value, in: container, debugDescription: "unknown mark \(value)")
+            }
+            self = .mark(mark)
+        default:
+            throw DecodingError.dataCorruptedError(forKey: .kind, in: container, debugDescription: "unknown icon kind \(kind)")
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .symbol(let name):
+            try container.encode("symbol", forKey: .kind)
+            try container.encode(name, forKey: .value)
+        case .mark(let mark):
+            try container.encode("mark", forKey: .kind)
+            try container.encode(mark.rawValue, forKey: .value)
+        }
     }
 }
 
@@ -104,6 +159,15 @@ public struct AccountRegistryStore: @unchecked Sendable {
         var current = accounts()
         guard let index = current.firstIndex(where: { $0.accountID == accountID }) else { return }
         current[index].credentialStrategy = strategy
+        save(current)
+    }
+
+    /// Sets or clears (nil) the account's chosen glyph. Like `rename`, a
+    /// change to how the account is *shown*, never to what it is.
+    public func setIcon(_ icon: AccountIcon?, for accountID: String) {
+        var current = accounts()
+        guard let index = current.firstIndex(where: { $0.accountID == accountID }) else { return }
+        current[index].icon = icon
         save(current)
     }
 

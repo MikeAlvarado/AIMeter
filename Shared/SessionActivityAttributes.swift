@@ -26,5 +26,8 @@ nonisolated struct SessionActivityAttributes: ActivityAttributes {
 
     let accountID: String
     let accountName: String
+    /// The account's chosen glyph; fixed for the activity's lifetime like
+    /// the name, so an icon change restarts it the same way a rename does.
+    var accountIcon: AccountIcon? = nil
 }
 #endif

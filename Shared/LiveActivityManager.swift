@@ -20,7 +20,7 @@ enum LiveActivityManager {
     /// sees an empty `Activity.activities` and can neither start nor
     /// update one, which is why `WidgetRefresher` doesn't call this.
     static func sync(
-        accountID: String, accountName: String, providerID: String,
+        accountID: String, accountName: String, accountIcon: AccountIcon? = nil, providerID: String,
         snapshot: UsageSnapshot?, enabled: Bool, mayStart: Bool = true
     ) {
         let running = Activity<SessionActivityAttributes>.activities.first { $0.attributes.accountID == accountID }
@@ -34,19 +34,21 @@ enum LiveActivityManager {
         if let running {
             Task { await running.update(content) }
         } else if mayStart {
-            start(accountID: accountID, accountName: accountName, content: content)
+            start(accountID: accountID, accountName: accountName, accountIcon: accountIcon, content: content)
         }
     }
 
-    /// Restarts a running activity under a new nickname. `attributes` (the
-    /// name among them) are fixed for an activity's lifetime, so a rename
-    /// can't ride on `update` the way every other change does: the old
+    /// Restarts a running activity under a new nickname or icon.
+    /// `attributes` (the name and icon among them) are fixed for an
+    /// activity's lifetime, so neither change
+    /// can ride on `update` the way every other change does: the old
     /// activity ends and a fresh one starts in its place. Nothing to do
     /// when none is running — the next `sync` picks the new name up on its
     /// own. Called from the rename action only, so the app is in the
     /// foreground, which `Activity.request` requires.
     static func rename(
-        accountID: String, accountName: String, providerID: String, snapshot: UsageSnapshot?, enabled: Bool
+        accountID: String, accountName: String, accountIcon: AccountIcon? = nil,
+        providerID: String, snapshot: UsageSnapshot?, enabled: Bool
     ) {
         let running = Activity<SessionActivityAttributes>.activities.filter { $0.attributes.accountID == accountID }
         guard !running.isEmpty else { return }
@@ -56,7 +58,7 @@ enum LiveActivityManager {
                 await activity.end(nil, dismissalPolicy: .immediate)
             }
             guard let content else { return }
-            start(accountID: accountID, accountName: accountName, content: content)
+            start(accountID: accountID, accountName: accountName, accountIcon: accountIcon, content: content)
         }
     }
 
@@ -97,12 +99,13 @@ enum LiveActivityManager {
     }
 
     private static func start(
-        accountID: String, accountName: String, content: ActivityContent<SessionActivityAttributes.ContentState>
+        accountID: String, accountName: String, accountIcon: AccountIcon?,
+        content: ActivityContent<SessionActivityAttributes.ContentState>
     ) {
         // The user can switch Live Activities off per app in Settings;
         // `request` would just throw, but checking makes the no-op explicit.
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        let attributes = SessionActivityAttributes(accountID: accountID, accountName: accountName)
+        let attributes = SessionActivityAttributes(accountID: accountID, accountName: accountName, accountIcon: accountIcon)
         _ = try? Activity.request(attributes: attributes, content: content, pushType: nil)
     }
 }

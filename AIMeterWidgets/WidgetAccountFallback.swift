@@ -15,4 +15,11 @@ enum WidgetAccountFallback {
         let legacy = ProviderCatalog.legacyAccount
         return (legacy.accountID, legacy.displayName)
     }
+
+    /// The glyph the user picked for this account, from the same registry
+    /// the names come from — nil (the default mark) when unset or when the
+    /// account is the legacy sentinel.
+    static func icon(for accountID: String) -> AccountIcon? {
+        AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)?.icon
+    }
 }

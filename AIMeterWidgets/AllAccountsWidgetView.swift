@@ -77,7 +77,8 @@ private struct AccountRow: View {
                     iconCornerRadius: 3.5,
                     font: .system(size: 12, weight: .semibold),
                     nameColor: Theme.ink,
-                    planName: row.snapshot?.planName
+                    planName: row.snapshot?.planName,
+                    icon: row.account.icon
                 )
                 Spacer(minLength: 0)
                 #if os(iOS)

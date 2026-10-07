@@ -14,12 +14,13 @@ struct MediumUsageView: View {
     let date: Date
     let accountID: String
     let accountName: String
+    var accountIcon: AccountIcon? = nil
 
     var body: some View {
         let slots = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
         let wide = slots.count <= 2
         VStack(alignment: .leading, spacing: 0) {
-            WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName, planName: snapshot.planName)
+            WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName, planName: snapshot.planName, accountIcon: accountIcon)
             Spacer(minLength: 6)
             HStack(alignment: .top, spacing: wide ? 16 : 10) {
                 ForEach(slots, id: \.kind) { slot in

@@ -40,6 +40,9 @@ can be added later.
   widgets show up automatically in Notification Center / the desktop and
   are fed by the menu bar app, which is why AIMeter can keep running with
   no icons visible (see below) — that's what keeps them from going stale.
+- Each account gets a name and an icon of your choosing: any SF Symbol,
+  or the Claude / Claude Code mark, drawn in the same style, shown on the
+  dashboard, in the menu bar, in every widget and in the Live Activity.
 - A second, single-window widget ("Single Limit") for when you only care
   about one number — pick the account and window (session, weekly, a
   per-model limit, or usage credits) from the widget's own Edit Widget

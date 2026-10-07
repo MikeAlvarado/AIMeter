@@ -24,7 +24,8 @@ struct SessionLiveActivity: Widget {
                             iconCornerRadius: 4,
                             font: .system(size: 13, weight: .semibold),
                             nameColor: Theme.ink,
-                            planName: nil
+                            planName: nil,
+                            icon: context.attributes.accountIcon
                         )
                         if context.state.isPeak {
                             PeakBadge(size: 10)
@@ -44,7 +45,7 @@ struct SessionLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                providerMark(size: 16)
+                providerMark(size: 16, icon: context.attributes.accountIcon)
             } compactTrailing: {
                 HStack(spacing: 4) {
                     percentText(context.state, size: 12)
@@ -53,13 +54,13 @@ struct SessionLiveActivity: Widget {
                     }
                 }
             } minimal: {
-                providerMark(size: 14)
+                providerMark(size: 14, icon: context.attributes.accountIcon)
             }
         }
     }
 
-    private func providerMark(size: CGFloat) -> some View {
-        ProviderMark(size: size, cornerRadius: size / 4)
+    private func providerMark(size: CGFloat, icon: AccountIcon?) -> some View {
+        ProviderMark(size: size, cornerRadius: size / 4, icon: icon)
     }
 
     private func percentText(_ state: SessionActivityAttributes.ContentState, size: CGFloat) -> some View {
@@ -93,7 +94,8 @@ private struct LockScreenView: View {
                     iconCornerRadius: 4.5,
                     font: .system(size: 14, weight: .semibold),
                     nameColor: Theme.ink,
-                    planName: nil
+                    planName: nil,
+                    icon: attributes.accountIcon
                 )
                 // Grouped with the account name (leading), not with the
                 // percentage (trailing): it's a property of the account,

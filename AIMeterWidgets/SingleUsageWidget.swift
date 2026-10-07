@@ -9,6 +9,7 @@ struct SingleUsageEntry: TimelineEntry {
     let kind: UsageWindow.Kind
     let accountName: String
     let prefs: Preferences
+    var accountIcon: AccountIcon? = nil
 
     var window: UsageWindow? {
         // Credits is synthesized from spend, never part of the real
@@ -57,7 +58,8 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
                 accountID: current.accountID,
                 kind: current.kind,
                 accountName: current.accountName,
-                prefs: current.prefs
+                prefs: current.prefs,
+                accountIcon: current.accountIcon
             )
         }
         #endif
@@ -75,7 +77,8 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
                 accountID: current.accountID,
                 kind: current.kind,
                 accountName: current.accountName,
-                prefs: current.prefs
+                prefs: current.prefs,
+                accountIcon: current.accountIcon
             ))
         }
         return Timeline(entries: entries, policy: .after(next))
@@ -95,7 +98,8 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
             accountID: accountID,
             kind: selection?.kind ?? .session,
             accountName: accountName,
-            prefs: Preferences.load()
+            prefs: Preferences.load(),
+            accountIcon: WidgetAccountFallback.icon(for: accountID)
         )
     }
 }
