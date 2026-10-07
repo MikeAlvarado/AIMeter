@@ -139,16 +139,10 @@ extension UsageModel {
     func enterDemoMode() {
         isDemoMode = true
         connectionError = nil
-        accounts = [AccountUsage(
-            // Neutral nickname on purpose — see `DemoUsageData`: the demo is
-            // the source of App Store screenshots, and a provider's name in
-            // a screenshot is a third-party name in store metadata (4.1(a)).
-            account: ConnectedAccount(
-                accountID: "demo", providerID: ProviderCatalog.defaultProviderID,
-                displayName: "Personal", credentialStrategy: .managed
-            ),
-            snapshot: DemoUsageData.snapshot()
-        )]
+        // Two fabricated accounts (see `DemoUsageData.accounts`), so the
+        // demo — the source of App Store screenshots — shows the
+        // multi-account dashboard and a per-account icon.
+        accounts = DemoUsageData.accounts().map { AccountUsage(account: $0.account, snapshot: $0.snapshot) }
         #if os(macOS)
         claudeCode?.enterDemo()
         #endif
