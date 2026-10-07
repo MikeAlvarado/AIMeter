@@ -213,5 +213,6 @@ above); no new target, no push entitlement.
   `.minimal` is icon only (no room for the badge at that size).
 - `AIMeter/Info.plist` carries `NSSupportsLiveActivities: YES` — the
   physical-file pattern already used for `BGTaskSchedulerPermittedIdentifiers`/
-  `UIBackgroundModes`, the keys that can't be expressed as
-  `INFOPLIST_KEY_*` build settings.
+  `UIBackgroundModes` (and `LSApplicationCategoryType`, Utilities, which
+  the macOS archive warns about when missing), the keys that can't be
+  expressed as `INFOPLIST_KEY_*` build settings.
