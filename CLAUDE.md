@@ -966,6 +966,11 @@ region to the project's `knownRegions`.
   storing Claude.ai credentials, so none of this amounts to permission —
   it is the honest minimum, and any change that adds a brand asset or a
   credential path reopens both findings.
+- Store assets (screenshots, the product-page header, the search-results
+  card) are rendered from the app's own views by `Scripts/store-frames.sh`
+  over demo-mode simulator captures; `Scripts/StoreFrames/CLAUDE.md` is
+  the record of sizes, rules, style and the upload procedure, and is kept
+  current like every other doc here.
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 - App Store notes for the macOS background work: the `SMAppService` login
