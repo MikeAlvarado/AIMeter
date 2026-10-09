@@ -93,7 +93,16 @@ struct Preferences: Sendable {
     var displayMode: DisplayMode = .used
     var resetStyle: ResetStyle = .relative
     var refreshCadence: RefreshCadence = .minutes30
+    /// Dark by default on the Mac since 1.7 — the notch island is black
+    /// and the app sits beside it; iOS keeps following the system. An
+    /// install that ever chose a theme has the key written and keeps it;
+    /// one that never did falls into this default, which is the one
+    /// upgrade-visible change besides the island itself.
+    #if os(macOS)
+    var appearance: AppearanceMode = .dark
+    #else
     var appearance: AppearanceMode = .system
+    #endif
     var modelSlotFallback: ModelSlotFallback = .auto
     /// Which single window the compact "at a glance" surfaces show: the
     /// macOS menu bar label and iOS's Lock Screen circular gauge (both
