@@ -86,4 +86,17 @@ final class NotchIslandPreferencesTests: XCTestCase {
         XCTAssertFalse(model.markNotchIslandDiscovered(), "only the first time")
         XCTAssertTrue(model.statusItemVisible, "a later hand-set icon is left alone")
     }
+
+    func testAppearanceDefaultsToDarkOnTheMacOnly() {
+        let scratch = ScratchDefaults()
+        defer { scratch.wipe() }
+        let fresh = Preferences.load(from: scratch.defaults)
+        #if os(macOS)
+        XCTAssertEqual(fresh.appearance, .dark)
+        #else
+        XCTAssertEqual(fresh.appearance, .system)
+        #endif
+        scratch.defaults.set(AppearanceMode.light.rawValue, forKey: Preferences.Keys.appearance)
+        XCTAssertEqual(Preferences.load(from: scratch.defaults).appearance, .light, "a chosen theme is kept")
+    }
 }
