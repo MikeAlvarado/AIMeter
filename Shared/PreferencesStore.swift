@@ -1,8 +1,6 @@
 import Foundation
-import Observation
 import SwiftUI
 import UsageKit
-import WidgetKit
 
 enum DisplayMode: String, CaseIterable {
     case used, remaining
@@ -155,6 +153,45 @@ struct Preferences: Sendable {
     /// running and refreshing either way.
     var hideDockIcon: Bool = false
 
+    // MARK: Notch island (macOS)
+    //
+    // The black panel fused to the notch (or the floating pill on a Mac
+    // without one) — see "Notch island" under the presentation rules. On
+    // by default on a Mac with a notch, the one deliberate exception to
+    // "defaults never change an existing install", decided once by the
+    // migration gated on `notchIslandMigrated`. The status item stays
+    // until the user opens the island for the first time
+    // (`notchIslandDiscovered`); the Settings toggle couples the two
+    // immediately (`PreferencesModel.setNotchIsland(enabled:)`).
+
+    /// Whether the island is shown at all. The struct's default is off;
+    /// `AccountMigration.migrateNotchIslandIfNeeded` writes the real
+    /// default once, at the first launch of 1.7: on for a Mac with a
+    /// notch, off for one without (the floating pill is opt-in there —
+    /// a capsule under the menu bar of an iMac is not a quiet upgrade).
+    var notchIslandEnabled: Bool = false
+    /// Which wings open beside the notch on the peek (and head the
+    /// expanded island): both, left or right. Collapsed, the island is
+    /// always the notch alone, so no menu title or status item is ever
+    /// covered until the cursor asks. The pill ignores this.
+    var notchIslandLayout: NotchIslandLayout = .bothSides
+    /// The windows the collapsed wings list, in order (1–3, filtered at
+    /// render time to what the primary account reports — the same
+    /// live-options rule as `menuBarMetrics`).
+    var notchIslandMetrics: [UsageWindow.Kind] = [.session, .weekly]
+    /// Whether hovering opens the expanded island; off, only a click does.
+    var notchIslandExpandsOnHover: Bool = true
+    /// The one-time upgrade step that decided `notchIslandEnabled` from
+    /// the hardware has run — written by `AccountMigration`, never cleared.
+    var notchIslandMigrated: Bool = false
+    /// The first-run reveal (the island peeks by itself once, with a
+    /// caption) has been shown.
+    var notchIslandRevealed: Bool = false
+    /// The user has opened the island at least once. Until then the
+    /// menu bar icon stays, whatever the coupling: an upgrade must not
+    /// take the icon away before the user has found its replacement.
+    var notchIslandDiscovered: Bool = false
+
     /// Whether refreshes also read the provider's public status page, so
     /// an outage shows as an incident instead of an account error. On by
     /// default — it is an anonymous GET of a public page, disclosed in
@@ -191,6 +228,13 @@ struct Preferences: Sendable {
         static let menuBarShowsAccountName = "pref.menuBarShowsAccountName"
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
+        static let notchIslandEnabled = "pref.notchIslandEnabled"
+        static let notchIslandLayout = "pref.notchIslandLayout"
+        static let notchIslandMetrics = "pref.notchIslandMetrics"
+        static let notchIslandExpandsOnHover = "pref.notchIslandExpandsOnHover"
+        static let notchIslandMigrated = "pref.notchIslandMigrated"
+        static let notchIslandRevealed = "pref.notchIslandRevealed"
+        static let notchIslandDiscovered = "pref.notchIslandDiscovered"
         static let checksServiceStatus = "pref.checksServiceStatus"
         static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
         static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
@@ -241,6 +285,18 @@ struct Preferences: Sendable {
         prefs.menuBarShowsAccountName = defaults.bool(forKey: Keys.menuBarShowsAccountName)
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
+        prefs.notchIslandEnabled = defaults.bool(forKey: Keys.notchIslandEnabled)
+        if let raw = defaults.string(forKey: Keys.notchIslandLayout), let value = NotchIslandLayout(rawValue: raw) {
+            prefs.notchIslandLayout = value
+        }
+        if let raw = defaults.stringArray(forKey: Keys.notchIslandMetrics) {
+            let kinds = raw.compactMap(UsageWindow.Kind.init(storageKey:))
+            if !kinds.isEmpty { prefs.notchIslandMetrics = kinds }
+        }
+        prefs.notchIslandExpandsOnHover = bool(defaults, Keys.notchIslandExpandsOnHover, default: true)
+        prefs.notchIslandMigrated = defaults.bool(forKey: Keys.notchIslandMigrated)
+        prefs.notchIslandRevealed = defaults.bool(forKey: Keys.notchIslandRevealed)
+        prefs.notchIslandDiscovered = defaults.bool(forKey: Keys.notchIslandDiscovered)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
         prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
@@ -275,140 +331,5 @@ struct Preferences: Sendable {
     static var autoDetectDeclined: Bool {
         get { groupDefaults.bool(forKey: Keys.autoDetectDeclined) }
         set { groupDefaults.set(newValue, forKey: Keys.autoDetectDeclined) }
-    }
-}
-
-/// Observable wrapper used by the app; every change writes through to the
-/// App Group immediately. One stored `Preferences` value behind computed
-/// accessors, so the field list exists once (`Preferences` itself) rather
-/// than being repeated here in the properties, the initializer, and a
-/// snapshot builder; `@Observable` tracks reads and writes through the
-/// stored value, which is all the bindings need. Every setter skips a
-/// write of the value already held: with one stored struct, any write
-/// invalidates every reader of every field, and a scene that writes its
-/// binding back during body evaluation (`MenuBarExtra(isInserted:)`)
-/// would otherwise re-evaluate the App body forever — a launch crash by
-/// stack overflow. The guard also keeps no-op writes from reloading
-/// widget timelines.
-@Observable
-final class PreferencesModel {
-    private var stored: Preferences
-    @ObservationIgnored private let defaults: UserDefaults
-    @ObservationIgnored private var widgetReload: Task<Void, Never>?
-
-    init(defaults: UserDefaults = Preferences.groupDefaults) {
-        self.defaults = defaults
-        stored = Preferences.load(from: defaults)
-    }
-
-    var displayMode: DisplayMode {
-        get { stored.displayMode }
-        set { guard stored.displayMode != newValue else { return }; stored.displayMode = newValue; persist(newValue.rawValue, Preferences.Keys.displayMode, reloadsWidgets: true) }
-    }
-    var resetStyle: ResetStyle {
-        get { stored.resetStyle }
-        set { guard stored.resetStyle != newValue else { return }; stored.resetStyle = newValue; persist(newValue.rawValue, Preferences.Keys.resetStyle, reloadsWidgets: true) }
-    }
-    var refreshCadence: RefreshCadence {
-        get { stored.refreshCadence }
-        set { guard stored.refreshCadence != newValue else { return }; stored.refreshCadence = newValue; persist(newValue.rawValue, Preferences.Keys.refreshCadence, reloadsWidgets: true) }
-    }
-    var appearance: AppearanceMode {
-        get { stored.appearance }
-        set { guard stored.appearance != newValue else { return }; stored.appearance = newValue; persist(newValue.rawValue, Preferences.Keys.appearance, reloadsWidgets: false) }
-    }
-    var modelSlotFallback: ModelSlotFallback {
-        get { stored.modelSlotFallback }
-        set { guard stored.modelSlotFallback != newValue else { return }; stored.modelSlotFallback = newValue; persist(newValue.rawValue, Preferences.Keys.modelSlotFallback, reloadsWidgets: true) }
-    }
-    var glanceMetric: UsageWindow.Kind {
-        get { stored.glanceMetric }
-        set { guard stored.glanceMetric != newValue else { return }; stored.glanceMetric = newValue; persist(newValue.storageKey, Preferences.Keys.glanceMetric, reloadsWidgets: true) }
-    }
-    var showCreditsAmount: Bool {
-        get { stored.showCreditsAmount }
-        set { guard stored.showCreditsAmount != newValue else { return }; stored.showCreditsAmount = newValue; persist(newValue, Preferences.Keys.showCreditsAmount, reloadsWidgets: true) }
-    }
-    var primaryAccountID: String? {
-        get { stored.primaryAccountID }
-        set { guard stored.primaryAccountID != newValue else { return }; stored.primaryAccountID = newValue; persist(newValue, Preferences.Keys.primaryAccountID, reloadsWidgets: false) }
-    }
-    var menuBarStyle: MenuBarStyle {
-        get { stored.menuBarStyle }
-        set { guard stored.menuBarStyle != newValue else { return }; stored.menuBarStyle = newValue; persist(newValue.rawValue, Preferences.Keys.menuBarStyle, reloadsWidgets: false) }
-    }
-    var menuBarMetrics: [UsageWindow.Kind] {
-        get { stored.menuBarMetrics }
-        set { guard stored.menuBarMetrics != newValue else { return }; stored.menuBarMetrics = newValue; persist(newValue.map(\.storageKey), Preferences.Keys.menuBarMetrics, reloadsWidgets: false) }
-    }
-    var menuBarTintsAtDanger: Bool {
-        get { stored.menuBarTintsAtDanger }
-        set { guard stored.menuBarTintsAtDanger != newValue else { return }; stored.menuBarTintsAtDanger = newValue; persist(newValue, Preferences.Keys.menuBarTintsAtDanger, reloadsWidgets: false) }
-    }
-    var menuBarShowsResetCountdown: Bool {
-        get { stored.menuBarShowsResetCountdown }
-        set { guard stored.menuBarShowsResetCountdown != newValue else { return }; stored.menuBarShowsResetCountdown = newValue; persist(newValue, Preferences.Keys.menuBarShowsResetCountdown, reloadsWidgets: false) }
-    }
-    var menuBarShowsAccountName: Bool {
-        get { stored.menuBarShowsAccountName }
-        set { guard stored.menuBarShowsAccountName != newValue else { return }; stored.menuBarShowsAccountName = newValue; persist(newValue, Preferences.Keys.menuBarShowsAccountName, reloadsWidgets: false) }
-    }
-    var statusItemVisible: Bool {
-        get { stored.statusItemVisible }
-        set { guard stored.statusItemVisible != newValue else { return }; stored.statusItemVisible = newValue; persist(newValue, Preferences.Keys.statusItemVisible, reloadsWidgets: false) }
-    }
-    var hideDockIcon: Bool {
-        get { stored.hideDockIcon }
-        set { guard stored.hideDockIcon != newValue else { return }; stored.hideDockIcon = newValue; persist(newValue, Preferences.Keys.hideDockIcon, reloadsWidgets: false) }
-    }
-    var checksServiceStatus: Bool {
-        get { stored.checksServiceStatus }
-        set { guard stored.checksServiceStatus != newValue else { return }; stored.checksServiceStatus = newValue; persist(newValue, Preferences.Keys.checksServiceStatus, reloadsWidgets: false) }
-    }
-    var claudeCodeUsageEnabled: Bool {
-        get { stored.claudeCodeUsageEnabled }
-        set { guard stored.claudeCodeUsageEnabled != newValue else { return }; stored.claudeCodeUsageEnabled = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageEnabled, reloadsWidgets: false) }
-    }
-    var claudeCodeUsageDismissed: Bool {
-        get { stored.claudeCodeUsageDismissed }
-        set { guard stored.claudeCodeUsageDismissed != newValue else { return }; stored.claudeCodeUsageDismissed = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageDismissed, reloadsWidgets: false) }
-    }
-    var menuBarShowsClaudeCodeLine: Bool {
-        get { stored.menuBarShowsClaudeCodeLine }
-        set { guard stored.menuBarShowsClaudeCodeLine != newValue else { return }; stored.menuBarShowsClaudeCodeLine = newValue; persist(newValue, Preferences.Keys.menuBarShowsClaudeCodeLine, reloadsWidgets: false) }
-    }
-
-    var lastScheduledAt: Date? {
-        defaults.object(forKey: Preferences.Keys.lastScheduledAt) as? Date
-    }
-
-    func toggleResetStyle() {
-        resetStyle = resetStyle == .relative ? .absolute : .relative
-    }
-
-    /// The current values as a plain `Preferences`, for code paths written
-    /// against the value type (widgets' rendering helpers).
-    var snapshot: Preferences {
-        var prefs = stored
-        prefs.lastScheduledAt = lastScheduledAt
-        return prefs
-    }
-
-    /// Writes one key through to the App Group. `reloadsWidgets` is true
-    /// for the prefs widgets read when they render: nothing re-renders
-    /// them until their next timeline reload — up to the refresh floor
-    /// away, or on macOS until the app's next scheduled fetch — so one
-    /// coalesced reload per burst of changes (a segmented pill tapped three
-    /// times in a row is one reload, not three against WidgetKit's per-kind
-    /// budget) closes that gap.
-    private func persist(_ value: Any?, _ key: String, reloadsWidgets: Bool) {
-        defaults.set(value, forKey: key)
-        guard reloadsWidgets else { return }
-        widgetReload?.cancel()
-        widgetReload = Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(500))
-            guard !Task.isCancelled else { return }
-            WidgetCenter.shared.reloadAllTimelines()
-        }
     }
 }
