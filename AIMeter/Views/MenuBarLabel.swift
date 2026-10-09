@@ -51,6 +51,42 @@ struct MenuBarLabel: View {
     }
 }
 
+/// A once-a-minute clock for the status item's reset countdown. Not a
+/// `TimelineView`: inside a `MenuBarExtra` *label*, `TimelineView(.everyMinute)`
+/// asks the extra's host to re-render again from inside the render it just
+/// did, and on macOS 27 `MenuBarExtraController.init` never returns — the
+/// app sat at 100 % CPU before finishing launching, with "Reset countdown"
+/// on (1.6.0 shipped with it; reproduced 2026-10-08 on 27.0.1 and bisected
+/// to that one preference). An observable date advanced by a main-actor
+/// task at each minute boundary gives the label the same cadence with no
+/// re-entrancy: the label reads `now` only while the countdown is on, so
+/// nothing else re-evaluates on the clock.
+@MainActor
+@Observable
+final class MinuteClock {
+    private(set) var now = Date()
+    @ObservationIgnored private var ticker: Task<Void, Never>?
+
+    init() {
+        ticker = Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                let wait = Self.nextTick(after: Date()).timeIntervalSinceNow
+                try? await Task.sleep(for: .seconds(max(1, wait)))
+                guard let self else { return }
+                self.now = Date()
+            }
+        }
+    }
+
+    /// The next whole minute strictly after `date` (never `date` itself,
+    /// so a tick on the boundary waits a full minute rather than zero).
+    static func nextTick(after date: Date) -> Date {
+        let minute: TimeInterval = 60
+        let boundary = (date.timeIntervalSinceReferenceDate / minute).rounded(.down) * minute + minute
+        return Date(timeIntervalSinceReferenceDate: boundary)
+    }
+}
+
 extension MenuBarLabelModel {
     /// The label as the status item should show it right now: the primary
     /// account's snapshot through every menu bar preference. Shared by the

@@ -7,6 +7,9 @@ struct AIMeterApp: App {
     @State private var prefs = PreferencesModel()
     #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    /// Ticks the status item's reset countdown once a minute — see
+    /// `MinuteClock` for why this is not a `TimelineView`.
+    @State private var minuteClock = MinuteClock()
     @Environment(\.openWindow) private var openWindow
     #endif
 
@@ -74,15 +77,13 @@ struct AIMeterApp: App {
                 .preferredColorScheme(prefs.appearance.colorScheme)
         } label: {
             // The countdown style ticks: nothing else in the label changes
-            // between fetches, so only then is the label re-evaluated on a
-            // clock (once a minute, the countdown's own resolution).
-            if prefs.menuBarShowsResetCountdown {
-                TimelineView(.everyMinute) { context in
-                    MenuBarLabel(model: .current(model: model, prefs: prefs, now: context.date))
-                }
-            } else {
-                MenuBarLabel(model: .current(model: model, prefs: prefs))
-            }
+            // between fetches, so only then does the label read the clock
+            // (once a minute, the countdown's own resolution). Never a
+            // `TimelineView` here — see `MinuteClock`.
+            MenuBarLabel(model: .current(
+                model: model, prefs: prefs,
+                now: prefs.menuBarShowsResetCountdown ? minuteClock.now : Date()
+            ))
         }
         .menuBarExtraStyle(.window)
 

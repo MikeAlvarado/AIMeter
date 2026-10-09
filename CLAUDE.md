@@ -713,8 +713,11 @@ the account silently freezes at its last snapshot.
   time to what the primary account reports — the same live-options rule
   as `glanceMetric`), `menuBarTintsAtDanger` (red at ≥ 80 % used or a
   critical severity, default off), `menuBarShowsResetCountdown` (default
-  off; the label is wrapped in a once-a-minute `TimelineView` only while
-  on) and `menuBarShowsAccountName` (default off, offered only with 2+
+  off; while on, the label reads `MinuteClock.now`, an observable date a
+  main-actor task advances at each minute boundary — **never** a
+  `TimelineView` in the `MenuBarExtra` label: on macOS 27 that re-renders
+  the status item from inside its own render and the app never finishes
+  launching, 100 % CPU; 1.6.0 shipped with that bug, fixed in 1.7) and `menuBarShowsAccountName` (default off, offered only with 2+
   accounts). All default to the behavior that shipped before they
   existed, so an upgrade never changes an existing install — including
   the one migration: `menuBarShowsPercentage`, the pre-style bool, is
