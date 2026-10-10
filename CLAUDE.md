@@ -207,7 +207,13 @@ assets and string catalog from there.
   the shared keychain access group, keyed the same way —
   `ClaudeKeychainCredentialSource.storageKey(for:)`), writing the result
   back to the store. On macOS the menu bar app feeds the widget (a
-  sandboxed widget can't read Claude Code's credential file).
+  sandboxed widget can't read Claude Code's credential file). The widget
+  target is sandboxed on macOS (`ENABLE_APP_SANDBOX[sdk=macosx*] = YES`,
+  the app itself is not): the plug-in daemon loads no app extension
+  without the sandbox entitlement — every Mac build before 2.0.0's
+  release was refused with "plug-ins must be sandboxed", so no Mac
+  widget ever appeared — and `pluginkit -m -i
+  com.mikealvarado.aimeter.widgets` is the check that it registered.
 - macOS widget freshness contract: both widgets appear in Notification
   Center / the desktop automatically — WidgetKit discovery, nothing to
   register — but on macOS they only ever render what the app last wrote.

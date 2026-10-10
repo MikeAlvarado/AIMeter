@@ -267,8 +267,10 @@ running on your own devices).
 4. Build & run the `AIMeter` scheme.
 
 Note: the macOS app is intentionally **not sandboxed** — it needs to read
-Claude Code's credentials. Signing (any team) is required for the App Group
-(app ↔ widget data sharing) to work at runtime.
+Claude Code's credentials. Its widget extension is (macOS loads no app
+extension that isn't), and it only reads what the app writes to the App
+Group. Signing (any team) is required for the App Group (app ↔ widget data
+sharing) to work at runtime.
 
 ### Releasing
 
