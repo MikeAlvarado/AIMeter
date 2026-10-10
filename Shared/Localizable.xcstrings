@@ -15558,6 +15558,53 @@
           }
         }
       }
+    },
+    "The menu bar and the notch island show this account." : {
+      "comment" : "Caption under the Account picker in the Menu bar and Notch island settings cards (shown with two or more accounts).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La barra de menú y la isla del notch muestran esta cuenta."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menüleiste und Notch-Insel zeigen diesen Account."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La barre des menus et l’îlot de l’encoche affichent ce compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーとノッチアイランドにはこのアカウントが表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메뉴 막대와 노치 아일랜드에 이 계정이 표시됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A barra de menus e a ilha do notch mostram esta conta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏和刘海岛显示此账户。"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

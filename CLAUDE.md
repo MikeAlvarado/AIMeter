@@ -90,6 +90,9 @@ assets and string catalog from there.
   (`NotchIslandModel.swift`, `NotchIslandGeometry.swift`,
   `NotchIslandInteraction.swift`, all unit-tested), see "Notch island"
   under "Presentation rules".
+  `AIMeter/Views/PrimaryAccountPicker.swift` is the "Account" menu both
+  the Menu bar and the Notch island cards show with two or more
+  accounts.
 - `AIMeter/Intents/` — the App Intents (`RefreshUsageIntent`,
   `ShowUsageIntent`, `AIMeterShortcuts`), both platforms; see
   "Conventions" for why they exist.
@@ -700,9 +703,14 @@ the account silently freezes at its last snapshot.
   just applies the shared `glanceMetric` to that account's snapshot; macOS
   has no per-instance mechanism (`MenuBarExtra` is a single scene), so a
   new paired preference, `primaryAccountID` (`Shared/PreferencesStore.swift`,
-  Settings → `MacChromeSettings`), picks which account the one status item
-  represents (`UsageModel.primaryAccountUsage(preferredID:)`, falling back
-  to the first connected account when unset or stale). Both pickers moved
+  Settings → the "Account" menu, `PrimaryAccountPicker`, in both the Menu
+  bar and the Notch island cards), picks which account the one status
+  item — and the notch island's wings — represent
+  (`UsageModel.primaryAccountUsage(preferredID:)`, falling back
+  to the first connected account when unset or stale). It is a labeled
+  menu, like "Style", because the unlabeled row of account segments it
+  replaced sat above the equally unlabeled window segments and read as
+  one more window picker. Both pickers moved
   out of Claude's Provider Detail and into `MacChromeSettings` — with
   several accounts there's no longer one unambiguous account whose detail
   screen could own "which window does the menu bar read"; iOS keeps its

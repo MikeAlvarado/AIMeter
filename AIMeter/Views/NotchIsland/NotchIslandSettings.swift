@@ -42,6 +42,12 @@ struct NotchIslandSettings: View {
                         selection: $prefs.notchIslandLayout
                     )
                 }
+                if model.accounts.count > 1 {
+                    // The wings are one account's; the chips below are
+                    // that account's windows.
+                    Divider().overlay(Theme.track)
+                    PrimaryAccountPicker()
+                }
                 Divider().overlay(Theme.track)
                 MetricChips(options: glanceOptions, selection: $prefs.notchIslandMetrics, maxCount: NotchIslandModel.maxMetrics)
                 Divider().overlay(Theme.track)

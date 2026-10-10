@@ -22,10 +22,7 @@ struct MenuBarSettings: View {
                 Divider().overlay(Theme.track)
 
                 if model.accounts.count > 1 {
-                    SegmentedPill(
-                        options: model.accounts.map { ($0.account.accountID, $0.account.displayName) },
-                        selection: primaryAccountBinding
-                    )
+                    PrimaryAccountPicker()
                     Divider().overlay(Theme.track)
                 }
 
@@ -113,17 +110,6 @@ struct MenuBarSettings: View {
         UsageSnapshot.glanceOptions(
             for: model.primaryAccountUsage(preferredID: prefs.primaryAccountID)?.snapshot,
             modelSlotFallback: prefs.modelSlotFallback
-        )
-    }
-
-    /// Writes through to `prefs.primaryAccountID`; reads through
-    /// `UsageModel.primaryAccountUsage` so the picker always shows a
-    /// connected account even if the stored id is stale (e.g. that account
-    /// was disconnected elsewhere).
-    private var primaryAccountBinding: Binding<String> {
-        Binding(
-            get: { model.primaryAccountUsage(preferredID: prefs.primaryAccountID)?.account.accountID ?? ClaudeKeychainCredentialSource.legacyAccountID },
-            set: { prefs.primaryAccountID = $0 }
         )
     }
 

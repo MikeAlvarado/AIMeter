@@ -217,13 +217,15 @@
   "Show usage in the notch", whose setter goes through
   `PreferencesModel.setNotchIsland(enabled:)` and
   `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left / Right
-  pill, only on a Mac with a notch; the shared `MetricChips`; "Peek on
+  pill, only on a Mac with a notch; the "Account" menu
+  (`PrimaryAccountPicker`, 2+ accounts only — the wings are that
+  account's, and so are the chips under it); the shared `MetricChips`; "Peek on
   hover"; and a footnote that states the status-item coupling and, on a
   screen without a notch, that the island draws one), then "Menu bar" (`MenuBarSettings`: a live
   preview of the status item label on a light and a dark strip, rendered
   from the very same `MenuBarLabelModel.current` the `MenuBarExtra` uses,
-  so the preview is the truth; the account pill (2+ accounts only); the
-  Style menu (`MenuBarStyle`); the window pill for single styles or the
+  so the preview is the truth; the same "Account" menu (2+ accounts only);
+  the Style menu (`MenuBarStyle`); the window pill for single styles or the
   multi-select window chips for `multi` (1–3, options' order kept);
   a "Hidden while the notch island is on." note while the island has
   the icon hidden;
