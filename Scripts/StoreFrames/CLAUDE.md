@@ -35,7 +35,7 @@ accounts, "Personal" on the default mark and "Work" on a briefcase):
 `dashboard.png`, `dashboard-dark.png`, `detail-top.png`,
 `detail-week30.png` (History on Week + 30 days), `detail-smart.png`
 (the Smart notifications card), `ipad-dashboard.png`, `ipad-detail.png`,
-`ipad-alerts.png`, plus `appicon.png` (`AIMeter/Assets.xcassets/AppIcon.appiconset/ios-light.png`)
+`ipad-dashboard-dark.png` (the app's Appearance on Dark), plus `appicon.png` (`AIMeter/Assets.xcassets/AppIcon.appiconset/ios-light.png`)
 and `home-widgets.png` (from `shots`). Capture with
 `xcrun simctl io <udid> screenshot <file>` on a device nobody else is
 using (iPhone 17e and iPad Pro 13" M5 last time); the demo build is a
@@ -49,6 +49,19 @@ store image.
 - No third-party name anywhere in a frame: headlines, subheads, demo
   nicknames ("Personal", "Work"), window names ("Top model"). The app
   was rejected under 4.1(a) for names in metadata.
+- No price, of any kind, anywhere in a frame or the store copy: not
+  "free", not "no subscription", not a dollar amount. 1.6.0 was
+  rejected under 2.3.7 (Accurate Metadata — "references to free or
+  discounted services are considered a price reference") for the
+  closing frame's "Free. … No subscription", the "Free" pill on the
+  header and search card, and the iPad alerts frame, whose 13" screen
+  keeps the Spend and Extra usage cards ($14.27 of $25.00) on screen
+  however far it scrolls. That frame is now the dark dashboard
+  ("Every account, its own icon"); the closing frame reads "Open
+  source. No account."; the pills are "Open source" and "No account"
+  (three longer pills truncate on the search card). A capture of
+  Provider Detail must stop above the Spend card, and the footnote
+  under the alerts names the provider, so it never shows either.
 - No brand mark in a capture: the Claude / Claude Code marks exist in
   the icon picker since 1.6, and demo accounts deliberately never use
   them. A screenshot of the picker itself would show them, so there is

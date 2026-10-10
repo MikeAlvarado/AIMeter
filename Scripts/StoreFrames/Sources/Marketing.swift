@@ -79,8 +79,9 @@ struct MarketingFrame: View {
                         .font(.system(size: subheadSize))
                         .foregroundStyle(Color(hex: 0xFAF9F5).opacity(0.72))
                         .fixedSize(horizontal: false, vertical: true)
+                    // No price pill: "Free" got 1.6.0 rejected (2.3.7). Two
+                    // pills: three longer ones truncate on the search card.
                     HStack(spacing: 14) {
-                        pill("Free")
                         pill("Open source")
                         pill("No account")
                     }

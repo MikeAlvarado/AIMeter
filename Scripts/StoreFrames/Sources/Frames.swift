@@ -162,11 +162,17 @@ let phoneSpecs: [FrameSpec] = [
     FrameSpec(name: "iphone-04-alerts", headline: "Alerts before you\nhit the wall.", subhead: "Near-limit, run-out, early-reset and sign-in alerts, per account.", image: "detail-smart.png", textOnTop: true, device: .phone, tilt: 4),
     FrameSpec(name: "iphone-05-pace", headline: "Know your pace.", subhead: "On pace, ahead or behind, and when a window will run out early.", image: "detail-top.png", textOnTop: true, device: .phone, tilt: 4),
     FrameSpec(name: "iphone-06-accounts", headline: "Every account,\nits own icon.", subhead: "Name and icon per account, shown everywhere. Dark mode included.", image: "dashboard-dark.png", textOnTop: true, device: .phone),
-    FrameSpec(name: "iphone-07-free", headline: "Free. Open source.\nNo account.", subhead: "No subscription, no server. Nothing leaves your device.", image: nil, textOnTop: true, device: .phone),
+    // No price, ever: "free" counts as one (App Review 2.3.7, the 1.6.0
+    // rejection), and so does "no subscription".
+    FrameSpec(name: "iphone-07-open", headline: "Open source.\nNo account.", subhead: "No server. Nothing leaves your device.", image: nil, textOnTop: true, device: .phone),
 ]
 
 let padSpecs: [FrameSpec] = [
     FrameSpec(name: "ipad-01-all-limits", headline: "All your AI limits, one glance.", subhead: "Session, weekly and per-model windows for every account you connect, live.", image: "ipad-dashboard.png", textOnTop: true, device: .pad, tilt: -2),
     FrameSpec(name: "ipad-02-history", headline: "Every reset, charted.", subhead: "24 hours, 7 days or 30 days for each limit, kept on your device.", image: "ipad-detail.png", textOnTop: true, device: .pad, tilt: 2),
-    FrameSpec(name: "ipad-03-alerts", headline: "Alerts before you hit the wall.", subhead: "Near-limit, run-out, early-reset and sign-in alerts, per account.", image: "ipad-alerts.png", textOnTop: false, device: .pad, tilt: -2),
+    // Not the alerts screen on iPad: the 13" display is tall enough that
+    // the Spend and Extra usage cards — dollar amounts, a price reference
+    // under 2.3.7 — stay on screen however far it scrolls, and the footnote
+    // under the alerts names the provider.
+    FrameSpec(name: "ipad-03-accounts", headline: "Every account, its own icon.", subhead: "Name and icon per account, shown everywhere. Dark mode included.", image: "ipad-dashboard-dark.png", textOnTop: true, device: .pad, tilt: 2),
 ]

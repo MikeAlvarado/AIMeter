@@ -64,10 +64,11 @@ struct NotchFrame: View {
                 .font(.system(size: 23))
                 .foregroundStyle(Color(hex: 0xFAF9F5).opacity(0.72))
                 .fixedSize(horizontal: false, vertical: true)
+            // No price pill, the store's rule here too.
             HStack(spacing: 12) {
                 pill("Mac")
-                pill("Free")
                 pill("Open source")
+                pill("No account")
             }
             .padding(.top, 4)
         }
