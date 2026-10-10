@@ -24,7 +24,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // app has left, and suppressing it too would make launching do
         // nothing at all. That combination is the one case where a launch
         // legitimately shows a window.
-        guard prefs.hideDockIcon, prefs.statusItemVisible else { return }
+        // The notch island is such an affordance too (its footer opens the
+        // Dashboard), so with it on the window may close as well.
+        //
+        // The island itself starts next tick, once the scene has handed
+        // `AppEnvironment` the preferences it needs (`AIMeterApp`), and
+        // `startNotchIslandIfEnabled` is idempotent for the case where the
+        // scene got there first.
+        DispatchQueue.main.async {
+            AppChrome.startNotchIslandIfEnabled()
+        }
+        guard prefs.hideDockIcon, prefs.statusItemVisible || prefs.notchIslandEnabled else { return }
         // Next tick, so the scene finishes appearing — and registers its
         // reopen hook — before the window is taken away again.
         DispatchQueue.main.async {
@@ -104,6 +114,47 @@ enum AppChrome {
 
     static func closeDashboardWindows() {
         dashboardWindows.forEach { $0.close() }
+    }
+
+    /// Opens the Settings scene from a surface outside the scene graph
+    /// (the notch island). The dashboard scene publishes SwiftUI's
+    /// `openSettings` action here on appear, like `openDashboard`; the
+    /// selector is the fallback for a call that lands before it has.
+    static var openSettingsAction: (() -> Void)?
+
+    static func openSettings() {
+        if let openSettingsAction {
+            openSettingsAction()
+        } else {
+            _ = NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        }
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    // MARK: Notch island
+
+    /// The one island (see "macOS notch island" in `AIMeter/CLAUDE.md`).
+    /// Started at launch and by the Settings toggle; both read the live
+    /// model and preferences through `AppEnvironment`.
+    static let notchIsland = NotchIslandController()
+
+    static func startNotchIslandIfEnabled() {
+        // The unit-test host is this app: it must not put a panel on the
+        // tester's notch (nor race the tests with a reveal).
+        guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
+        guard let model = AppEnvironment.shared, let prefs = AppEnvironment.prefs, prefs.notchIslandEnabled else { return }
+        notchIsland.start(model: model, prefs: prefs)
+    }
+
+    /// Settings' toggle: show or remove the island live. The preference
+    /// itself (and its coupling with the status item) is written by
+    /// `PreferencesModel.setNotchIsland(enabled:)`; this is the chrome.
+    static func setNotchIsland(enabled: Bool) {
+        if enabled {
+            startNotchIslandIfEnabled()
+        } else {
+            notchIsland.stop()
+        }
     }
 
     /// Windows belonging to the dashboard scene, matched on the identifier
