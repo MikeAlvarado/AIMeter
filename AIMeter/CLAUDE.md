@@ -409,9 +409,13 @@
   same affordance and copy as the Dashboard's own —
   this is the only way to add another account once the Dock icon is
   hidden, since the Dashboard window stays closed by default in that case;
-  see "macOS hiding & re-entry" below), then divider + an icon-only "Open
-  AIMeter" button (`AppChrome.revealMainWindow()`, `macwindow` symbol, full
-  text in `.help`/accessibility label only) + refresh/settings/quit. "Open
+  see "macOS hiding & re-entry" below), then divider + a footer of four
+  icon-only buttons, each with its full name in `.help` and the
+  accessibility label (`FooterIconButtonStyle`: ink, dimmed while pressed,
+  faint while disabled): Open AIMeter (`macwindow`,
+  `AppChrome.revealMainWindow()`) and Refresh on the left, Settings and
+  Quit (`power`) on the right — it used to be one icon among three text
+  buttons. "Open
   AIMeter" is the popover's only route to Provider Detail, since the
   popover itself has no navigation stack — it reopens the Dashboard window
   even after `AppDelegate` closed it at launch, because the scene registers

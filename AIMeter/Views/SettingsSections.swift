@@ -97,6 +97,11 @@ struct AppearanceSettings: View {
                 selection: $prefs.appearance
             )
         }
+        #if os(macOS)
+        .onChange(of: prefs.appearance) { _, mode in
+            AppChrome.applyAppearance(mode)
+        }
+        #endif
 
         SettingsGap()
         SectionHeader(title: String(localized: "Display"))

@@ -803,6 +803,11 @@ the account silently freezes at its last snapshot.
   default) — an install that ever chose a theme has the key written and
   keeps it; one that never did falls into dark, the one other
   upgrade-visible change, so the app matches the black island beside it.
+  On macOS the appearance is applied to the whole app through
+  `NSApp.appearance` (`AppChrome.applyAppearance`, at launch and when
+  Settings changes it): `.preferredColorScheme` on the scenes never
+  reached the `MenuBarExtra` window, so a dark AIMeter opened a light
+  popover.
 - macOS chrome prefs (same App Group store, macOS-only meaning):
   `statusItemVisible` (default **true**, but see the island coupling
   above), `hideDockIcon` (default **false**), and the status item's own: `menuBarStyle` (`MenuBarStyle` —

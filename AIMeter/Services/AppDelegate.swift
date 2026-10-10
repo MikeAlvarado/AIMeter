@@ -10,8 +10,11 @@ import UsageKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillFinishLaunching(_ notification: Notification) {
         AppChrome.terminateOtherInstances()
-        // Applied before first paint so a hidden Dock icon never flashes.
-        AppChrome.applyActivationPolicy(hidingDockIcon: Preferences.load().hideDockIcon)
+        let prefs = Preferences.load()
+        // Applied before first paint so a hidden Dock icon never flashes,
+        // and no window opens in the wrong appearance first.
+        AppChrome.applyActivationPolicy(hidingDockIcon: prefs.hideDockIcon)
+        AppChrome.applyAppearance(prefs.appearance)
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -84,6 +87,21 @@ enum AppChrome {
     /// running and refreshing either way — this only changes what's visible.
     static func applyActivationPolicy(hidingDockIcon hidden: Bool) {
         NSApp.setActivationPolicy(hidden ? .accessory : .regular)
+    }
+
+    /// Settings' appearance for every window AppKit draws for the app:
+    /// the Dashboard, Settings, alerts, and the menu bar popover — which
+    /// `.preferredColorScheme` alone never reached (the `MenuBarExtra`
+    /// window kept the system's appearance, so a dark AIMeter opened a
+    /// light popover). `.system` clears it back to the system's. Applied
+    /// at launch and whenever the setting changes (`AppearanceSettings`);
+    /// the notch island draws in a forced dark scheme regardless.
+    static func applyAppearance(_ mode: AppearanceMode) {
+        switch mode {
+        case .system: NSApp.appearance = nil
+        case .light: NSApp.appearance = NSAppearance(named: .aqua)
+        case .dark: NSApp.appearance = NSAppearance(named: .darkAqua)
+        }
     }
 
     /// Reopens the dashboard scene. Set by that scene the first time it

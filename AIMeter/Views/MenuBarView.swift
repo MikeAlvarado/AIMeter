@@ -48,26 +48,22 @@ struct MenuBarView: View {
 
             Divider().overlay(Theme.track)
 
-            HStack {
+            // Four icons with their names in the tooltip and for VoiceOver,
+            // instead of one icon among three text buttons.
+            HStack(spacing: 14) {
                 // The popover has no navigation stack, so it can't reach
-                // Provider Detail (Peak hours, Forecast, per-account
-                // notifications, disconnect) — this is the only way back to
-                // the Dashboard window that can. `revealMainWindow` reopens
-                // it even if `AppDelegate` closed it at launch (the common
+                // Provider Detail (Forecast, per-account notifications,
+                // disconnect) — this is the only way back to the Dashboard
+                // window that can. `revealMainWindow` reopens it even if
+                // `AppDelegate` closed it at launch (the common
                 // hidden-Dock-icon case), since the scene registers its
                 // reopen hook on first appearance, before any such close.
-                Button {
+                footerButton("Open AIMeter", systemImage: "macwindow") {
                     AppChrome.revealMainWindow()
-                } label: {
-                    Image(systemName: "macwindow")
                 }
-                .help(String(localized: "Open AIMeter"))
-                .accessibilityLabel(Text("Open AIMeter"))
 
-                Button {
+                footerButton("Refresh", systemImage: "arrow.clockwise") {
                     Task { await model.refreshAll() }
-                } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
                 }
                 .keyboardShortcut("r", modifiers: .command)
                 .disabled(model.isRefreshing)
@@ -76,19 +72,18 @@ struct MenuBarView: View {
 
                 // The popover is its own window with no main menu, so the
                 // two shortcuts a Mac user reaches for blind are declared
-                // here as well as in the app's Usage menu.
-                Button("Settings…") {
+                // here as well as in the app's menus.
+                footerButton("Settings", systemImage: "gearshape") {
                     openSettings()
                     NSApp.activate(ignoringOtherApps: true)
                 }
                 .keyboardShortcut(",", modifiers: .command)
 
-                Button("Quit") {
+                footerButton("Quit", systemImage: "power") {
                     NSApp.terminate(nil)
                 }
                 .keyboardShortcut("q", modifiers: .command)
             }
-            .controlSize(.small)
         }
         .padding(14)
         .frame(width: 320)
@@ -138,6 +133,19 @@ struct MenuBarView: View {
         .frame(height: min(listHeight, Self.maxListHeight))
     }
 
+    private func footerButton(_ title: LocalizedStringKey, systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.body)
+                .frame(width: 22, height: 22)
+                // The whole square, not just the glyph's strokes.
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(FooterIconButtonStyle())
+        .help(Text(title))
+        .accessibilityLabel(Text(title))
+    }
+
     /// Once at least one account is connected, this is the *only* way to add
     /// another from the menu bar — the Dashboard window (which has its own
     /// copy of this button) isn't reachable from here, and stays closed by
@@ -161,6 +169,26 @@ struct MenuBarView: View {
         }
         .help(peak.subtitle)
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// The popover footer's icons: ink like the text around them, dimmed
+/// while pressed, and faint while disabled (Refresh, mid-refresh) — a
+/// plain style with a fixed color would hide both states.
+private struct FooterIconButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Icon(configuration: configuration)
+    }
+
+    private struct Icon: View {
+        let configuration: ButtonStyleConfiguration
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            configuration.label
+                .foregroundStyle(Theme.ink)
+                .opacity(isEnabled ? (configuration.isPressed ? 0.5 : 1) : 0.35)
+        }
     }
 }
 #endif
