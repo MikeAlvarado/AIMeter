@@ -16,6 +16,9 @@ struct MacChromeSettings: View {
     var body: some View {
         @Bindable var prefs = prefs
 
+        NotchIslandSettings()
+
+        sectionGap
         MenuBarSettings()
 
         sectionGap
@@ -132,11 +135,12 @@ struct MacChromeSettings: View {
         }
     }
 
-    /// With both icons off there is no visible UI at all, so the one way
-    /// back in has to be spelled out *before* the user is looking at an
-    /// empty screen wondering what happened.
+    /// With both icons off and no island there is no visible UI at all,
+    /// so the one way back in has to be spelled out *before* the user is
+    /// looking at an empty screen wondering what happened. The island
+    /// counts as visible UI: its footer opens the Dashboard.
     private var isFullyHidden: Bool {
-        prefs.hideDockIcon && !prefs.statusItemVisible
+        prefs.hideDockIcon && !prefs.statusItemVisible && !prefs.notchIslandEnabled
     }
 
     private var hiddenWarning: some View {

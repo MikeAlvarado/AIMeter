@@ -1267,6 +1267,52 @@
         }
       }
     },
+    "Rest the cursor on the notch and the wings open with your limits; stay a moment longer, or click, and everything opens. Turning the island on hides the menu bar icon; turning it off brings the icon back. Everything it shows is also in the menu bar popover and the Dashboard." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lass den Cursor auf dem Notch ruhen und die Flügel öffnen sich mit deinen Limits; bleibst du einen Moment länger oder klickst, öffnet sich alles. Das Island einzuschalten blendet das Menüleistensymbol aus; ausschalten bringt es zurück. Alles, was es zeigt, steht auch im Menüleisten-Popover und im Dashboard."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja el cursor sobre el notch y se abren las alas con tus límites; si te quedas un momento más, o haces clic, se abre todo. Activar el island oculta el icono de la barra de menús; desactivarlo lo devuelve. Todo lo que muestra está también en el menú de la barra y en el panel."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laissez le curseur sur l'encoche et les ailes s'ouvrent avec vos limites ; restez un instant de plus, ou cliquez, et tout s'ouvre. Activer l'île masque l'icône de la barre des menus ; la désactiver la ramène. Tout ce qu'elle affiche se trouve aussi dans le menu de la barre et le tableau de bord."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチにカーソルを置くと、ウイングが開いて上限が表示されます。もう少し置くかクリックすると、すべてが開きます。アイランドをオンにするとメニューバーのアイコンは隠れ、オフにすると戻ります。表示される内容はメニューバーのポップオーバーとダッシュボードでも確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치에 커서를 올려 두면 윙이 열리며 한도가 표시됩니다. 조금 더 머물거나 클릭하면 전체가 열립니다. 아일랜드를 켜면 메뉴 막대 아이콘이 숨겨지고, 끄면 다시 나타납니다. 표시되는 모든 내용은 메뉴 막대 팝오버와 대시보드에서도 볼 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe o cursor sobre o notch e as asas se abrem com seus limites; fique um instante a mais, ou clique, e tudo se abre. Ativar a ilha oculta o ícone da barra de menus; desativá-la o traz de volta. Tudo o que ela mostra também está no menu da barra e no painel."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将光标停在刘海上，两翼会展开并显示你的额度；再停留片刻或点击，即可完全展开。开启岛屿会隐藏菜单栏图标，关闭则恢复。它显示的一切也都在菜单栏弹出窗口和仪表盘中。"
+          }
+        }
+      }
+    },
     "Sample data. Equivalent cost at list prices as of %@ — your subscription already covers this usage; it is not a bill." : {
       "localizations" : {
         "de" : {
@@ -14998,6 +15044,517 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的登录令牌加密保存在系统钥匙串中，仅与小组件共享（通过 App Group 的钥匙串访问组），以便它自行刷新用量。它只用于读取你的用量。"
+          }
+        }
+      }
+    },
+    "Both sides" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambos lados"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beide Seiten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des deux côtés"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "両側"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "양쪽"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambos os lados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两侧"
+          }
+        }
+      }
+    },
+    "Left" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izquierda"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gauche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "왼쪽"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esquerda"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左侧"
+          }
+        }
+      }
+    },
+    "Right" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derecha"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Droite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direita"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右侧"
+          }
+        }
+      }
+    },
+    "Cr" : {
+      "comment" : "Abbreviation of \"Credits\" for the notch island's compact usage line, beside \"5h\" and \"7d\". Two characters at most.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cr"
+          }
+        }
+      }
+    },
+    "%@: no data" : {
+      "comment" : "Spoken label of a usage slot whose window the account did not report. %@ is the window's short name (Session, Week, …).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: sin datos"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: keine Daten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : aucune donnée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：データなし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 데이터 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: sem dados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：暂无数据"
+          }
+        }
+      }
+    },
+    "Notch island" : {
+      "comment" : "Settings section header: the black panel fused to the MacBook's notch that shows usage.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isla del notch"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notch-Insel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Îlot de l’encoche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチアイランド"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치 아일랜드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilha do notch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海岛"
+          }
+        }
+      }
+    },
+    "Show usage in the notch" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el uso en el notch"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzung im Notch anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l’utilisation dans l’encoche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチに使用量を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치에 사용량 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar o uso no notch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在刘海中显示用量"
+          }
+        }
+      }
+    },
+    "Hidden while the notch island is on." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculto mientras la isla del notch está activa."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgeblendet, solange die Notch-Insel aktiv ist."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masqué tant que l’îlot de l’encoche est activé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチアイランドがオンの間は非表示です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치 아일랜드가 켜져 있는 동안 숨겨집니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculto enquanto a ilha do notch estiver ativa."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海岛开启时隐藏。"
+          }
+        }
+      }
+    },
+    "This Mac has no notch, so AIMeter shows a floating pill at the top of the screen instead." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac no tiene notch, así que AIMeter muestra una pastilla flotante en la parte superior de la pantalla."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Mac hat keinen Notch, daher zeigt AIMeter stattdessen eine schwebende Pille am oberen Bildschirmrand."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Mac n’a pas d’encoche : AIMeter affiche à la place une pastille flottante en haut de l’écran."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMacにはノッチがないため、代わりに画面上部にフローティングのピルを表示します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Mac에는 노치가 없어 대신 화면 상단에 떠 있는 알약 모양 표시를 보여줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac não tem notch, então o AIMeter mostra uma pílula flutuante no topo da tela."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台 Mac 没有刘海，AIMeter 会改为在屏幕顶部显示一个悬浮胶囊。"
+          }
+        }
+      }
+    },
+    "Peek on hover" : {
+      "comment" : "Notch island setting: resting the cursor on the island shows the primary account's full line.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asomar al pasar el cursor"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau beim Überfahren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperçu au survol"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホバーでプレビュー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마우스를 올리면 미리 보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espiar ao passar o cursor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "悬停时预览"
+          }
+        }
+      }
+    },
+    "AIMeter lives in the notch now — rest the cursor here to peek, click to open." : {
+      "comment" : "One-time caption shown inside the notch island's peek on the first launch, so an upgrading user learns it exists.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter vive ahora en el notch: deja el cursor aquí para asomarlo, haz clic para abrirlo."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter lebt jetzt im Notch – lass den Cursor hier ruhen für die Vorschau, klicke zum Öffnen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter vit désormais dans l’encoche : laissez le curseur ici pour un aperçu, cliquez pour ouvrir."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterはノッチに移りました。カーソルを置くとプレビュー、クリックで開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter가 이제 노치에 있습니다. 커서를 올려 두면 미리 보기, 클릭하면 열립니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter agora vive no notch: deixe o cursor aqui para espiar, clique para abrir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 现在住在刘海里：把光标停在这里可预览，点击可打开。"
           }
         }
       }

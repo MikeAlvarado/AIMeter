@@ -55,6 +55,12 @@ struct MenuBarSettings: View {
                 }
                 Divider().overlay(Theme.track)
 
+                if prefs.notchIslandEnabled, !prefs.statusItemVisible {
+                    Label(String(localized: "Hidden while the notch island is on."), systemImage: "eye.slash")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                    Divider().overlay(Theme.track)
+                }
                 toggle("Red at 80% used", isOn: $prefs.menuBarTintsAtDanger)
                 if prefs.menuBarStyle != .multi {
                     Divider().overlay(Theme.track)
@@ -127,45 +133,6 @@ struct MenuBarSettings: View {
             : String(localized: "Pick which window the menu bar reads. Whatever the style, the exact value is always in the tooltip.")
         text += " " + String(localized: "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there — no extra permissions needed.")
         return text
-    }
-}
-
-/// Multi-select row of window chips for the `multi` style — toggles
-/// membership in `selection`, keeping the options' own order, never fewer
-/// than one nor more than `MenuBarLabelModel.maxMetrics`.
-private struct MetricChips: View {
-    let options: [UsageWindow.Kind]
-    @Binding var selection: [UsageWindow.Kind]
-
-    var body: some View {
-        HStack(spacing: 6) {
-            ForEach(options, id: \.self) { kind in
-                let isOn = selection.contains(kind)
-                Button {
-                    toggle(kind)
-                } label: {
-                    Text(kind.shortName)
-                        .font(.subheadline.weight(isOn ? .semibold : .regular))
-                        .foregroundStyle(isOn ? Theme.ink : Theme.inkSecondary)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(isOn ? Theme.accentWash : Theme.track.opacity(0.6), in: Capsule())
-                        .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(isOn ? .isSelected : [])
-            }
-        }
-    }
-
-    private func toggle(_ kind: UsageWindow.Kind) {
-        if selection.contains(kind) {
-            guard selection.count > 1 else { return }
-            selection.removeAll { $0 == kind }
-        } else {
-            guard selection.count < MenuBarLabelModel.maxMetrics else { return }
-            selection = options.filter { selection.contains($0) || $0 == kind }
-        }
     }
 }
 #endif
