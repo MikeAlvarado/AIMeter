@@ -35,6 +35,11 @@ struct AIMeterApp: App {
                 }
                 #endif
         }
+        #if os(macOS)
+        // Tall enough for two accounts and the Claude Code section; the
+        // content's own minimum (`ContentView`) holds a restored window.
+        .defaultSize(width: 460, height: 760)
+        #endif
         #if os(iOS)
         .backgroundTask(.appRefresh(AppConfig.refreshTaskID)) {
             await BackgroundRefresh.scheduleNext()

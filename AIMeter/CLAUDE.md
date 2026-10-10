@@ -1,11 +1,16 @@
 ## Screens
 
-- **Dashboard**: floating gear + refresh buttons (refresh icon spins while
-  busy; soft haptic on refresh start; on macOS ⌘R comes from the Usage
-  menu — see "Conventions" in the repo-root CLAUDE.md — and from the menu
-  bar popover's own button; refresh fans out to every account
-  concurrently via `UsageModel.refreshAll()`), small centered serif
-  "AIMeter" title, then — only while the provider reports an incident
+- **Dashboard**: on iOS, floating gear + refresh buttons (refresh icon
+  spins while busy; soft haptic on refresh start) and a small centered
+  serif "AIMeter" title; on macOS no in-page header at all — the window's
+  own title bar already says "AIMeter", so Refresh (a small spinner while
+  busy) and Settings sit in the window's toolbar at its trailing edge,
+  the way a Mac app keeps them, and the window opens 460 × 760 pt
+  (`defaultSize`) with a 380 × 560 minimum that a smaller restored frame
+  grows to. Either way refresh fans out to every account concurrently
+  via `UsageModel.refreshAll()`; on macOS ⌘R comes from the Usage menu —
+  see "Conventions" in the repo-root CLAUDE.md — and from the menu bar
+  popover's own button, never from the toolbar's. Then — only while the provider reports an incident
   (`UsageModel.activeIncident`, see "Service status" in the repo-root
   CLAUDE.md) — a `ServiceStatusBanner`, then one section per *connected account*
   (`AccountSectionView`, shared with the macOS menu bar popover): logo +

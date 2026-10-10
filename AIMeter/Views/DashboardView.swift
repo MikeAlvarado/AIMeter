@@ -34,7 +34,9 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
+                #if os(iOS)
                 header
+                #endif
                 // Only while the provider itself reports a problem — on a
                 // normal day the dashboard looks exactly as it always has.
                 if let incident = model.activeIncident {
@@ -107,8 +109,59 @@ struct DashboardView: View {
         .sheet(item: $reconnecting) { account in
             ConnectClaudeSheet(reconnecting: account)
         }
+        #if os(macOS)
+        // The Mac's window already has a title bar that says "AIMeter",
+        // so the in-page title and the floating round buttons became the
+        // window's toolbar: the title once, Refresh and Settings at its
+        // trailing edge, where a Mac app keeps them.
+        .toolbar {
+            ToolbarItemGroup(placement: .primaryAction) {
+                if model.isRefreshing {
+                    ProgressView()
+                        .controlSize(.small)
+                        .accessibilityLabel(Text("Refresh"))
+                } else {
+                    Button {
+                        refreshRequests += 1
+                        Task { await model.refreshAll() }
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                    }
+                    .help(String(localized: "Refresh"))
+                    // ⌘R is the Usage menu's (`AIMeterApp.commands`), not
+                    // this button's: declaring it here too fired both.
+                }
+                Button {
+                    openSettings()
+                    NSApp.activate(ignoringOtherApps: true)
+                } label: {
+                    Label("Settings", systemImage: "gearshape")
+                }
+                .help(String(localized: "Settings"))
+            }
+        }
+        .onAppear(perform: registerConnectHook)
+        .onDisappear {
+            AppChrome.presentConnect = nil
+        }
+        #endif
     }
 
+    #if os(macOS)
+    /// The menu bar popover and the island present no sheets of their
+    /// own; they hand a connect request to this window (`AppChrome.connect`).
+    private func registerConnectHook() {
+        AppChrome.presentConnect = { request in
+            switch request {
+            case .add: showingConnect = true
+            case .reconnect(let account): reconnecting = account
+            }
+        }
+        AppChrome.deliverPendingConnect()
+    }
+    #endif
+
+    #if os(iOS)
     private var header: some View {
         ZStack {
             // Small centered app title — present but never competing with
@@ -125,12 +178,7 @@ struct DashboardView: View {
     private var headerButtons: some View {
         HStack {
             RoundIconButton(systemName: "gearshape") {
-                #if os(macOS)
-                openSettings()
-                NSApp.activate(ignoringOtherApps: true)
-                #else
                 showingSettings = true
-                #endif
             }
             .accessibilityLabel(Text("Settings"))
             Spacer()
@@ -139,24 +187,9 @@ struct DashboardView: View {
                 Task { await model.refreshAll() }
             }
             .accessibilityLabel(Text("Refresh"))
-            // ⌘R is the Usage menu's (`AIMeterApp.commands`), not this
-            // button's: declaring it here too fired both.
         }
-        #if os(macOS)
-        .onAppear {
-            AppChrome.presentConnect = { request in
-                switch request {
-                case .add: showingConnect = true
-                case .reconnect(let account): reconnecting = account
-                }
-            }
-            AppChrome.deliverPendingConnect()
-        }
-        .onDisappear {
-            AppChrome.presentConnect = nil
-        }
-        #endif
     }
+    #endif
 
     private var providerSection: some View {
         VStack(alignment: .leading, spacing: Theme.sectionSpacing) {

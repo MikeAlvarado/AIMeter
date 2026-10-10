@@ -51,11 +51,18 @@ struct ContentView: View {
     private var dashboard: some View {
         NavigationStack {
             DashboardView()
+                #if os(iOS)
+                // The Dashboard draws its own header on iOS; the Mac's
+                // window toolbar carries its buttons instead.
                 .toolbar(.hidden, for: .automatic)
+                #endif
         }
         #if os(macOS)
         // The detail screens' toggles as trailing switches, like Settings'.
         .toggleStyle(.settingsSwitch)
+        // Room for two accounts and an incident notice without scrolling;
+        // a window restored smaller than this grows to it.
+        .frame(minWidth: 380, minHeight: 560)
         #endif
     }
 }
