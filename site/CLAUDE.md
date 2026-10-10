@@ -39,8 +39,10 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   widget kinds, Lock Screen / Live Activity, widget renders, the
   home-screen capture), `Mac` (the notch island's three captures —
   collapsed, peek, expanded — with a caption each, `MenuBarStrip`, a
-  CSS illustration of the six status-item styles, plus the "build from
-  source" link), `Privacy`
+  CSS illustration of the six status-item styles, plus the "Download
+  for Mac" link — `GITHUB_LATEST_RELEASE_URL`, GitHub's always-newest
+  release, so it never needs a bump — and the "build from source"
+  link), `Privacy`
   (four cards + link to `/privacy`), `OpenSource`, `Closing` (dark card
   + footer).
 - `src/components/ui/` — `MixedHeading` (`*word*` → accent italic,

@@ -135,6 +135,15 @@ can be added later.
 - English, Spanish, German, French, Japanese, Korean, Brazilian Portuguese
   and Simplified Chinese, following the device language.
 
+## Install
+
+- **iPhone and iPad**: [the App Store](https://apps.apple.com/app/id6797946742).
+- **Mac**: download `AIMeter-<version>-macOS.zip` from the
+  [latest release](https://github.com/MikeAlvarado/AIMeter/releases/latest)
+  — signed with Developer ID and notarized by Apple — unzip it and move
+  AIMeter to Applications. macOS 14 or later. Or build it yourself (see
+  [Building](#building)).
+
 ## Website
 
 [mikealvarado.github.io/AIMeter](https://mikealvarado.github.io/AIMeter/)

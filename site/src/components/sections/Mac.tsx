@@ -4,7 +4,7 @@ import islandExpanded from '../../assets/island-expanded.webp'
 import islandPeek from '../../assets/island-peek.webp'
 import { useLanguage } from '../../hooks/useLanguage'
 import { useRevealOnScroll } from '../../hooks/useRevealOnScroll'
-import { GITHUB_BUILD_URL } from '../../lib/site'
+import { GITHUB_BUILD_URL, GITHUB_LATEST_RELEASE_URL } from '../../lib/site'
 import { MenuBarStrip } from '../ui/MenuBarStrip'
 import { MixedHeading } from '../ui/MixedHeading'
 
@@ -23,15 +23,26 @@ export function Mac() {
         <div data-reveal className="nav:basis-[40%] flex flex-col gap-4">
           <MixedHeading text={t.mac.heading} className="text-section leading-[1.02]" />
           <p className="text-ink-2 max-w-md text-lg">{t.mac.sub}</p>
-          <a
-            href={GITHUB_BUILD_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="text-accent mt-2 inline-flex items-center gap-1 text-sm font-medium underline-offset-4 hover:underline"
-          >
-            {t.mac.build}
-            <ArrowUpRight className="size-4" aria-hidden />
-          </a>
+          <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <a
+              href={GITHUB_LATEST_RELEASE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="text-accent inline-flex items-center gap-1 text-sm font-medium underline-offset-4 hover:underline"
+            >
+              {t.mac.download}
+              <ArrowUpRight className="size-4" aria-hidden />
+            </a>
+            <a
+              href={GITHUB_BUILD_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="text-ink-2 inline-flex items-center gap-1 text-sm font-medium underline-offset-4 hover:underline"
+            >
+              {t.mac.build}
+              <ArrowUpRight className="size-4" aria-hidden />
+            </a>
+          </div>
         </div>
         <div className="flex flex-1 flex-col gap-8">
           <div data-reveal className="flex flex-col gap-3">

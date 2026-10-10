@@ -74,6 +74,8 @@ export interface Dictionary {
     styles: string[]
     extras: string[]
     note: string
+    /** The Mac download link: the latest GitHub Release. */
+    download: string
     build: string
     islandAlt: string
     islandStates: string[]
