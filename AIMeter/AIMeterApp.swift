@@ -11,6 +11,7 @@ struct AIMeterApp: App {
     /// `MinuteClock` for why this is not a `TimelineView`.
     @State private var minuteClock = MinuteClock()
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
     #endif
 
     var body: some Scene {
@@ -26,6 +27,11 @@ struct AIMeterApp: App {
                 // environment actions.
                 .onAppear {
                     AppChrome.openDashboard = { openWindow(id: Self.dashboardWindowID) }
+                    AppChrome.openSettingsAction = { openSettings() }
+                    // The notch island lives outside the scene graph; this
+                    // is where it gets the app's one `PreferencesModel`.
+                    AppEnvironment.prefs = prefs
+                    AppChrome.startNotchIslandIfEnabled()
                 }
                 #endif
         }
