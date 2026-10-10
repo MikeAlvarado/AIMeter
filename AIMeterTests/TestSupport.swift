@@ -15,6 +15,15 @@ final class ScratchDefaults {
 
     func wipe() {
         defaults.removePersistentDomain(forName: suiteName)
+        #if os(macOS)
+        // Emptying the suite leaves its plist behind on the Mac — one
+        // 42-byte file per test in ~/Library/Preferences, over a thousand
+        // after a day of runs. The test host is unsandboxed, so that is
+        // where it lives.
+        let file = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Preferences/\(suiteName).plist")
+        try? FileManager.default.removeItem(at: file)
+        #endif
     }
 }
 
