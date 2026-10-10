@@ -596,7 +596,10 @@
   - **Quit still means quit.** Hiding changes only what is visible; the menu
     bar Quit button remains an unconditional `NSApp.terminate`.
   - **One instance.** `applicationWillFinishLaunching` terminates any
-    other running copy of the bundle ID (`AppChrome.terminateOtherInstances`).
+    other running copy of the bundle ID (`AppChrome.terminateOtherInstances`;
+    skipped under `XCTestConfigurationFilePath`, since the unit-test host
+    is this same app and a test run must not quit the copy the user has
+    running — it did once).
     Launch Services only refuses a second launch of the *same* bundle,
     so the installed copy started by the login item and a build run from
     Xcode (or a copy left in Downloads) ran side by side — two islands

@@ -69,7 +69,10 @@ enum AppChrome {
     /// status items in the bar, two dashboards on screen. The copy being
     /// launched wins: it is the one the user just asked for.
     static func terminateOtherInstances() {
-        guard let bundleID = Bundle.main.bundleIdentifier else { return }
+        // The unit-test host is this same app: a test run must not quit
+        // the copy the user has running (the same guard as the island's).
+        guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil,
+              let bundleID = Bundle.main.bundleIdentifier else { return }
         let me = ProcessInfo.processInfo.processIdentifier
         for other in NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
         where other.processIdentifier != me {
