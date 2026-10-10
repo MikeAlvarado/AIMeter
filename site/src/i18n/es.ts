@@ -99,10 +99,12 @@ export const es = {
     ipadAlt: 'AIMeter en iPad.',
   },
   mac: {
-    heading: 'En el Mac vive en la *barra de menús*',
-    sub: 'Un ícono de estado en el estilo que prefieras, alimentado por la propia app, para que los widgets del Centro de notificaciones sigan frescos sin ningún ícono en pantalla.',
+    heading: 'En el Mac vive en el *notch*',
+    sub: 'Una isla negra fundida al notch de la MacBook muestra todas las ventanas en una línea: asoma tus cifras cuando el cursor se detiene encima y abre todas las cuentas si te quedas o haces clic, sin robar el foco nunca. ¿Sin notch? Una pastilla flotante bajo la barra de menús. ¿Prefieres un ícono de estado? Seis estilos, alimentados por la propia app, para que los widgets del Centro de notificaciones sigan frescos sin ningún ícono en pantalla.',
     styles: ['Medidor con el número', 'Solo medidor', 'Solo número', 'Barra', 'Batería', 'Dos o tres ventanas lado a lado'],
     extras: [
+      'Isla del notch: 5h 42% 2h 58m | 7d 61% 3d 3h junto al notch, y todas las cuentas con barras y reinicios al abrirse',
+      'Elige de qué lado del notch van las alas y qué ventanas listan; activarla oculta el ícono de la barra',
       'Cuenta regresiva al reinicio y nombre de la cuenta, opcionales',
       'En rojo cuando una ventana pasa del 80 %',
       'Oculta el ícono del Dock, el de la barra, o ambos',
@@ -225,7 +227,7 @@ export const es = {
     title: 'Soporte',
     description: 'Cómo conectar una cuenta, qué significan las alertas y dónde pedir ayuda.',
     intro: 'AIMeter la construye y mantiene una sola persona, a la vista de todos. La mayoría de las respuestas están abajo; lo demás está a un issue de GitHub o un correo de distancia.',
-    updated: 'Para AIMeter 1.6',
+    updated: 'Para AIMeter 2.0',
     sections: [
       {
         heading: 'Conectar en iPhone y iPad',
