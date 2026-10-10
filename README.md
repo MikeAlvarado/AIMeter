@@ -274,6 +274,9 @@ Claude Code's credentials. Signing (any team) is required for the App Group
 
 iOS ships through App Store Connect (archive the `AIMeter` scheme for
 iOS in Release, export with the `app-store-connect` method, submit).
+The app's `Info.plist` declares `ITSAppUsesNonExemptEncryption` false —
+its only encryption is the system's HTTPS — so a build needs no export
+compliance answer in App Store Connect.
 The Mac app ships as a Developer ID-signed, notarized zip attached to a
 GitHub Release: `Scripts/release-mac.sh <version>` archives, exports
 with the `developer-id` method, submits to `notarytool`, staples, and
