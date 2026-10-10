@@ -281,14 +281,19 @@ its only encryption is the system's HTTPS — so a build needs no export
 compliance answer in App Store Connect.
 The Mac app ships as a Developer ID-signed, notarized zip attached to a
 GitHub Release: `Scripts/release-mac.sh <version>` archives, exports
-with the `developer-id` method, submits to `notarytool`, staples, and
-zips — it needs a Developer ID Application certificate in the login
-keychain and a `notarytool` keychain profile named `AIMeter` (the
-script's header says how to create both), and it must run from a
-Terminal, since signing prompts the keychain. Both macOS targets build
-with the hardened runtime, which notarization requires. Tag the commit
-(`git tag <version>`), then `gh release create <version> <zip>` with the
-release notes.
+with the `developer-id` method straight to Apple's notary service,
+waits for the notarized app (`xcodebuild -exportNotarizedApp`),
+verifies its signature, Gatekeeper assessment, stapled ticket and that
+the widget extension is sandboxed, and zips it. It needs nothing but the Apple account Xcode is signed in to,
+as the team's Account Holder or an Admin: the Developer ID signature is
+a cloud-managed certificate and the upload uses that account, so there
+is no certificate to create and no `notarytool` profile. Run it from a
+Terminal, since the archive's signing reads the login keychain.
+Notarization usually takes minutes but can take over an hour; the
+script waits up to three, and rerunning it with the same work folder
+resumes the wait instead of uploading again. Both macOS targets build
+with the hardened runtime, which notarization requires. Tag the commit (`git tag <version>`), then
+`gh release create <version> <zip>` with the release notes.
 
 ### Validating the endpoint
 
