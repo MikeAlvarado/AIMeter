@@ -192,6 +192,12 @@ final class NotchIslandController {
             break
         }
         interaction.peeksOnHover = prefs?.notchIslandExpandsOnHover ?? true
+        interaction.skipsPeek = NotchIslandVisibility.showsRowWhenCollapsed(
+            mode: state.mode,
+            hidesUntilHover: prefs?.notchIslandHidesUntilHover ?? false,
+            hidesInFullScreen: prefs?.notchIslandHidesInFullScreen ?? true,
+            isFullScreen: isFullScreen
+        )
         interaction.handle(event)
         armTimer()
         // With "Peek on hover" off, a hidden island shows itself while the

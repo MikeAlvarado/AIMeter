@@ -69,7 +69,8 @@ can be added later.
   notch fused to the edge, or a pill floating in the menu bar like the
   iPhone's island, at the menu bar's height or your own, shown always,
   only when the cursor comes to it, and out of the way of full-screen
-  apps.
+  apps. Shown, it already carries your figures, so resting the cursor
+  on it opens every account straight away.
   Invisible until the cursor rests on the notch; then the figures you
   chose peek out beside it (`5h 42% | 7d 61%`, on either side or both),
   and staying a moment longer or clicking opens every account in full —

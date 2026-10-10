@@ -132,6 +132,17 @@ final class NotchIslandVisibilityTests: XCTestCase {
 
     // MARK: - Pointer
 
+    func testOnlyADrawnIslandInSightShowsItsRowWhenCollapsed() {
+        let notch = NotchIslandGeometry.Mode.notch(CGRect(x: 0, y: 0, width: 200, height: 32))
+        XCTAssertFalse(NotchIslandVisibility.showsRowWhenCollapsed(mode: notch, hidesUntilHover: false, hidesInFullScreen: true, isFullScreen: false), "a real notch shows nothing collapsed")
+        for mode in [NotchIslandGeometry.Mode.drawn, .pill] {
+            XCTAssertTrue(NotchIslandVisibility.showsRowWhenCollapsed(mode: mode, hidesUntilHover: false, hidesInFullScreen: true, isFullScreen: false))
+            XCTAssertFalse(NotchIslandVisibility.showsRowWhenCollapsed(mode: mode, hidesUntilHover: true, hidesInFullScreen: false, isFullScreen: false), "hidden until hovered")
+            XCTAssertFalse(NotchIslandVisibility.showsRowWhenCollapsed(mode: mode, hidesUntilHover: false, hidesInFullScreen: true, isFullScreen: true), "hidden behind a full-screen app")
+            XCTAssertTrue(NotchIslandVisibility.showsRowWhenCollapsed(mode: mode, hidesUntilHover: false, hidesInFullScreen: false, isFullScreen: true), "full screen without the option keeps it")
+        }
+    }
+
     func testThePointerPushedAgainstTheTopEdgeIsInside() {
         // AppKit reports the topmost pixel row as exactly the screen's maxY.
         let region = CGRect(x: 1600, y: 1410, width: 240, height: 30)

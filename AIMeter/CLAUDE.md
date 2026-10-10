@@ -456,7 +456,12 @@
     side(s) `notchIslandLayout` says (both, left or right — a one-sided
     peek is an asymmetric slab); staying on the open wings 1 s more
     (the expand dwell), or a click at any time, opens **expanded**:
-    every account, the full lines, the footer. Leaving collapses after
+    every account, the full lines, the footer. A drawn notch or pill in
+    sight skips the peek — it would only show the row already there —
+    and the dwell opens expanded directly (`skipsPeek`, set on every
+    event from `NotchIslandVisibility.showsRowWhenCollapsed`); a
+    concealed one still peeks, which is what brings its row back, and
+    the first-run reveal is a peek everywhere. Leaving collapses after
     150 ms whatever opened it (short, like boring.notch's: the slab is
     one contiguous shape, so moving from a wing into the body never
     leaves it). With a real notch, hover is SwiftUI's own `onHover` on

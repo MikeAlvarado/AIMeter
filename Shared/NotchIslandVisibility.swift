@@ -64,6 +64,26 @@ enum NotchIslandVisibility {
         return hidesUntilHover || (hidesInFullScreen && isFullScreen)
     }
 
+    /// Whether the collapsed island is on screen showing its row: a drawn
+    /// notch or a pill that nothing hides right now. Then the peek has
+    /// nothing to add (`NotchIslandInteraction.skipsPeek`). A real notch
+    /// shows nothing collapsed — the wings *are* what the peek brings.
+    static func showsRowWhenCollapsed(
+        mode: NotchIslandGeometry.Mode,
+        hidesUntilHover: Bool,
+        hidesInFullScreen: Bool,
+        isFullScreen: Bool
+    ) -> Bool {
+        mode.drawsOwnShape && !isConcealed(
+            mode: mode,
+            level: .collapsed,
+            isRevealing: false,
+            hidesUntilHover: hidesUntilHover,
+            hidesInFullScreen: hidesInFullScreen,
+            isFullScreen: isFullScreen
+        )
+    }
+
     /// Whether the pointer is on the island, on a screen without a notch:
     /// on its collapsed place (`NotchIslandGeometry.hoverRegion`, which
     /// stays live while the island is hidden) or on the slab as it is

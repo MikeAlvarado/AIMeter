@@ -10,8 +10,10 @@ import Foundation
 /// wings open (so passing over the notch on the way to a menu does
 /// nothing); staying on the open wings for `expand` more opens everything,
 /// as does a click at any time; leaving collapses after `leave` whatever
-/// opened it; a click anywhere else closes it. The island never takes
-/// keyboard focus, so there is no Esc.
+/// opened it; a click anywhere else closes it. Where the collapsed island
+/// already shows the row the wings would (`skipsPeek`), the dwell opens
+/// everything at once. The island never takes keyboard focus, so there is
+/// no Esc.
 struct NotchIslandInteraction: Equatable {
     enum Level: Int, Comparable {
         /// The bare notch (or the pill with its row).
@@ -66,6 +68,12 @@ struct NotchIslandInteraction: Equatable {
     private(set) var timer: Timer = .none
     /// `Preferences.notchIslandExpandsOnHover`; off, only a click opens.
     var peeksOnHover = true
+    /// The collapsed island is already showing its row — a drawn notch or
+    /// a pill in sight (`NotchIslandVisibility.showsRowWhenCollapsed`) —
+    /// so the peek would add nothing but a second wait: the dwell opens
+    /// everything. A hidden island keeps the peek, which is what brings
+    /// its row back; the first-run reveal still peeks either way.
+    var skipsPeek = false
 
     mutating func handle(_ event: Event) {
         switch event {
@@ -83,8 +91,12 @@ struct NotchIslandInteraction: Equatable {
         case .dwellElapsed:
             timer = .none
             guard isInside, level == .collapsed, peeksOnHover else { return }
-            level = .peek
-            timer = .expand
+            if skipsPeek {
+                level = .expanded
+            } else {
+                level = .peek
+                timer = .expand
+            }
         case .expandElapsed:
             timer = .none
             guard isInside, level == .peek, peeksOnHover else { return }

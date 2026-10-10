@@ -107,6 +107,39 @@ final class NotchIslandInteractionTests: XCTestCase {
         XCTAssertEqual(island.level, .expanded)
     }
 
+    func testAnIslandAlreadyShowingItsRowOpensEverythingAfterTheDwell() {
+        island.skipsPeek = true
+        island.handle(.entered)
+        XCTAssertEqual(island.timer, .dwell, "passing over still does nothing")
+        island.handle(.left)
+        island.handle(.dwellElapsed)
+        XCTAssertEqual(island.level, .collapsed)
+
+        island.handle(.entered)
+        island.handle(.dwellElapsed)
+        XCTAssertEqual(island.level, .expanded, "no peek: it would show the row that is already there")
+        XCTAssertEqual(island.timer, .none)
+        island.handle(.left)
+        XCTAssertEqual(island.timer, .leave)
+        island.handle(.leaveElapsed)
+        XCTAssertEqual(island.level, .collapsed)
+    }
+
+    func testSkippingThePeekStillHonorsHoverOffAndTheReveal() {
+        island.skipsPeek = true
+        island.peeksOnHover = false
+        island.handle(.entered)
+        island.handle(.dwellElapsed)
+        XCTAssertEqual(island.level, .collapsed, "with hover off only a click opens")
+        island.handle(.tapped)
+        XCTAssertEqual(island.level, .expanded)
+        island.collapse()
+
+        island.peeksOnHover = true
+        island.reveal()
+        XCTAssertEqual(island.level, .peek, "the first-run reveal is a peek on every screen")
+    }
+
     func testRevealOpensThePeekAndObeysTheUsualClose() {
         island.reveal()
         XCTAssertEqual(island.level, .peek)

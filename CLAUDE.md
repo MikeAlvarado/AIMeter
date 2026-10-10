@@ -913,7 +913,12 @@ the account silently freezes at its last snapshot.
   `leftOnly`; `rightOnly`), no resets; with nothing connected the wing
   carries a "Connect" affordance routed through `AppChrome.connect(.add)`.
   Staying on the open wings 1 s more, or a **click** at any time, opens
-  the expanded island; a click on an expanded island, leaving it (after
+  the expanded island. On a screen without a notch, a drawn notch or
+  pill in sight already shows its row, so there the dwell opens the
+  expanded island at once (`NotchIslandInteraction.skipsPeek`, from
+  `NotchIslandVisibility.showsRowWhenCollapsed`); a hidden one still
+  peeks first, since the peek is what brings its row back. In every
+  case, a click on an expanded island, leaving it (after
   150 ms, whatever opened it) or a click anywhere else closes it (mouse
   monitors, which need no permission). The motion is boring.notch's
   system, rebuilt (it is GPL, read for the recipe, nothing copied): a
