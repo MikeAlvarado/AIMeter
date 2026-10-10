@@ -98,7 +98,15 @@ versions; screenshots are, until replaced. Save after each section.
 ## Not store assets
 
 The notch island (2.0) is Mac-only and the Mac app is not in the store,
-so its captures are never store assets. They are website assets: in demo
-mode, `screencapture -R` of the screen's top edge at 2× with the island
-collapsed and expanded, converted to WebP into `site/src/assets/` (see
-`site/CLAUDE.md`). Nothing in this pipeline renders it.
+so its captures are never store assets. They are website assets, taken
+on a MacBook with a notch in demo mode at 2×: `screencapture -R
+0,0,<screen width>,320` of the screen's top edge with the island
+collapsed (the bare notch) and again during the peek (the wings open),
+and `screencapture -o -l <panel window id>` of the island's panel alone
+while it is expanded — the panel on transparency, so whatever the
+desktop holds under it stays out of the picture. `site/scripts/island.mjs`
+crops the strips, lays the panel over the collapsed strip (mirroring the
+desktop below the menu bar so no window shows) and writes the three
+`island-*.webp` files into `site/src/assets/` (see `site/CLAUDE.md`).
+Nothing in this pipeline renders it. The 2.0.0 set was taken on
+2026-10-09 on a 14" M4 Max (1512 pt wide, the panel's frame at x 401).

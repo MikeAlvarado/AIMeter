@@ -113,6 +113,8 @@ export const en = {
     ],
     note: 'The Mac app is not on the Mac App Store: it reads the login your command-line tools already keep, which the store’s sandbox does not allow.',
     build: 'Build it from source',
+    islandAlt: 'The notch island on a MacBook, three states: the bare notch; two figures beside it once the cursor rests there; and, expanded, two accounts with every window, a bar and the time to its reset.',
+    islandStates: ['Collapsed: the notch, nothing on it', 'Rest the cursor on it: your figures beside the notch', 'Stay a second, or click: every account'],
   },
   privacy: {
     heading: 'Private *by design*',

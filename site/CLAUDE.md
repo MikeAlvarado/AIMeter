@@ -37,8 +37,10 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   by `useScrollProgress`), `Features` (hairline rows, number + title +
   body + points + a phone capture), `Widgets` (dark card: the three
   widget kinds, Lock Screen / Live Activity, widget renders, the
-  home-screen capture), `Mac` (`MenuBarStrip`, a CSS illustration of the
-  six status-item styles, plus the "build from source" link), `Privacy`
+  home-screen capture), `Mac` (the notch island's three captures —
+  collapsed, peek, expanded — with a caption each, `MenuBarStrip`, a
+  CSS illustration of the six status-item styles, plus the "build from
+  source" link), `Privacy`
   (four cards + link to `/privacy`), `OpenSource`, `Closing` (dark card
   + footer).
 - `src/components/ui/` — `MixedHeading` (`*word*` → accent italic,
@@ -66,6 +68,9 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   `robots.txt` and `.nojekyll`.
 - `scripts/images.mjs` — turns a `Scripts/store-frames.sh` work dir
   (`raw/`, `widget-shots/`) into the WebP files in `src/assets`.
+- `scripts/island.mjs` — turns the notch island captures (two top-edge
+  strips and the expanded panel alone, see `Scripts/StoreFrames/CLAUDE.md`
+  → "Not store assets") into `src/assets/island-*.webp`.
 - `public/` — favicons and `apple-touch-icon.png` from the app icon,
   `icon-192/512.png` + `site.webmanifest`, `og.png` (1200×630, the
   centre crop of the store header asset).
@@ -79,7 +84,8 @@ page do name the hosts and tools (api.anthropic.com, Claude Code), since
 a policy that hides where the data goes is not a policy; that is
 nominative, factual use, with the not-affiliated line under it. Every
 image is a demo-mode capture or a widget render from the store pipeline
-(`Scripts/StoreFrames/CLAUDE.md`), so no account names, no brand marks.
+(`Scripts/StoreFrames/CLAUDE.md`) — the notch island's three from the
+same demo on a real MacBook — so no account names, no brand marks.
 The support page also carries the Acknowledgments (boring.notch and
 Vibe Island, for the notch island's approach and line format — studied,
 not copied; see "Open source hygiene" in the repo root `CLAUDE.md`),

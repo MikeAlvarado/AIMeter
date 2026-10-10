@@ -1,9 +1,18 @@
 import { ArrowUpRight } from 'lucide-react'
+import islandCollapsed from '../../assets/island-collapsed.webp'
+import islandExpanded from '../../assets/island-expanded.webp'
+import islandPeek from '../../assets/island-peek.webp'
 import { useLanguage } from '../../hooks/useLanguage'
 import { useRevealOnScroll } from '../../hooks/useRevealOnScroll'
 import { GITHUB_BUILD_URL } from '../../lib/site'
 import { MenuBarStrip } from '../ui/MenuBarStrip'
 import { MixedHeading } from '../ui/MixedHeading'
+
+const ISLAND_STATES = [
+  { src: islandCollapsed, width: 1104, height: 96 },
+  { src: islandPeek, width: 1104, height: 96 },
+  { src: islandExpanded, width: 1104, height: 527 },
+]
 
 export function Mac() {
   const { t } = useLanguage()
@@ -25,6 +34,22 @@ export function Mac() {
           </a>
         </div>
         <div className="flex flex-1 flex-col gap-8">
+          <div data-reveal className="flex flex-col gap-3">
+            {ISLAND_STATES.map((state, i) => (
+              <figure key={state.src} className="flex flex-col gap-1.5">
+                <img
+                  src={state.src}
+                  alt={i === 0 ? t.mac.islandAlt : ''}
+                  width={state.width}
+                  height={state.height}
+                  loading="lazy"
+                  decoding="async"
+                  className="ring-ink/10 w-full rounded-xl ring-1"
+                />
+                <figcaption className="text-ink-2 text-xs">{t.mac.islandStates[i]}</figcaption>
+              </figure>
+            ))}
+          </div>
           <div data-reveal>
             <MenuBarStrip labels={t.mac.styles} />
           </div>

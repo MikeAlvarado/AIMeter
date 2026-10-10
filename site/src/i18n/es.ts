@@ -113,6 +113,8 @@ export const es = {
     ],
     note: 'La app de Mac no está en la Mac App Store: lee el inicio de sesión que ya guardan tus herramientas de línea de comandos, y el sandbox de la tienda no lo permite.',
     build: 'Compílala desde el código',
+    islandAlt: 'La isla del notch en una MacBook, en tres estados: el notch a secas; dos cifras a sus lados cuando el cursor se detiene encima; y, expandida, dos cuentas con cada ventana, su barra y el tiempo hasta su reinicio.',
+    islandStates: ['Cerrada: el notch, nada encima', 'Detén el cursor encima: tus cifras junto al notch', 'Quédate un segundo, o haz clic: todas las cuentas'],
   },
   privacy: {
     heading: 'Privada *por diseño*',

@@ -75,6 +75,8 @@ export interface Dictionary {
     extras: string[]
     note: string
     build: string
+    islandAlt: string
+    islandStates: string[]
   }
   privacy: { heading: string; sub: string; points: { title: string; body: string }[]; cta: string }
   openSource: {

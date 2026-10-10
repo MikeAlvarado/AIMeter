@@ -1114,7 +1114,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   no-third-party-names posture; the privacy and support pages name the
   hosts, factually) and the three URLs App Store Connect points at
   (marketing, support, privacy policy). Its images come from the store
-  pipeline above (`site/scripts/images.mjs`).
+  pipeline above (`site/scripts/images.mjs`), plus the notch island's
+  three captures (`site/scripts/island.mjs`, see "Not store assets" in
+  `Scripts/StoreFrames/CLAUDE.md`).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 - Credit where it is due, and only that. The notch island's motion
