@@ -9,6 +9,7 @@ import UsageKit
 /// hidden, since that relaunch becomes the only way back in.
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillFinishLaunching(_ notification: Notification) {
+        AppChrome.terminateOtherInstances()
         // Applied before first paint so a hidden Dock icon never flashes.
         AppChrome.applyActivationPolicy(hidingDockIcon: Preferences.load().hideDockIcon)
     }
@@ -59,6 +60,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 /// Activation-policy and window handling, kept out of the delegate so the
 /// Settings toggles can drive the same code paths live.
 enum AppChrome {
+    /// One AIMeter at a time. Two copies of the app can run side by side
+    /// when they live at different paths — the installed one started by
+    /// the login item and a build run from Xcode, say — since Launch
+    /// Services only refuses a second launch of the *same* bundle. Both
+    /// would then refresh the same accounts (rotating the same refresh
+    /// tokens against each other), put two islands on the notch, two
+    /// status items in the bar, two dashboards on screen. The copy being
+    /// launched wins: it is the one the user just asked for.
+    static func terminateOtherInstances() {
+        guard let bundleID = Bundle.main.bundleIdentifier else { return }
+        let me = ProcessInfo.processInfo.processIdentifier
+        for other in NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
+        where other.processIdentifier != me {
+            other.terminate()
+        }
+    }
+
     /// `.accessory` drops the Dock icon and the Cmd-Tab entry. The app keeps
     /// running and refreshing either way — this only changes what's visible.
     static func applyActivationPolicy(hidingDockIcon hidden: Bool) {

@@ -415,3 +415,11 @@
     also main-capable, is never mistaken for one.
   - **Quit still means quit.** Hiding changes only what is visible; the menu
     bar Quit button remains an unconditional `NSApp.terminate`.
+  - **One instance.** `applicationWillFinishLaunching` terminates any
+    other running copy of the bundle ID (`AppChrome.terminateOtherInstances`).
+    Launch Services only refuses a second launch of the *same* bundle,
+    so the installed copy started by the login item and a build run from
+    Xcode (or a copy left in Downloads) ran side by side — two islands
+    on the notch, two status items, two dashboards, and two refreshers
+    rotating the same tokens against each other. The copy being launched
+    wins, since it is the one the user just asked for.
