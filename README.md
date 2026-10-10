@@ -64,7 +64,8 @@ can be added later.
   marked — drawn from samples the app and widgets already record, kept on
   the device for 30 days.
 - A **notch island** on the Mac: a black panel fused to the MacBook's
-  notch (a floating pill under the menu bar on a Mac without one).
+  notch (on a screen without one — an external display, an iMac, a
+  closed MacBook on a monitor — it draws its own at the top edge).
   Invisible until the cursor rests on the notch; then the figures you
   chose peek out beside it (`5h 42% | 7d 61%`, on either side or both),
   and staying a moment longer or clicking opens every account in full —

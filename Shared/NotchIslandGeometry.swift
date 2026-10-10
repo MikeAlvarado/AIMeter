@@ -19,7 +19,7 @@ enum NotchIslandGeometry {
     /// 14"/16" MacBook Pro — never `NSStatusBar.thickness`, which stays 22)
     /// and the auxiliary areas are the menu bar's two halves. Without a
     /// notch the areas are nil and `safeTop` carries the menu bar's
-    /// thickness instead, so the pill knows how far down to sit.
+    /// thickness instead, which is how tall the drawn notch is.
     struct Screen: Equatable {
         var frame: CGRect
         var safeTop: CGFloat
@@ -31,8 +31,14 @@ enum NotchIslandGeometry {
         /// The notch's rect, in screen coordinates: between the two
         /// auxiliary areas, the full menu bar height, flush with the top.
         case notch(CGRect)
-        /// No notch: a floating capsule under the menu bar, centered.
-        case pill
+        /// No notch (an external display, an iMac, a MacBook Air, a
+        /// closed MacBook feeding a monitor): the island draws its own,
+        /// fused to the top edge of the screen over the menu bar's
+        /// centre — boring.notch's answer, and the only one that keeps
+        /// the slab out of the windows below the bar. It is as wide as
+        /// its row, the menu bar tall, and grows exactly like the real
+        /// one.
+        case drawn
     }
 
     /// The corner radii of the black slab, animated between the two as
@@ -65,15 +71,13 @@ enum NotchIslandGeometry {
     static let maxBodyHeight: CGFloat = 460
     /// Room the window keeps around the slab for the drawn shadow.
     static let shadowPadding: CGFloat = 20
-    static let pillHeight: CGFloat = 28
-    /// Horizontal padding the pill adds around its content.
-    static let pillPadding: CGFloat = 12
-    /// Gap between the menu bar and the pill.
-    static let pillGap: CGFloat = 6
+    /// The bar's height when a screen reports none (mid-reconfiguration):
+    /// the standard menu bar.
+    static let fallbackBarHeight: CGFloat = 24
 
     static func mode(for screen: Screen) -> Mode {
         guard screen.safeTop > 0, let left = screen.auxLeft, let right = screen.auxRight,
-              right.minX > left.maxX else { return .pill }
+              right.minX > left.maxX else { return .drawn }
         return .notch(CGRect(
             x: left.maxX, y: screen.frame.maxY - screen.safeTop,
             width: right.minX - left.maxX, height: screen.safeTop
@@ -81,18 +85,19 @@ enum NotchIslandGeometry {
     }
 
     /// The collapsed slab: with a notch, the notch itself plus the
-    /// overhang, the bar tall — black on black, invisible. The pill has
-    /// no collapsed size of its own: it is as wide as its row.
+    /// overhang, the bar tall — black on black, invisible. The drawn
+    /// notch has no collapsed width of its own: it is as wide as its row,
+    /// and as tall as the menu bar it sits on.
     static func closedSize(_ screen: Screen, mode: Mode) -> CGSize {
         switch mode {
         case .notch(let notch):
             return CGSize(width: notch.width + 2 * closedOverhang, height: screen.safeTop)
-        case .pill:
-            return CGSize(width: 0, height: pillHeight)
+        case .drawn:
+            return CGSize(width: 0, height: screen.safeTop > 0 ? screen.safeTop : fallbackBarHeight)
         }
     }
 
-    /// The row's height: the menu bar with a notch, the pill without.
+    /// The row's height: the menu bar, real notch or drawn.
     static func barHeight(_ screen: Screen, mode: Mode) -> CGFloat {
         closedSize(screen, mode: mode).height
     }
@@ -101,32 +106,27 @@ enum NotchIslandGeometry {
     /// notch with the widest wings on both sides (never narrower than the
     /// expanded island) and tall enough for the bar plus the tallest
     /// body, plus the shadow padding on the sides and below; flush with
-    /// the screen's top edge (the pill's, `pillGap` under the bar). Never
-    /// wider than the screen.
+    /// the screen's top edge in both modes. Never wider than the screen.
     static func windowFrame(_ screen: Screen, mode: Mode) -> CGRect {
         let anchor = anchorX(screen, mode: mode)
+        let bar = barHeight(screen, mode: mode)
         let content: CGSize
         switch mode {
         case .notch(let notch):
             content = CGSize(
                 width: max(expandedWidth, notch.width + 2 * (closedOverhang + maxWing)),
-                height: screen.safeTop + maxBodyHeight
+                height: bar + maxBodyHeight
             )
-        case .pill:
-            content = CGSize(width: max(expandedWidth, 2 * maxWing), height: pillHeight + maxBodyHeight)
+        case .drawn:
+            content = CGSize(width: max(expandedWidth, 2 * maxWing), height: bar + maxBodyHeight)
         }
         let width = min(screen.frame.width, content.width + 2 * shadowPadding)
         let height = content.height + shadowPadding
-        let top: CGFloat
-        switch mode {
-        case .notch: top = screen.frame.maxY
-        case .pill: top = pillTop(screen)
-        }
-        return CGRect(x: anchor - width / 2, y: top - height, width: width, height: height)
+        return CGRect(x: anchor - width / 2, y: screen.frame.maxY - height, width: width, height: height)
     }
 
     /// The horizontal center every slab is laid out around: the notch's,
-    /// or the screen's for the pill.
+    /// or the screen's for the drawn one.
     static func anchorX(_ screen: Screen, mode: Mode) -> CGFloat {
         if case .notch(let notch) = mode { return notch.midX }
         return screen.frame.midX
@@ -140,9 +140,5 @@ enum NotchIslandGeometry {
             return index
         }
         return screens.isEmpty ? nil : 0
-    }
-
-    private static func pillTop(_ screen: Screen) -> CGFloat {
-        screen.frame.maxY - screen.safeTop - pillGap
     }
 }

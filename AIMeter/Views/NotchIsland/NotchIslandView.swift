@@ -68,7 +68,7 @@ struct NotchIslandRoot: View {
                     .transition(bodyTransition)
             }
             if expanded {
-                ExpandedContent(island: island, mode: state.mode)
+                ExpandedContent(island: island)
                     .frame(width: NotchIslandGeometry.expandedWidth - 2 * NotchIslandGeometry.Radii.open.top)
                     .transition(bodyTransition)
                     .zIndex(1)
@@ -95,8 +95,8 @@ struct NotchIslandRoot: View {
     /// The top row: collapsed on a notch Mac it is a clear rect the notch's
     /// size (black on black, invisible, the slab *is* the notch) that
     /// swells by `hoverFlap` while the cursor rests on it; from the peek
-    /// on, the wings. The pill has nowhere to hide its row, so it always
-    /// shows it.
+    /// on, the wings. The drawn notch has nowhere to hide its row, so it
+    /// always shows it.
     @ViewBuilder
     private func header(island: NotchIslandModel) -> some View {
         switch state.mode {
@@ -114,7 +114,7 @@ struct NotchIslandRoot: View {
                     )
                     .alignmentGuide(.notchCenter) { $0.width / 2 }
             }
-        case .pill:
+        case .drawn:
             CollapsedRow(island: island, mode: state.mode)
                 .frame(height: state.barHeight)
         }

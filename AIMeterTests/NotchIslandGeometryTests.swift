@@ -22,10 +22,10 @@ final class NotchIslandGeometryTests: XCTestCase {
         guard case .notch(let notch) = NotchIslandGeometry.mode(for: notchMac) else { return XCTFail("expected notch") }
         XCTAssertEqual(notch, CGRect(x: 663.5, y: 950, width: 185, height: 32))
 
-        XCTAssertEqual(NotchIslandGeometry.mode(for: plainMac), .pill)
+        XCTAssertEqual(NotchIslandGeometry.mode(for: plainMac), .drawn)
         var zeroInset = notchMac
         zeroInset.safeTop = 0
-        XCTAssertEqual(NotchIslandGeometry.mode(for: zeroInset), .pill, "no safe area means no notch, whatever the areas say")
+        XCTAssertEqual(NotchIslandGeometry.mode(for: zeroInset), .drawn, "no safe area means no notch, whatever the areas say")
     }
 
     func testClosedSlabIsTheNotchPlusItsOverhang() {
@@ -35,10 +35,13 @@ final class NotchIslandGeometryTests: XCTestCase {
         XCTAssertEqual(closed.height, 32, "the bar's height, no lip")
         XCTAssertEqual(NotchIslandGeometry.barHeight(notchMac, mode: mode), 32)
 
-        let pill = NotchIslandGeometry.closedSize(plainMac, mode: .pill)
-        XCTAssertEqual(pill.width, 0, "the pill is as wide as its row")
-        XCTAssertEqual(pill.height, NotchIslandGeometry.pillHeight)
-        XCTAssertEqual(NotchIslandGeometry.barHeight(plainMac, mode: .pill), NotchIslandGeometry.pillHeight)
+        let drawn = NotchIslandGeometry.closedSize(plainMac, mode: .drawn)
+        XCTAssertEqual(drawn.width, 0, "the drawn notch is as wide as its row")
+        XCTAssertEqual(drawn.height, 25, "and as tall as the menu bar it sits on")
+        XCTAssertEqual(NotchIslandGeometry.barHeight(plainMac, mode: .drawn), 25)
+        var noBar = plainMac
+        noBar.safeTop = 0
+        XCTAssertEqual(NotchIslandGeometry.barHeight(noBar, mode: .drawn), NotchIslandGeometry.fallbackBarHeight)
     }
 
     func testWindowIsFixedCenteredOnTheNotchAndFlushWithTheTop() {
@@ -56,13 +59,13 @@ final class NotchIslandGeometryTests: XCTestCase {
         XCTAssertEqual(NotchIslandGeometry.windowFrame(narrow, mode: mode).width, 400, "never wider than the screen")
     }
 
-    func testPillWindowSitsUnderTheMenuBarCenteredOnTheScreen() {
-        let frame = NotchIslandGeometry.windowFrame(plainMac, mode: .pill)
+    func testDrawnNotchWindowIsFlushWithTheTopCenteredOnTheScreen() {
+        let frame = NotchIslandGeometry.windowFrame(plainMac, mode: .drawn)
         XCTAssertEqual(frame.width, max(NotchIslandGeometry.expandedWidth, 2 * NotchIslandGeometry.maxWing) + 2 * NotchIslandGeometry.shadowPadding)
-        XCTAssertEqual(frame.height, NotchIslandGeometry.pillHeight + NotchIslandGeometry.maxBodyHeight + NotchIslandGeometry.shadowPadding)
+        XCTAssertEqual(frame.height, 25 + NotchIslandGeometry.maxBodyHeight + NotchIslandGeometry.shadowPadding)
         XCTAssertEqual(frame.midX, 960, accuracy: 0.001)
-        XCTAssertEqual(frame.maxY, 1080 - 25 - NotchIslandGeometry.pillGap, "the pill's top edge, a gap under the bar")
-        XCTAssertEqual(NotchIslandGeometry.anchorX(plainMac, mode: .pill), plainMac.frame.midX)
+        XCTAssertEqual(frame.maxY, 1080, "flush with the top edge, over the menu bar, like the real notch")
+        XCTAssertEqual(NotchIslandGeometry.anchorX(plainMac, mode: .drawn), plainMac.frame.midX)
     }
 
     func testRadiiOpenRounder() {

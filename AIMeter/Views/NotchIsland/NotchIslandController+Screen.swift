@@ -44,8 +44,9 @@ extension NotchIslandController {
         var auxLeft = screen.auxiliaryTopLeftArea
         var auxRight = screen.auxiliaryTopRightArea
         #if DEBUG
-        // `-AIMeterForcePill YES` tries the pill on a Mac with a notch.
-        if UserDefaults.standard.bool(forKey: "AIMeterForcePill") {
+        // `-AIMeterForceDrawnNotch YES` tries the drawn notch on a Mac
+        // with a real one.
+        if UserDefaults.standard.bool(forKey: "AIMeterForceDrawnNotch") {
             auxLeft = nil
             auxRight = nil
         }

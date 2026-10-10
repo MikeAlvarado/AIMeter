@@ -100,7 +100,7 @@ export const es = {
   },
   mac: {
     heading: 'En el Mac vive en el *notch*',
-    sub: 'Una isla negra fundida al notch de la MacBook muestra todas las ventanas en una línea: asoma tus cifras cuando el cursor se detiene encima y abre todas las cuentas si te quedas o haces clic, sin robar el foco nunca. ¿Sin notch? Una pastilla flotante bajo la barra de menús. ¿Prefieres un ícono de estado? Seis estilos, alimentados por la propia app, para que los widgets del Centro de notificaciones sigan frescos sin ningún ícono en pantalla.',
+    sub: 'Una isla negra fundida al notch de la MacBook muestra todas las ventanas en una línea: asoma tus cifras cuando el cursor se detiene encima y abre todas las cuentas si te quedas o haces clic, sin robar el foco nunca. ¿Sin notch, o con la tapa cerrada? Dibuja uno en el borde superior de tu pantalla. ¿Prefieres un ícono de estado? Seis estilos, alimentados por la propia app, para que los widgets del Centro de notificaciones sigan frescos sin ningún ícono en pantalla.',
     styles: ['Medidor con el número', 'Solo medidor', 'Solo número', 'Barra', 'Batería', 'Dos o tres ventanas lado a lado'],
     extras: [
       'Isla del notch: 5h 42% 2h 58m | 7d 61% 3d 3h junto al notch, y todas las cuentas con barras y reinicios al abrirse',

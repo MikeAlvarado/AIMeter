@@ -11,9 +11,9 @@ import UsageKit
 @Observable
 final class NotchIslandState {
     var level: NotchIslandInteraction.Level = .collapsed
-    var mode: NotchIslandGeometry.Mode = .pill
-    /// The top row's height: the menu bar, or the pill.
-    var barHeight: CGFloat = NotchIslandGeometry.pillHeight
+    var mode: NotchIslandGeometry.Mode = .drawn
+    /// The top row's height: the menu bar, real notch or drawn.
+    var barHeight: CGFloat = NotchIslandGeometry.fallbackBarHeight
     /// The collapsed slab's width: the notch plus its overhang.
     var closedWidth: CGFloat = 0
     /// The first-run reveal is showing: the peek carries its caption.

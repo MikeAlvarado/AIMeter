@@ -100,7 +100,7 @@ export const en = {
   },
   mac: {
     heading: 'On the Mac, it lives in the *notch*',
-    sub: 'A black island fused to the MacBook’s notch shows every window in one line: a peek of your figures when the cursor rests on it, every account when you stay or click, never taking focus. No notch? A floating pill under the menu bar. Prefer a status item? Six styles, fed by the app itself, so Notification Center widgets stay fresh with no icon on screen at all.',
+    sub: 'A black island fused to the MacBook’s notch shows every window in one line: a peek of your figures when the cursor rests on it, every account when you stay or click, never taking focus. No notch, or the lid closed? It draws one at the top of your display. Prefer a status item? Six styles, fed by the app itself, so Notification Center widgets stay fresh with no icon on screen at all.',
     styles: ['Gauge with the number', 'Gauge only', 'Number only', 'Bar', 'Battery', 'Two or three windows side by side'],
     extras: [
       'Notch island: 5h 42% 2h 58m | 7d 61% 3d 3h beside the notch, every account with bars and resets when it opens',

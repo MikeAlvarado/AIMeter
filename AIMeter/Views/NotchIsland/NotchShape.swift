@@ -51,7 +51,8 @@ struct NotchShape: Shape {
 /// to the silhouette, with a one-point black line along the top so the
 /// anti-aliased edge never shows a seam against the bezel, and a shadow
 /// only while the island is open or hovered — collapsed it is the notch
-/// and casts none. On a Mac without a notch the surface is a capsule.
+/// and casts none. The drawn notch (a screen without one) is the same
+/// silhouette, so it fuses to the top edge the way the real one does.
 /// The whole stack is boring.notch's, rebuilt.
 struct NotchIslandSurface: ViewModifier {
     let mode: NotchIslandGeometry.Mode
@@ -60,32 +61,16 @@ struct NotchIslandSurface: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .padding(.horizontal, inset)
+            .padding(.horizontal, radii.top)
             .background(Color.black)
-            .clipShape(shape)
+            .clipShape(NotchShape(radii: radii))
             .overlay(alignment: .top) {
-                if case .notch = mode {
-                    Rectangle()
-                        .fill(Color.black)
-                        .frame(height: 1)
-                        .padding(.horizontal, radii.top)
-                }
+                Rectangle()
+                    .fill(Color.black)
+                    .frame(height: 1)
+                    .padding(.horizontal, radii.top)
             }
             .shadow(color: casts ? .black.opacity(0.7) : .clear, radius: 6)
-    }
-
-    private var inset: CGFloat {
-        switch mode {
-        case .notch: radii.top
-        case .pill: NotchIslandGeometry.pillPadding
-        }
-    }
-
-    private var shape: AnyShape {
-        switch mode {
-        case .notch: AnyShape(NotchShape(radii: radii))
-        case .pill: AnyShape(Capsule())
-        }
     }
 }
 

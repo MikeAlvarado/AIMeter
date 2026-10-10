@@ -13,7 +13,6 @@ private struct AccountListHeightKey: PreferenceKey {
 /// Settings route through `AppChrome`, the same rule as the popover.
 struct ExpandedContent: View {
     let island: NotchIslandModel
-    let mode: NotchIslandGeometry.Mode
     @State private var listHeight: CGFloat = 0
     private static let maxListHeight: CGFloat = 360
     private static let scrollsPast = 4
@@ -35,7 +34,7 @@ struct ExpandedContent: View {
             IslandFooter()
         }
         .padding(.horizontal, 18)
-        .padding(.top, mode == .pill ? 4 : 12)
+        .padding(.top, 12)
         .padding(.bottom, 14)
     }
 

@@ -11,7 +11,7 @@ import UsageKit
 struct NotchIslandSettings: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
-    @State private var previewMode: NotchIslandGeometry.Mode = .pill
+    @State private var previewMode: NotchIslandGeometry.Mode = .drawn
 
     var body: some View {
         @Bindable var prefs = prefs
@@ -91,7 +91,7 @@ struct NotchIslandSettings: View {
     private var footnote: String {
         var text = String(localized: "Rest the cursor on the notch and the wings open with your limits; stay a moment longer, or click, and everything opens. Turning the island on hides the menu bar icon; turning it off brings the icon back. Everything it shows is also in the menu bar popover and the Dashboard.")
         if !hasNotch {
-            text += " " + String(localized: "This Mac has no notch, so AIMeter shows a floating pill at the top of the screen instead.")
+            text += " " + String(localized: "This screen has no notch, so AIMeter draws one at the top edge instead.")
         }
         return text
     }
@@ -109,7 +109,7 @@ struct NotchIslandSettings: View {
     private static func previewMode() -> NotchIslandGeometry.Mode {
         switch NotchIslandGeometry.mode(for: previewScreen) {
         case .notch(let rect): return .notch(CGRect(x: 0, y: 0, width: min(rect.width, 120), height: rect.height))
-        case .pill: return .pill
+        case .drawn: return .drawn
         }
     }
 }

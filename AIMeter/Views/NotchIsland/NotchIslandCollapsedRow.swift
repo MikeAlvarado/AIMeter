@@ -18,9 +18,9 @@ extension HorizontalAlignment {
 }
 
 /// The wings: with a notch, one on each side of a gap the notch's width,
-/// content hugging the notch like the Dynamic Island's; as a pill, one
-/// row. Laid out at its natural width — the slab is as wide as this row
-/// — so nothing inside it moves while the island animates.
+/// content hugging the notch like the Dynamic Island's; in the drawn
+/// notch, one row. Laid out at its natural width — the slab is as wide
+/// as this row — so nothing inside it moves while the island animates.
 struct CollapsedRow: View {
     let island: NotchIslandModel
     let mode: NotchIslandGeometry.Mode
@@ -41,8 +41,8 @@ struct CollapsedRow: View {
                     .frame(width: notchWidth)
                     .alignmentGuide(.notchCenter) { $0.width / 2 }
                 wing(island.collapsed.right, leading: false)
-            case .pill:
-                pillRow
+            case .drawn:
+                drawnRow
             }
         }
         .fixedSize()
@@ -71,7 +71,9 @@ struct CollapsedRow: View {
         }
     }
 
-    private var pillRow: some View {
+    /// The drawn notch's one row: the mark and every chosen figure, the
+    /// outer inset on both sides (there is no notch to hug).
+    private var drawnRow: some View {
         HStack(spacing: 6) {
             if let primary {
                 ProviderMark(size: 14, cornerRadius: 4, icon: primary.icon)
@@ -80,6 +82,7 @@ struct CollapsedRow: View {
             }
             SegmentLine(segments: island.collapsed.left + island.collapsed.right, compact: true)
         }
+        .padding(.horizontal, Self.outerPadding)
         .fixedSize()
     }
 

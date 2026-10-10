@@ -219,7 +219,7 @@
   `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left / Right
   pill, only on a Mac with a notch; the shared `MetricChips`; "Peek on
   hover"; and a footnote that states the status-item coupling and, on a
-  Mac without a notch, that a floating pill stands in), then "Menu bar" (`MenuBarSettings`: a live
+  screen without a notch, that the island draws one), then "Menu bar" (`MenuBarSettings`: a live
   preview of the status item label on a light and a dark strip, rendered
   from the very same `MenuBarLabelModel.current` the `MenuBarExtra` uses,
   so the preview is the truth; the account pill (2+ accounts only); the
@@ -420,18 +420,23 @@
     (the first with a notch, else the main screen), described as plain
     rects (`NotchIslandController.describe`: `safeAreaInsets.top` and the
     two auxiliary top areas; without a notch the menu bar's height from
-    `visibleFrame` stands in for `safeTop` and the mode is the pill —
+    `visibleFrame` stands in for `safeTop` and the mode is the drawn
+    notch (`NotchIslandGeometry.Mode.drawn`: the same silhouette fused
+    to the top edge over the menu bar's centre, the bar tall, as wide
+    as its row — the user's own display when the MacBook is closed is
+    the common case, and a capsule floating under the bar, which 2.0.0
+    shipped, hung over the windows and clipped its expanded content) —
     `NSStatusBar.thickness` is 22 even under a 32 pt notch bar, so it is
     never read as the bar's height). Re-evaluated on
     `didChangeScreenParameters`, wake and a Space change, and acted on
     only when the description actually changed. `DEBUG` only: the
-    `-AIMeterForcePill YES` launch argument tries the pill on a Mac with
-    a notch.
+    `-AIMeterForceDrawnNotch YES` launch argument tries the drawn notch
+    on a Mac with a real one.
   - **Interaction**: every cursor and click event is fed to the pure
     `NotchIslandInteraction` (Shared, tested), and the controller only
     arms the one timer it asks for and hands the view the level it lands
-    on. Three levels: **collapsed** is the bare notch (the pill shows
-    its row); staying on it for the dwell (250 ms) opens the **peek**,
+    on. Three levels: **collapsed** is the bare notch (the drawn notch
+    shows its row); staying on it for the dwell (250 ms) opens the **peek**,
     the wings beside the notch with the chosen windows' figures, on the
     side(s) `notchIslandLayout` says (both, left or right — a one-sided
     peek is an asymmetric slab); staying on the open wings 1 s more
@@ -469,8 +474,8 @@
     screen, to the largest island it can show plus the shadow
     (`NotchIslandGeometry.windowFrame`: the notch with the widest wings
     on both sides, never narrower than `expandedWidth`, the bar plus
-    `maxBodyHeight` tall, `shadowPadding` around; centered on the notch,
-    flush with the top edge — the pill's `pillGap` under the bar), and
+    `maxBodyHeight` tall, `shadowPadding` around; centered on the notch
+    — on the screen for the drawn one — flush with the top edge), and
     **never resized**. Everything that moves is SwiftUI layout inside
     it: the black slab is the *natural size of its content* — collapsed,
     a clear rect the notch's width plus `closedOverhang` (black on

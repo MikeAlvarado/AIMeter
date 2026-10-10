@@ -730,12 +730,12 @@ the account silently freezes at its last snapshot.
   default is written once, at the first launch of 2.0, by
   `AccountMigration.migrateNotchIslandIfNeeded(defaults:hasNotch:)`,
   gated on `notchIslandMigrated`: **true on a Mac with a notch, false on
-  one without** — the floating pill replacing a quiet status item on an
+  one without** — a drawn notch replacing a quiet status item on an
   iMac is not an upgrade anyone asked for, so it stays opt-in there),
   `notchIslandLayout` (`NotchIslandLayout`: `bothSides` default,
   `leftOnly`, `rightOnly` — which wings open beside the notch on the
   peek and head the expanded island; collapsed is always the bare notch;
-  the pill has no sides and always shows its one row), `notchIslandMetrics` (`[UsageWindow.Kind]`,
+  the drawn notch has no sides and always shows its one row), `notchIslandMetrics` (`[UsageWindow.Kind]`,
   default session + weekly, stored by storage key like `menuBarMetrics`),
   `notchIslandExpandsOnHover` ("Peek on hover", default **true**,
   presence-checked; off, only a click opens it — the collapsed island
@@ -793,8 +793,14 @@ the account silently freezes at its last snapshot.
   `Theme.danger` and is marked non-template. Whatever the style, the exact
   value(s) stay in the tooltip and the accessibility label.
 - Notch island (macOS, 2.0): a pure-black panel fused to the MacBook's
-  notch — or a floating pill under the menu bar on a Mac without one —
-  that shows every account's windows in Vibe Island's line format,
+  notch — or, on a screen without one (an external display, an iMac, a
+  MacBook Air, a closed MacBook feeding a monitor), a notch the island
+  *draws* at the top edge over the menu bar's centre, boring.notch's
+  answer: the same silhouette, as wide as its row and the menu bar tall,
+  growing exactly like the real one; never a floating capsule under the
+  bar, which 2.0.0 shipped and which hung over the windows below and
+  clipped its own expanded content at the rounded ends — that shows
+  every account's windows in Vibe Island's line format,
   `✦ 5h 42% 2h 58m | 7d 61% 3d 3h`. The pure part is
   `Shared/NotchIslandModel.swift` (what it shows, computed once from the
   accounts' snapshots and the prefs, sibling of `MenuBarLabelModel`) and
@@ -818,7 +824,7 @@ the account silently freezes at its last snapshot.
   an empty slot keeps its place with an em dash. **Collapsed, the
   island is the notch and shows nothing** — so no menu title or status
   item is ever covered (Xcode's menu runs up to the notch on a 14"); the
-  pill, having no notch to hide in, always shows its one row. The
+  drawn notch, having no real one to hide in, always shows its one row. The
   interaction is the pure, tested `NotchIslandInteraction` (Shared): the
   cursor has to **stay** on the notch for 250 ms before the island
   **peeks** — passing over the notch on the way to a menu does nothing —

@@ -15419,48 +15419,48 @@
         }
       }
     },
-    "This Mac has no notch, so AIMeter shows a floating pill at the top of the screen instead." : {
+    "This screen has no notch, so AIMeter draws one at the top edge instead." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este Mac no tiene notch, así que AIMeter muestra una pastilla flotante en la parte superior de la pantalla."
+            "value" : "Esta pantalla no tiene notch, así que AIMeter dibuja uno en el borde superior."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieser Mac hat keinen Notch, daher zeigt AIMeter stattdessen eine schwebende Pille am oberen Bildschirmrand."
+            "value" : "Dieser Bildschirm hat keinen Notch, daher zeichnet AIMeter stattdessen einen am oberen Rand."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce Mac n’a pas d’encoche : AIMeter affiche à la place une pastille flottante en haut de l’écran."
+            "value" : "Cet écran n’a pas d’encoche : AIMeter en dessine une en haut de l’écran à la place."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このMacにはノッチがないため、代わりに画面上部にフローティングのピルを表示します。"
+            "value" : "この画面にはノッチがないため、代わりに画面上端にノッチを描画します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 Mac에는 노치가 없어 대신 화면 상단에 떠 있는 알약 모양 표시를 보여줍니다."
+            "value" : "이 화면에는 노치가 없어 대신 화면 상단 가장자리에 노치를 그려 표시합니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este Mac não tem notch, então o AIMeter mostra uma pílula flutuante no topo da tela."
+            "value" : "Esta tela não tem notch, então o AIMeter desenha um na borda superior."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这台 Mac 没有刘海，AIMeter 会改为在屏幕顶部显示一个悬浮胶囊。"
+            "value" : "此屏幕没有刘海，AIMeter 会改为在屏幕顶部边缘绘制一个。"
           }
         }
       }
