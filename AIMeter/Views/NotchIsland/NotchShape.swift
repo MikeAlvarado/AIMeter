@@ -45,38 +45,71 @@ struct NotchShape: Shape {
     }
 }
 
+/// The pill's silhouette: a rounded rectangle with continuous corners
+/// whose radius never exceeds half the shorter side — a capsule while it
+/// is one row, a rounded card once it has a body. Never a capsule around
+/// a body: 2.0.0's floating pill clipped its expanded content with one
+/// (a 300-pt-tall capsule has 150-pt ends), which is what made it
+/// unreadable. The radius is `animatableData`, eased on the slab's spring.
+struct IslandPillShape: Shape {
+    var radius: CGFloat
+
+    var animatableData: CGFloat {
+        get { radius }
+        set { radius = newValue }
+    }
+
+    func path(in rect: CGRect) -> Path {
+        let resolved = max(0, min(radius, rect.width / 2, rect.height / 2))
+        return RoundedRectangle(cornerRadius: resolved, style: .continuous).path(in: rect)
+    }
+}
+
 /// The black surface, applied to the island's content: the content is
-/// inset by the ears so nothing sits in the fillets, backed with pure
-/// black (the color of the hardware, whatever the appearance), clipped
-/// to the silhouette, with a one-point black line along the top so the
-/// anti-aliased edge never shows a seam against the bezel, and a shadow
-/// only while the island is open or hovered — collapsed it is the notch
-/// and casts none. The drawn notch (a screen without one) is the same
-/// silhouette, so it fuses to the top edge the way the real one does.
-/// The whole stack is boring.notch's, rebuilt.
+/// inset so nothing sits in the curves, backed with pure black (the color
+/// of the hardware, whatever the appearance), clipped to the silhouette,
+/// and shadowed only while the island is open or hovered — collapsed it
+/// is the notch and casts none. A notch, real or drawn, is the eared
+/// `NotchShape` with a one-point black line along the top so its
+/// anti-aliased edge never shows a seam against the bezel; the pill is
+/// `IslandPillShape`, which has no top edge to hide. The notch stack is
+/// boring.notch's, rebuilt.
 struct NotchIslandSurface: ViewModifier {
     let mode: NotchIslandGeometry.Mode
-    var radii: NotchIslandGeometry.Radii = .closed
+    /// The row's height — the pill's closed radius is half of it.
+    var barHeight: CGFloat = 0
+    var expanded = false
     var casts = false
 
+    @ViewBuilder
     func body(content: Content) -> some View {
-        content
-            .padding(.horizontal, radii.top)
-            .background(Color.black)
-            .clipShape(NotchShape(radii: radii))
-            .overlay(alignment: .top) {
-                Rectangle()
-                    .fill(Color.black)
-                    .frame(height: 1)
-                    .padding(.horizontal, radii.top)
-            }
-            .shadow(color: casts ? .black.opacity(0.7) : .clear, radius: 6)
+        switch mode {
+        case .notch, .drawn:
+            let radii: NotchIslandGeometry.Radii = expanded ? .open : .closed
+            content
+                .padding(.horizontal, radii.top)
+                .background(Color.black)
+                .clipShape(NotchShape(radii: radii))
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(height: 1)
+                        .padding(.horizontal, radii.top)
+                }
+                .shadow(color: casts ? .black.opacity(0.7) : .clear, radius: 6)
+        case .pill:
+            content
+                .padding(.horizontal, NotchIslandGeometry.pillContentInset(barHeight: barHeight, expanded: expanded))
+                .background(Color.black)
+                .clipShape(IslandPillShape(radius: NotchIslandGeometry.pillRadius(barHeight: barHeight, expanded: expanded)))
+                .shadow(color: casts ? .black.opacity(0.7) : .clear, radius: 6)
+        }
     }
 }
 
 extension View {
-    func notchIslandSurface(mode: NotchIslandGeometry.Mode, radii: NotchIslandGeometry.Radii = .closed, casts: Bool = false) -> some View {
-        modifier(NotchIslandSurface(mode: mode, radii: radii, casts: casts))
+    func notchIslandSurface(mode: NotchIslandGeometry.Mode, barHeight: CGFloat, expanded: Bool = false, casts: Bool = false) -> some View {
+        modifier(NotchIslandSurface(mode: mode, barHeight: barHeight, expanded: expanded, casts: casts))
     }
 }
 #endif

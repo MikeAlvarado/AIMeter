@@ -5,6 +5,15 @@ import XCTest
 final class NotchIslandInteractionTests: XCTestCase {
     private var island = NotchIslandInteraction()
 
+    func testHoverDelayIsClampedAndConverted() {
+        XCTAssertEqual(NotchIslandInteraction.dwell(seconds: 0.25), .milliseconds(250))
+        XCTAssertEqual(NotchIslandInteraction.dwell(seconds: 0), .zero, "instant is allowed")
+        XCTAssertEqual(NotchIslandInteraction.dwell(seconds: 5), .milliseconds(1000), "never past a second")
+        XCTAssertEqual(NotchIslandInteraction.dwell(seconds: -1), .zero)
+        XCTAssertEqual(NotchIslandInteraction.dwell(seconds: .nan), NotchIslandInteraction.dwell, "a corrupt value is the default")
+        XCTAssertEqual(NotchIslandInteraction.dwell(seconds: NotchIslandInteraction.defaultDwellSeconds), NotchIslandInteraction.dwell)
+    }
+
     func testResting_InsideOpensThePeek() {
         island.handle(.entered)
         XCTAssertEqual(island.timer, .dwell, "arm the dwell, do not open yet")

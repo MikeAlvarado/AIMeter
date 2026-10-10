@@ -100,11 +100,12 @@ export const en = {
   },
   mac: {
     heading: 'On the Mac, it lives in the *notch*',
-    sub: 'A black island fused to the MacBook’s notch shows every window in one line: a peek of your figures when the cursor rests on it, every account when you stay or click, never taking focus. No notch, or the lid closed? It draws one at the top of your display. Prefer a status item? Six styles, fed by the app itself, so Notification Center widgets stay fresh with no icon on screen at all.',
+    sub: 'A black island fused to the MacBook’s notch shows every window in one line: a peek of your figures when the cursor rests on it, every account when you stay or click, never taking focus. No notch, or the lid closed? It draws one at the top of your display, or floats a pill in the menu bar. Prefer a status item? Six styles, fed by the app itself, so Notification Center widgets stay fresh with no icon on screen at all.',
     styles: ['Gauge with the number', 'Gauge only', 'Number only', 'Bar', 'Battery', 'Two or three windows side by side'],
     extras: [
       'Notch island: 5h 42% 2h 58m | 7d 61% 3d 3h beside the notch, every account with bars and resets when it opens',
       'Pick which side of the notch the wings use and which windows they list; turning it on hides the menu bar icon',
+      'On a display without a notch: a drawn notch or a pill, its height, and whether it waits out of sight until the cursor comes',
       'Optional reset countdown and account name',
       'Red once a window passes 80 %',
       'Hide the Dock icon, the menu bar icon, or both',
@@ -246,7 +247,7 @@ export const en = {
       {
         heading: 'Acknowledgments',
         paragraphs: [
-          'The notch island owes its feel to two open source projects that got there first. boring.notch, by TheBoredTeam on GitHub, was the reference for how a notch panel should move: a window that never resizes, a black slab sized by its own content, one spring carrying size, corners and shadow together. It was read, not copied; AIMeter’s island is its own implementation under the MIT license. Vibe Island set the one-line format the island shows. Thanks to both.',
+          'The notch island owes its feel to three projects that got there first. boring.notch, by TheBoredTeam on GitHub, was the reference for how a notch panel should move: a window that never resizes, a black slab sized by its own content, one spring carrying size, corners and shadow together. It was read, not copied; AIMeter’s island is its own implementation under the MIT license. Vibe Island set the one-line format the island shows. Atoll, by Ebullioscopic, showed the options a screen without a notch needs, from the pill to hiding until the cursor comes; it was studied the same way. Thanks to all three.',
         ],
       },
     ],

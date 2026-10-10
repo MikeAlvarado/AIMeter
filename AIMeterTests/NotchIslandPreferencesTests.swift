@@ -72,7 +72,73 @@ final class NotchIslandPreferencesTests: XCTestCase {
         let plain = ScratchDefaults()
         defer { plain.wipe() }
         AccountMigration.migrateNotchIslandIfNeeded(defaults: plain.defaults, hasNotch: false)
-        XCTAssertFalse(Preferences.load(from: plain.defaults).notchIslandEnabled, "no notch: the pill is opt-in")
+        XCTAssertFalse(Preferences.load(from: plain.defaults).notchIslandEnabled, "no notch: the drawn island is opt-in")
+    }
+
+    func testFormHeightAndHidingOptionsDefaultsAndPresenceCheck() {
+        let scratch = ScratchDefaults()
+        defer { scratch.wipe() }
+        let fresh = Preferences.load(from: scratch.defaults)
+        XCTAssertEqual(fresh.notchIslandForm, .notch, "a drawn notch unless the user picks the pill")
+        XCTAssertEqual(fresh.notchIslandHeightMode, .menuBar)
+        XCTAssertEqual(fresh.notchIslandCustomHeight, 36)
+        XCTAssertEqual(fresh.notchIslandHoverDelay, NotchIslandInteraction.defaultDwellSeconds)
+        XCTAssertFalse(fresh.notchIslandHidesUntilHover)
+        XCTAssertTrue(fresh.notchIslandHidesInFullScreen, "on by default")
+        XCTAssertFalse(fresh.notchIslandHiddenFromCapture, "captures show it unless asked")
+        XCTAssertEqual(fresh.notchIslandOptions, NotchIslandGeometry.Options(form: .notch, height: nil))
+
+        scratch.defaults.set(false, forKey: Preferences.Keys.notchIslandHidesInFullScreen)
+        XCTAssertFalse(Preferences.load(from: scratch.defaults).notchIslandHidesInFullScreen, "a written false is honored")
+    }
+
+    func testFormAndHeightRoundTripAndShapeTheOptions() {
+        let scratch = ScratchDefaults()
+        defer { scratch.wipe() }
+        let model = PreferencesModel(defaults: scratch.defaults)
+        model.notchIslandForm = .pill
+        model.notchIslandHeightMode = .custom
+        model.notchIslandCustomHeight = 30
+        model.notchIslandHoverDelay = 0.6
+        model.notchIslandHidesUntilHover = true
+        model.notchIslandHiddenFromCapture = true
+        XCTAssertEqual(model.notchIslandOptions, NotchIslandGeometry.Options(form: .pill, height: 30))
+
+        let reloaded = Preferences.load(from: scratch.defaults)
+        XCTAssertEqual(reloaded.notchIslandForm, .pill)
+        XCTAssertEqual(reloaded.notchIslandHeightMode, .custom)
+        XCTAssertEqual(reloaded.notchIslandCustomHeight, 30)
+        XCTAssertEqual(reloaded.notchIslandHoverDelay, 0.6, accuracy: 0.0001)
+        XCTAssertTrue(reloaded.notchIslandHidesUntilHover)
+        XCTAssertTrue(reloaded.notchIslandHiddenFromCapture)
+
+        model.notchIslandHeightMode = .menuBar
+        XCTAssertEqual(model.notchIslandOptions.height, nil, "back to the menu bar")
+        XCTAssertEqual(Preferences.load(from: scratch.defaults).notchIslandCustomHeight, 30, "the custom height is kept for next time")
+    }
+
+    func testOutOfRangeAndCorruptValuesAreClampedOrIgnored() {
+        let scratch = ScratchDefaults()
+        defer { scratch.wipe() }
+        let model = PreferencesModel(defaults: scratch.defaults)
+        model.notchIslandCustomHeight = 400
+        XCTAssertEqual(model.notchIslandCustomHeight, 44, "clamped on write")
+        model.notchIslandHoverDelay = -3
+        XCTAssertEqual(model.notchIslandHoverDelay, 0)
+        model.notchIslandHoverDelay = .nan
+        XCTAssertEqual(model.notchIslandHoverDelay, NotchIslandInteraction.defaultDwellSeconds, "a non-number is the default")
+
+        scratch.defaults.set("hexagon", forKey: Preferences.Keys.notchIslandForm)
+        scratch.defaults.set("tall", forKey: Preferences.Keys.notchIslandHeightMode)
+        scratch.defaults.set(2.0, forKey: Preferences.Keys.notchIslandCustomHeight)
+        scratch.defaults.set(9.0, forKey: Preferences.Keys.notchIslandHoverDelay)
+        let loaded = Preferences.load(from: scratch.defaults)
+        XCTAssertEqual(loaded.notchIslandForm, .notch)
+        XCTAssertEqual(loaded.notchIslandHeightMode, .menuBar)
+        XCTAssertEqual(loaded.notchIslandCustomHeight, 20, "clamped on load")
+        XCTAssertEqual(loaded.notchIslandHoverDelay, 1)
+        scratch.defaults.set("soon", forKey: Preferences.Keys.notchIslandHoverDelay)
+        XCTAssertEqual(Preferences.load(from: scratch.defaults).notchIslandHoverDelay, NotchIslandInteraction.defaultDwellSeconds, "not a number: ignored")
     }
 
     func testDiscoveryHidesTheStatusItemOnce() {

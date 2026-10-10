@@ -64,8 +64,12 @@ can be added later.
   marked — drawn from samples the app and widgets already record, kept on
   the device for 30 days.
 - A **notch island** on the Mac: a black panel fused to the MacBook's
-  notch (on a screen without one — an external display, an iMac, a
-  closed MacBook on a monitor — it draws its own at the top edge).
+  notch. On a screen without one — an external display, an iMac, a
+  closed MacBook on a monitor — it draws its own at the top edge: a
+  notch fused to the edge, or a pill floating in the menu bar like the
+  iPhone's island, at the menu bar's height or your own, shown always,
+  only when the cursor comes to it, and out of the way of full-screen
+  apps.
   Invisible until the cursor rests on the notch; then the figures you
   chose peek out beside it (`5h 42% | 7d 61%`, on either side or both),
   and staying a moment longer or clicking opens every account in full —
@@ -73,8 +77,9 @@ can be added later.
   / Settings — never taking focus or the keyboard. On by default on a
   MacBook with a notch, where the menu bar icon stays until you open the
   island the first time and then gives way to it; opt-in elsewhere.
-  Settings previews the peek and picks which side(s) of the notch the
-  wings use and which windows they list.
+  Settings previews the peek and picks which account and windows the
+  wings show, which side(s) of the notch they use, the hover delay, and
+  whether screenshots and recordings leave the island out.
 - macOS menu bar styles: gauge with or without the number, number only, a
   bar, a battery, or two or three windows side by side — plus an optional
   reset countdown, the account's name, and red once a window passes 80 %.
@@ -352,7 +357,7 @@ xcodebuild test -project AIMeter.xcodeproj -scheme AIMeter -destination 'platfor
 
 ## Acknowledgments
 
-The notch island owes its feel to two projects that got there first.
+The notch island owes its feel to three projects that got there first.
 [boring.notch](https://github.com/TheBoredTeam/boring.notch) (GPL-3.0)
 was the reference for *how* a notch panel should move — a fixed window
 that never resizes, the black slab sized by its own content, one spring
@@ -360,7 +365,12 @@ carrying size, corners and shadow together. It was read, not copied:
 AIMeter's island is its own implementation, written from scratch under
 this repository's MIT license, and no boring.notch code is in this tree.
 Vibe Island set the one-line format the island shows
-(`5h 42% 2h 58m | 7d 61% 3d 3h`). Thanks to both.
+(`5h 42% 2h 58m | 7d 61% 3d 3h`).
+[Atoll](https://github.com/Ebullioscopic/Atoll) (GPL-3.0) showed which
+options a screen without a notch needs — the pill like the iPhone's
+island, its height, hiding until the cursor comes, staying out of
+screen captures — and was studied the same way: read, never copied.
+Thanks to all three.
 
 ## License
 

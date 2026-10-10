@@ -2,13 +2,6 @@
 import SwiftUI
 import UsageKit
 
-/// The slab's frame in the hosting view's coordinates, reported so hit
-/// testing can be confined to it (`NotchIslandHostingView.slab`).
-private struct SlabFrameKey: PreferenceKey {
-    static let defaultValue: CGRect = .zero
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) { value = nextValue() }
-}
-
 /// The island's whole SwiftUI tree, built the way boring.notch builds
 /// its notch: the window is fixed and never resizes, and the black slab
 /// is simply the *natural size of its content* — the bare notch, the
@@ -32,6 +25,17 @@ struct NotchIslandRoot: View {
 
     var body: some View {
         slab(now: now)
+            // Hidden until hovered, or behind a full-screen app, on a
+            // screen without a notch: the collapsed slab slides up past
+            // the top edge on the same spring it opens with, and comes
+            // back down with the peek — the hover delay after the cursor
+            // arrives — or at once when "Peek on hover" is off
+            // (`NotchIslandVisibility.isConcealed`).
+            .offset(y: state.isConcealed ? -concealDistance : 0)
+            .animation(levelAnimation, value: state.isConcealed)
+            // The pill floats: its gap to the top edge is transparent and
+            // outside the slab, so it is neither hit-tested nor drawn.
+            .padding(.top, state.topInset)
             .padding(.bottom, NotchIslandGeometry.shadowPadding)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: Alignment(horizontal: .notchCenter, vertical: .top))
             // The root fills the hosting view, so this space is its bounds
@@ -52,6 +56,22 @@ struct NotchIslandRoot: View {
                     now = Date()
                 }
             }
+            .environment(\.notchIslandRowScale, state.rowScale)
+    }
+
+    /// Far enough up that nothing of the collapsed slab, shadow included,
+    /// is left inside the window.
+    private var concealDistance: CGFloat {
+        state.topInset + state.barHeight + NotchIslandGeometry.shadowPadding
+    }
+
+    /// The expanded body's width: the island's, less the surface's inset
+    /// on each side (the notch's ears, or the pill's margin).
+    private var bodyWidth: CGFloat {
+        switch state.mode {
+        case .pill: NotchIslandGeometry.expandedWidth - 2 * NotchIslandGeometry.pillOpenInset
+        case .notch, .drawn: NotchIslandGeometry.expandedWidth - 2 * NotchIslandGeometry.Radii.open.top
+        }
     }
 
     // MARK: - Slab
@@ -69,27 +89,35 @@ struct NotchIslandRoot: View {
             }
             if expanded {
                 ExpandedContent(island: island)
-                    .frame(width: NotchIslandGeometry.expandedWidth - 2 * NotchIslandGeometry.Radii.open.top)
+                    .frame(width: bodyWidth)
                     .transition(bodyTransition)
                     .zIndex(1)
             }
         }
         .notchIslandSurface(
             mode: state.mode,
-            radii: expanded ? .open : .closed,
-            casts: open || state.isHovering
+            barHeight: state.barHeight,
+            expanded: expanded,
+            casts: (open || state.isHovering) && !state.isConcealed
         )
         .animation(levelAnimation, value: state.level)
         .animation(flapAnimation, value: state.isHovering)
         .contentShape(Rectangle())
         .onHover(perform: actions.hover)
         .onTapGesture(perform: actions.tap)
-        .background {
-            GeometryReader { proxy in
-                Color.clear.preference(key: SlabFrameKey.self, value: proxy.frame(in: .named(Self.rootSpace)))
-            }
+        // The slab's frame in the hosting view's coordinates, for hit
+        // testing (`NotchIslandHostingView.slab`), the mouse-shape resample
+        // and the pointer tracking on a screen without a notch. Not a
+        // preference read with `onPreferenceChange`: on macOS 27 that
+        // delivered the default value once and never the slab's real
+        // frame (measured — the GeometryReader saw every frame, the
+        // controller only ever got .zero, so the open island counted as
+        // "outside" the moment the pointer left its top row).
+        .onGeometryChange(for: CGRect.self) { proxy in
+            proxy.frame(in: .named(Self.rootSpace))
+        } action: { frame in
+            actions.slabChanged(frame)
         }
-        .onPreferenceChange(SlabFrameKey.self) { frame in actions.slabChanged(frame) }
     }
 
     /// The top row: collapsed on a notch Mac it is a clear rect the notch's
@@ -114,7 +142,7 @@ struct NotchIslandRoot: View {
                     )
                     .alignmentGuide(.notchCenter) { $0.width / 2 }
             }
-        case .drawn:
+        case .drawn, .pill:
             CollapsedRow(island: island, mode: state.mode)
                 .frame(height: state.barHeight)
         }

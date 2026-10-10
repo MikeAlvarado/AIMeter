@@ -211,17 +211,25 @@
   connected install — the "Demo mode" card last. iOS: sheet
   with Done; macOS: Settings scene
   (wrapped in a NavigationStack so the link can push), plus the macOS-only
-  `MacChromeSettings` block — "Notch island" first (`NotchIslandSettings`:
-  a live preview of the **peek** — what hovering shows — on the real
-  silhouette, from the same `NotchIslandModel.current` the panel draws;
-  "Show usage in the notch", whose setter goes through
-  `PreferencesModel.setNotchIsland(enabled:)` and
-  `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left / Right
-  pill, only on a Mac with a notch; the "Account" menu
+  `MacChromeSettings` block — "Notch island" first (`NotchIslandSettings`,
+  two cards. The first: a live preview of the **peek** — what hovering
+  shows — as this screen draws it (the real notch's silhouette, or the
+  drawn notch or pill at the chosen height), from the same
+  `NotchIslandModel.current` the panel draws; "Show usage in the notch",
+  whose setter goes through `PreferencesModel.setNotchIsland(enabled:)`
+  and `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left /
+  Right pill, only on a Mac with a notch; the "Account" menu
   (`PrimaryAccountPicker`, 2+ accounts only — the wings are that
-  account's, and so are the chips under it); the shared `MetricChips`; "Peek on
-  hover"; and a footnote that states the status-item coupling and, on a
-  screen without a notch, that the island draws one), then "Menu bar" (`MenuBarSettings`: a live
+  account's, and so are the chips under it); the shared `MetricChips`;
+  "Peek on hover" with its "Hover delay" slider (0–1 s, only while on);
+  "Hide from screenshots and recordings"; and a footnote that states
+  the status-item coupling. The second, "Screens without a notch"
+  (shown on every Mac, since a MacBook closed on a monitor is one): the
+  Style pill (Notch / Pill, with a one-line caption for each), Height
+  (Menu bar / Custom, with a 20–44 pt slider while custom), "Hide until
+  hovered" and "Hide in full screen", and a footnote saying when they
+  apply. The sliders quantize in their binding rather than with
+  `step:`, which draws a tick per step), then "Menu bar" (`MenuBarSettings`: a live
   preview of the status item label on a light and a dark strip, rendered
   from the very same `MenuBarLabelModel.current` the `MenuBarExtra` uses,
   so the preview is the truth; the same "Account" menu (2+ accounts only);
@@ -422,23 +430,28 @@
     (the first with a notch, else the main screen), described as plain
     rects (`NotchIslandController.describe`: `safeAreaInsets.top` and the
     two auxiliary top areas; without a notch the menu bar's height from
-    `visibleFrame` stands in for `safeTop` and the mode is the drawn
-    notch (`NotchIslandGeometry.Mode.drawn`: the same silhouette fused
-    to the top edge over the menu bar's centre, the bar tall, as wide
-    as its row — the user's own display when the MacBook is closed is
-    the common case, and a capsule floating under the bar, which 2.0.0
-    shipped, hung over the windows and clipped its expanded content) —
-    `NSStatusBar.thickness` is 22 even under a 32 pt notch bar, so it is
-    never read as the bar's height). Re-evaluated on
-    `didChangeScreenParameters`, wake and a Space change, and acted on
-    only when the description actually changed. `DEBUG` only: the
-    `-AIMeterForceDrawnNotch YES` launch argument tries the drawn notch
-    on a Mac with a real one.
+    `visibleFrame` stands in for `safeTop` — `NSStatusBar.thickness` is
+    22 even under a 32 pt notch bar, so it is never read as the bar's
+    height — and the mode follows `notchIslandForm`: the drawn notch
+    (`NotchIslandGeometry.Mode.drawn`: the same silhouette fused to the
+    top edge over the menu bar's centre, the bar tall, as wide as its
+    row) or the pill (`.pill`: a capsule `topInset` below the edge, inside
+    the bar unless a custom height outgrows it). The user's own display
+    with the MacBook closed is the common case; the 34" ultrawide this
+    was built on reports a 30 pt bar. Re-evaluated on
+    `didChangeScreenParameters`, wake, a Space change and any
+    preference write (`observePreferences` — `PreferencesModel` keeps
+    one stored value, so every write wakes it; everything it calls is
+    idempotent), and the panel is re-framed
+    only when the screen, the options or the frame actually changed.
+    `DEBUG` only: the `-AIMeterForceDrawnNotch YES` launch argument
+    tries the drawn forms on a Mac with a real notch.
   - **Interaction**: every cursor and click event is fed to the pure
     `NotchIslandInteraction` (Shared, tested), and the controller only
     arms the one timer it asks for and hands the view the level it lands
-    on. Three levels: **collapsed** is the bare notch (the drawn notch
-    shows its row); staying on it for the dwell (250 ms) opens the **peek**,
+    on. Three levels: **collapsed** is the bare notch (a drawn notch or
+    pill shows its row, unless concealed — see below); staying on it for
+    the dwell (`notchIslandHoverDelay`, 250 ms by default) opens the **peek**,
     the wings beside the notch with the chosen windows' figures, on the
     side(s) `notchIslandLayout` says (both, left or right — a one-sided
     peek is an asymmetric slab); staying on the open wings 1 s more
@@ -446,12 +459,37 @@
     every account, the full lines, the footer. Leaving collapses after
     150 ms whatever opened it (short, like boring.notch's: the slab is
     one contiguous shape, so moving from a wing into the body never
-    leaves it). Hover is SwiftUI's own `onHover` on the slab — it
-    follows the slab's animated frame for free, and a transparent
-    window only receives the cursor over painted pixels anyway, which is
-    why there is no slack beyond the notch: a hover region wider than
-    the slab would have to be painted, and painted pixels take clicks
-    from the menu titles beside the notch. The hosting view's `hitTest`
+    leaves it). With a real notch, hover is SwiftUI's own `onHover` on
+    the slab — it follows the slab's animated frame for free, and a
+    transparent window only receives the cursor over painted pixels
+    anyway, which is why there is no slack beyond the notch: a hover
+    region wider than the slab would have to be painted, and painted
+    pixels take clicks from the menu titles beside the notch. On a
+    screen without a notch the controller tracks the pointer instead
+    (`NotchIslandController+Pointer.swift`): a global and a local
+    `mouseMoved` monitor (no permission), plus a 20 Hz poll only while
+    AIMeter itself is frontmost (the global monitor is silent then),
+    put the pointer against `NotchIslandGeometry.hoverRegion` — the
+    collapsed row's place from the top edge down, plus `hoverSlack` —
+    and the slab as drawn, through `NotchIslandVisibility.pointerIsInside`,
+    and only a change of side reaches the interaction. That is what
+    makes a **concealed** island (hidden until hovered, or behind a
+    full-screen app) reachable at all — it has no pixels for the window
+    server to route the mouse to — and keeps the transparent strip above
+    the pill from being a dead band; SwiftUI's hover is ignored there,
+    so two sources never race each other's enter and leave. Concealed,
+    the slab is offset up past the top edge on the level spring
+    (`NotchIslandRoot.concealDistance`) and the mouse shape is resampled
+    once it settles, so a hidden island stops catching the menu bar's
+    clicks. With "Peek on hover" off, a concealed island shows its row
+    while the pointer is on its place — nothing would ever open it
+    otherwise. Full screen is checked from the on-screen window list on
+    Space changes (and 0.4 s and 1.2 s later), app activations, wake and
+    screen changes, plus every 3 s only while it holds the island hidden;
+    `relocate()` recomputes concealment too, so a launch with "Hide until
+    hovered" starts hidden and a lid opened onto a real notch never
+    leaves the island stuck above the edge. The panel's `sharingType` follows
+    "Hide from screenshots and recordings". The hosting view's `hitTest`
     is confined to the slab's frame (reported by the view on every
     frame of the animation), so a click beside the wings or in the
     shadow falls through. While open, a global and a local mouse-down
@@ -483,10 +521,18 @@
     a clear rect the notch's width plus `closedOverhang` (black on
     black, invisible: the slab *is* the notch); peeking, the wings row;
     expanded, the row with the body (`expandedWidth` wide) under it —
-    drawn through `NotchIslandSurface` (content inset by the ears,
-    `.background(.black)`, `.clipShape(NotchShape)`, a 1 pt black line
-    along the top so the anti-aliased edge never shows a seam against
-    the bezel, and a shadow only while open or hovered). A level change
+    drawn through `NotchIslandSurface` (for a notch, real or drawn:
+    content inset by the ears, `.background(.black)`,
+    `.clipShape(NotchShape)`, a 1 pt black line along the top so the
+    anti-aliased edge never shows a seam against the bezel; for the
+    pill: `IslandPillShape`, a continuous rounded rectangle whose radius
+    eases from half the row's height — a capsule — to 24 pt open, with
+    the content inset `pillContentInset`; either way a shadow only while
+    open or hovered, never while concealed). The pill's gap above it is
+    the root's top padding, outside the slab, so it is neither drawn nor
+    hit-tested. A taller custom island draws its collapsed row larger
+    through the `notchIslandRowScale` environment value; the expanded
+    account rows keep their size. A level change
     is therefore one layout change, and one implicit animation carries
     all of it — size, the shape's radii (`animatableData`, from the
     notch's 6/14 to the open 19/24, `NotchIslandGeometry.Radii`), the
@@ -522,7 +568,16 @@
     the panel is never key, so every click on it is a "first" click
     AppKit would otherwise spend on activation. The slab's frame is
     reported in a named coordinate space on the root (which fills the
-    hosting view), and until the first report nothing is confined.
+    hosting view) through `onGeometryChange`, and until the first report
+    nothing is confined. Not through a preference key read with
+    `onPreferenceChange`, which is what it was: on macOS 27 that
+    delivered the key's default once and never the slab's frame (the
+    `GeometryReader` measured every frame; the controller only ever got
+    `.zero`), which went unnoticed while SwiftUI's own hover drove the
+    island and surfaced with the pointer tracking — the open island
+    closed as soon as the pointer left its top row, on the way to the
+    footer. The popover's list height, measured the same old way, was
+    checked on macOS 27 and still works.
     Two earlier designs are recorded here so they are not
     retried: resizing the window per level while SwiftUI re-measured
     the content (each resize re-laid the content out, which

@@ -37,12 +37,29 @@ struct NotchIslandInteraction: Equatable {
     /// arming replaces whatever was pending, `.none` cancels it.
     enum Timer: Equatable { case none, dwell, expand, leave }
 
+    /// The default hover-intent dwell. The user can change it
+    /// (`Preferences.notchIslandHoverDelay`, 0–1 s, boring.notch's "hover
+    /// delay"); the controller arms `.dwell` with that value.
     static let dwell: Duration = .milliseconds(250)
+    static let defaultDwellSeconds: Double = 0.25
+    static let dwellRange: ClosedRange<Double> = 0...1
     static let expand: Duration = .milliseconds(1000)
     /// Short, like boring.notch's: the slab is one contiguous shape, so
     /// moving from a wing into the body never leaves it, and a cursor
     /// that does leave means the user is done.
     static let leave: Duration = .milliseconds(150)
+
+    /// A stored hover delay as a usable one: inside `dwellRange`, and a
+    /// non-number (a corrupt write) is the default rather than a timer
+    /// that never fires.
+    static func clampedDwell(seconds: Double) -> Double {
+        guard seconds.isFinite else { return defaultDwellSeconds }
+        return min(max(seconds, dwellRange.lowerBound), dwellRange.upperBound)
+    }
+
+    static func dwell(seconds: Double) -> Duration {
+        .milliseconds(Int((clampedDwell(seconds: seconds) * 1000).rounded()))
+    }
 
     private(set) var level: Level = .collapsed
     private(set) var isInside = false

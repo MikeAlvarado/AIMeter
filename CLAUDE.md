@@ -74,9 +74,12 @@ assets and string catalog from there.
   `MenuBarSettings.swift`, split out of `MacChromeSettings.swift`. The
   macOS notch island is `AIMeter/Views/NotchIsland/`:
   `NotchIslandController.swift` (lifecycle, the interaction's timers
-  and monitors, the reveal) and `NotchIslandController+Screen.swift`
-  (which display, the fixed panel frame, the observers; the controller's
-  members it reaches are internal, not private, by necessity),
+  and monitors, the reveal), `NotchIslandController+Screen.swift`
+  (which display, the fixed panel frame, the observers) and
+  `NotchIslandController+Pointer.swift` (a screen without a notch:
+  pointer tracking, concealment, the full-screen check, capture
+  exclusion, the preferences observation; the controller's members
+  these two reach are internal, not private, by necessity),
   `NotchIslandPanel.swift` (the `NSPanel` and the hosting view that
   confines hit-testing to the slab), `NotchShape.swift` (the eared
   silhouette with animatable radii and `NotchIslandSurface`, the black
@@ -85,11 +88,11 @@ assets and string catalog from there.
   `NotchIslandModel.current`), `NotchIslandCollapsedRow.swift` (the wings
   with the `notchCenter` alignment guide, and the segment line),
   `NotchIslandRows.swift` (expanded content: account rows, footer) and
-  `NotchIslandSettings.swift` (its Settings section) — over the three
+  `NotchIslandSettings.swift` (its two Settings cards) — over the four
   pure files in `Shared/`
   (`NotchIslandModel.swift`, `NotchIslandGeometry.swift`,
-  `NotchIslandInteraction.swift`, all unit-tested), see "Notch island"
-  under "Presentation rules".
+  `NotchIslandInteraction.swift`, `NotchIslandVisibility.swift`, all
+  unit-tested), see "Notch island" under "Presentation rules".
   `AIMeter/Views/PrimaryAccountPicker.swift` is the "Account" menu both
   the Menu bar and the Notch island cards show with two or more
   accounts.
@@ -743,14 +746,44 @@ the account silently freezes at its last snapshot.
   `notchIslandLayout` (`NotchIslandLayout`: `bothSides` default,
   `leftOnly`, `rightOnly` — which wings open beside the notch on the
   peek and head the expanded island; collapsed is always the bare notch;
-  the drawn notch has no sides and always shows its one row), `notchIslandMetrics` (`[UsageWindow.Kind]`,
+  a drawn notch or pill has no sides and shows its one row whenever it
+  is not concealed), `notchIslandMetrics` (`[UsageWindow.Kind]`,
   default session + weekly, stored by storage key like `menuBarMetrics`),
   `notchIslandExpandsOnHover` ("Peek on hover", default **true**,
   presence-checked; off, only a click opens it — the collapsed island
-  is invisible, so turning this off means knowing where to click),
+  is invisible on a real notch, so turning this off means knowing where
+  to click; a *concealed* drawn island instead shows its row while the
+  pointer is on its place, since it has nothing to click otherwise),
   `notchIslandMigrated` (the gate above), `notchIslandRevealed` (the
   first-run reveal has been shown) and `notchIslandDiscovered` (the user
-  has opened the island once). The island and the status item are
+  has opened the island once); `notchIslandHoverDelay` (the peek's
+  dwell in seconds, default 0.25, clamped to 0–1 —
+  `NotchIslandInteraction.dwellRange`) and `notchIslandHiddenFromCapture`
+  (default false: `NSWindow.sharingType = .none`, verified on macOS 27
+  against both `screencapture` and a ScreenCaptureKit frame, with a
+  control capture showing the island when off), on every screen; and,
+  for a screen **without** a notch only, `notchIslandForm`
+  (`NotchIslandForm`: `notch` default — drawn, fused to the top edge —
+  or `pill`), `notchIslandHeightMode` (`menuBar` default, or `custom`)
+  with `notchIslandCustomHeight` (default 36 pt, clamped to
+  `NotchIslandGeometry.heightRange`, 20–44, on load and on write; kept
+  when the mode goes back to the menu bar), `notchIslandHidesUntilHover`
+  (default false) and `notchIslandHidesInFullScreen` (default **true**,
+  presence-checked). Their keys and loading live in
+  `Shared/PreferencesStore+NotchIsland.swift`; corrupt values (an unknown
+  raw value, NaN, out of range) fall back or clamp, tested. Which of
+  boring.notch's and Atoll's options were taken and which were not: the
+  height on non-notch displays, the hover delay, the external-display
+  style (Atoll's "Dynamic Island"), hide-until-hovered (Atoll) and
+  hide-from-capture (Atoll) were; full-screen hiding was, rebuilt on the
+  public window list (theirs goes through a third-party package,
+  MacroVisionKit, watching Spaces); show
+  on all displays / preferred display (one panel per display — a
+  larger change), show on the lock screen (private SkyLight API), the
+  shadow and corner-radius-scaling toggles (cosmetic), haptics (Force
+  Touch trackpads only), the closed and open widths (AIMeter's island is
+  the natural size of its content) and "extend hover area" (declared in
+  boring.notch but read nowhere — no effect) were not. The island and the status item are
   **coupled**, in two steps: on the upgrade the icon *stays* until the
   user opens the island for the first time
   (`PreferencesModel.markNotchIslandDiscovered`, called by the controller
@@ -802,12 +835,20 @@ the account silently freezes at its last snapshot.
   value(s) stay in the tooltip and the accessibility label.
 - Notch island (macOS, 2.0): a pure-black panel fused to the MacBook's
   notch — or, on a screen without one (an external display, an iMac, a
-  MacBook Air, a closed MacBook feeding a monitor), a notch the island
-  *draws* at the top edge over the menu bar's centre, boring.notch's
-  answer: the same silhouette, as wide as its row and the menu bar tall,
-  growing exactly like the real one; never a floating capsule under the
-  bar, which 2.0.0 shipped and which hung over the windows below and
-  clipped its own expanded content at the rounded ends — that shows
+  MacBook Air, a closed MacBook feeding a monitor), an island it draws
+  itself in the form the user picks (`notchIslandForm`): by default a
+  notch fused to the top edge over the menu bar's centre, boring.notch's
+  answer — the same silhouette, as wide as its row and the menu bar
+  tall, growing exactly like the real one — or a **pill** like the
+  iPhone's island (Atoll's "Dynamic Island" style): a capsule floating
+  inside the menu bar, `pillInset` (3 pt) below the top edge, that opens
+  into a rounded card (`IslandPillShape`, continuous corners, 24 pt
+  radius) — never a capsule around a body, which is what made 2.0.0's
+  floating pill unreadable (it hung *under* the bar and a 300-pt-tall
+  capsule clipped its content at the ends). A custom height
+  (`notchIslandHeightMode`) makes either taller; the pill then hangs
+  below the bar keeping a 2 pt gap, and the row's figures grow with it
+  (`NotchIslandGeometry.rowScale`, up to 1.35×). The island shows
   every account's windows in Vibe Island's line format,
   `✦ 5h 42% 2h 58m | 7d 61% 3d 3h`. The pure part is
   `Shared/NotchIslandModel.swift` (what it shows, computed once from the
@@ -831,10 +872,38 @@ the account silently freezes at its last snapshot.
   is `WindowSlots`/`ModelSlotFallback` exactly as on the Dashboard, and
   an empty slot keeps its place with an em dash. **Collapsed, the
   island is the notch and shows nothing** — so no menu title or status
-  item is ever covered (Xcode's menu runs up to the notch on a 14"); the
-  drawn notch, having no real one to hide in, always shows its one row. The
+  item is ever covered (Xcode's menu runs up to the notch on a 14"); a
+  drawn island, having no real notch to hide in, shows its one row —
+  unless it is **concealed** (`NotchIslandVisibility.isConcealed`):
+  always with "Hide until hovered", or while a full-screen app has its
+  screen with "Hide in full screen" (on by default — there is no menu
+  bar to sit in then, and it would cover the app's top centre). It
+  slides up past the top edge on the level spring and comes back with
+  the peek. Full screen is recognized from the public on-screen window
+  list (`CGWindowListCopyWindowInfo`; bounds and levels need no Screen
+  Recording permission): a level-0 window that starts at the display's
+  top edge and runs its full height, over the menu bar's strip — a
+  full-screen app, either half of a Split View, a game's borderless
+  full screen — measured on macOS 27, where
+  `currentSystemPresentationOptions`, `NSMenu.menuBarVisible()` and
+  `visibleFrame` all report another app's full screen as nothing;
+  checked on Space changes (again 0.4 s and 1.2 s later, as the switch
+  settles), app activations, wake and screen changes, and every 3 s
+  only while it holds the island hidden (an app can leave its own
+  borderless full screen without a Space change). On a screen without a notch the island tracks
+  the pointer itself (a global `mouseMoved` monitor, no permission;
+  polled at 20 Hz only while AIMeter itself is frontmost, when the
+  global monitor is silent): the pointer is on the island when it is
+  on its collapsed place from the top edge down
+  (`NotchIslandGeometry.hoverRegion`, live while hidden, the pill's gap
+  included) or on the slab as drawn, the top edge itself counting —
+  pushed against the top, the pointer reads exactly the screen's
+  `maxY`, which `CGRect.contains` would leave out — and SwiftUI's hover
+  cannot see a hidden island or the transparent strip above the pill.
+  The
   interaction is the pure, tested `NotchIslandInteraction` (Shared): the
-  cursor has to **stay** on the notch for 250 ms before the island
+  cursor has to **stay** on the notch for the hover delay
+  (`notchIslandHoverDelay`, 250 ms by default) before the island
   **peeks** — passing over the notch on the way to a menu does nothing —
   and the peek is the wings: the *primary*
   account's `notchIslandMetrics` (1–3, filtered to what it reports like
@@ -1047,7 +1116,14 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   third-slot, wing-split and status rules (`NotchIslandModelTests`), its
   frames from this Mac's measured screen rects
   (`NotchIslandGeometryTests`), its hover/dwell/leave/click state machine
-  (`NotchIslandInteractionTests`), its preference keys, the status-item
+  (`NotchIslandInteractionTests`, the hover delay's clamping included),
+  the drawn notch and the pill on a screen without one — heights, the
+  pill's gap, radii, row scale, hover region, and their invariants swept
+  over every menu bar height, custom height and form
+  (`NotchIslandFormGeometryTests`), concealment's truth table, the
+  full-screen check against window lists measured on macOS 27, and the
+  pointer rule (`NotchIslandVisibilityTests`), its preference keys,
+  clamping of corrupt values, the status-item
   coupling and discovery, the hardware-decided upgrade step and the
   per-platform appearance default (`NotchIslandPreferencesTests`),
   `HistoryChartData` (readiness, clipping,
@@ -1134,11 +1210,13 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 - Credit where it is due, and only that. The notch island's motion
-  system follows boring.notch (GPL-3.0) and its line format follows Vibe
-  Island; both are named in the README's Acknowledgments, the website's
-  support page and the relevant doc sections here, always with the same
-  two facts: the approach was studied, no code was copied, and the tree
-  stays MIT. Naming an open-source project as inspiration carries no
+  system follows boring.notch (GPL-3.0), its line format follows Vibe
+  Island, and its options for screens without a notch — the pill, the
+  height, hide until hovered, hide from captures — follow Atoll
+  (GPL-3.0, a boring.notch descendant); all three are named in the
+  README's Acknowledgments, the website's support page and the relevant
+  doc sections here, always with the same two facts: the approach was
+  studied, no code was copied, and the tree stays MIT. Naming an open-source project as inspiration carries no
   license obligation; a copied file would (GPL is viral, MIT is not),
   which is why the island was written from scratch and why a reference
   clone never lives inside the repository. Neither name appears on the

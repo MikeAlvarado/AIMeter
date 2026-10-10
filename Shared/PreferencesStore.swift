@@ -164,8 +164,10 @@ struct Preferences: Sendable {
 
     // MARK: Notch island (macOS)
     //
-    // The black panel fused to the notch (or the floating pill on a Mac
-    // without one) — see "Notch island" under the presentation rules. On
+    // The black panel fused to the notch (or, on a screen without one, a
+    // notch or a pill the island draws itself) — see "Notch island" under
+    // the presentation rules. Keys and loading live in
+    // `PreferencesStore+NotchIsland.swift`. On
     // by default on a Mac with a notch, the one deliberate exception to
     // "defaults never change an existing install", decided once by the
     // migration gated on `notchIslandMigrated`. The status item stays
@@ -176,13 +178,14 @@ struct Preferences: Sendable {
     /// Whether the island is shown at all. The struct's default is off;
     /// `AccountMigration.migrateNotchIslandIfNeeded` writes the real
     /// default once, at the first launch of 2.0: on for a Mac with a
-    /// notch, off for one without (the floating pill is opt-in there —
-    /// a capsule under the menu bar of an iMac is not a quiet upgrade).
+    /// notch, off for one without (a drawn island is opt-in there — a
+    /// shape on the menu bar of an iMac is not a quiet upgrade).
     var notchIslandEnabled: Bool = false
     /// Which wings open beside the notch on the peek (and head the
     /// expanded island): both, left or right. Collapsed, the island is
     /// always the notch alone, so no menu title or status item is ever
-    /// covered until the cursor asks. The pill ignores this.
+    /// covered until the cursor asks. A drawn shape (no notch) has no
+    /// sides and ignores this.
     var notchIslandLayout: NotchIslandLayout = .bothSides
     /// The windows the collapsed wings list, in order (1–3, filtered at
     /// render time to what the primary account reports — the same
@@ -200,6 +203,30 @@ struct Preferences: Sendable {
     /// menu bar icon stays, whatever the coupling: an upgrade must not
     /// take the icon away before the user has found its replacement.
     var notchIslandDiscovered: Bool = false
+    /// How long the cursor rests on the island before it peeks, in
+    /// seconds (`NotchIslandInteraction.dwellRange`; boring.notch's
+    /// "hover delay"). Every screen.
+    var notchIslandHoverDelay: Double = NotchIslandInteraction.defaultDwellSeconds
+    /// The island is left out of screenshots and screen recordings
+    /// (`NSWindow.sharingType = .none`). Every screen.
+    var notchIslandHiddenFromCapture: Bool = false
+    /// Screen without a notch: how the island is drawn there — a notch
+    /// fused to the top edge, or a pill floating in the menu bar.
+    var notchIslandForm: NotchIslandForm = .notch
+    /// Screen without a notch: whether the island follows the menu bar's
+    /// height or `notchIslandCustomHeight`.
+    var notchIslandHeightMode: NotchIslandHeightMode = .menuBar
+    /// Screen without a notch: the custom height, in points (clamped to
+    /// `NotchIslandGeometry.heightRange` on load and on write).
+    var notchIslandCustomHeight: Double = 36
+    /// Screen without a notch: the collapsed island stays out of sight
+    /// until the cursor comes to its place at the top edge.
+    var notchIslandHidesUntilHover: Bool = false
+    /// Screen without a notch: the collapsed island steps aside while a
+    /// full-screen app has the screen — there is no menu bar to sit in
+    /// then, and it would cover the app. On by default, so it loads
+    /// through the presence check.
+    var notchIslandHidesInFullScreen: Bool = true
 
     /// Whether refreshes also read the provider's public status page, so
     /// an outage shows as an incident instead of an account error. On by
@@ -237,13 +264,6 @@ struct Preferences: Sendable {
         static let menuBarShowsAccountName = "pref.menuBarShowsAccountName"
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
-        static let notchIslandEnabled = "pref.notchIslandEnabled"
-        static let notchIslandLayout = "pref.notchIslandLayout"
-        static let notchIslandMetrics = "pref.notchIslandMetrics"
-        static let notchIslandExpandsOnHover = "pref.notchIslandExpandsOnHover"
-        static let notchIslandMigrated = "pref.notchIslandMigrated"
-        static let notchIslandRevealed = "pref.notchIslandRevealed"
-        static let notchIslandDiscovered = "pref.notchIslandDiscovered"
         static let checksServiceStatus = "pref.checksServiceStatus"
         static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
         static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
@@ -294,18 +314,7 @@ struct Preferences: Sendable {
         prefs.menuBarShowsAccountName = defaults.bool(forKey: Keys.menuBarShowsAccountName)
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
-        prefs.notchIslandEnabled = defaults.bool(forKey: Keys.notchIslandEnabled)
-        if let raw = defaults.string(forKey: Keys.notchIslandLayout), let value = NotchIslandLayout(rawValue: raw) {
-            prefs.notchIslandLayout = value
-        }
-        if let raw = defaults.stringArray(forKey: Keys.notchIslandMetrics) {
-            let kinds = raw.compactMap(UsageWindow.Kind.init(storageKey:))
-            if !kinds.isEmpty { prefs.notchIslandMetrics = kinds }
-        }
-        prefs.notchIslandExpandsOnHover = bool(defaults, Keys.notchIslandExpandsOnHover, default: true)
-        prefs.notchIslandMigrated = defaults.bool(forKey: Keys.notchIslandMigrated)
-        prefs.notchIslandRevealed = defaults.bool(forKey: Keys.notchIslandRevealed)
-        prefs.notchIslandDiscovered = defaults.bool(forKey: Keys.notchIslandDiscovered)
+        prefs.loadNotchIsland(from: defaults)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
         prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
@@ -321,7 +330,7 @@ struct Preferences: Sendable {
     /// for every install that upgrades without touching the setting. The
     /// presence check keeps the struct's own default authoritative until the
     /// user actually chooses.
-    private static func bool(_ defaults: UserDefaults, _ key: String, default fallback: Bool) -> Bool {
+    static func bool(_ defaults: UserDefaults, _ key: String, default fallback: Bool) -> Bool {
         defaults.object(forKey: key) == nil ? fallback : defaults.bool(forKey: key)
     }
 

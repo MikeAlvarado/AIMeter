@@ -15419,52 +15419,6 @@
         }
       }
     },
-    "This screen has no notch, so AIMeter draws one at the top edge instead." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esta pantalla no tiene notch, así que AIMeter dibuja uno en el borde superior."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dieser Bildschirm hat keinen Notch, daher zeichnet AIMeter stattdessen einen am oberen Rand."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cet écran n’a pas d’encoche : AIMeter en dessine une en haut de l’écran à la place."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "この画面にはノッチがないため、代わりに画面上端にノッチを描画します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 화면에는 노치가 없어 대신 화면 상단 가장자리에 노치를 그려 표시합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esta tela não tem notch, então o AIMeter desenha um na borda superior."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此屏幕没有刘海，AIMeter 会改为在屏幕顶部边缘绘制一个。"
-          }
-        }
-      }
-    },
     "Peek on hover" : {
       "comment" : "Notch island setting: resting the cursor on the island shows the primary account's full line.",
       "localizations" : {
@@ -15555,6 +15509,617 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AIMeter 现在住在刘海里：把光标停在这里可预览，点击可打开。"
+          }
+        }
+      }
+    },
+    "Notch" : {
+      "comment" : "Notch island form on a screen without a notch: a notch drawn at the top edge (segmented control label).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notch"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encoche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海"
+          }
+        }
+      }
+    },
+    "Pill" : {
+      "comment" : "Notch island form on a screen without a notch: a capsule floating in the menu bar, like the iPhone's island (segmented control label).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastilla"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pille"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastille"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알약형"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pílula"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "胶囊"
+          }
+        }
+      }
+    },
+    "Fused to the top edge, like a MacBook’s notch." : {
+      "comment" : "Caption under the island's Style control when Notch is selected.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fundido al borde superior, como el notch de una MacBook."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit dem oberen Rand verschmolzen, wie der Notch eines MacBook."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fondu au bord supérieur, comme l’encoche d’un MacBook."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacBookのノッチのように画面上端に溶け込みます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacBook의 노치처럼 화면 위쪽 가장자리에 붙어 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fundido à borda superior, como o notch de um MacBook."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "像 MacBook 的刘海一样与屏幕顶部边缘融为一体。"
+          }
+        }
+      }
+    },
+    "Floats in the menu bar, like the iPhone’s island." : {
+      "comment" : "Caption under the island's Style control when Pill is selected. Do not use Apple's product name for the iPhone feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flota en la barra de menú, como la isla del iPhone."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwebt in der Menüleiste, wie die Insel des iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flotte dans la barre des menus, comme l’îlot de l’iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneのアイランドのようにメニューバーに浮かびます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone의 아일랜드처럼 메뉴 막대에 떠 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flutua na barra de menus, como a ilha do iPhone."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "像 iPhone 顶部的胶囊一样悬浮在菜单栏中。"
+          }
+        }
+      }
+    },
+    "Custom" : {
+      "comment" : "Island height choice: a height the user sets with a slider (segmented control label, next to 'Menu bar').",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalizada"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personnalisée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 지정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalizada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义"
+          }
+        }
+      }
+    },
+    "Height" : {
+      "comment" : "Notch island setting title: the island's height on a screen without a notch.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altura"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höhe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauteur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高さ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "높이"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altura"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高度"
+          }
+        }
+      }
+    },
+    "Hover delay" : {
+      "comment" : "Notch island setting: how long the cursor rests on the island before it peeks (slider label).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retraso al pasar el cursor"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verzögerung beim Überfahren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Délai de survol"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホバーまでの時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마우스 오버 지연"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atraso ao passar o cursor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "悬停延迟"
+          }
+        }
+      }
+    },
+    "Hide from screenshots and recordings" : {
+      "comment" : "Notch island setting: leave the island out of screenshots and screen recordings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar en capturas y grabaciones de pantalla"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Bildschirmfotos und -aufnahmen ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer dans les captures et enregistrements d’écran"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットと画面収録に表示しない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스크린샷 및 화면 기록에서 숨기기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar em capturas e gravações de tela"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在截屏和录屏中隐藏"
+          }
+        }
+      }
+    },
+    "Screens without a notch" : {
+      "comment" : "Settings section header: notch island options that apply on a screen without a notch (external display, iMac, MacBook closed on a monitor).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pantallas sin notch"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirme ohne Notch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrans sans encoche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチのない画面"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치가 없는 화면"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telas sem notch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无刘海的屏幕"
+          }
+        }
+      }
+    },
+    "Hide until hovered" : {
+      "comment" : "Notch island setting, screens without a notch: the island stays out of sight until the cursor reaches its place.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar hasta pasar el cursor"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausblenden bis zum Überfahren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer jusqu’au survol"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホバーするまで隠す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마우스를 올릴 때까지 숨기기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar até passar o cursor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "悬停前隐藏"
+          }
+        }
+      }
+    },
+    "Hide in full screen" : {
+      "comment" : "Notch island setting, screens without a notch: the island steps aside while a full-screen app has the screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar en pantalla completa"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Vollbildmodus ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer en plein écran"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フルスクリーンでは隠す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 화면에서 숨기기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar em tela cheia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全屏时隐藏"
+          }
+        }
+      }
+    },
+    "%lld pt" : {
+      "comment" : "The island's custom height in points, next to its slider.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pt"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pt"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pt"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pt"
+          }
+        }
+      }
+    },
+    "A Mac without a notch, or a MacBook closed on an external display, gets an island drawn at the top of the screen: a notch fused to the edge, or a pill floating in the menu bar. Hidden, it comes back when the cursor reaches its place; in full screen there is no menu bar to sit in, so it waits there too." : {
+      "comment" : "Footnote under the 'Screens without a notch' settings card.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un Mac sin notch, o una MacBook cerrada con un monitor externo, recibe una isla dibujada en la parte superior de la pantalla: un notch fundido al borde, o una pastilla flotando en la barra de menú. Oculta, vuelve cuando el cursor llega a su lugar; en pantalla completa no hay barra de menú donde quedarse, así que también espera ahí."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Mac ohne Notch oder ein zugeklapptes MacBook an einem externen Display erhält eine Insel am oberen Bildschirmrand: einen mit dem Rand verschmolzenen Notch oder eine Pille, die in der Menüleiste schwebt. Ausgeblendet kehrt sie zurück, sobald der Zeiger ihren Platz erreicht; im Vollbildmodus gibt es keine Menüleiste, also wartet sie auch dort."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un Mac sans encoche, ou un MacBook fermé sur un écran externe, reçoit un îlot dessiné en haut de l’écran : une encoche fondue au bord, ou une pastille qui flotte dans la barre des menus. Masqué, il revient quand le pointeur atteint sa place ; en plein écran, il n’y a pas de barre des menus où se loger, il attend donc là aussi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチのないMac、または外部ディスプレイにつないで閉じたMacBookでは、画面上部にアイランドを描画します。上端に溶け込むノッチか、メニューバーに浮かぶピルです。隠している間は、ポインタがその場所に来ると戻ります。フルスクリーンではメニューバーがないため、同様にそこで待機します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치가 없는 Mac이나 외부 디스플레이에 연결해 덮은 MacBook에서는 화면 위쪽에 아일랜드를 그립니다. 가장자리에 붙은 노치 또는 메뉴 막대에 떠 있는 알약 모양입니다. 숨겨진 상태에서는 포인터가 그 자리에 오면 다시 나타나며, 전체 화면에서는 머무를 메뉴 막대가 없으므로 마찬가지로 그곳에서 기다립니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um Mac sem notch, ou um MacBook fechado em um monitor externo, ganha uma ilha desenhada no topo da tela: um notch fundido à borda ou uma pílula flutuando na barra de menus. Oculta, ela volta quando o cursor chega ao seu lugar; em tela cheia não há barra de menus onde ficar, então ela também espera ali."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有刘海的 Mac，或合上盖子连接外接显示器的 MacBook，会在屏幕顶部绘制一个岛：与边缘融为一体的刘海，或悬浮在菜单栏中的胶囊。隐藏时，指针移到它的位置就会重新出现；全屏时没有菜单栏可停靠，因此它同样在那里等待。"
           }
         }
       }

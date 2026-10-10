@@ -114,6 +114,46 @@ final class PreferencesModel {
         get { stored.notchIslandDiscovered }
         set { guard stored.notchIslandDiscovered != newValue else { return }; stored.notchIslandDiscovered = newValue; persist(newValue, Preferences.Keys.notchIslandDiscovered, reloadsWidgets: false) }
     }
+    var notchIslandHoverDelay: Double {
+        get { stored.notchIslandHoverDelay }
+        set {
+            let value = NotchIslandInteraction.clampedDwell(seconds: newValue)
+            guard stored.notchIslandHoverDelay != value else { return }
+            stored.notchIslandHoverDelay = value
+            persist(value, Preferences.Keys.notchIslandHoverDelay, reloadsWidgets: false)
+        }
+    }
+    var notchIslandHiddenFromCapture: Bool {
+        get { stored.notchIslandHiddenFromCapture }
+        set { guard stored.notchIslandHiddenFromCapture != newValue else { return }; stored.notchIslandHiddenFromCapture = newValue; persist(newValue, Preferences.Keys.notchIslandHiddenFromCapture, reloadsWidgets: false) }
+    }
+    var notchIslandForm: NotchIslandForm {
+        get { stored.notchIslandForm }
+        set { guard stored.notchIslandForm != newValue else { return }; stored.notchIslandForm = newValue; persist(newValue.rawValue, Preferences.Keys.notchIslandForm, reloadsWidgets: false) }
+    }
+    var notchIslandHeightMode: NotchIslandHeightMode {
+        get { stored.notchIslandHeightMode }
+        set { guard stored.notchIslandHeightMode != newValue else { return }; stored.notchIslandHeightMode = newValue; persist(newValue.rawValue, Preferences.Keys.notchIslandHeightMode, reloadsWidgets: false) }
+    }
+    var notchIslandCustomHeight: Double {
+        get { stored.notchIslandCustomHeight }
+        set {
+            let value = Double(NotchIslandGeometry.clampedHeight(CGFloat(newValue)))
+            guard stored.notchIslandCustomHeight != value else { return }
+            stored.notchIslandCustomHeight = value
+            persist(value, Preferences.Keys.notchIslandCustomHeight, reloadsWidgets: false)
+        }
+    }
+    var notchIslandHidesUntilHover: Bool {
+        get { stored.notchIslandHidesUntilHover }
+        set { guard stored.notchIslandHidesUntilHover != newValue else { return }; stored.notchIslandHidesUntilHover = newValue; persist(newValue, Preferences.Keys.notchIslandHidesUntilHover, reloadsWidgets: false) }
+    }
+    var notchIslandHidesInFullScreen: Bool {
+        get { stored.notchIslandHidesInFullScreen }
+        set { guard stored.notchIslandHidesInFullScreen != newValue else { return }; stored.notchIslandHidesInFullScreen = newValue; persist(newValue, Preferences.Keys.notchIslandHidesInFullScreen, reloadsWidgets: false) }
+    }
+    /// The geometry options a screen without a notch is laid out with.
+    var notchIslandOptions: NotchIslandGeometry.Options { stored.notchIslandOptions }
     var checksServiceStatus: Bool {
         get { stored.checksServiceStatus }
         set { guard stored.checksServiceStatus != newValue else { return }; stored.checksServiceStatus = newValue; persist(newValue, Preferences.Keys.checksServiceStatus, reloadsWidgets: false) }

@@ -21,13 +21,23 @@ final class NotchIslandState {
     /// The cursor rests on the island: the collapsed slab swells by
     /// `NotchIslandGeometry.hoverFlap` and the slab casts its shadow.
     var isHovering = false
+    /// The pill's gap to the top edge; 0 for a notch, real or drawn.
+    var topInset: CGFloat = 0
+    /// How much larger the collapsed row is drawn (a taller custom
+    /// island on a screen without a notch); 1 otherwise.
+    var rowScale: CGFloat = 1
+    /// Out of sight: hidden until hovered, or behind a full-screen app,
+    /// on a screen without a notch (`NotchIslandVisibility.isConcealed`).
+    var isConcealed = false
 }
 
 /// What the island's tree reports back to the controller.
 struct NotchIslandActions {
     var tap: () -> Void
     /// The cursor entered or left the slab (SwiftUI's own hover, which
-    /// follows the slab's animated frame).
+    /// follows the slab's animated frame). On a screen without a notch the
+    /// controller's pointer tracking is the hover source instead and this
+    /// is ignored (see `NotchIslandController+Pointer.swift`).
     var hover: (Bool) -> Void
     /// The slab's current frame in the hosting view's coordinates, so hit
     /// testing stays confined to it.
@@ -54,18 +64,36 @@ final class NotchIslandController {
     static let settleDelay: Duration = .milliseconds(700)
 
     // Members below are internal rather than private so
-    // `NotchIslandController+Screen.swift` can reach them; nothing outside
-    // this type's two files should touch them.
+    // `NotchIslandController+Screen.swift` and `+Pointer.swift` can reach
+    // them; nothing outside this type's three files should touch them.
     private(set) var isRunning = false
     let state = NotchIslandState()
-    private var interaction = NotchIslandInteraction()
+    var interaction = NotchIslandInteraction()
     var panel: NotchIslandPanel?
-    private var hosting: NotchIslandHostingView<AnyView>?
+    var hosting: NotchIslandHostingView<AnyView>?
     private weak var model: UsageModel?
-    private weak var prefs: PreferencesModel?
+    weak var prefs: PreferencesModel?
     var screen: NotchIslandGeometry.Screen?
+    /// The island's display, for the full-screen check (`CGDisplayBounds`).
+    var displayID: CGDirectDisplayID?
+    /// The options the panel was last laid out with (screen without a notch).
+    var options = NotchIslandGeometry.Options()
     var observers: [(center: NotificationCenter, token: NSObjectProtocol)] = []
     private var clickMonitors: [Any] = []
+    /// Pointer tracking on a screen without a notch (`+Pointer.swift`).
+    var pointerMonitors: [Any] = []
+    var pointerInside = false
+    /// The collapsed row's width as last drawn, for the hover region.
+    var rowWidth: CGFloat = 0
+    /// A full-screen app has the island's screen (`+Pointer.swift`).
+    var isFullScreen = false
+    var fullScreenTask: Task<Void, Never>?
+    /// While a full-screen app holds the island hidden, the check repeats
+    /// every few seconds: an app can leave its own borderless full screen
+    /// without a Space change or an app switch, and the island must not
+    /// stay hidden on the desktop afterwards.
+    var fullScreenWatchTask: Task<Void, Never>?
+    var activePollTask: Task<Void, Never>?
     private var timerTask: Task<Void, Never>?
     private var settleTask: Task<Void, Never>?
     private var revealTask: Task<Void, Never>?
@@ -79,7 +107,12 @@ final class NotchIslandController {
 
         let actions = NotchIslandActions(
             tap: { [weak self] in self?.handle(.tapped) },
-            hover: { [weak self] inside in self?.handle(inside ? .entered : .left) },
+            hover: { [weak self] inside in
+                // A screen without a notch tracks the pointer itself; two
+                // hover sources would race each other's enter and leave.
+                guard let self, !self.tracksPointer else { return }
+                self.handle(inside ? .entered : .left)
+            },
             slabChanged: { [weak self] frame in self?.slabChanged(frame) }
         )
         let root = NotchIslandRoot(state: state, actions: actions)
@@ -109,17 +142,25 @@ final class NotchIslandController {
 
         observe()
         relocate()
+        applyCapturePolicy()
+        observePreferences()
         scheduleRevealIfNeeded()
     }
 
     func stop() {
         guard isRunning else { return }
         isRunning = false
-        [timerTask, settleTask, revealTask].forEach { $0?.cancel() }
+        [timerTask, settleTask, revealTask, fullScreenTask, fullScreenWatchTask, activePollTask].forEach { $0?.cancel() }
         timerTask = nil
         settleTask = nil
         revealTask = nil
+        fullScreenTask = nil
+        fullScreenWatchTask = nil
+        activePollTask = nil
         removeClickMonitors()
+        // Dropped without a leave: nothing may arm a timer once stopped.
+        pointerInside = false
+        removePointerMonitors()
         observers.forEach { $0.center.removeObserver($0.token) }
         observers.removeAll()
         panel?.orderOut(nil)
@@ -130,6 +171,9 @@ final class NotchIslandController {
         state.level = .collapsed
         state.isRevealing = false
         state.isHovering = false
+        state.isConcealed = false
+        isFullScreen = false
+        pointerInside = false
     }
 
     // MARK: - Interaction
@@ -137,7 +181,7 @@ final class NotchIslandController {
     /// Every cursor and click event goes through the pure machine; this
     /// arms the timer it asks for and hands the view the level it lands
     /// on (the view animates it).
-    private func handle(_ event: NotchIslandInteraction.Event) {
+    func handle(_ event: NotchIslandInteraction.Event) {
         let before = interaction.level
         switch event {
         case .entered, .tapped:
@@ -150,6 +194,9 @@ final class NotchIslandController {
         interaction.peeksOnHover = prefs?.notchIslandExpandsOnHover ?? true
         interaction.handle(event)
         armTimer()
+        // With "Peek on hover" off, a hidden island shows itself while the
+        // pointer is on its place (`NotchIslandVisibility.isConcealed`).
+        updateConcealment()
         guard interaction.level != before else { return }
         if interaction.level > before, !state.isRevealing {
             // The first time the user opens it, the icon it replaces goes.
@@ -167,7 +214,7 @@ final class NotchIslandController {
         case .none:
             return
         case .dwell:
-            delay = NotchIslandInteraction.dwell
+            delay = NotchIslandInteraction.dwell(seconds: prefs?.notchIslandHoverDelay ?? NotchIslandInteraction.defaultDwellSeconds)
             elapsed = .dwellElapsed
         case .expand:
             delay = NotchIslandInteraction.expand
@@ -183,7 +230,7 @@ final class NotchIslandController {
         }
     }
 
-    private func levelChanged() {
+    func levelChanged() {
         if interaction.level == .collapsed {
             state.isRevealing = false
             // Closed under the cursor (a click, a click outside): no flap
@@ -191,6 +238,7 @@ final class NotchIslandController {
             if state.isHovering { state.isHovering = false }
         }
         if state.level != interaction.level { state.level = interaction.level }
+        updateConcealment()
         if interaction.level > .collapsed {
             installClickMonitors()
         } else {
@@ -209,6 +257,7 @@ final class NotchIslandController {
         let first = hosting.slab == .zero && frame != .zero
         let resized = hosting.slab.size != frame.size
         hosting.slab = frame
+        if interaction.level < .expanded, frame.width > 0 { rowWidth = frame.width }
         if first {
             resampleMouseShape()
         } else if resized {

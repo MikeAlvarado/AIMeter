@@ -17,15 +17,32 @@ extension HorizontalAlignment {
     static let notchCenter = HorizontalAlignment(NotchCenter.self)
 }
 
+private struct NotchIslandRowScaleKey: EnvironmentKey {
+    static let defaultValue: CGFloat = 1
+}
+
+extension EnvironmentValues {
+    /// How much larger the collapsed row is drawn than the standard one:
+    /// 1 on a real notch and at the default height, more for a taller
+    /// custom island (`NotchIslandGeometry.rowScale`). Read by the row's
+    /// compact figures and mark only — the expanded account rows keep
+    /// their size.
+    var notchIslandRowScale: CGFloat {
+        get { self[NotchIslandRowScaleKey.self] }
+        set { self[NotchIslandRowScaleKey.self] = newValue }
+    }
+}
+
 /// The wings: with a notch, one on each side of a gap the notch's width,
-/// content hugging the notch like the Dynamic Island's; in the drawn
-/// notch, one row. Laid out at its natural width — the slab is as wide
-/// as this row — so nothing inside it moves while the island animates.
+/// content hugging the notch like the Dynamic Island's; in a drawn notch
+/// or the pill, one row. Laid out at its natural width — the slab is as
+/// wide as this row — so nothing inside it moves while the island animates.
 struct CollapsedRow: View {
     let island: NotchIslandModel
     let mode: NotchIslandGeometry.Mode
     /// The notch's width, the gap between the wings.
     var notchWidth: CGFloat = 0
+    @Environment(\.notchIslandRowScale) private var scale
 
     /// Inset between a wing's content and the notch.
     static let innerPadding: CGFloat = 12
@@ -41,7 +58,7 @@ struct CollapsedRow: View {
                     .frame(width: notchWidth)
                     .alignmentGuide(.notchCenter) { $0.width / 2 }
                 wing(island.collapsed.right, leading: false)
-            case .drawn:
+            case .drawn, .pill:
                 drawnRow
             }
         }
@@ -58,12 +75,12 @@ struct CollapsedRow: View {
             HStack(spacing: 6) {
                 if leading {
                     if let primary {
-                        ProviderMark(size: 14, cornerRadius: 4, icon: primary.icon)
+                        ProviderMark(size: 14 * scale, cornerRadius: 4 * scale, icon: primary.icon)
                     } else {
                         connectGlyph
                     }
                 }
-                SegmentLine(segments: segments, compact: true)
+                SegmentLine(segments: segments, compact: true, scale: scale)
             }
             .padding(.leading, leading ? Self.outerPadding : Self.innerPadding)
             .padding(.trailing, leading ? Self.innerPadding : Self.outerPadding)
@@ -71,18 +88,19 @@ struct CollapsedRow: View {
         }
     }
 
-    /// The drawn notch's one row: the mark and every chosen figure, the
-    /// outer inset on both sides (there is no notch to hug).
+    /// A drawn shape's one row (no notch to hug): the mark and every
+    /// chosen figure, the outer inset on both sides, all of it scaled
+    /// with a taller custom island.
     private var drawnRow: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 6 * scale) {
             if let primary {
-                ProviderMark(size: 14, cornerRadius: 4, icon: primary.icon)
+                ProviderMark(size: 14 * scale, cornerRadius: 4 * scale, icon: primary.icon)
             } else {
                 connectGlyph
             }
-            SegmentLine(segments: island.collapsed.left + island.collapsed.right, compact: true)
+            SegmentLine(segments: island.collapsed.left + island.collapsed.right, compact: true, scale: scale)
         }
-        .padding(.horizontal, Self.outerPadding)
+        .padding(.horizontal, Self.outerPadding * scale)
         .fixedSize()
     }
 
@@ -94,10 +112,10 @@ struct CollapsedRow: View {
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: ProviderMark.defaultSymbol)
-                    .font(.system(size: 9, weight: .bold))
+                    .font(.system(size: 9 * scale, weight: .bold))
                     .foregroundStyle(Theme.accent)
                 Text("Connect")
-                    .font(NotchIslandStyle.font(11))
+                    .font(NotchIslandStyle.font(11 * scale))
                     .foregroundStyle(NotchIslandStyle.label)
             }
             .contentShape(Rectangle())
@@ -112,16 +130,19 @@ struct CollapsedRow: View {
 struct SegmentLine: View {
     let segments: [NotchIslandModel.Segment]
     var compact: Bool
+    /// The compact line's size factor (`notchIslandRowScale`); the full
+    /// line ignores it.
+    var scale: CGFloat = 1
 
     var body: some View {
-        HStack(alignment: .top, spacing: compact ? 8 : 12) {
+        HStack(alignment: .top, spacing: compact ? 8 * scale : 12) {
             ForEach(Array(segments.enumerated()), id: \.element.kind) { index, segment in
                 if index > 0 {
                     Text(verbatim: "|")
-                        .font(NotchIslandStyle.font(compact ? 11 : 12))
+                        .font(NotchIslandStyle.font(compact ? 11 * scale : 12))
                         .foregroundStyle(NotchIslandStyle.separator)
                 }
-                SegmentView(segment: segment, compact: compact)
+                SegmentView(segment: segment, compact: compact, scale: scale)
             }
         }
     }
@@ -130,6 +151,7 @@ struct SegmentLine: View {
 struct SegmentView: View {
     let segment: NotchIslandModel.Segment
     var compact: Bool
+    var scale: CGFloat = 1
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -145,7 +167,7 @@ struct SegmentView: View {
                         .foregroundStyle(NotchIslandStyle.reset)
                 }
             }
-            .font(NotchIslandStyle.font(compact ? 11 : 12))
+            .font(NotchIslandStyle.font(compact ? 11 * scale : 12))
             // A segment is one line, always.
             .lineLimit(1)
             .fixedSize(horizontal: true, vertical: false)

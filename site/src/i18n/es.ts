@@ -100,11 +100,12 @@ export const es = {
   },
   mac: {
     heading: 'En el Mac vive en el *notch*',
-    sub: 'Una isla negra fundida al notch de la MacBook muestra todas las ventanas en una línea: asoma tus cifras cuando el cursor se detiene encima y abre todas las cuentas si te quedas o haces clic, sin robar el foco nunca. ¿Sin notch, o con la tapa cerrada? Dibuja uno en el borde superior de tu pantalla. ¿Prefieres un ícono de estado? Seis estilos, alimentados por la propia app, para que los widgets del Centro de notificaciones sigan frescos sin ningún ícono en pantalla.',
+    sub: 'Una isla negra fundida al notch de la MacBook muestra todas las ventanas en una línea: asoma tus cifras cuando el cursor se detiene encima y abre todas las cuentas si te quedas o haces clic, sin robar el foco nunca. ¿Sin notch, o con la tapa cerrada? Dibuja uno en el borde superior de tu pantalla, o flota una pastilla en la barra de menú. ¿Prefieres un ícono de estado? Seis estilos, alimentados por la propia app, para que los widgets del Centro de notificaciones sigan frescos sin ningún ícono en pantalla.',
     styles: ['Medidor con el número', 'Solo medidor', 'Solo número', 'Barra', 'Batería', 'Dos o tres ventanas lado a lado'],
     extras: [
       'Isla del notch: 5h 42% 2h 58m | 7d 61% 3d 3h junto al notch, y todas las cuentas con barras y reinicios al abrirse',
       'Elige de qué lado del notch van las alas y qué ventanas listan; activarla oculta el ícono de la barra',
+      'En una pantalla sin notch: un notch dibujado o una pastilla, su altura, y si espera fuera de la vista hasta que llegue el cursor',
       'Cuenta regresiva al reinicio y nombre de la cuenta, opcionales',
       'En rojo cuando una ventana pasa del 80 %',
       'Oculta el ícono del Dock, el de la barra, o ambos',
@@ -246,7 +247,7 @@ export const es = {
       {
         heading: 'Agradecimientos',
         paragraphs: [
-          'La isla del notch le debe su sensación a dos proyectos de código abierto que llegaron antes. boring.notch, de TheBoredTeam en GitHub, fue la referencia de cómo debe moverse un panel en el notch: una ventana que nunca cambia de tamaño, una placa negra del tamaño de su propio contenido, un solo resorte que lleva tamaño, esquinas y sombra a la vez. Se leyó, no se copió; la isla de AIMeter es una implementación propia bajo licencia MIT. Vibe Island definió el formato de una línea que muestra la isla. Gracias a ambos.',
+          'La isla del notch le debe su sensación a tres proyectos que llegaron antes. boring.notch, de TheBoredTeam en GitHub, fue la referencia de cómo debe moverse un panel en el notch: una ventana que nunca cambia de tamaño, una placa negra del tamaño de su propio contenido, un solo resorte que lleva tamaño, esquinas y sombra a la vez. Se leyó, no se copió; la isla de AIMeter es una implementación propia bajo licencia MIT. Vibe Island definió el formato de una línea que muestra la isla. Atoll, de Ebullioscopic, mostró las opciones que necesita una pantalla sin notch, de la pastilla a ocultarse hasta que llega el cursor; se estudió igual. Gracias a los tres.',
         ],
       },
     ],
