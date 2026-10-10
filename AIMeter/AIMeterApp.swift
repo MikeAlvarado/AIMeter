@@ -94,14 +94,11 @@ struct AIMeterApp: App {
         .menuBarExtraStyle(.window)
 
         Settings {
-            NavigationStack {
-                SettingsView()
-            }
-            .environment(model)
-            .environment(prefs)
-            .tint(Theme.accent)
-            .preferredColorScheme(prefs.appearance.colorScheme)
-            .frame(minWidth: 440, minHeight: 560)
+            MacSettingsView()
+                .environment(model)
+                .environment(prefs)
+                .tint(Theme.accent)
+                .preferredColorScheme(prefs.appearance.colorScheme)
         }
         #endif
     }

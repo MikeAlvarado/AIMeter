@@ -70,8 +70,12 @@ assets and string catalog from there.
   `RoundIconButton.swift`. The macOS status item is `MenuBarLabel.swift`
   (the view, the drawn bar/battery glyphs, and `MenuBarLabelModel.current`)
   over `Shared/MenuBarLabelModel.swift` (the pure model: text, fill, tint,
-  accessibility — the part that is unit-tested); its Settings section is
-  `MenuBarSettings.swift`, split out of `MacChromeSettings.swift`. The
+  accessibility — the part that is unit-tested); its Settings tab is
+  `MenuBarSettings.swift`. The macOS Settings window is
+  `MacSettingsView.swift` (the tabs, and the trailing-switch toggle style)
+  over `SettingsSections.swift` (one view per section, shared with the iOS
+  sheet's `SettingsView`) and `MacChromeSettings.swift` (the Hiding and
+  Startup sections of its General tab). The
   macOS notch island is `AIMeter/Views/NotchIsland/`:
   `NotchIslandController.swift` (lifecycle, the interaction's timers
   and monitors, the reveal), `NotchIslandController+Screen.swift`
@@ -714,7 +718,8 @@ the account silently freezes at its last snapshot.
   menu, like "Style", because the unlabeled row of account segments it
   replaced sat above the equally unlabeled window segments and read as
   one more window picker. Both pickers moved
-  out of Claude's Provider Detail and into `MacChromeSettings` — with
+  out of Claude's Provider Detail and into Settings' Menu bar and Notch
+  island tabs — with
   several accounts there's no longer one unambiguous account whose detail
   screen could own "which window does the menu bar read"; iOS keeps its
   equivalent "Lock Screen widget" pill in Provider Detail, since that one
@@ -823,8 +828,8 @@ the account silently freezes at its last snapshot.
   `UserDefaults.bool(forKey:)` reports `false` for an unwritten key and
   would silently flip them. Unlike `glanceMetric` (account-dependent, so it
   lives in Claude's Provider Detail on iOS) these are provider-agnostic app
-  chrome and surface in app-wide Settings via `MacChromeSettings` /
-  `MenuBarSettings`. The label itself is computed once per state change
+  chrome and surface in app-wide Settings (`MacSettingsView`'s General
+  and Menu bar tabs: `HidingSettings`, `MenuBarSettings`). The label itself is computed once per state change
   by `MenuBarLabelModel` (Shared, pure) and only drawn by `MenuBarLabel`:
   the gauge styles are the variable-value SF Symbol as always, `bar` and
   `battery` are rendered to an `NSImage` with `ImageRenderer` (a status

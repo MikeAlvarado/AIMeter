@@ -53,6 +53,10 @@ struct ContentView: View {
             DashboardView()
                 .toolbar(.hidden, for: .automatic)
         }
+        #if os(macOS)
+        // The detail screens' toggles as trailing switches, like Settings'.
+        .toggleStyle(.settingsSwitch)
+        #endif
     }
 }
 

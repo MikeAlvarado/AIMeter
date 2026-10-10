@@ -2,10 +2,10 @@
 import SwiftUI
 import UsageKit
 
-/// Settings → "Menu bar": a live preview of the status item label on a
-/// light and a dark menu bar, then everything that feeds it — which
-/// account (2+ only) and window it reads, the style, and the three
-/// modifiers. The preview renders the same `MenuBarLabel` from the same
+/// Settings → "Menu bar" (a tab of `MacSettingsView`): a live preview of
+/// the status item label on a light and a dark menu bar, then everything
+/// that feeds it — which account (2+ only) and window(s) it reads, the
+/// style, and the three modifiers. The preview renders the same `MenuBarLabel` from the same
 /// `MenuBarLabelModel.current` the `MenuBarExtra` uses, so what's shown
 /// here is the truth, not a mock-up of it.
 struct MenuBarSettings: View {
@@ -42,13 +42,19 @@ struct MenuBarSettings: View {
                 }
                 Divider().overlay(Theme.track)
 
-                if prefs.menuBarStyle == .multi {
-                    MetricChips(options: glanceOptions, selection: $prefs.menuBarMetrics)
-                } else {
-                    SegmentedPill(
-                        options: glanceOptions.map { ($0, $0.shortName) },
-                        selection: $prefs.glanceMetric
-                    )
+                // Titled, so the window choice never reads as one more
+                // style or account control.
+                VStack(alignment: .leading, spacing: 8) {
+                    if prefs.menuBarStyle == .multi {
+                        rowTitle(Text("Windows"))
+                        MetricChips(options: glanceOptions, selection: $prefs.menuBarMetrics)
+                    } else {
+                        rowTitle(Text("Window"))
+                        SegmentedPill(
+                            options: glanceOptions.map { ($0, $0.shortName) },
+                            selection: $prefs.glanceMetric
+                        )
+                    }
                 }
                 Divider().overlay(Theme.track)
 
@@ -95,6 +101,12 @@ struct MenuBarSettings: View {
                 in: RoundedRectangle(cornerRadius: 6, style: .continuous)
             )
             .environment(\.colorScheme, scheme)
+    }
+
+    private func rowTitle(_ text: Text) -> some View {
+        text
+            .font(Theme.rowTitle)
+            .foregroundStyle(Theme.ink)
     }
 
     private func toggle(_ title: LocalizedStringKey, isOn: Binding<Bool>) -> some View {

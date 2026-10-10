@@ -1,288 +1,44 @@
 import SwiftUI
 import UsageKit
 
-/// Public repo — shown in the "Open Source" settings row.
-private let githubRepoURL = URL(string: "https://github.com/MikeAlvarado/AIMeter")!
-
+/// Settings as one list — the iOS sheet. The Mac's Settings window shows
+/// the same sections over tabs instead (`MacSettingsView`); both are
+/// built from the section views in `SettingsSections.swift`.
 struct SettingsView: View {
     @Environment(UsageModel.self) private var model
-    @Environment(PreferencesModel.self) private var prefs
-    @Environment(\.openURL) private var openURL
 
     var body: some View {
-        @Bindable var prefs = prefs
-
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                if model.isDemoMode {
-                    SectionHeader(title: String(localized: "Demo mode"))
-                    Card {
-                        Button(role: .destructive) {
-                            model.exitDemoMode()
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: "eye.slash")
-                                    .font(.footnote.weight(.semibold))
-                                    .foregroundStyle(Theme.danger)
-                                    .frame(width: 28, height: 28)
-                                    .background(Theme.danger.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                Text("Exit Demo")
-                                    .font(.body.weight(.medium))
-                                    .foregroundStyle(Theme.ink)
-                                Spacer()
-                            }
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    SectionFootnote(text: String(localized: "You're viewing sample data. Exit to connect your real Claude account."))
-                    sectionGap
-                } else if model.needsConnection {
+                if DemoModeSettings.leads(model) {
                     // Demo mode's only entry point — the dashboard's
-                    // disconnected card stays just Connect, so Settings is
-                    // the one place to find "View Demo". Leads the list
-                    // while there is nothing connected; a connected
-                    // install gets the same card at the very end instead.
-                    viewDemoSection
-                    sectionGap
+                    // disconnected card stays just Connect, so Settings
+                    // is the one place to find "View Demo".
+                    DemoModeSettings()
+                    SettingsGap()
                 }
-
-                SectionHeader(title: String(localized: "Appearance"))
-                Card {
-                    SegmentedPill(
-                        options: AppearanceMode.allCases.map { ($0, $0.label) },
-                        selection: $prefs.appearance
-                    )
+                AppearanceSettings()
+                if PeakNotificationsSettings.isOffered {
+                    SettingsGap()
+                    PeakNotificationsSettings()
                 }
-
-                sectionGap
-                SectionHeader(title: String(localized: "Display"))
-                Card {
-                    SegmentedPill(
-                        options: [DisplayMode.remaining, .used].map { ($0, $0.label) },
-                        selection: $prefs.displayMode
-                    )
-                }
-                SectionFootnote(text: String(localized: "Whether bars and percentages show how much you have left or how much you've used."))
-
-                sectionGap
-                SectionHeader(title: String(localized: "Reset timers"))
-                Card {
-                    SegmentedPill(
-                        options: [ResetStyle.relative, .absolute].map { ($0, $0.label) },
-                        selection: $prefs.resetStyle
-                    )
-                }
-                SectionFootnote(text: String(localized: "Relative counts down to the reset. Absolute shows the local time. Tap any reset label on the dashboard to switch."))
-
-                // Only while a peak schedule is in force — none is today
-                // (the policy is retired, see `ClaudePeakSchedule`), so
-                // the toggle would arm alerts for a window that never
-                // comes.
-                if ClaudePeakSchedule.current != nil {
-                    sectionGap
-                    SectionHeader(title: String(localized: "Notifications"))
-                    Card {
-                        Toggle(isOn: Binding(
-                            get: { model.peakNotificationsEnabled },
-                            set: model.setPeakNotificationsEnabled
-                        )) {
-                            Text("Peak-hours alerts")
-                                .font(Theme.rowTitle)
-                                .foregroundStyle(Theme.ink)
-                        }
-                        .tint(Theme.accent)
-                    }
-                    .task {
-                        await model.refreshNotificationAuthorization()
-                    }
-                    SectionFootnote(text: String(localized: "Notify when Claude's documented weekday peak window starts or ends. This is one Claude-wide policy, not a per-account setting — every connected account's rate-limit alerts still have their own toggles on that account's own screen."))
-                }
-
-                #if os(macOS)
-                sectionGap
-                MacChromeSettings()
-
-                if !model.isDemoMode {
-                sectionGap
-                SectionHeader(title: String(localized: "Claude Code"))
-                Card {
-                    VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                        Toggle(isOn: $prefs.claudeCodeUsageEnabled) {
-                            Text("Read Claude Code's local usage logs")
-                                .font(Theme.rowTitle)
-                                .foregroundStyle(Theme.ink)
-                        }
-                        .tint(Theme.accent)
-                        if prefs.claudeCodeUsageEnabled {
-                            Divider().overlay(Theme.track)
-                            Toggle(isOn: $prefs.menuBarShowsClaudeCodeLine) {
-                                Text("Show today's total in the menu bar")
-                                    .font(Theme.rowTitle)
-                                    .foregroundStyle(Theme.ink)
-                            }
-                            .tint(Theme.accent)
-                        }
-                    }
-                }
-                .onChange(of: prefs.claudeCodeUsageEnabled) { _, enabled in
-                    model.claudeCode?.setEnabled(enabled)
-                }
-                SectionFootnote(text: String(localized: "Adds up the tokens in ~/.claude/projects on this Mac, per model, and prices them at Anthropic's API list rates. Only the usage fields are decoded — never your prompts or Claude's replies — and nothing leaves this Mac. Off by default."))
-                }
-                #endif
-
-                sectionGap
-                SectionHeader(title: String(localized: "Service status"))
-                Card {
-                    Toggle(isOn: $prefs.checksServiceStatus) {
-                        Text("Check service status")
-                            .font(Theme.rowTitle)
-                            .foregroundStyle(Theme.ink)
-                    }
-                    .tint(Theme.accent)
-                }
-                SectionFootnote(text: String(localized: "Reads the provider's public status page whenever AIMeter refreshes, so an outage shows as an incident instead of an account error. Nothing about you is sent."))
-
-                sectionGap
-                SectionHeader(title: String(localized: "Background refresh"))
-                Card {
-                    HStack {
-                        Text("Refresh usage")
-                            .font(Theme.rowTitle)
-                            .foregroundStyle(Theme.ink)
-                        Spacer()
-                        Picker("", selection: $prefs.refreshCadence) {
-                            ForEach(RefreshCadence.allCases, id: \.self) { cadence in
-                                Text(cadence.label).tag(cadence)
-                            }
-                        }
-                        .labelsHidden()
-                        .fixedSize()
-                        .tint(Theme.accent)
-                    }
-                }
-                SectionFootnote(text: refreshFootnote)
-
-                sectionGap
-                Card {
-                    NavigationLink {
-                        PrivacyView()
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: "lock.shield")
-                                .font(.footnote.weight(.semibold))
-                                .foregroundStyle(Theme.accent)
-                                .frame(width: 28, height: 28)
-                                .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                            Text("Privacy & data")
-                                .font(.body.weight(.medium))
-                                .foregroundStyle(Theme.ink)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Theme.inkSecondary)
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                }
-                SectionFootnote(text: String(localized: "How connecting works, what the app can access, and where your data lives."))
-
-                sectionGap
-                Card {
-                    Button {
-                        openURL(githubRepoURL)
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image("GitHubIcon")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 16, height: 16)
-                                .frame(width: 28, height: 28)
-                                .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                            Text("Open Source")
-                                .font(.body.weight(.medium))
-                                .foregroundStyle(Theme.ink)
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Theme.inkSecondary)
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                }
-                SectionFootnote(text: String(localized: "AIMeter is free and open source. Visit the repository to read the code, file an issue, or contribute."))
-
-                if !model.isDemoMode, !model.needsConnection {
-                    sectionGap
-                    viewDemoSection
+                SettingsGap()
+                ServiceStatusSettings()
+                SettingsGap()
+                BackgroundRefreshSettings()
+                SettingsGap()
+                PrivacyLinkSettings()
+                SettingsGap()
+                OpenSourceSettings()
+                if !DemoModeSettings.leads(model) {
+                    SettingsGap()
+                    DemoModeSettings()
                 }
             }
             .padding(20)
         }
         .background(Theme.background)
         .navigationTitle("Settings")
-        .onChange(of: prefs.refreshCadence) { _, newValue in
-            #if os(iOS)
-            BackgroundRefresh.scheduleNext()
-            #else
-            model.rebuildRefreshSchedule(interval: newValue.interval)
-            #endif
-        }
-        .onChange(of: prefs.checksServiceStatus) { _, newValue in
-            model.setChecksServiceStatus(newValue)
-        }
-    }
-
-    private var sectionGap: some View {
-        Spacer().frame(height: Theme.sectionSpacing - 16)
-    }
-
-    /// "View Demo": swaps in the fabricated account in memory only
-    /// (`UsageModel.enterDemoMode`), so it is safe to offer even with real
-    /// accounts connected — Exit Demo reloads them untouched. Connected
-    /// installs find it at the end of the list, disconnected ones at the top.
-    @ViewBuilder
-    private var viewDemoSection: some View {
-        SectionHeader(title: String(localized: "Demo mode"))
-        Card {
-            Button {
-                model.enterDemoMode()
-            } label: {
-                HStack(spacing: 12) {
-                    Image(systemName: "eye")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(Theme.accent)
-                        .frame(width: 28, height: 28)
-                        .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    Text("View Demo")
-                        .font(.body.weight(.medium))
-                        .foregroundStyle(Theme.ink)
-                    Spacer()
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-        }
-        SectionFootnote(text: model.needsConnection
-            ? String(localized: "Explore every screen with sample data before connecting your real Claude account.")
-            : String(localized: "Explore every screen with sample data. Your real accounts come back untouched when you exit."))
-    }
-
-    private var refreshFootnote: String {
-        var text: String
-        #if os(iOS)
-        text = String(localized: "AIMeter refreshes usage in the background when iOS permits it, then updates your widgets. Timing depends on battery, connectivity, and how often you use the app.")
-        #else
-        text = String(localized: "AIMeter refreshes usage on this schedule while the menu bar app is running, then updates your widgets.")
-        #endif
-        if let scheduled = prefs.lastScheduledAt {
-            let minutes = max(0, Int(Date().timeIntervalSince(scheduled) / 60))
-            text += "\n" + String(localized: "Scheduled \(minutes) minutes ago.")
-        }
-        return text
     }
 }
 

@@ -191,27 +191,46 @@
   screen, not repeated per account, since the policy is Claude-wide, not
   account-specific — see "Settings" below and "Peak hours" in the
   repo-root CLAUDE.md (hidden today: the policy is retired).
-- **Settings**: while `isDemoMode` is true, a "Demo mode" section (Exit
-  Demo action + explanatory footnote) leads the list, above everything
-  else, then appearance / display mode / reset style pills, a
-  "Notifications" card with the one Peak-hours alerts toggle (the single
-  exception to "no notification toggles here" — every other toggle moved
-  fully into each account's own Provider Detail once there could be more
-  than one "the" account to apply them to, but peak-hours is one
-  Claude-wide policy with nothing account-specific to scope it to; see
-  "Peak hours" in the repo-root CLAUDE.md — the whole card is gated on
-  `ClaudePeakSchedule.current` being non-nil, so it doesn't render while
-  the policy is retired), a "Service status" card with the one
-  "Check service status" toggle (`Preferences.checksServiceStatus`,
+- **Settings**: built from one view per section
+  (`SettingsSections.swift`: `DemoModeSettings`, `AppearanceSettings` —
+  the appearance / display mode / reset style pills —,
+  `PeakNotificationsSettings`, `ServiceStatusSettings`,
+  `BackgroundRefreshSettings`, `PrivacyLinkSettings`,
+  `OpenSourceSettings`; each draws its header, card and footnote and
+  never the gap around itself), which the two platforms arrange
+  differently. **iOS** (`SettingsView`, a sheet with Done) stacks them in
+  one list: while `isDemoMode` is true, or while nothing is connected, the
+  "Demo mode" section (Exit Demo with its footnote, or View Demo) leads
+  it, above everything else; then appearance / display mode / reset
+  style, a "Notifications" card with the one Peak-hours alerts toggle
+  (the single exception to "no notification toggles here" — every other
+  toggle moved fully into each account's own Provider Detail once there
+  could be more than one "the" account to apply them to, but peak-hours
+  is one Claude-wide policy with nothing account-specific to scope it
+  to; see "Peak hours" in the repo-root CLAUDE.md — the whole card is
+  gated on `ClaudePeakSchedule.current` being non-nil, so it doesn't
+  render while the policy is retired), a "Service status" card with the
+  one "Check service status" toggle (`Preferences.checksServiceStatus`,
   default on; its `onChange` mirrors the value into the model through
   `setChecksServiceStatus`, same shape as the refresh-cadence handler),
-  and refresh
-  cadence menu (all app-wide, not per account), a "Privacy & data" link,
-  an "Open Source" row (GitHub mark, opens the repo URL), and — for a
-  connected install — the "Demo mode" card last. iOS: sheet
-  with Done; macOS: Settings scene
-  (wrapped in a NavigationStack so the link can push), plus the macOS-only
-  `MacChromeSettings` block — "Notch island" first (`NotchIslandSettings`,
+  the refresh cadence menu (all app-wide, not per account), a "Privacy &
+  data" link, an "Open Source" row (GitHub mark, opens the repo URL), and
+  — for a connected install — the "Demo mode" card last. **macOS**
+  (`MacSettingsView`, the Settings scene) spreads the same sections over
+  toolbar tabs, the way a Mac app's settings are, at a fixed 540 pt
+  width so rows, pills and previews never stretch across a wide window
+  (the long tabs scroll inside 620 pt, the short ones are their content's
+  height), and every toggle in it is a trailing switch
+  (`SettingsSwitchToggleStyle`, `.settingsSwitch`, defined there; the
+  Dashboard's navigation stack sets it too, so Provider Detail's toggles
+  match — the Mac default was a checkbox before the title). The tabs:
+  **General** — the iOS list's sections except the Privacy link, plus the
+  Mac's own chrome from `MacChromeSettings.swift`: "Hiding AIMeter"
+  (`HidingSettings`: Hide Dock icon / Hide menu bar icon, with a warning
+  row once both are hidden and the island is off) and "Startup"
+  (`StartupSettings`: Open at Login, with a pending-approval row and a
+  nudge when the Dock icon is hidden but the login item is off);
+  **Notch island** (`NotchIslandSettings`,
   two cards. The first: a live preview of the **peek** — what hovering
   shows — as this screen draws it (the real notch's silhouette, or the
   drawn notch or pill at the chosen height), from the same
@@ -220,7 +239,8 @@
   and `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left /
   Right pill, only on a Mac with a notch; the "Account" menu
   (`PrimaryAccountPicker`, 2+ accounts only — the wings are that
-  account's, and so are the chips under it); the shared `MetricChips`;
+  account's, and so are the chips under it); the shared `MetricChips`
+  under a "Windows" title;
   "Peek on hover" with its "Hover delay" slider (0–1 s, only while on);
   "Hide from screenshots and recordings"; and a footnote that states
   the status-item coupling. The second, "Screens without a notch"
@@ -229,23 +249,25 @@
   (Menu bar / Custom, with a 20–44 pt slider while custom), "Hide until
   hovered" and "Hide in full screen", and a footnote saying when they
   apply. The sliders quantize in their binding rather than with
-  `step:`, which draws a tick per step), then "Menu bar" (`MenuBarSettings`: a live
+  `step:`, which draws a tick per step); **Menu bar** (`MenuBarSettings`: a live
   preview of the status item label on a light and a dark strip, rendered
   from the very same `MenuBarLabelModel.current` the `MenuBarExtra` uses,
   so the preview is the truth; the same "Account" menu (2+ accounts only);
   the Style menu (`MenuBarStyle`); the window pill for single styles or the
-  multi-select window chips for `multi` (1–3, options' order kept);
+  multi-select window chips for `multi` (1–3, options' order kept), under a
+  "Window" or "Windows" title so the choice never reads as one more style
+  or account control;
   a "Hidden while the notch island is on." note while the island has
   the icon hidden;
   then the "Red at 80% used", "Reset countdown" (not for `multi`) and
   "Account name" (2+ only) toggles; the footnote also points at the
-  Shortcuts-app route to a system-wide key), "Hiding AIMeter" (Hide Dock
-  icon / Hide menu bar icon, with a warning row once both are hidden), and
-  "Startup" (Open at Login, with a pending-approval row and a nudge when
-  the Dock icon is hidden but the login item is off) — and, after it, the
-  macOS-only "Claude Code" card: "Read Claude Code's local usage logs"
-  (off by default; its `onChange` drives `UsageModel.claudeCode?.setEnabled`)
-  and, once on, "Show today's total in the menu bar".
+  Shortcuts-app route to a system-wide key);
+  **Claude Code** (`ClaudeCodeSettings`, absent in demo mode — a demo
+  switched on with the tab open falls back to General): "Read Claude
+  Code's local usage logs" (off by default; its `onChange` drives
+  `UsageModel.claudeCode?.setEnabled`) and, once on, "Show today's total
+  in the menu bar"; and **Privacy & data** (`PrivacyView` itself, a tab
+  rather than a pushed screen).
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
   Keychain, no tracking, and on macOS the opt-in Claude Code log reading
   and the opt-in login item), how connecting
@@ -635,7 +657,7 @@
     an affordance too). With both icons hidden and no island the
     dashboard is the app's sole affordance, so launching has to produce
     it or the app would be unreachable — that combination is the one
-    case where a launch legitimately shows a window; `MacChromeSettings`'
+    case where a launch legitimately shows a window; `HidingSettings`'
     `isFullyHidden` warning follows the same three-way rule.
   - Re-entry when everything is hidden is **relaunching the app**
     (Finder/Spotlight/`open -a`), which fires

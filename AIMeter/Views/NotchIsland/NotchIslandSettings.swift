@@ -3,7 +3,7 @@ import AppKit
 import SwiftUI
 import UsageKit
 
-/// Settings → "Notch island", above "Menu bar": a live preview of the
+/// Settings → "Notch island" (a tab of `MacSettingsView`): a live preview of the
 /// island as it is on this screen (from the same `NotchIslandModel.current`
 /// the panel draws — the truth, not a mock), the on/off toggle, which
 /// side(s) of the notch the wings use, the windows they list, how hovering
@@ -52,7 +52,10 @@ struct NotchIslandSettings: View {
                     PrimaryAccountPicker()
                 }
                 Divider().overlay(Theme.track)
-                MetricChips(options: glanceOptions, selection: $prefs.notchIslandMetrics, maxCount: NotchIslandModel.maxMetrics)
+                VStack(alignment: .leading, spacing: 8) {
+                    rowTitle("Windows")
+                    MetricChips(options: glanceOptions, selection: $prefs.notchIslandMetrics, maxCount: NotchIslandModel.maxMetrics)
+                }
                 Divider().overlay(Theme.track)
 
                 Toggle(isOn: $prefs.notchIslandExpandsOnHover) {

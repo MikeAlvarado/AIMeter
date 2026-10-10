@@ -2,26 +2,20 @@
 import SwiftUI
 import UsageKit
 
-/// How AIMeter presents itself on the Mac: the menu bar label (its own
-/// section, `MenuBarSettings`), whether the status item and Dock icon are
-/// shown at all, and whether the app starts at login.
+/// How AIMeter presents itself on the Mac, beyond the two glance
+/// surfaces (`NotchIslandSettings`, `MenuBarSettings`, each a tab of its
+/// own): whether the status item and Dock icon are shown at all, and
+/// whether the app starts at login. Both sections sit in the General tab
+/// of `MacSettingsView`.
 ///
 /// All app-wide chrome, not provider data, so it lives in Settings rather
 /// than in Claude's Provider Detail.
-struct MacChromeSettings: View {
+struct HidingSettings: View {
     @Environment(PreferencesModel.self) private var prefs
-    @Environment(\.openURL) private var openURL
-    @State private var loginItem = LoginItemManager()
 
     var body: some View {
         @Bindable var prefs = prefs
 
-        NotchIslandSettings()
-
-        sectionGap
-        MenuBarSettings()
-
-        sectionGap
         SectionHeader(title: String(localized: "Hiding AIMeter"))
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
@@ -57,8 +51,38 @@ struct MacChromeSettings: View {
             NSApp.activate(ignoringOtherApps: true)
         }
         SectionFootnote(text: String(localized: "AIMeter keeps running and refreshing your usage either way — hiding only changes what you see. Quit still quits."))
+    }
 
-        sectionGap
+    /// With both icons off and no island there is no visible UI at all,
+    /// so the one way back in has to be spelled out *before* the user is
+    /// looking at an empty screen wondering what happened. The island
+    /// counts as visible UI: its footer opens the Dashboard.
+    private var isFullyHidden: Bool {
+        prefs.hideDockIcon && !prefs.statusItemVisible && !prefs.notchIslandEnabled
+    }
+
+    private var hiddenWarning: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Image(systemName: "eye.slash")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Theme.accent)
+            Text("With both hidden, AIMeter has no visible controls. Open it again from Finder or Spotlight to bring this window back.")
+                .font(Theme.caption)
+                .foregroundStyle(Theme.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+    }
+}
+
+/// "Open at Login", read live from `SMAppService` (`LoginItemManager`),
+/// with the approval and the hidden-Dock nudge rows.
+struct StartupSettings: View {
+    @Environment(PreferencesModel.self) private var prefs
+    @Environment(\.openURL) private var openURL
+    @State private var loginItem = LoginItemManager()
+
+    var body: some View {
         SectionHeader(title: String(localized: "Startup"))
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
@@ -133,31 +157,6 @@ struct MacChromeSettings: View {
             .font(Theme.caption.weight(.semibold))
             .foregroundStyle(Theme.accent)
         }
-    }
-
-    /// With both icons off and no island there is no visible UI at all,
-    /// so the one way back in has to be spelled out *before* the user is
-    /// looking at an empty screen wondering what happened. The island
-    /// counts as visible UI: its footer opens the Dashboard.
-    private var isFullyHidden: Bool {
-        prefs.hideDockIcon && !prefs.statusItemVisible && !prefs.notchIslandEnabled
-    }
-
-    private var hiddenWarning: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Image(systemName: "eye.slash")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(Theme.accent)
-            Text("With both hidden, AIMeter has no visible controls. Open it again from Finder or Spotlight to bring this window back.")
-                .font(Theme.caption)
-                .foregroundStyle(Theme.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
-        }
-    }
-
-    private var sectionGap: some View {
-        Spacer().frame(height: Theme.sectionSpacing - 16)
     }
 }
 #endif
