@@ -272,7 +272,11 @@
   Code's local usage logs" (off by default; its `onChange` drives
   `UsageModel.claudeCode?.setEnabled`) and, once on, "Show today's total
   in the menu bar"; and **Privacy & data** (`PrivacyView` itself, a tab
-  rather than a pushed screen).
+  rather than a pushed screen). `DEBUG` only: the
+  `-AIMeterSettingsTab <tab>` launch argument (a `MacSettingsView.Tab`
+  raw value: `general`, `notchIsland`, `menuBar`, `claudeCode`,
+  `privacy`) opens Settings on that tab a second after launch, so each
+  tab can be checked or captured without a click.
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
   Keychain, no tracking, and on macOS the opt-in Claude Code log reading
   and the opt-in login item), how connecting

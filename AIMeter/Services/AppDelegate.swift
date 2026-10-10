@@ -38,6 +38,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.async {
             AppChrome.startNotchIslandIfEnabled()
         }
+        #if DEBUG
+        if MacSettingsView.launchTab != nil {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                AppChrome.openSettings()
+            }
+        }
+        #endif
         guard prefs.hideDockIcon, prefs.statusItemVisible || prefs.notchIslandEnabled else { return }
         // Next tick, so the scene finishes appearing — and registers its
         // reopen hook — before the window is taken away again.

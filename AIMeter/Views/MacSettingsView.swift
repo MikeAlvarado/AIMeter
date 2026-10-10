@@ -10,10 +10,21 @@ import UsageKit
 /// switch (`SettingsSwitchToggleStyle`).
 struct MacSettingsView: View {
     @Environment(UsageModel.self) private var model
-    @State private var tab: Tab = .general
+    @State private var tab: Tab = Self.launchTab ?? .general
 
-    enum Tab: Hashable {
+    enum Tab: String, Hashable {
         case general, notchIsland, menuBar, claudeCode, privacy
+    }
+
+    /// `DEBUG` only: `-AIMeterSettingsTab <tab>` (a `Tab` raw value) opens
+    /// Settings on that tab at launch (`AppDelegate`), so each tab can be
+    /// checked and captured without a click.
+    static var launchTab: Tab? {
+        #if DEBUG
+        UserDefaults.standard.string(forKey: "AIMeterSettingsTab").flatMap(Tab.init(rawValue:))
+        #else
+        nil
+        #endif
     }
 
     /// Wide enough for the menu bar previews and the island's wings, the
