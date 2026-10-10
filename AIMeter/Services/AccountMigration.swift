@@ -56,7 +56,7 @@ enum AccountMigration {
         }
     }
 
-    /// 1.7's notch island is on by default on a Mac with a notch — the
+    /// 2.0's notch island is on by default on a Mac with a notch — the
     /// one deliberate exception to "defaults never change an existing
     /// install" (see "Notch island prefs" in the repo-root CLAUDE.md) —
     /// and off on one without, where the floating pill stays opt-in.

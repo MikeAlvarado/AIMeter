@@ -99,10 +99,12 @@ export const en = {
     ipadAlt: 'AIMeter on iPad.',
   },
   mac: {
-    heading: 'On the Mac, it lives in the *menu bar*',
-    sub: 'A status item in the style you like, fed by the app itself, so Notification Center widgets stay fresh with no icon on screen at all.',
+    heading: 'On the Mac, it lives in the *notch*',
+    sub: 'A black island fused to the MacBook’s notch shows every window in one line: a peek of your figures when the cursor rests on it, every account when you stay or click, never taking focus. No notch? A floating pill under the menu bar. Prefer a status item? Six styles, fed by the app itself, so Notification Center widgets stay fresh with no icon on screen at all.',
     styles: ['Gauge with the number', 'Gauge only', 'Number only', 'Bar', 'Battery', 'Two or three windows side by side'],
     extras: [
+      'Notch island: 5h 42% 2h 58m | 7d 61% 3d 3h beside the notch, every account with bars and resets when it opens',
+      'Pick which side of the notch the wings use and which windows they list; turning it on hides the menu bar icon',
       'Optional reset countdown and account name',
       'Red once a window passes 80 %',
       'Hide the Dock icon, the menu bar icon, or both',
@@ -225,7 +227,7 @@ export const en = {
     title: 'Support',
     description: 'How to connect an account, what the alerts mean, and where to ask for help.',
     intro: 'AIMeter is built and maintained by one person, in the open. Most answers are below; anything else is a GitHub issue or an email away.',
-    updated: 'For AIMeter 1.6',
+    updated: 'For AIMeter 2.0',
     sections: [
       {
         heading: 'Connecting on iPhone and iPad',

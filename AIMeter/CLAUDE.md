@@ -211,12 +211,22 @@
   connected install — the "Demo mode" card last. iOS: sheet
   with Done; macOS: Settings scene
   (wrapped in a NavigationStack so the link can push), plus the macOS-only
-  `MacChromeSettings` block — "Menu bar" (`MenuBarSettings`: a live
+  `MacChromeSettings` block — "Notch island" first (`NotchIslandSettings`:
+  a live preview of the **peek** — what hovering shows — on the real
+  silhouette, from the same `NotchIslandModel.current` the panel draws;
+  "Show usage in the notch", whose setter goes through
+  `PreferencesModel.setNotchIsland(enabled:)` and
+  `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left / Right
+  pill, only on a Mac with a notch; the shared `MetricChips`; "Peek on
+  hover"; and a footnote that states the status-item coupling and, on a
+  Mac without a notch, that a floating pill stands in), then "Menu bar" (`MenuBarSettings`: a live
   preview of the status item label on a light and a dark strip, rendered
   from the very same `MenuBarLabelModel.current` the `MenuBarExtra` uses,
   so the preview is the truth; the account pill (2+ accounts only); the
   Style menu (`MenuBarStyle`); the window pill for single styles or the
   multi-select window chips for `multi` (1–3, options' order kept);
+  a "Hidden while the notch island is on." note while the island has
+  the icon hidden;
   then the "Red at 80% used", "Reset countdown" (not for `multi`) and
   "Account name" (2+ only) toggles; the footnote also points at the
   Shortcuts-app route to a system-wide key), "Hiding AIMeter" (Hide Dock
@@ -385,16 +395,181 @@
   tooltip/accessibility text rather than a second glyph there (see "Peak
   hours" in the repo-root CLAUDE.md); the popover's top badge row is the
   visible one, where there's room.
+- **macOS notch island** (`AIMeter/Views/NotchIsland/`, on by default
+  on a Mac with a notch since 2.0 — see "Notch island" and "Notch island
+  prefs" in the repo-root CLAUDE.md for what it shows, the interaction
+  rules and the keys): a borderless, transparent, **non-activating**
+  `NSPanel` (`NotchIslandPanel`: on every Space, over full-screen apps,
+  never main and **never key** — a key non-activating panel steals the
+  keyboard from whatever the user was typing into, which is why there is
+  no Esc) hosting the SwiftUI tree (`NotchIslandRoot`) in a forced dark
+  `colorScheme`. One `NotchIslandController` (`AppChrome.notchIsland`),
+  started from `AIMeterApp`'s dashboard `onAppear` — which also publishes
+  the app's `PreferencesModel` to `AppEnvironment.prefs`, the island
+  living outside the scene graph — and again, idempotently, from
+  `applicationDidFinishLaunching`; `AppChrome.setNotchIsland(enabled:)`
+  starts and stops it live from Settings. The tree reads
+  `NotchIslandState` (data only: level, mode, bar height, the collapsed
+  slab's width, revealing, hovering) and reports through
+  `NotchIslandActions` (tap, hover, the slab's frame).
+  - **Level**: `mainMenu + 3`, above the menu bar itself — on macOS 26
+    the bar draws at the status-item level, and at `.statusBar` its
+    titles painted over the island and took its hover — and still below
+    pop-up menus.
+  - **Screen**: `NotchIslandGeometry.target` over `NSScreen.screens`
+    (the first with a notch, else the main screen), described as plain
+    rects (`NotchIslandController.describe`: `safeAreaInsets.top` and the
+    two auxiliary top areas; without a notch the menu bar's height from
+    `visibleFrame` stands in for `safeTop` and the mode is the pill —
+    `NSStatusBar.thickness` is 22 even under a 32 pt notch bar, so it is
+    never read as the bar's height). Re-evaluated on
+    `didChangeScreenParameters`, wake and a Space change, and acted on
+    only when the description actually changed. `DEBUG` only: the
+    `-AIMeterForcePill YES` launch argument tries the pill on a Mac with
+    a notch.
+  - **Interaction**: every cursor and click event is fed to the pure
+    `NotchIslandInteraction` (Shared, tested), and the controller only
+    arms the one timer it asks for and hands the view the level it lands
+    on. Three levels: **collapsed** is the bare notch (the pill shows
+    its row); staying on it for the dwell (250 ms) opens the **peek**,
+    the wings beside the notch with the chosen windows' figures, on the
+    side(s) `notchIslandLayout` says (both, left or right — a one-sided
+    peek is an asymmetric slab); staying on the open wings 1 s more
+    (the expand dwell), or a click at any time, opens **expanded**:
+    every account, the full lines, the footer. Leaving collapses after
+    150 ms whatever opened it (short, like boring.notch's: the slab is
+    one contiguous shape, so moving from a wing into the body never
+    leaves it). Hover is SwiftUI's own `onHover` on the slab — it
+    follows the slab's animated frame for free, and a transparent
+    window only receives the cursor over painted pixels anyway, which is
+    why there is no slack beyond the notch: a hover region wider than
+    the slab would have to be painted, and painted pixels take clicks
+    from the menu titles beside the notch. The hosting view's `hitTest`
+    is confined to the slab's frame (reported by the view on every
+    frame of the animation), so a click beside the wings or in the
+    shadow falls through. While open, a global and a local mouse-down
+    monitor (`NSEvent.addGlobalMonitorForEvents` — mouse monitors need
+    no Accessibility permission, keyboard ones would) close it on a
+    click outside the slab; both are removed on collapse, so a collapsed
+    island costs nothing. The first user-initiated open calls
+    `PreferencesModel.markNotchIslandDiscovered` (the deferred
+    status-item coupling). The **reveal**: once, two seconds after the
+    first start with the island on, the controller opens the peek
+    itself with the caption and closes it six seconds later unless the
+    cursor is inside or the user clicked (`notchIslandRevealed` is
+    written when the peek actually shows, so a launch that crashed or
+    quit before then still owes it). The unit-test host is this same
+    app: `AppChrome.startNotchIslandIfEnabled` skips the island when
+    `XCTestConfigurationFilePath` is set, so a test run never puts a
+    panel on the tester's notch. The wings (`CollapsedRow`, or its
+    "Connect" glyph with no accounts) are the peek and stay as the
+    expanded island's header.
+  - **Motion** — boring.notch's system, rebuilt (it is GPL-3.0: read for
+    the recipe, nothing copied). The window is sized **once** per
+    screen, to the largest island it can show plus the shadow
+    (`NotchIslandGeometry.windowFrame`: the notch with the widest wings
+    on both sides, never narrower than `expandedWidth`, the bar plus
+    `maxBodyHeight` tall, `shadowPadding` around; centered on the notch,
+    flush with the top edge — the pill's `pillGap` under the bar), and
+    **never resized**. Everything that moves is SwiftUI layout inside
+    it: the black slab is the *natural size of its content* — collapsed,
+    a clear rect the notch's width plus `closedOverhang` (black on
+    black, invisible: the slab *is* the notch); peeking, the wings row;
+    expanded, the row with the body (`expandedWidth` wide) under it —
+    drawn through `NotchIslandSurface` (content inset by the ears,
+    `.background(.black)`, `.clipShape(NotchShape)`, a 1 pt black line
+    along the top so the anti-aliased edge never shows a seam against
+    the bezel, and a shadow only while open or hovered). A level change
+    is therefore one layout change, and one implicit animation carries
+    all of it — size, the shape's radii (`animatableData`, from the
+    notch's 6/14 to the open 19/24, `NotchIslandGeometry.Radii`), the
+    shadow: `.animation(_, value: level)` with boring.notch's pair, a
+    spring of `response` 0.42 / `dampingFraction` 0.8 on the way open
+    (a touch of overshoot) and 0.45 / 1.0 on the way shut (none). The
+    body and the reveal caption come and go with
+    `.scale(0.8, anchor: .top)` + opacity on `.smooth(0.35)`, so they
+    unfold out of the bar while the slab grows under them; the wings
+    fade in over 0.25 s; the hover flap (`hoverFlap`, 10×3 pt, collapsed
+    only) and the shadow ride an `interactiveSpring` (0.38 / 0.8).
+    Nothing under Reduce Motion. No measurement goes up and no frame
+    comes down: the wings' gap carries a custom alignment guide
+    (`HorizontalAlignment.notchCenter`, the gap's center), every
+    container up to the root inherits it from that one child, and the
+    root aligns it with the window's center, which the controller put
+    on the notch — so an asymmetric peek stays fused to the notch and
+    the body is centered under it without anyone measuring a wing.
+    Every `SegmentView` text is `lineLimit(1)` + horizontal `fixedSize`,
+    so a segment never wraps while the slab animates. The window
+    server decides which pixels of a transparent window take the mouse
+    by sampling the content's alpha — when the window is shown or
+    **resized**, and not reliably otherwise: a panel shown before
+    SwiftUI had drawn was sampled empty and stayed deaf (no hover, no
+    click, while the reveal still drew fine), and `invalidateShadow`
+    alone did not refresh a shadowless window. So the controller
+    resamples by resizing (`resampleMouseShape`: one point taller for
+    one turn, then back — the content is top-aligned and the extra point
+    transparent, nothing visible moves): right away on the view's first
+    slab report, and 700 ms after the slab last changed size (past the
+    spring), so a closed island stops catching clicks where the wings
+    were. The hosting view also answers `acceptsFirstMouse` with true:
+    the panel is never key, so every click on it is a "first" click
+    AppKit would otherwise spend on activation. The slab's frame is
+    reported in a named coordinate space on the root (which fills the
+    hosting view), and until the first report nothing is confined.
+    Two earlier designs are recorded here so they are not
+    retried: resizing the window per level while SwiftUI re-measured
+    the content (each resize re-laid the content out, which
+    re-reported, which resized again — and the two never agreed on a
+    frame mid-animation, which is what read as clunky), and sizing the
+    window from content the view measured and reported through
+    preference keys (a feedback loop into `@Observable`, 99 % CPU, and
+    a backdrop that moved separately from the content it was meant to
+    frame). Every write into `NotchIslandState` is still guarded by an
+    equality check — `@Observable` notifies on every assignment.
+    The panel overrides `constrainFrameRect` to return the frame as
+    given: AppKit otherwise pushes every window below the menu bar, and
+    the island lives in it. Two AppKit traps, both hit once: setting
+    `isFloatingPanel` *after* `level` silently resets the level to
+    `.floating` (3), under the menu bar, which then takes every hover and
+    click (the panel sets no `isFloatingPanel`; `NotchIslandPanelTests`
+    pins the level above `.statusBar`); and an `NSHostingView` that is
+    the panel's `contentView` sizes the window from its content inside
+    AppKit's own constraints pass and SwiftUI requests another pass from
+    within it — "more Update Constraints in Window passes than there are
+    views in the window", a crash on the first peek — so the hosting
+    view sits inside `NotchIslandContainerView`, a plain autoresizing
+    container that forwards `hitTest` to it, with `sizingOptions` empty.
+  - **No timers while collapsed.** While open, one `.task` sleeps to
+    each minute boundary and refreshes the relative resets, cancelled on
+    collapse — a sleep rather than a `TimelineView`, since swapping the
+    slab in and out of one would change its identity at the very moment
+    it animates. Footer: Refresh and Open AIMeter grouped left, Settings alone
+    right; it activates the app only for Open AIMeter
+    (`AppChrome.revealMainWindow`) and Settings (`AppChrome.openSettings`:
+    the dashboard scene's captured `openSettings` action, else the
+    `showSettingsWindow:` selector); Refresh runs `refreshAll()` in
+    place; no keyboard shortcut (the panel is never key). Like the
+    popover it presents no sheets of its own.
+  - **Accessibility**: VoiceOver cannot hover, so the island's open
+    layers are unreachable to it by design — nothing lives only in the
+    island (the popover, the Dashboard and the tooltip carry every
+    figure), and the collapsed element still speaks the primary
+    account's figures.
+  - More than four accounts scroll inside a height-capped list measured
+    the same way `MenuBarView` measures its own.
 - **macOS hiding & re-entry** (`AppDelegate` + `AppChrome`, the project's
   only AppDelegate — SwiftUI has no scene hook for either concern):
   - `hideDockIcon` → `.accessory` activation policy, applied in
     `applicationWillFinishLaunching` so a hidden icon never flashes.
   - `.accessory` does **not** suppress `WindowGroup`'s auto-open (measured —
     the window is up by `applicationDidFinishLaunching`), so the delegate
-    closes it explicitly, but *only* while `statusItemVisible` is true.
-    With both icons hidden the dashboard is the app's sole affordance, so
-    launching has to produce it or the app would be unreachable — that
-    combination is the one case where a launch legitimately shows a window.
+    closes it explicitly, but *only* while `statusItemVisible` is true
+    or the notch island is on (its footer opens the Dashboard, so it is
+    an affordance too). With both icons hidden and no island the
+    dashboard is the app's sole affordance, so launching has to produce
+    it or the app would be unreachable — that combination is the one
+    case where a launch legitimately shows a window; `MacChromeSettings`'
+    `isFullyHidden` warning follows the same three-way rule.
   - Re-entry when everything is hidden is **relaunching the app**
     (Finder/Spotlight/`open -a`), which fires
     `applicationShouldHandleReopen` — verified to arrive with no Dock icon

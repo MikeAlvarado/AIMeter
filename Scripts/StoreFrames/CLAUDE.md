@@ -94,3 +94,11 @@ the slot's assets, then upload the frames **one at a time** in order
 Header and search-results assets go under "Header and Search Results".
 The What's New text and promotional text are not carried over between
 versions; screenshots are, until replaced. Save after each section.
+
+## Not store assets
+
+The notch island (2.0) is Mac-only and the Mac app is not in the store,
+so its captures are never store assets. They are website assets: in demo
+mode, `screencapture -R` of the screen's top edge at 2× with the island
+collapsed and expanded, converted to WebP into `site/src/assets/` (see
+`site/CLAUDE.md`). Nothing in this pipeline renders it.

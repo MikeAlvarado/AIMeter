@@ -2,7 +2,7 @@
 
 Open source iOS & macOS app that shows your AI subscription usage and
 remaining limits in widgets — home screen, Lock Screen, Notification Center,
-and the macOS menu bar.
+the macOS menu bar and, on a MacBook, the notch.
 
 First supported provider: **Claude Pro/Max** (session, weekly, and top-model
 weekly windows). The architecture is provider-agnostic, so more AI providers
@@ -63,6 +63,17 @@ can be added later.
   each limit used over the last day, week, or month, with every reset
   marked — drawn from samples the app and widgets already record, kept on
   the device for 30 days.
+- A **notch island** on the Mac: a black panel fused to the MacBook's
+  notch (a floating pill under the menu bar on a Mac without one).
+  Invisible until the cursor rests on the notch; then the figures you
+  chose peek out beside it (`5h 42% | 7d 61%`, on either side or both),
+  and staying a moment longer or clicking opens every account in full —
+  `5h 42% ↻2h 58m | 7d 61% ↻3d 3h` with bars, status and Refresh / Open
+  / Settings — never taking focus or the keyboard. On by default on a
+  MacBook with a notch, where the menu bar icon stays until you open the
+  island the first time and then gives way to it; opt-in elsewhere.
+  Settings previews the peek and picks which side(s) of the notch the
+  wings use and which windows they list.
 - macOS menu bar styles: gauge with or without the number, number only, a
   bar, a battery, or two or three windows side by side — plus an optional
   reset countdown, the account's name, and red once a window passes 80 %.
@@ -275,7 +286,8 @@ Packages/UsageKit      provider-agnostic Swift Package (no UI imports)
                        AccountRegistryStore (the list of connected logins)
 AIMeter/                multiplatform SwiftUI app (iOS + macOS);
                         AccountMigration upgrades a pre-multi-account
-                        install in place
+                        install in place; Views/NotchIsland/ is the
+                        macOS notch island (panel, controller, views)
 AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage (one
                         number), AIMeterAllAccounts (every account at
                         once), and a Live Activity (iOS) — all render App
@@ -290,8 +302,9 @@ site/                   the website (product page, privacy policy,
                         .github/workflows/site.yml
 Shared/                 config + presentation helpers used by app and
                         widgets, including PrivacyInfo.xcprivacy (bundled
-                        into both targets) and the shared provider header
-                        component
+                        into both targets), the shared provider header
+                        component and the notch island's pure model and
+                        geometry (unit-tested)
 ```
 
 Each of `AIMeter/`, `AIMeterWidgets/`, `Packages/UsageKit/Sources/UsageKit/Providers/Claude/`,

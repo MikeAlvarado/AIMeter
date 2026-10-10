@@ -93,7 +93,7 @@ struct Preferences: Sendable {
     var displayMode: DisplayMode = .used
     var resetStyle: ResetStyle = .relative
     var refreshCadence: RefreshCadence = .minutes30
-    /// Dark by default on the Mac since 1.7 — the notch island is black
+    /// Dark by default on the Mac since 2.0 — the notch island is black
     /// and the app sits beside it; iOS keeps following the system. An
     /// install that ever chose a theme has the key written and keeps it;
     /// one that never did falls into this default, which is the one
@@ -175,7 +175,7 @@ struct Preferences: Sendable {
 
     /// Whether the island is shown at all. The struct's default is off;
     /// `AccountMigration.migrateNotchIslandIfNeeded` writes the real
-    /// default once, at the first launch of 1.7: on for a Mac with a
+    /// default once, at the first launch of 2.0: on for a Mac with a
     /// notch, off for one without (the floating pill is opt-in there —
     /// a capsule under the menu bar of an iMac is not a quiet upgrade).
     var notchIslandEnabled: Bool = false

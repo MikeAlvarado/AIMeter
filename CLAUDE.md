@@ -71,7 +71,25 @@ assets and string catalog from there.
   (the view, the drawn bar/battery glyphs, and `MenuBarLabelModel.current`)
   over `Shared/MenuBarLabelModel.swift` (the pure model: text, fill, tint,
   accessibility — the part that is unit-tested); its Settings section is
-  `MenuBarSettings.swift`, split out of `MacChromeSettings.swift`.
+  `MenuBarSettings.swift`, split out of `MacChromeSettings.swift`. The
+  macOS notch island is `AIMeter/Views/NotchIsland/`:
+  `NotchIslandController.swift` (lifecycle, the interaction's timers
+  and monitors, the reveal) and `NotchIslandController+Screen.swift`
+  (which display, the fixed panel frame, the observers; the controller's
+  members it reaches are internal, not private, by necessity),
+  `NotchIslandPanel.swift` (the `NSPanel` and the hosting view that
+  confines hit-testing to the slab), `NotchShape.swift` (the eared
+  silhouette with animatable radii and `NotchIslandSurface`, the black
+  stack the content is drawn on), `NotchIslandView.swift` (the root: the
+  slab as the natural size of its content, the springs and transitions,
+  `NotchIslandModel.current`), `NotchIslandCollapsedRow.swift` (the wings
+  with the `notchCenter` alignment guide, and the segment line),
+  `NotchIslandRows.swift` (expanded content: account rows, footer) and
+  `NotchIslandSettings.swift` (its Settings section) — over the three
+  pure files in `Shared/`
+  (`NotchIslandModel.swift`, `NotchIslandGeometry.swift`,
+  `NotchIslandInteraction.swift`, all unit-tested), see "Notch island"
+  under "Presentation rules".
 - `AIMeter/Intents/` — the App Intents (`RefreshUsageIntent`,
   `ShowUsageIntent`, `AIMeterShortcuts`), both platforms; see
   "Conventions" for why they exist.
@@ -81,9 +99,12 @@ assets and string catalog from there.
   incident notice (dashboard, menu bar popover); `UsageRecorder.swift` is
   the one call that writes a persisted snapshot into both history stores;
   `HistoryChartData.swift` shapes a timeline into what the chart and the
-  sparkline draw (pure, tested); `PreferencesModel` keeps a single stored
-  `Preferences` value behind computed accessors, so the field list exists
-  once.
+  sparkline draw (pure, tested); `PreferencesModel.swift` (the
+  observable wrapper, split from `PreferencesStore.swift`, the value
+  type) keeps a single stored `Preferences` value behind computed
+  accessors, so the field list exists once; `MetricChips.swift` is the
+  1–3 window chip row the menu bar's
+  `multi` style and the notch island's wings both configure with.
 
 ## Architecture rules (non-negotiable)
 
@@ -704,9 +725,41 @@ the account silently freezes at its last snapshot.
   (default **false**), `claudeCodeUsageDismissed` (default false),
   `menuBarShowsClaudeCodeLine` (default false) — see "Claude Code local
   usage" above.
+- Notch island prefs (same App Group store, macOS-only meaning):
+  `notchIslandEnabled` (the struct's default is **false**; the real
+  default is written once, at the first launch of 2.0, by
+  `AccountMigration.migrateNotchIslandIfNeeded(defaults:hasNotch:)`,
+  gated on `notchIslandMigrated`: **true on a Mac with a notch, false on
+  one without** — the floating pill replacing a quiet status item on an
+  iMac is not an upgrade anyone asked for, so it stays opt-in there),
+  `notchIslandLayout` (`NotchIslandLayout`: `bothSides` default,
+  `leftOnly`, `rightOnly` — which wings open beside the notch on the
+  peek and head the expanded island; collapsed is always the bare notch;
+  the pill has no sides and always shows its one row), `notchIslandMetrics` (`[UsageWindow.Kind]`,
+  default session + weekly, stored by storage key like `menuBarMetrics`),
+  `notchIslandExpandsOnHover` ("Peek on hover", default **true**,
+  presence-checked; off, only a click opens it — the collapsed island
+  is invisible, so turning this off means knowing where to click),
+  `notchIslandMigrated` (the gate above), `notchIslandRevealed` (the
+  first-run reveal has been shown) and `notchIslandDiscovered` (the user
+  has opened the island once). The island and the status item are
+  **coupled**, in two steps: on the upgrade the icon *stays* until the
+  user opens the island for the first time
+  (`PreferencesModel.markNotchIslandDiscovered`, called by the controller
+  on the first user-initiated open, hides it then — never before the
+  user has found its replacement); the Settings toggle couples them
+  immediately (`setNotchIsland(enabled:)`: on hides the icon and counts
+  as discovered, off brings it back; "Hide menu bar icon" still works on
+  its own afterwards, so both can be shown together by hand). This is
+  the one deliberate exception to "defaults never change an existing
+  install". `appearance` defaults to **`.dark`
+  on macOS** since 2.0 (`.system` on iOS, `#if os(macOS)` on the struct's
+  default) — an install that ever chose a theme has the key written and
+  keeps it; one that never did falls into dark, the one other
+  upgrade-visible change, so the app matches the black island beside it.
 - macOS chrome prefs (same App Group store, macOS-only meaning):
-  `statusItemVisible` (default **true**), `hideDockIcon` (default
-  **false**), and the status item's own: `menuBarStyle` (`MenuBarStyle` —
+  `statusItemVisible` (default **true**, but see the island coupling
+  above), `hideDockIcon` (default **false**), and the status item's own: `menuBarStyle` (`MenuBarStyle` —
   `gaugeWithPercent` (the default and what shipped first), `gaugeOnly`,
   `percentOnly`, `bar`, `battery`, `multi`), `menuBarMetrics` (the 1–3
   windows `multi` lists, default session + weekly, filtered at render
@@ -717,7 +770,7 @@ the account silently freezes at its last snapshot.
   main-actor task advances at each minute boundary — **never** a
   `TimelineView` in the `MenuBarExtra` label: on macOS 27 that re-renders
   the status item from inside its own render and the app never finishes
-  launching, 100 % CPU; 1.6.0 shipped with that bug, fixed in 1.7) and `menuBarShowsAccountName` (default off, offered only with 2+
+  launching, 100 % CPU; 1.6.0 shipped with that bug, fixed in 2.0) and `menuBarShowsAccountName` (default off, offered only with 2+
   accounts). All default to the behavior that shipped before they
   existed, so an upgrade never changes an existing install — including
   the one migration: `menuBarShowsPercentage`, the pre-style bool, is
@@ -739,6 +792,62 @@ the account silently freezes at its last snapshot.
   bar, except under the danger tint, where it carries the real
   `Theme.danger` and is marked non-template. Whatever the style, the exact
   value(s) stay in the tooltip and the accessibility label.
+- Notch island (macOS, 2.0): a pure-black panel fused to the MacBook's
+  notch — or a floating pill under the menu bar on a Mac without one —
+  that shows every account's windows in Vibe Island's line format,
+  `✦ 5h 42% 2h 58m | 7d 61% 3d 3h`. The pure part is
+  `Shared/NotchIslandModel.swift` (what it shows, computed once from the
+  accounts' snapshots and the prefs, sibling of `MenuBarLabelModel`) and
+  `Shared/NotchIslandGeometry.swift` (where and how big, from plain
+  rects in AppKit coordinates); everything that touches `NSPanel` is
+  `AIMeter/Views/NotchIsland/` (see "macOS notch island" in
+  `AIMeter/CLAUDE.md` for the panel, hover, click, Esc and screen rules).
+  Data rules, the same as every other surface's: a segment's **label is
+  the window's real length**, not its kind — under 48 h in hours ("5h"),
+  from there on in days ("7d", "30d", so a provider whose week is a
+  month needs no new `Kind`), a per-model window is the model's name
+  (cut to 6 characters in the wings), credits is "Cr" (localized like the
+  menu bar's "S/W/C"); percentage and bar fraction follow `DisplayMode`;
+  the reset is the bare countdown or clock time per `ResetStyle` (the
+  full "Resets in …" sentence stays in the accessibility label), and a
+  credits slot shows `SpendStatus.amountLabel` there when
+  `showCreditsAmount` is on; tint is `UsageWindow.tint`'s rule, always
+  on (the island is a colored surface, unlike the monochrome status
+  item) — two colors, terracotta where Vibe uses green; the third slot
+  is `WindowSlots`/`ModelSlotFallback` exactly as on the Dashboard, and
+  an empty slot keeps its place with an em dash. **Collapsed, the
+  island is the notch and shows nothing** — so no menu title or status
+  item is ever covered (Xcode's menu runs up to the notch on a 14"); the
+  pill, having no notch to hide in, always shows its one row. The
+  interaction is the pure, tested `NotchIslandInteraction` (Shared): the
+  cursor has to **stay** on the notch for 250 ms before the island
+  **peeks** — passing over the notch on the way to a menu does nothing —
+  and the peek is the wings: the *primary*
+  account's `notchIslandMetrics` (1–3, filtered to what it reports like
+  `menuBarMetrics`, falling back to `glanceMetric`) as compact
+  `label percent` figures beside the notch, on the side(s)
+  `NotchIslandLayout` says (`bothSides`: first left, rest right;
+  `leftOnly`; `rightOnly`), no resets; with nothing connected the wing
+  carries a "Connect" affordance routed through `AppChrome.connect(.add)`.
+  Staying on the open wings 1 s more, or a **click** at any time, opens
+  the expanded island; a click on an expanded island, leaving it (after
+  150 ms, whatever opened it) or a click anywhere else closes it (mouse
+  monitors, which need no permission). The motion is boring.notch's
+  system, rebuilt (it is GPL, read for the recipe, nothing copied): a
+  fixed window, the slab as the natural size of its content, one spring
+  — see "macOS notch island" in `AIMeter/CLAUDE.md`. Nothing is pinned and the island
+  never takes keyboard focus, so there is no Esc. Once, on the first
+  launch with the island on, it peeks by itself for a few seconds with a
+  one-line caption saying what it is (`notchIslandRevealed`). Expanded,
+  the wings stay as the header and every account gets a row — identity header, the full line (label, percent, `↻` reset) with a 2 pt
+  bar under each segment, and a status line only when there is one:
+  "Updated 31 min ago" past `AppConfig.staleAfter`, the offline line, the
+  "Sign in again" prompt (`AppChrome.connect(.reconnect)`), or the raw
+  error — plus the incident notice while the provider reports one, and a
+  Refresh / Open AIMeter / Settings footer. Nothing lives only in the
+  island: the popover, the Dashboard and the tooltip carry every figure.
+  Demo mode shows the demo accounts (it is where the site's capture comes
+  from).
 - "Open at Login" has **no preference key**: `SMAppService.mainApp.status`
   is the state, read live by `LoginItemManager`. A mirrored bool would drift
   the moment the user revoked it in System Settings.
@@ -832,7 +941,12 @@ otherwise. Two colors, nothing else, on purpose. Exposed as a static,
 `tint(usedPct:severity:)`, so a caller that only carries those two values
 (not a full `UsageWindow`) can still make the same call rather than
 re-deriving a simplified copy — the Live Activity's `ContentState` does
-exactly this (see `AIMeterWidgets/CLAUDE.md`).
+exactly this (see `AIMeterWidgets/CLAUDE.md`). The notch island keeps
+the same two colors (their dark variants, drawn in a forced dark
+`colorScheme`) on a surface that is pure black whatever the appearance —
+the color of the hardware, not of the theme — with white at fixed
+opacities for labels (82 %), resets (50 %) and separators (22 %)
+(`NotchIslandStyle`).
 
 ## Localization
 
@@ -915,7 +1029,14 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   (`ServiceStatusTests`, with a stub `ServiceStatusSource` injected
   through `UsageModel.serviceStatusSources`), the menu bar label's
   text/fill/tint rules plus the style migration
-  (`MenuBarLabelModelTests`), `HistoryChartData` (readiness, clipping,
+  (`MenuBarLabelModelTests`), the notch island's label/figure/tint/reset,
+  third-slot, wing-split and status rules (`NotchIslandModelTests`), its
+  frames from this Mac's measured screen rects
+  (`NotchIslandGeometryTests`), its hover/dwell/leave/click state machine
+  (`NotchIslandInteractionTests`), its preference keys, the status-item
+  coupling and discovery, the hardware-decided upgrade step and the
+  per-platform appearance default (`NotchIslandPreferencesTests`),
+  `HistoryChartData` (readiness, clipping,
   segments, resets, the spoken summary, and that the demo timeline ends
   on the demo snapshot), and on macOS `ClaudeCodeUsageModel` over a
   scratch logs folder (scan, buckets, the popover line, off deletes the
