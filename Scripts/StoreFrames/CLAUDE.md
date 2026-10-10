@@ -80,6 +80,7 @@ add three pills (Free · Open source · No account).
     cp <work-dir>/widget-shots/home-widgets.png <work-dir>/raw/
     Scripts/store-frames.sh <work-dir> frames      # → <work-dir>/frames
     Scripts/store-frames.sh <work-dir> marketing   # → <work-dir>/marketing
+    Scripts/store-frames.sh <work-dir> notch       # → <work-dir>/notch-frames (see "Not store assets")
 
 The script copies sources rather than symlinking them: SwiftPM did not
 notice edits behind a symlink and rendered stale views once. Run it from
@@ -108,5 +109,10 @@ desktop holds under it stays out of the picture. `site/scripts/island.mjs`
 crops the strips, lays the panel over the collapsed strip (mirroring the
 desktop below the menu bar so no window shows) and writes the three
 `island-*.webp` files into `site/src/assets/` (see `site/CLAUDE.md`).
-Nothing in this pipeline renders it. The 2.0.0 set was taken on
-2026-10-09 on a 14" M4 Max (1512 pt wide, the panel's frame at x 401).
+The 2.0.0 set was taken on 2026-10-09 on a 14" M4 Max (1512 pt wide,
+the panel's frame at x 401). The one thing this pipeline renders for it
+is `Scripts/store-frames.sh <work-dir> notch`: two 16:9 frames
+(2400×1350, `notch-frames/notch-01-island.png` and `notch-02-peek.png`)
+in the style above — backdrop, one claim, the capture in a bezel — from
+the `island-*.png` copies `island.mjs` leaves in its work dir, for the
+website and posts, never the store.

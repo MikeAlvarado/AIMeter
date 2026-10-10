@@ -68,13 +68,20 @@ const expanded = await sharp({ create: { width: CROP.width, height: expandedHeig
   .toFile(resolve(out, 'island-expanded.webp'))
 console.log('island-expanded', expanded.width, expanded.height, expanded.size)
 
-for (const [src, name] of [
+const strips = [
   ['strip-collapsed.png', 'island-collapsed'],
   ['strip-peek.png', 'island-peek'],
-]) {
+]
+for (const [src, name] of strips) {
   const info = await sharp(resolve(work, src))
     .extract({ left: CROP.left, top: 0, width: CROP.width, height: STRIP_HEIGHT })
     .webp({ quality: 84 })
     .toFile(resolve(out, `${name}.webp`))
   console.log(name, info.width, info.height, info.size)
+}
+
+// PNG copies in the work dir, for `Scripts/store-frames.sh <work-dir> notch`
+// (the 16:9 frames for the website and posts).
+for (const name of ['island-collapsed', 'island-peek', 'island-expanded']) {
+  await sharp(resolve(out, `${name}.webp`)).png().toFile(resolve(work, `${name}.png`))
 }

@@ -3,11 +3,14 @@
 # page header and the search-results card) from the app's own views and
 # the raw simulator captures. See Scripts/StoreFrames/CLAUDE.md.
 #
-#   Scripts/store-frames.sh <work-dir> [frames|marketing|shots]
+#   Scripts/store-frames.sh <work-dir> [frames|marketing|shots|notch]
 #
 # <work-dir>/raw/ must hold the simulator captures the specs name
 # (dashboard.png, detail-top.png, ...) and appicon.png. Output lands in
 # <work-dir>/frames, <work-dir>/marketing or <work-dir>/widget-shots.
+# `notch` reads the island-*.png files site/scripts/island.mjs leaves in
+# its work dir and writes <work-dir>/notch-frames (website and posts, not
+# the store).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORK="${1:?work dir}"; MODE="${2:-frames}"
@@ -19,7 +22,7 @@ cp "$ROOT/Scripts/StoreFrames/Sources/"*.swift "$BUILD/Sources/"
 # The views the frames draw: copied, never symlinked (SwiftPM misses edits
 # behind a symlink), and the widget views minus their timeline plumbing.
 for f in Theme ThemeComponents ProviderIdentityView ProviderMark PeakBadge ClaudePeakStatus \
-         UsageFormatting WindowDisplay PreferencesStore AppConfig ProviderCatalog MenuBarLabelModel; do
+         UsageFormatting WindowDisplay PreferencesStore PreferencesModel NotchIslandModel AppConfig ProviderCatalog MenuBarLabelModel; do
   cp "$ROOT/Shared/$f.swift" "$BUILD/Sources/"
 done
 cp "$ROOT/AIMeterWidgets/MediumUsageView.swift" "$ROOT/AIMeterWidgets/SingleUsageWidgetView.swift" \
@@ -39,4 +42,5 @@ case "$MODE" in
   frames)    "$BUILD/.build/release/StoreFrames" "$WORK" frames ;;
   marketing) "$BUILD/.build/release/StoreFrames" "$WORK" marketing ;;
   shots)     mkdir -p "$WORK/widget-shots"; "$BUILD/.build/release/StoreFrames" "$WORK/widget-shots" ;;
+  notch)     "$BUILD/.build/release/StoreFrames" "$WORK" notch ;;
 esac

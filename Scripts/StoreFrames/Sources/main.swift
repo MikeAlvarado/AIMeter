@@ -23,6 +23,14 @@ func render<V: View>(_ view: V, size: CGSize, dark: Bool, name: String) {
     print("wrote", url.path)
 }
 
+if CommandLine.arguments.count > 2, CommandLine.arguments[2] == "notch" {
+    Task { @MainActor in
+        renderNotch(islandDir: CommandLine.arguments[1], outDir: CommandLine.arguments[1] + "/notch-frames")
+        exit(0)
+    }
+    RunLoop.main.run()
+}
+
 if CommandLine.arguments.count > 2, CommandLine.arguments[2] == "frames" {
     Task { @MainActor in
         renderFrames(rawDir: CommandLine.arguments[1] + "/raw", outDir: CommandLine.arguments[1] + "/frames", specs: phoneSpecs + padSpecs)
