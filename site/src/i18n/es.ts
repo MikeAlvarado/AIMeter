@@ -241,6 +241,12 @@ export const es = {
           'Cero configuración para tu primera cuenta si Claude Code está instalado y con sesión iniciada: AIMeter lee el inicio de sesión que ya guarda, en solo lectura, y nunca lo modifica. Cualquier cuenta adicional, o un Mac sin la CLI, inicia sesión igual que en iPhone. “Agregar cuenta” en el panel repite el flujo por cada inicio de sesión.',
         ],
       },
+      {
+        heading: 'Agradecimientos',
+        paragraphs: [
+          'La isla del notch le debe su sensación a dos proyectos de código abierto que llegaron antes. boring.notch, de TheBoredTeam en GitHub, fue la referencia de cómo debe moverse un panel en el notch: una ventana que nunca cambia de tamaño, una placa negra del tamaño de su propio contenido, un solo resorte que lleva tamaño, esquinas y sombra a la vez. Se leyó, no se copió; la isla de AIMeter es una implementación propia bajo licencia MIT. Vibe Island definió el formato de una línea que muestra la isla. Gracias a ambos.',
+        ],
+      },
     ],
     faqHeading: 'Preguntas frecuentes',
     faqs: [

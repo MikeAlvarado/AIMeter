@@ -1117,6 +1117,17 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   pipeline above (`site/scripts/images.mjs`).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
+- Credit where it is due, and only that. The notch island's motion
+  system follows boring.notch (GPL-3.0) and its line format follows Vibe
+  Island; both are named in the README's Acknowledgments, the website's
+  support page and the relevant doc sections here, always with the same
+  two facts: the approach was studied, no code was copied, and the tree
+  stays MIT. Naming an open-source project as inspiration carries no
+  license obligation; a copied file would (GPL is viral, MIT is not),
+  which is why the island was written from scratch and why a reference
+  clone never lives inside the repository. Neither name appears on the
+  landing page or in store metadata, under the same no-third-party-names
+  posture as the provider's.
 - App Store notes for the macOS background work: the `SMAppService` login
   item is reviewed, so it stays opt-in, off by default, visibly toggleable,
   and disclosed in `PrivacyView`. It needs no entitlement (unlike the

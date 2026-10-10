@@ -334,6 +334,18 @@ Xcode with ⌘U, or:
 xcodebuild test -project AIMeter.xcodeproj -scheme AIMeter -destination 'platform=macOS'
 ```
 
+## Acknowledgments
+
+The notch island owes its feel to two projects that got there first.
+[boring.notch](https://github.com/TheBoredTeam/boring.notch) (GPL-3.0)
+was the reference for *how* a notch panel should move — a fixed window
+that never resizes, the black slab sized by its own content, one spring
+carrying size, corners and shadow together. It was read, not copied:
+AIMeter's island is its own implementation, written from scratch under
+this repository's MIT license, and no boring.notch code is in this tree.
+Vibe Island set the one-line format the island shows
+(`5h 42% 2h 58m | 7d 61% 3d 3h`). Thanks to both.
+
 ## License
 
 [MIT](LICENSE)

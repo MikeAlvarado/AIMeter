@@ -80,6 +80,10 @@ a policy that hides where the data goes is not a policy; that is
 nominative, factual use, with the not-affiliated line under it. Every
 image is a demo-mode capture or a widget render from the store pipeline
 (`Scripts/StoreFrames/CLAUDE.md`), so no account names, no brand marks.
+The support page also carries the Acknowledgments (boring.notch and
+Vibe Island, for the notch island's approach and line format — studied,
+not copied; see "Open source hygiene" in the repo root `CLAUDE.md`),
+again off the landing page.
 Claims on the page must be true of the shipped app; when a feature
 changes, the dictionary entry changes with it (both languages). The
 Mac app is not on the Mac App Store (unsandboxed); the site says so and

@@ -241,6 +241,12 @@ export const en = {
           'Zero setup for your first account if Claude Code is installed and logged in: AIMeter reads the login it already keeps, read-only, and never modifies it. Any further account, or a Mac without the CLI, signs in the same way as on iPhone. Add account on the dashboard repeats the flow per login.',
         ],
       },
+      {
+        heading: 'Acknowledgments',
+        paragraphs: [
+          'The notch island owes its feel to two open source projects that got there first. boring.notch, by TheBoredTeam on GitHub, was the reference for how a notch panel should move: a window that never resizes, a black slab sized by its own content, one spring carrying size, corners and shadow together. It was read, not copied; AIMeter’s island is its own implementation under the MIT license. Vibe Island set the one-line format the island shows. Thanks to both.',
+        ],
+      },
     ],
     faqHeading: 'Frequently asked',
     faqs: [
