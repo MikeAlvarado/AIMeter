@@ -1162,6 +1162,11 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   deleted on the remote once landed — a stale branch with no PR only
   invites GitHub's "Compare & pull request" noise. `rerere` is on for
   this clone so a conflict resolved once is replayed automatically.
+- Releasing: iOS through App Store Connect; the Mac app as a Developer
+  ID-signed, notarized zip on a GitHub Release, built by
+  `Scripts/release-mac.sh` (hardened runtime is on for both macOS
+  targets; the script's header lists the certificate and `notarytool`
+  profile it needs) — see README → "Releasing".
 - Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
   `swift test` in `Packages/UsageKit` must pass warning-free, and
   `xcodebuild test -scheme AIMeter` (the app's own unit tests) on at

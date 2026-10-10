@@ -263,6 +263,21 @@ Note: the macOS app is intentionally **not sandboxed** — it needs to read
 Claude Code's credentials. Signing (any team) is required for the App Group
 (app ↔ widget data sharing) to work at runtime.
 
+### Releasing
+
+iOS ships through App Store Connect (archive the `AIMeter` scheme for
+iOS in Release, export with the `app-store-connect` method, submit).
+The Mac app ships as a Developer ID-signed, notarized zip attached to a
+GitHub Release: `Scripts/release-mac.sh <version>` archives, exports
+with the `developer-id` method, submits to `notarytool`, staples, and
+zips — it needs a Developer ID Application certificate in the login
+keychain and a `notarytool` keychain profile named `AIMeter` (the
+script's header says how to create both), and it must run from a
+Terminal, since signing prompts the keychain. Both macOS targets build
+with the hardened runtime, which notarization requires. Tag the commit
+(`git tag <version>`), then `gh release create <version> <zip>` with the
+release notes.
+
 ### Validating the endpoint
 
 Before trusting the app, you can see exactly what it reads:
