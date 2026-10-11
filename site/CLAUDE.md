@@ -31,9 +31,10 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   of a viewport; anchors scroll on the home page and navigate to `/#id`
   elsewhere), `MobileMenu`, `LanguageToggle`, `Footer` (lives inside the
   closing card).
-- `src/components/sections/` — in page order: `Hero` (pinned with
-  `sticky`, the next section slides over it while `useHeroRecede`
-  scales and dims the card), `Statement` (word-by-word brighten driven
+- `src/components/sections/` — in page order: `Hero` (full bleed,
+  flush with the window's sides and top; pinned with `sticky`, the next
+  section slides over it while `useHeroRecede` scales and dims the card
+  and rounds its corners in, up to the other cards' radius), `Statement` (word-by-word brighten driven
   by `useScrollProgress`), `Features` (hairline rows, number + title +
   body + points + a phone capture), `Widgets` (dark card: the three
   widget kinds, Lock Screen / Live Activity, widget renders, the

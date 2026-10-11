@@ -27,10 +27,12 @@ export function Hero() {
   })
 
   return (
-    <section id="top" className="p-inset-sm nav:p-inset">
+    // Full bleed: the hero reaches both sides and the top of the window;
+    // its corners round only as it recedes (`useHeroRecede`).
+    <section id="top">
       <div
         ref={cardRef}
-        className="rounded-shell night-gradient nav:min-h-[calc(100svh-4.5rem)] relative flex min-h-[calc(100svh-2rem)] flex-col overflow-hidden text-ivory [transform-origin:50%_0%]"
+        className="night-gradient relative flex min-h-svh flex-col overflow-hidden text-ivory [transform-origin:50%_0%]"
       >
         <motion.div
           aria-hidden
