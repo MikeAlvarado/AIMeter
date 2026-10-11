@@ -138,11 +138,10 @@ can be added later.
 ## Install
 
 - **iPhone and iPad**: [the App Store](https://apps.apple.com/app/id6797946742).
-- **Mac**: download `AIMeter-<version>-macOS.zip` from the
-  [latest release](https://github.com/MikeAlvarado/AIMeter/releases/latest)
-  — signed with Developer ID and notarized by Apple — unzip it and move
-  AIMeter to Applications. macOS 14 or later. Or build it yourself (see
-  [Building](#building)).
+- **Mac**: [download AIMeter-macOS.zip](https://github.com/MikeAlvarado/AIMeter/releases/latest/download/AIMeter-macOS.zip)
+  from the latest release — signed with Developer ID and notarized by
+  Apple — unzip it and move AIMeter to Applications. macOS 14 or later.
+  Or build it yourself (see [Building](#building)).
 
 ## Website
 
@@ -293,7 +292,9 @@ GitHub Release: `Scripts/release-mac.sh <version>` archives, exports
 with the `developer-id` method straight to Apple's notary service,
 waits for the notarized app (`xcodebuild -exportNotarizedApp`),
 verifies its signature, Gatekeeper assessment, stapled ticket and that
-the widget extension is sandboxed, and zips it. It needs nothing but the Apple account Xcode is signed in to,
+the widget extension is sandboxed, and zips it as `AIMeter-macOS.zip` —
+the same name in every release, which is what lets the website and the
+Install section above link to `releases/latest/download/AIMeter-macOS.zip`. It needs nothing but the Apple account Xcode is signed in to,
 as the team's Account Holder or an Admin: the Developer ID signature is
 a cloud-managed certificate and the upload uses that account, so there
 is no certificate to create and no `notarytool` profile. Run it from a

@@ -50,6 +50,9 @@ export interface Dictionary {
     appStore: string
     appStoreSmall: string
     github: string
+    /** The Mac badge: the full label (VoiceOver) and its small first line. */
+    macDownload: string
+    macDownloadSmall: string
     scroll: string
     platforms: string
     version: string

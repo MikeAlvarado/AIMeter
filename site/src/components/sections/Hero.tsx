@@ -9,6 +9,7 @@ import { easeOutExpo, easeOutSoft } from '../../lib/easing'
 import { CURRENT_VERSION } from '../../lib/site'
 import { AppStoreBadge } from '../ui/AppStoreBadge'
 import { GitHubLink } from '../ui/GitHubLink'
+import { MacDownloadBadge } from '../ui/MacDownloadBadge'
 import { GrainOverlay } from '../ui/GrainOverlay'
 import { MixedHeading } from '../ui/MixedHeading'
 import { PhoneFrame } from '../ui/PhoneFrame'
@@ -60,6 +61,7 @@ export function Hero() {
             </motion.p>
             <motion.div {...enter(0.65)} className="mt-9 flex flex-wrap items-center gap-3">
               <AppStoreBadge light />
+              <MacDownloadBadge />
               <GitHubLink className="text-ivory border-white/30 hover:bg-white/10">{t.hero.github}</GitHubLink>
             </motion.div>
           </div>

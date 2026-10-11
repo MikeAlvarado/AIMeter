@@ -19,7 +19,9 @@ TEAM="$(sed -n 's/^DEVELOPMENT_TEAM *= *//p' "$ROOT/Config.local.xcconfig" | tai
 [[ -n "$TEAM" ]] || { echo "DEVELOPMENT_TEAM missing from Config.local.xcconfig"; exit 1 }
 ARCHIVE="$WORK/AIMeter-$VERSION.xcarchive"
 EXPORT="$WORK/export"
-ZIP="$WORK/AIMeter-$VERSION-macOS.zip"
+# The same name in every release, so the website can link to
+# releases/latest/download/AIMeter-macOS.zip and never need a bump.
+ZIP="$WORK/AIMeter-macOS.zip"
 mkdir -p "$WORK"
 
 if [[ -d "$ARCHIVE" ]] && plutil -extract Distributions xml1 -o - "$ARCHIVE/Info.plist" 2>/dev/null | grep -q "Developer ID"; then

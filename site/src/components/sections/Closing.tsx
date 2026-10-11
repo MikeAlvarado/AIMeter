@@ -2,6 +2,7 @@ import { useLanguage } from '../../hooks/useLanguage'
 import { useRevealOnScroll } from '../../hooks/useRevealOnScroll'
 import { AppStoreBadge } from '../ui/AppStoreBadge'
 import { GitHubLink } from '../ui/GitHubLink'
+import { MacDownloadBadge } from '../ui/MacDownloadBadge'
 import { GrainOverlay } from '../ui/GrainOverlay'
 import { MixedHeading } from '../ui/MixedHeading'
 import { Footer } from '../layout/Footer'
@@ -21,6 +22,7 @@ export function Closing() {
           <MixedHeading data-reveal text={t.closing.heading} className="text-hero text-ivory max-w-3xl leading-[1.02] [text-shadow:0_0_34px_rgba(243,217,204,0.3)]" />
           <div data-reveal className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <AppStoreBadge light />
+            <MacDownloadBadge />
             <GitHubLink className="text-ivory border-white/30 hover:bg-white/10">{t.closing.github}</GitHubLink>
           </div>
         </div>

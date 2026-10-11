@@ -27,6 +27,8 @@ export const en = {
     appStore: 'Download on the App Store',
     appStoreSmall: 'Download on the',
     github: 'View on GitHub',
+    macDownload: 'Download for Mac',
+    macDownloadSmall: 'Download for',
     scroll: 'Scroll to explore',
     platforms: 'iPhone · iPad · Mac',
     version: 'Version',

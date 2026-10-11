@@ -27,6 +27,8 @@ export const es = {
     appStore: 'Descárgala en el App Store',
     appStoreSmall: 'Descárgala en el',
     github: 'Ver en GitHub',
+    macDownload: 'Descargar para Mac',
+    macDownloadSmall: 'Descargar para',
     scroll: 'Desliza para explorar',
     platforms: 'iPhone · iPad · Mac',
     version: 'Versión',

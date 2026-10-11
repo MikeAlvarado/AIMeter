@@ -40,15 +40,17 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   home-screen capture), `Mac` (the notch island's three captures —
   collapsed, peek, expanded — with a caption each, `MenuBarStrip`, a
   CSS illustration of the six status-item styles, plus the "Download
-  for Mac" link — `GITHUB_LATEST_RELEASE_URL`, GitHub's always-newest
-  release, so it never needs a bump — and the "build from source"
-  link), `Privacy`
+  for Mac" link and the "build from source" link), `Privacy`
   (four cards + link to `/privacy`), `OpenSource`, `Closing` (dark card
   + footer).
 - `src/components/ui/` — `MixedHeading` (`*word*` → accent italic,
   `\n` → line break), `PhoneFrame` (near-black bezel + hairline, same
   treatment as the store frames), `AppStoreBadge` (drawn, not an image),
-  `GitHubLink`, `BrandIcons` (Apple and GitHub paths from Simple Icons,
+  `MacDownloadBadge` (beside it in the hero and the closing card: the
+  accent, a laptop, never the Apple mark — the Mac app is not on the Mac
+  App Store; it links to `MAC_DOWNLOAD_URL`, the newest release's
+  `AIMeter-macOS.zip`, a name every release keeps so the link never
+  needs a bump), `GitHubLink`, `BrandIcons` (Apple and GitHub paths from Simple Icons,
   CC0), `GrainOverlay`, `DotGrid`, `Pill`, `MenuBarStrip`.
 - `src/hooks/` — `useLanguage`, `useLocalStorage`
   (`useSyncExternalStore`, cross-tab), `useMediaQuery`,

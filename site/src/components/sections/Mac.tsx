@@ -1,10 +1,10 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Download } from 'lucide-react'
 import islandCollapsed from '../../assets/island-collapsed.webp'
 import islandExpanded from '../../assets/island-expanded.webp'
 import islandPeek from '../../assets/island-peek.webp'
 import { useLanguage } from '../../hooks/useLanguage'
 import { useRevealOnScroll } from '../../hooks/useRevealOnScroll'
-import { GITHUB_BUILD_URL, GITHUB_LATEST_RELEASE_URL } from '../../lib/site'
+import { GITHUB_BUILD_URL, MAC_DOWNLOAD_URL } from '../../lib/site'
 import { MenuBarStrip } from '../ui/MenuBarStrip'
 import { MixedHeading } from '../ui/MixedHeading'
 
@@ -25,13 +25,11 @@ export function Mac() {
           <p className="text-ink-2 max-w-md text-lg">{t.mac.sub}</p>
           <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
             <a
-              href={GITHUB_LATEST_RELEASE_URL}
-              target="_blank"
-              rel="noreferrer"
+              href={MAC_DOWNLOAD_URL}
               className="text-accent inline-flex items-center gap-1 text-sm font-medium underline-offset-4 hover:underline"
             >
               {t.mac.download}
-              <ArrowUpRight className="size-4" aria-hidden />
+              <Download className="size-4" aria-hidden />
             </a>
             <a
               href={GITHUB_BUILD_URL}
