@@ -11,6 +11,7 @@ struct NotchFrame: View {
     static let canvas = CGSize(width: 1200, height: 675)
     let headline: String
     let subhead: String
+    let pills: [String]
     let expanded: NSImage
     let peek: NSImage?
 
@@ -66,9 +67,7 @@ struct NotchFrame: View {
                 .fixedSize(horizontal: false, vertical: true)
             // No price pill, the store's rule here too.
             HStack(spacing: 12) {
-                pill("Mac")
-                pill("Open source")
-                pill("No account")
+                ForEach(pills, id: \.self) { pill($0) }
             }
             .padding(.top, 4)
         }
@@ -87,21 +86,47 @@ struct NotchFrame: View {
     }
 }
 
+/// The frames' words per language: English for the website, Spanish for
+/// posts in Spanish (`store-frames.sh <work> notch es`).
+private struct NotchCopy {
+    let islandHeadline, islandSubhead, peekHeadline, peekSubhead: String
+    let pills: [String]
+
+    static func language(_ code: String) -> NotchCopy {
+        switch code {
+        case "es":
+            return NotchCopy(
+                islandHeadline: "Tus límites,\nen el notch.",
+                islandSubhead: "Deja el cursor sobre el notch de tu MacBook y tus cifras aparecen a su lado. Quédate, o haz clic, y se abren todas tus cuentas.",
+                peekHeadline: "Un vistazo, y luego todo.",
+                peekSubhead: "Una mirada junto al notch; un segundo más, o un clic, para cada cuenta, cada ventana y cada reinicio.",
+                pills: ["Mac", "Código abierto", "Sin cuenta"])
+        default:
+            return NotchCopy(
+                islandHeadline: "Your limits,\nin the notch.",
+                islandSubhead: "Rest the cursor on your MacBook’s notch and your figures appear beside it. Stay, or click, and every account opens.",
+                peekHeadline: "A peek, then everything.",
+                peekSubhead: "A glance beside the notch; a second more, or a click, for every account, every window and every reset.",
+                pills: ["Mac", "Open source", "No account"])
+        }
+    }
+}
+
 @MainActor
-func renderNotch(islandDir: String, outDir: String) {
+func renderNotch(islandDir: String, outDir: String, language: String = "en") {
     try? FileManager.default.createDirectory(atPath: outDir, withIntermediateDirectories: true)
     guard let expanded = NSImage(contentsOfFile: islandDir + "/island-expanded.png"),
           let peek = NSImage(contentsOfFile: islandDir + "/island-peek.png") else {
         print("missing island-expanded.png / island-peek.png in", islandDir); return
     }
+    let words = NotchCopy.language(language)
+    let suffix = language == "en" ? "" : "-" + language
     let specs: [(String, NotchFrame)] = [
-        ("notch-01-island", NotchFrame(
-            headline: "Your limits,\nin the notch.",
-            subhead: "Rest the cursor on your MacBook’s notch and your figures appear beside it. Stay, or click, and every account opens.",
+        ("notch-01-island" + suffix, NotchFrame(
+            headline: words.islandHeadline, subhead: words.islandSubhead, pills: words.pills,
             expanded: expanded, peek: nil)),
-        ("notch-02-peek", NotchFrame(
-            headline: "A peek, then everything.",
-            subhead: "A glance beside the notch; a second more, or a click, for every account, every window and every reset.",
+        ("notch-02-peek" + suffix, NotchFrame(
+            headline: words.peekHeadline, subhead: words.peekSubhead, pills: words.pills,
             expanded: expanded, peek: peek)),
     ]
     for (name, frame) in specs {

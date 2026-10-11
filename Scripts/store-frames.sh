@@ -3,14 +3,14 @@
 # page header and the search-results card) from the app's own views and
 # the raw simulator captures. See Scripts/StoreFrames/CLAUDE.md.
 #
-#   Scripts/store-frames.sh <work-dir> [frames|marketing|shots|notch]
+#   Scripts/store-frames.sh <work-dir> [frames|marketing|shots|notch] [en|es]
 #
 # <work-dir>/raw/ must hold the simulator captures the specs name
 # (dashboard.png, detail-top.png, ...) and appicon.png. Output lands in
 # <work-dir>/frames, <work-dir>/marketing or <work-dir>/widget-shots.
 # `notch` reads the island-*.png files site/scripts/island.mjs leaves in
 # its work dir and writes <work-dir>/notch-frames (website and posts, not
-# the store).
+# the store); `notch es` writes the Spanish copy, with an -es suffix.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORK="${1:?work dir}"; MODE="${2:-frames}"
@@ -42,5 +42,5 @@ case "$MODE" in
   frames)    "$BUILD/.build/release/StoreFrames" "$WORK" frames ;;
   marketing) "$BUILD/.build/release/StoreFrames" "$WORK" marketing ;;
   shots)     mkdir -p "$WORK/widget-shots"; "$BUILD/.build/release/StoreFrames" "$WORK/widget-shots" ;;
-  notch)     "$BUILD/.build/release/StoreFrames" "$WORK" notch ;;
+  notch)     "$BUILD/.build/release/StoreFrames" "$WORK" notch "${3:-en}" ;;
 esac

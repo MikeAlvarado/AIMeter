@@ -93,7 +93,7 @@ add three pills (Free · Open source · No account).
     cp <work-dir>/widget-shots/home-widgets.png <work-dir>/raw/
     Scripts/store-frames.sh <work-dir> frames      # → <work-dir>/frames
     Scripts/store-frames.sh <work-dir> marketing   # → <work-dir>/marketing
-    Scripts/store-frames.sh <work-dir> notch       # → <work-dir>/notch-frames (see "Not store assets")
+    Scripts/store-frames.sh <work-dir> notch [es]  # → <work-dir>/notch-frames (see "Not store assets")
 
 The script copies sources rather than symlinking them: SwiftPM did not
 notice edits behind a symlink and rendered stale views once. Run it from
@@ -128,4 +128,7 @@ is `Scripts/store-frames.sh <work-dir> notch`: two 16:9 frames
 (2400×1350, `notch-frames/notch-01-island.png` and `notch-02-peek.png`)
 in the style above — backdrop, one claim, the capture in a bezel — from
 the `island-*.png` copies `island.mjs` leaves in its work dir, for the
-website and posts, never the store.
+website and posts, never the store. `notch es` renders the same two
+frames with the Spanish copy (`notch-01-island-es.png`,
+`notch-02-peek-es.png`) for posts in Spanish; the captures inside stay
+the demo's, which is English.

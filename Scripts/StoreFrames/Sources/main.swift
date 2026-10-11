@@ -25,7 +25,8 @@ func render<V: View>(_ view: V, size: CGSize, dark: Bool, name: String) {
 
 if CommandLine.arguments.count > 2, CommandLine.arguments[2] == "notch" {
     Task { @MainActor in
-        renderNotch(islandDir: CommandLine.arguments[1], outDir: CommandLine.arguments[1] + "/notch-frames")
+        let language = CommandLine.arguments.count > 3 ? CommandLine.arguments[3] : "en"
+        renderNotch(islandDir: CommandLine.arguments[1], outDir: CommandLine.arguments[1] + "/notch-frames", language: language)
         exit(0)
     }
     RunLoop.main.run()
