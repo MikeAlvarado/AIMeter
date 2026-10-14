@@ -150,7 +150,7 @@ final class NotchIslandModelTests: XCTestCase {
         XCTAssertEqual(segments(make([withSpend], fallback: .hidden)).map(\.kind), [.session, .weekly])
         let forced = segments(make([noModel], fallback: .credits))
         XCTAssertEqual(forced.map(\.kind), [.session, .weekly, .credits])
-        XCTAssertEqual(forced[2].percent, "—", "an empty slot keeps its place")
+        XCTAssertEqual(forced[2].percent, "--", "an empty slot keeps its place")
         XCTAssertEqual(forced[2].fraction, 0)
         XCTAssertEqual(segments(make()).map(\.kind), [.session, .weekly, .modelSpecific("Fable")], "a real model window wins")
     }
@@ -217,11 +217,11 @@ final class NotchIslandModelTests: XCTestCase {
         XCTAssertTrue(one.accessibilityLabel.contains("42%"))
 
         let two = make([input("a", name: "Personal"), input("b", name: "Work")])
-        XCTAssertTrue(two.accounts[0].accessibilityLabel.hasPrefix("Personal — "))
-        XCTAssertTrue(two.accounts[1].accessibilityLabel.hasPrefix("Work — "))
+        XCTAssertTrue(two.accounts[0].accessibilityLabel.hasPrefix("Personal: "))
+        XCTAssertTrue(two.accounts[1].accessibilityLabel.hasPrefix("Work: "))
         XCTAssertTrue(two.accessibilityLabel.contains("; "))
 
-        XCTAssertEqual(make([]).accessibilityLabel, String(localized: "AIMeter — no usage data yet"))
+        XCTAssertEqual(make([]).accessibilityLabel, String(localized: "AIMeter: no usage data yet"))
         XCTAssertEqual(make(incident: "Claude reports an incident: Elevated errors").incident, "Claude reports an incident: Elevated errors")
     }
 }

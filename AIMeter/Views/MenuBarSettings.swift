@@ -147,7 +147,7 @@ struct MenuBarSettings: View {
         var text = prefs.menuBarStyle == .multi
             ? String(localized: "Pick up to three windows to list side by side. The exact values are always in the tooltip.")
             : String(localized: "Pick which window the menu bar reads. Whatever the style, the exact value is always in the tooltip.")
-        text += " " + String(localized: "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there — no extra permissions needed.")
+        text += " " + String(localized: "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there. No extra permissions needed.")
         return text
     }
 }

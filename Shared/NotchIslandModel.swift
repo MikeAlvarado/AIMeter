@@ -144,8 +144,8 @@ struct NotchIslandModel: Equatable {
             }
             let status = Self.status(of: input, now: now)
             var spoken = segments.map(\.accessibilityLabel).joined(separator: ", ")
-            if spoken.isEmpty { spoken = String(localized: "AIMeter — no usage data yet") }
-            if several { spoken = "\(input.account.displayName) — \(spoken)" }
+            if spoken.isEmpty { spoken = String(localized: "AIMeter: no usage data yet") }
+            if several { spoken = "\(input.account.displayName): \(spoken)" }
             return Account(
                 id: input.account.accountID,
                 name: input.account.displayName,
@@ -167,7 +167,7 @@ struct NotchIslandModel: Equatable {
         )
         self.incident = incident
         accessibilityLabel = accounts.isEmpty
-            ? String(localized: "AIMeter — no usage data yet")
+            ? String(localized: "AIMeter: no usage data yet")
             : accounts.map(\.accessibilityLabel).joined(separator: "; ")
     }
 
@@ -214,7 +214,7 @@ struct NotchIslandModel: Equatable {
         let label = label(for: kind, duration: duration, compact: compact)
         guard let window else {
             return Segment(
-                kind: kind, label: label, percent: String(localized: "—"), fraction: 0, reset: nil, tint: .normal,
+                kind: kind, label: label, percent: String(localized: "--"), fraction: 0, reset: nil, tint: .normal,
                 accessibilityLabel: String(localized: "\(kind.shortName): no data")
             )
         }

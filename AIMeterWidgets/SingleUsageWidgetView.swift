@@ -60,7 +60,7 @@ struct SingleUsageWidgetView: View {
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink)
             } else {
-                Text("—")
+                Text("--")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundStyle(Theme.inkSecondary)
             }

@@ -193,7 +193,7 @@ enum ProviderDetailRows {
     /// the endpoint still reports stale percent/used/limit values even
     /// then, and this is the same "no live data" placeholder every other
     /// row in the app uses instead of a misleading number.
-    private static var placeholder: String { "—" }
+    private static var placeholder: String { "--" }
 
     private static func money(_ amount: Double, _ currency: String?) -> String {
         amount.formatted(.currency(code: currency ?? "USD"))

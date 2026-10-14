@@ -162,7 +162,7 @@ struct PeakNotificationsSettings: View {
         .task {
             await model.refreshNotificationAuthorization()
         }
-        SectionFootnote(text: String(localized: "Notify when Claude's documented weekday peak window starts or ends. This is one Claude-wide policy, not a per-account setting — every connected account's rate-limit alerts still have their own toggles on that account's own screen."))
+        SectionFootnote(text: String(localized: "Notify when Claude's documented weekday peak window starts or ends. This is one Claude-wide policy, not a per-account setting. Every connected account's rate-limit alerts still have their own toggles on that account's own screen."))
     }
 }
 

@@ -62,6 +62,9 @@ store image.
   (three longer pills truncate on the search card). A capture of
   Provider Detail must stop above the Spend card, and the footnote
   under the alerts names the provider, so it never shows either.
+- No em dash (—) anywhere in store text: headlines, subheads, What's
+  New, promotional text, description, keywords, in every language. A
+  comma, colon or period instead.
 - No brand mark in a capture: the Claude / Claude Code marks exist in
   the icon picker since 1.6, and demo accounts deliberately never use
   them. A screenshot of the picker itself would show them, so there is

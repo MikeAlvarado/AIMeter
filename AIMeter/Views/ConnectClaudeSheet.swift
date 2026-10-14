@@ -144,7 +144,7 @@ struct ConnectClaudeSheet: View {
                 // Privacy & data: what this app is, what the token is for,
                 // and where it stays. Every clause must remain true to the
                 // code (read-only endpoints, Keychain-only storage, no server).
-                Text("AIMeter is an independent app, not affiliated with Anthropic. It only reads your own usage limits — it never sends prompts or spends your plan's usage — and your sign-in token stays on this device.")
+                Text("AIMeter is an independent app, not affiliated with Anthropic. It only reads your own usage limits, never sends prompts or spends your plan's usage, and your sign-in token stays on this device.")
                     .font(Theme.caption)
                     .foregroundStyle(Theme.inkSecondary)
                     .multilineTextAlignment(.center)
@@ -153,7 +153,7 @@ struct ConnectClaudeSheet: View {
                     // Worth saying here specifically: signing in through this
                     // flow is also what *prevents* a repeat, and pasting the
                     // CLI's own JSON above is what invites one.
-                    Text("Signing in here gives AIMeter its own token, separate from Claude Code's — so neither can invalidate the other's.")
+                    Text("Signing in here gives AIMeter its own token, separate from Claude Code's, so neither can invalidate the other's.")
                         .font(Theme.caption)
                         .foregroundStyle(Theme.inkSecondary)
                         .multilineTextAlignment(.center)
@@ -185,7 +185,7 @@ struct ConnectClaudeSheet: View {
 
     private var explainer: String {
         if reconnecting != nil {
-            return String(localized: "Claude no longer accepts this account's saved sign-in. Sign in again to restore it — its history, alerts, and widgets all stay as they are.")
+            return String(localized: "Claude no longer accepts this account's saved sign-in. Sign in again to restore it. Its history, alerts, and widgets all stay as they are.")
         }
         return String(localized: "AIMeter will open Claude's sign-in page in your browser. After you approve, copy the code it shows and paste it back here to finish. Any sign-in method works.")
     }

@@ -38,7 +38,7 @@ private struct ClaudeCodeInviteCard: View {
         @Bindable var prefs = prefs
         Card {
             VStack(alignment: .leading, spacing: 12) {
-                Text("See what your Claude Code sessions on this Mac would cost at API prices. AIMeter reads only the token counts from its local logs — never what you wrote or what it answered.")
+                Text("See what your Claude Code sessions on this Mac would cost at API prices. AIMeter reads only the token counts from its local logs, never what you wrote or what it answered.")
                     .font(Theme.caption)
                     .foregroundStyle(Theme.inkSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -121,7 +121,7 @@ enum ClaudeCodeFormatting {
 
     /// "1.2M tokens · ≈ $4.10", or "—" for an empty bucket.
     static func summary(_ aggregate: ClaudeCodeUsageAggregate) -> String {
-        guard aggregate.messages > 0 else { return "—" }
+        guard aggregate.messages > 0 else { return "--" }
         let tokens = String(localized: "\(UsageFormatting.tokens(aggregate.tokens.total)) tokens")
         guard let cost = aggregate.cost else { return tokens }
         let prefix = aggregate.hasUnpricedModels ? "> " : "≈ "

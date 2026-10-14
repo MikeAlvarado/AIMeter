@@ -14,13 +14,13 @@ struct PrivacyView: View {
                         PrivacyRow(
                             systemName: "iphone",
                             title: String(localized: "Everything stays on your device"),
-                            text: String(localized: "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way — from a fixed schedule and the clock, with no extra network call.")
+                            text: String(localized: "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way: from a fixed schedule and the clock, with no extra network call.")
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(
                             systemName: "chart.xyaxis.line",
                             title: String(localized: "Up to 30 days of history"),
-                            text: String(localized: "To draw the history chart, AIMeter keeps the percentages it has already fetched — just the numbers and their dates, nothing about what you did — on this device for 30 days. Disconnecting an account deletes its history.")
+                            text: String(localized: "To draw the history chart, AIMeter keeps the percentages it has already fetched (just the numbers and their dates, nothing about what you did) on this device for 30 days. Disconnecting an account deletes its history.")
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(
@@ -39,13 +39,13 @@ struct PrivacyView: View {
                         PrivacyRow(
                             systemName: "terminal",
                             title: String(localized: "Claude Code usage is opt-in"),
-                            text: String(localized: "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields — never your prompts or the replies — keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere.")
+                            text: String(localized: "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields (never your prompts or the replies), keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere.")
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(
                             systemName: "power",
                             title: String(localized: "Opening at login is yours to choose"),
-                            text: String(localized: "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS — which asks you to approve it — and turning it back off removes it. All it does when it starts is read your usage.")
+                            text: String(localized: "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS, which asks you to approve it, and turning it back off removes it. All it does when it starts is read your usage.")
                         )
                         #endif
                     }
@@ -56,11 +56,11 @@ struct PrivacyView: View {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                         #if os(macOS)
-                        Text("On the Mac, AIMeter reads the login Claude Code already keeps on this computer — read-only. It never modifies or rotates those tokens; Claude Code stays in charge of its own session.")
+                        Text("On the Mac, AIMeter only reads the login Claude Code already keeps on this computer. It never modifies or rotates those tokens; Claude Code stays in charge of its own session.")
                             .font(.callout)
                             .foregroundStyle(Theme.ink)
                         #else
-                        Text("You sign in on Claude's own page in your browser — never an embedded web view — so AIMeter can't see your password. You only paste back the code Claude shows after you approve.")
+                        Text("You sign in on Claude's own page in your browser, never in an embedded web view, so AIMeter can't see your password. You only paste back the code Claude shows after you approve.")
                             .font(.callout)
                             .foregroundStyle(Theme.ink)
                         #endif
@@ -87,10 +87,10 @@ struct PrivacyView: View {
                             // proof that the inference scope is never asked for.
                             ScopeChip(name: "user:profile")
                         }
-                        Text("When you sign in through AIMeter it requests only the profile scope — what the usage and profile endpoints need — and never the inference scope, so a token issued to AIMeter can't send prompts or spend usage on your behalf even in theory. Either way it only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). The source is open if you want to verify.")
+                        Text("When you sign in through AIMeter it requests only the profile scope (what the usage and profile endpoints need) and never the inference scope, so a token issued to AIMeter can't send prompts or spend usage on your behalf even in theory. Either way it only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). The source is open if you want to verify.")
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
-                        Text("AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous — nothing about you or your account is sent — and you can turn it off in Settings.")
+                        Text("AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous (nothing about you or your account is sent), and you can turn it off in Settings.")
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
                     }
@@ -122,7 +122,7 @@ struct PrivacyView: View {
     /// file) — this row must say the true thing for whichever one is running.
     private var keychainRowText: String {
         #if os(macOS)
-        String(localized: "Your sign-in token is read from the Keychain item Claude Code already keeps on this Mac — read-only, and never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead.")
+        String(localized: "Your sign-in token is only read from the Keychain item Claude Code already keeps on this Mac, and it never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead.")
         #else
         String(localized: "Your sign-in token is stored encrypted in the system Keychain, shared only with the widget (through the App Group's keychain access group) so it can refresh usage by itself. It is used exclusively to read your usage.")
         #endif

@@ -146,7 +146,7 @@ final class ClaudeCodeUsageModel {
         let today = aggregate(.today, now: now)
         guard today.messages > 0 else { return nil }
         let tokens = UsageFormatting.tokens(today.tokens.total)
-        let cost = today.cost.map(UsageFormatting.usd) ?? "—"
+        let cost = today.cost.map(UsageFormatting.usd) ?? "--"
         return String(localized: "Claude Code today: \(tokens) · ≈ \(cost)")
     }
 

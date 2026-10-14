@@ -14,7 +14,7 @@ struct SmartNotificationTogglesCard: View {
 
     /// Shared caption for the section.
     static var footnote: String {
-        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in — the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating.")
+        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out and tells you whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in. It's the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating.")
     }
 
     var body: some View {

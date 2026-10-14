@@ -177,7 +177,7 @@ struct NotchIslandRoot: View {
     /// The first-run caption under the open wings: one line saying what
     /// the island is and how it opens.
     private var revealCaption: some View {
-        Text("AIMeter lives in the notch now — rest the cursor here to peek, click to open.")
+        Text("AIMeter lives in the notch now. Rest the cursor here to peek, click to open.")
             .font(.system(size: 11))
             .foregroundStyle(NotchIslandStyle.reset)
             .multilineTextAlignment(.center)

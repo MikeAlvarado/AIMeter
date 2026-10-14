@@ -4,48 +4,48 @@
     "" : {
 
     },
-    "—" : {
+    "--" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "—"
+            "value" : "--"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "—"
+            "value" : "--"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "—"
+            "value" : "--"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "—"
+            "value" : "--"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "—"
+            "value" : "--"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "—"
+            "value" : "--"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "—"
+            "value" : "--"
           }
         }
       }
@@ -1313,12 +1313,12 @@
         }
       }
     },
-    "Sample data. Equivalent cost at list prices as of %@ — your subscription already covers this usage; it is not a bill." : {
+    "Sample data. Equivalent cost at list prices as of %@. Your subscription already covers this usage, so this is not a bill." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beispieldaten. Entsprechende Kosten zu Listenpreisen vom %@ – dein Abo deckt diese Nutzung bereits ab; das ist keine Rechnung."
+            "value" : "Beispieldaten. Entsprechende Kosten zu Listenpreisen vom %@. Dein Abo deckt diese Nutzung bereits ab, das ist also keine Rechnung."
           }
         },
         "es" : {
@@ -2760,12 +2760,12 @@
         }
       }
     },
-    "Adds up the tokens in ~/.claude/projects on this Mac, per model, and prices them at Anthropic's API list rates. Only the usage fields are decoded — never your prompts or Claude's replies — and nothing leaves this Mac. Off by default." : {
+    "Adds up the tokens in ~/.claude/projects on this Mac, per model, and prices them at Anthropic's API list rates. Only the usage fields are decoded, never your prompts or Claude's replies, and nothing leaves this Mac. Off by default." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zählt die Tokens in ~/.claude/projects auf diesem Mac pro Modell zusammen und bewertet sie zu den API-Listenpreisen von Anthropic. Nur die Nutzungsfelder werden dekodiert – nie deine Prompts oder Claudes Antworten – und nichts verlässt diesen Mac. Standardmäßig aus."
+            "value" : "Zählt die Tokens in ~/.claude/projects auf diesem Mac pro Modell zusammen und bewertet sie zu den API-Listenpreisen von Anthropic. Nur die Nutzungsfelder werden dekodiert, nie deine Prompts oder Claudes Antworten, und nichts verlässt diesen Mac. Standardmäßig aus."
           }
         },
         "es" : {
@@ -2777,7 +2777,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Additionne les jetons de ~/.claude/projects sur ce Mac, par modèle, et les valorise aux tarifs publics de l'API Anthropic. Seuls les champs d'usage sont décodés — jamais vos prompts ni les réponses de Claude — et rien ne quitte ce Mac. Désactivé par défaut."
+            "value" : "Additionne les jetons de ~/.claude/projects sur ce Mac, par modèle, et les valorise aux tarifs publics de l'API Anthropic. Seuls les champs d'usage sont décodés, jamais vos prompts ni les réponses de Claude, et rien ne quitte ce Mac. Désactivé par défaut."
           }
         },
         "ja" : {
@@ -2795,7 +2795,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Soma os tokens em ~/.claude/projects neste Mac, por modelo, e os precifica pela tabela da API da Anthropic. Só os campos de uso são decodificados — nunca seus prompts ou as respostas do Claude — e nada sai deste Mac. Desativado por padrão."
+            "value" : "Soma os tokens em ~/.claude/projects neste Mac, por modelo, e os precifica pela tabela da API da Anthropic. Só os campos de uso são decodificados, nunca seus prompts ou as respostas do Claude, e nada sai deste Mac. Desativado por padrão."
           }
         },
         "zh-Hans" : {
@@ -2898,12 +2898,12 @@
         }
       }
     },
-    "AIMeter — no usage data yet" : {
+    "AIMeter: no usage data yet" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter – noch keine Nutzungsdaten"
+            "value" : "AIMeter: noch keine Nutzungsdaten"
           }
         },
         "es" : {
@@ -2915,41 +2915,41 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter — pas encore de données d'usage"
+            "value" : "AIMeter : pas encore de données d'usage"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter — まだ使用データがありません"
+            "value" : "AIMeter：まだ使用データがありません"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter — 아직 사용 데이터 없음"
+            "value" : "AIMeter: 아직 사용 데이터 없음"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter — ainda sem dados de uso"
+            "value" : "AIMeter: ainda sem dados de uso"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter — 暂无用量数据"
+            "value" : "AIMeter：暂无用量数据"
           }
         }
       }
     },
-    "AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous — nothing about you or your account is sent — and you can turn it off in Settings." : {
+    "AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous (nothing about you or your account is sent), and you can turn it off in Settings." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter liest beim Aktualisieren auch die öffentliche Statusseite des Anbieters, um eine Störung des Dienstes von einem Problem mit deinem Account zu unterscheiden. Diese Anfrage ist anonym – es wird nichts über dich oder deinen Account gesendet – und du kannst sie in den Einstellungen abschalten."
+            "value" : "AIMeter liest beim Aktualisieren auch die öffentliche Statusseite des Anbieters, um eine Störung des Dienstes von einem Problem mit deinem Account zu unterscheiden. Diese Anfrage ist anonym (es wird nichts über dich oder deinen Account gesendet), und du kannst sie in den Einstellungen abschalten."
           }
         },
         "es" : {
@@ -2961,7 +2961,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter consulte aussi la page d'état publique du fournisseur lors de l'actualisation, pour distinguer une panne du service d'un problème avec votre compte. Cette requête est anonyme — rien sur vous ni votre compte n'est envoyé — et vous pouvez la désactiver dans les Réglages."
+            "value" : "AIMeter consulte aussi la page d'état publique du fournisseur lors de l'actualisation, pour distinguer une panne du service d'un problème avec votre compte. Cette requête est anonyme (rien sur vous ni votre compte n'est envoyé), et vous pouvez la désactiver dans les Réglages."
           }
         },
         "ja" : {
@@ -2979,7 +2979,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O AIMeter também consulta a página pública de status do provedor ao atualizar, para distinguir uma queda do serviço de um problema com sua conta. Essa requisição é anônima — nada sobre você ou sua conta é enviado — e você pode desativá-la nos Ajustes."
+            "value" : "O AIMeter também consulta a página pública de status do provedor ao atualizar, para distinguir uma queda do serviço de um problema com sua conta. Essa requisição é anônima (nada sobre você ou sua conta é enviado), e você pode desativá-la nos Ajustes."
           }
         },
         "zh-Hans" : {
@@ -3037,24 +3037,24 @@
         }
       }
     },
-    "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way — from a fixed schedule and the clock, with no extra network call." : {
+    "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way: from a fixed schedule and the clock, with no extra network call." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter hat keinen Server und keinen eigenen Account. Die Nutzung wird direkt von Anthropic gelesen und auf diesem Gerät zwischengespeichert, damit Widgets sie anzeigen können. Nichts wird woandershin gesendet. Die Stoßzeiten-Anzeige wird genauso berechnet – aus einem festen Zeitplan und der Uhr, ohne zusätzliche Netzwerkanfrage."
+            "value" : "AIMeter hat keinen Server und keinen eigenen Account. Die Nutzung wird direkt von Anthropic gelesen und auf diesem Gerät zwischengespeichert, damit Widgets sie anzeigen können. Nichts wird woandershin gesendet. Die Stoßzeiten-Anzeige wird genauso berechnet: aus einem festen Zeitplan und der Uhr, ohne zusätzliche Netzwerkanfrage."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de Anthropic y se guarda en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro lado. El indicador de horario pico se calcula de la misma forma — a partir de un horario fijo y el reloj, sin ninguna llamada de red adicional."
+            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de Anthropic y se guarda en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro lado. El indicador de horario pico se calcula de la misma forma: a partir de un horario fijo y el reloj, sin ninguna llamada de red adicional."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter n'a ni serveur ni compte propre. L'usage est lu directement auprès d'Anthropic et mis en cache sur cet appareil pour que les widgets puissent l'afficher. Rien n'est envoyé ailleurs. L'indicateur d'heures de pointe est calculé de la même façon — à partir d'un horaire fixe et de l'horloge, sans appel réseau supplémentaire."
+            "value" : "AIMeter n'a ni serveur ni compte propre. L'usage est lu directement auprès d'Anthropic et mis en cache sur cet appareil pour que les widgets puissent l'afficher. Rien n'est envoyé ailleurs. L'indicateur d'heures de pointe est calculé de la même façon : à partir d'un horaire fixe et de l'horloge, sans appel réseau supplémentaire."
           }
         },
         "ja" : {
@@ -3072,7 +3072,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O AIMeter não tem servidor nem conta própria. O uso é lido diretamente da Anthropic e guardado neste dispositivo para que os widgets possam mostrá-lo. Nada é enviado a outro lugar. O indicador de horário de pico é calculado do mesmo jeito — a partir de um horário fixo e do relógio, sem chamada de rede extra."
+            "value" : "O AIMeter não tem servidor nem conta própria. O uso é lido diretamente da Anthropic e guardado neste dispositivo para que os widgets possam mostrá-lo. Nada é enviado a outro lugar. O indicador de horário de pico é calculado do mesmo jeito: a partir de um horário fixo e do relógio, sem chamada de rede extra."
           }
         },
         "zh-Hans" : {
@@ -3083,24 +3083,24 @@
         }
       }
     },
-    "AIMeter is an independent app, not affiliated with Anthropic. It only reads your own usage limits — it never sends prompts or spends your plan's usage — and your sign-in token stays on this device." : {
+    "AIMeter is an independent app, not affiliated with Anthropic. It only reads your own usage limits, never sends prompts or spends your plan's usage, and your sign-in token stays on this device." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter ist eine unabhängige App und nicht mit Anthropic verbunden. Sie liest nur deine eigenen Nutzungslimits – sie sendet nie Prompts und verbraucht keine Nutzung deines Plans – und dein Anmeldetoken bleibt auf diesem Gerät."
+            "value" : "AIMeter ist eine unabhängige App und nicht mit Anthropic verbunden. Sie liest nur deine eigenen Nutzungslimits, sendet nie Prompts und verbraucht keine Nutzung deines Plans, und dein Anmeldetoken bleibt auf diesem Gerät."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter es una app independiente, sin afiliación con Anthropic. Solo lee tus propios límites de uso — nunca envía prompts ni gasta el uso de tu plan — y tu token de inicio de sesión no sale de este dispositivo."
+            "value" : "AIMeter es una app independiente, sin afiliación con Anthropic. Solo lee tus propios límites de uso, nunca envía prompts ni gasta el uso de tu plan, y tu token de inicio de sesión no sale de este dispositivo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter est une app indépendante, sans lien avec Anthropic. Elle ne lit que vos propres limites d'usage — elle n'envoie jamais de prompts ni ne consomme l'usage de votre forfait — et votre jeton de connexion reste sur cet appareil."
+            "value" : "AIMeter est une app indépendante, sans lien avec Anthropic. Elle ne lit que vos propres limites d'usage, n'envoie jamais de prompts ni ne consomme l'usage de votre forfait, et votre jeton de connexion reste sur cet appareil."
           }
         },
         "ja" : {
@@ -3118,7 +3118,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O AIMeter é um app independente, sem vínculo com a Anthropic. Ele só lê seus próprios limites de uso — nunca envia prompts nem gasta o uso do seu plano — e seu token de login fica neste dispositivo."
+            "value" : "O AIMeter é um app independente, sem vínculo com a Anthropic. Ele só lê seus próprios limites de uso, nunca envia prompts nem gasta o uso do seu plano, e seu token de login fica neste dispositivo."
           }
         },
         "zh-Hans" : {
@@ -3226,12 +3226,12 @@
 
     }
     },
-    "AIMeter keeps running and refreshing your usage either way — hiding only changes what you see. Quit still quits." : {
+    "AIMeter keeps running and refreshing your usage either way. Hiding only changes what you see. Quit still quits." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter läuft so oder so weiter und aktualisiert deine Nutzung – Ausblenden ändert nur, was du siehst. Beenden beendet weiterhin."
+            "value" : "AIMeter läuft so oder so weiter und aktualisiert deine Nutzung. Ausblenden ändert nur, was du siehst. Beenden beendet weiterhin."
           }
         },
         "es" : {
@@ -3243,7 +3243,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter continue de fonctionner et d'actualiser votre usage dans tous les cas — masquer ne change que ce que vous voyez. Quitter quitte toujours."
+            "value" : "AIMeter continue de fonctionner et d'actualiser votre usage dans tous les cas. Masquer ne change que ce que vous voyez. Quitter quitte toujours."
           }
         },
         "ja" : {
@@ -3261,7 +3261,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O AIMeter continua rodando e atualizando seu uso de qualquer forma — ocultar só muda o que você vê. Encerrar continua encerrando."
+            "value" : "O AIMeter continua rodando e atualizando seu uso de qualquer forma. Ocultar só muda o que você vê. Encerrar continua encerrando."
           }
         },
         "zh-Hans" : {
@@ -3272,24 +3272,24 @@
         }
       }
     },
-    "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS — which asks you to approve it — and turning it back off removes it. All it does when it starts is read your usage." : {
+    "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS, which asks you to approve it, and turning it back off removes it. All it does when it starts is read your usage." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter trägt sich nie selbst in deine Anmeldeobjekte ein. Wenn du „Bei der Anmeldung öffnen“ in den Einstellungen aktivierst, registriert es sich bei macOS – das dich um Zustimmung bittet – und beim Deaktivieren wird es wieder entfernt. Beim Start liest es nur deine Nutzung."
+            "value" : "AIMeter trägt sich nie selbst in deine Anmeldeobjekte ein. Wenn du „Bei der Anmeldung öffnen“ in den Einstellungen aktivierst, registriert es sich bei macOS, das dich um Zustimmung bittet, und beim Deaktivieren wird es wieder entfernt. Beim Start liest es nur deine Nutzung."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter nunca se añade solo a tus ítems de inicio. Si activas «Abrir al iniciar sesión» en los ajustes, se registra en macOS —que te pedirá aprobarlo— y al desactivarlo se elimina. Lo único que hace al arrancar es leer tu uso."
+            "value" : "AIMeter nunca se añade solo a tus ítems de inicio. Si activas «Abrir al iniciar sesión» en los ajustes, se registra en macOS, que te pedirá aprobarlo, y al desactivarlo se elimina. Lo único que hace al arrancar es leer tu uso."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter ne s'ajoute jamais seul à vos éléments d'ouverture. Si vous activez « Ouvrir à la connexion » dans les Réglages, il s'enregistre auprès de macOS — qui vous demande de l'approuver — et le désactiver le retire. Au démarrage, il ne fait que lire votre usage."
+            "value" : "AIMeter ne s'ajoute jamais seul à vos éléments d'ouverture. Si vous activez « Ouvrir à la connexion » dans les Réglages, il s'enregistre auprès de macOS, qui vous demande de l'approuver, et le désactiver le retire. Au démarrage, il ne fait que lire votre usage."
           }
         },
         "ja" : {
@@ -3307,7 +3307,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O AIMeter nunca se adiciona sozinho aos seus itens de início. Se você ativar \"Abrir ao iniciar sessão\" nos Ajustes, ele se registra no macOS — que pede sua aprovação — e desativar remove o registro. Ao iniciar, tudo o que ele faz é ler seu uso."
+            "value" : "O AIMeter nunca se adiciona sozinho aos seus itens de início. Se você ativar \"Abrir ao iniciar sessão\" nos Ajustes, ele se registra no macOS, que pede sua aprovação, e desativar remove o registro. Ao iniciar, tudo o que ele faz é ler seu uso."
           }
         },
         "zh-Hans" : {
@@ -4663,12 +4663,12 @@
         }
       }
     },
-    "Claude no longer accepts this account's saved sign-in. Sign in again to restore it — its history, alerts, and widgets all stay as they are." : {
+    "Claude no longer accepts this account's saved sign-in. Sign in again to restore it. Its history, alerts, and widgets all stay as they are." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Claude akzeptiert die gespeicherte Anmeldung dieses Accounts nicht mehr. Melde dich erneut an, um ihn wiederherzustellen – Verlauf, Hinweise und Widgets bleiben unverändert."
+            "value" : "Claude akzeptiert die gespeicherte Anmeldung dieses Accounts nicht mehr. Melde dich erneut an, um ihn wiederherzustellen. Verlauf, Hinweise und Widgets bleiben unverändert."
           }
         },
         "es" : {
@@ -4680,7 +4680,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Claude n'accepte plus la connexion enregistrée de ce compte. Reconnectez-vous pour le rétablir — son historique, ses alertes et ses widgets restent tels quels."
+            "value" : "Claude n'accepte plus la connexion enregistrée de ce compte. Reconnectez-vous pour le rétablir. Son historique, ses alertes et ses widgets restent tels quels."
           }
         },
         "ja" : {
@@ -4698,7 +4698,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Claude não aceita mais o login salvo desta conta. Entre de novo para restaurá-la — histórico, alertas e widgets continuam como estão."
+            "value" : "O Claude não aceita mais o login salvo desta conta. Entre de novo para restaurá-la. Histórico, alertas e widgets continuam como estão."
           }
         },
         "zh-Hans" : {
@@ -5540,12 +5540,12 @@
         }
       }
     },
-    "Equivalent cost at Anthropic's list prices as of %@. Your subscription already covers this usage — it is not a bill. Read from %@." : {
+    "Equivalent cost at Anthropic's list prices as of %@. Your subscription already covers this usage, so this is not a bill. Read from %@." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entsprechende Kosten zu den Listenpreisen von Anthropic vom %1$@. Dein Abo deckt diese Nutzung bereits ab – das ist keine Rechnung. Gelesen aus %2$@."
+            "value" : "Entsprechende Kosten zu den Listenpreisen von Anthropic vom %1$@. Dein Abo deckt diese Nutzung bereits ab, das ist also keine Rechnung. Gelesen aus %2$@."
           }
         },
         "es" : {
@@ -5557,7 +5557,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coût équivalent aux tarifs publics d'Anthropic au %1$@. Votre abonnement couvre déjà cet usage — ce n'est pas une facture. Lu depuis %2$@."
+            "value" : "Coût équivalent aux tarifs publics d'Anthropic au %1$@. Votre abonnement couvre déjà cet usage, ce n'est donc pas une facture. Lu depuis %2$@."
           }
         },
         "ja" : {
@@ -5575,7 +5575,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custo equivalente aos preços de tabela da Anthropic em %1$@. Sua assinatura já cobre este uso — não é uma cobrança. Lido de %2$@."
+            "value" : "Custo equivalente aos preços de tabela da Anthropic em %1$@. Sua assinatura já cobre este uso, então não é uma cobrança. Lido de %2$@."
           }
         },
         "zh-Hans" : {
@@ -6099,12 +6099,12 @@
 
     }
     },
-    "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there — no extra permissions needed." : {
+    "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there. No extra permissions needed." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Für einen systemweiten Kurzbefehl füge „Refresh Usage“ oder „Show Usage“ in der App „Kurzbefehle“ hinzu und weise dort eine Taste zu – keine zusätzlichen Berechtigungen nötig."
+            "value" : "Für einen systemweiten Kurzbefehl füge „Refresh Usage“ oder „Show Usage“ in der App „Kurzbefehle“ hinzu und weise dort eine Taste zu. Keine zusätzlichen Berechtigungen nötig."
           }
         },
         "es" : {
@@ -6116,7 +6116,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour un raccourci global, ajoutez « Refresh Usage » ou « Show Usage » dans l'app Raccourcis et attribuez-lui une touche — aucune autorisation supplémentaire nécessaire."
+            "value" : "Pour un raccourci global, ajoutez « Refresh Usage » ou « Show Usage » dans l'app Raccourcis et attribuez-lui une touche. Aucune autorisation supplémentaire nécessaire."
           }
         },
         "ja" : {
@@ -6134,7 +6134,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para um atalho global, adicione \"Refresh Usage\" ou \"Show Usage\" no app Atalhos e atribua uma tecla lá — sem permissões extras."
+            "value" : "Para um atalho global, adicione \"Refresh Usage\" ou \"Show Usage\" no app Atalhos e atribua uma tecla lá. Sem permissões extras."
           }
         },
         "zh-Hans" : {
@@ -6651,12 +6651,12 @@
         }
       }
     },
-    "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields — never your prompts or the replies — keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere." : {
+    "If you turn it on in Settings, AIMeter reads the session logs Claude Code keeps in ~/.claude/projects to add up tokens per model and price them at API list rates. It decodes only the usage fields (never your prompts or the replies), keeps a small index of counts in its own Application Support folder, deletes that index when you turn it off, and sends nothing anywhere." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn du es in den Einstellungen aktivierst, liest AIMeter die Sitzungsprotokolle, die Claude Code in ~/.claude/projects ablegt, um Tokens pro Modell zu zählen und zu API-Listenpreisen zu bewerten. Es dekodiert nur die Nutzungsfelder – nie deine Prompts oder die Antworten –, behält einen kleinen Index der Zähler in seinem eigenen Application-Support-Ordner, löscht diesen Index beim Deaktivieren und sendet nichts irgendwohin."
+            "value" : "Wenn du es in den Einstellungen aktivierst, liest AIMeter die Sitzungsprotokolle, die Claude Code in ~/.claude/projects ablegt, um Tokens pro Modell zu zählen und zu API-Listenpreisen zu bewerten. Es dekodiert nur die Nutzungsfelder (nie deine Prompts oder die Antworten), behält einen kleinen Index der Zähler in seinem eigenen Application-Support-Ordner, löscht diesen Index beim Deaktivieren und sendet nichts irgendwohin."
           }
         },
         "es" : {
@@ -6668,7 +6668,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si vous l'activez dans les Réglages, AIMeter lit les journaux de session que Claude Code conserve dans ~/.claude/projects pour additionner les jetons par modèle et les valoriser aux tarifs publics de l'API. Il ne décode que les champs d'usage — jamais vos prompts ni les réponses —, conserve un petit index de compteurs dans son propre dossier Application Support, supprime cet index quand vous le désactivez, et n'envoie rien nulle part."
+            "value" : "Si vous l'activez dans les Réglages, AIMeter lit les journaux de session que Claude Code conserve dans ~/.claude/projects pour additionner les jetons par modèle et les valoriser aux tarifs publics de l'API. Il ne décode que les champs d'usage (jamais vos prompts ni les réponses), conserve un petit index de compteurs dans son propre dossier Application Support, supprime cet index quand vous le désactivez, et n'envoie rien nulle part."
           }
         },
         "ja" : {
@@ -6686,7 +6686,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se você ativar nos Ajustes, o AIMeter lê os registros de sessão que o Claude Code guarda em ~/.claude/projects para somar tokens por modelo e precificá-los pela tabela da API. Ele decodifica só os campos de uso — nunca seus prompts ou as respostas —, mantém um pequeno índice de contagens na própria pasta Application Support, apaga esse índice ao desativar e não envia nada a lugar nenhum."
+            "value" : "Se você ativar nos Ajustes, o AIMeter lê os registros de sessão que o Claude Code guarda em ~/.claude/projects para somar tokens por modelo e precificá-los pela tabela da API. Ele decodifica só os campos de uso (nunca seus prompts ou as respostas), mantém um pequeno índice de contagens na própria pasta Application Support, apaga esse índice ao desativar e não envia nada a lugar nenhum."
           }
         },
         "zh-Hans" : {
@@ -7434,71 +7434,24 @@
         }
       }
     },
-    "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Peak-hours alerts notify when Claude's documented weekday peak window starts or ends." : {
-      "extractionState" : "stale",
+    "Near-limit warns you at the level you set. Limit reached fires when a window maxes out and tells you whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in. It's the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Nahe dem Limit“ warnt dich bei der von dir gesetzten Schwelle. „Limit erreicht“ wird ausgelöst, wenn ein Fenster ausgeschöpft ist – und ob Weiternutzen Credits verbraucht. Aufbrauch-Warnungen sagen ein vorzeitiges Ausschöpfen voraus. Hinweise bei vorzeitigem Reset erscheinen, wenn ein Limit früher als geplant aufgefüllt wird. Stoßzeiten-Hinweise melden, wenn Claudes dokumentiertes Stoßzeiten-Fenster an Werktagen beginnt oder endet."
+            "value" : "„Nahe dem Limit“ warnt dich bei der von dir gesetzten Schwelle. „Limit erreicht“ wird ausgelöst, wenn ein Fenster ausgeschöpft ist, und sagt dir, ob Weiternutzen Credits verbraucht. Aufbrauch-Warnungen sagen ein vorzeitiges Ausschöpfen voraus. Hinweise bei vorzeitigem Reset erscheinen, wenn ein Limit früher als geplant aufgefüllt wird. Anmelde-Hinweise sagen dir, wenn Claude die gespeicherte Anmeldung dieses Accounts nicht mehr akzeptiert. Das ist der einzige standardmäßig aktive Hinweis, denn sonst würde dir nichts sagen, dass die Zahlen nicht mehr aktualisiert werden."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota — e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto. Los avisos de horario pico notifican cuando comienza o termina la ventana de horario pico documentada de Claude entre semana."
+            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto. Los avisos de sesión te dicen cuándo Claude deja de aceptar el inicio de sesión guardado de esta cuenta: la única alerta activada por defecto, porque si no, nada te avisaría de que los números dejaron de actualizarse."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'approche de la limite vous avertit au niveau que vous choisissez. Limite atteinte se déclenche quand une fenêtre est pleine — et indique si continuer consomme des crédits. Les avertissements d'épuisement prédisent un épuisement anticipé. Les alertes de réinitialisation anticipée se déclenchent quand une limite se recharge plus tôt que prévu. Les alertes d'heures de pointe signalent le début ou la fin de la fenêtre de pointe documentée de Claude en semaine."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上限接近は設定したレベルで警告します。上限到達はウインドウを使い切ったときに通知し、続行するとクレジットを消費するかも知らせます。使い切り警告は早期の枯渇を予測します。早期リセットの通知は上限が予定より早く回復したときに届きます。ピーク時間の通知はClaudeが公表する平日のピーク時間帯の開始と終了を知らせます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "한도 근접은 설정한 수준에서 경고합니다. 한도 도달은 기간이 다 찼을 때 알리며 계속 사용하면 크레딧이 소비되는지도 알려줍니다. 소진 경고는 조기 소진을 예측합니다. 조기 초기화 알림은 한도가 예정보다 일찍 충전될 때 옵니다. 피크 시간 알림은 Claude가 공식적으로 안내한 평일 피크 시간대의 시작과 끝을 알립니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proximidade do limite avisa no nível que você definir. Limite atingido dispara quando uma janela esgota — e informa se continuar consome créditos. Avisos de esgotamento preveem um esgotamento antecipado. Alertas de reinício antecipado disparam quando um limite recarrega antes do previsto. Alertas de horário de pico avisam quando a janela de pico documentada do Claude em dias úteis começa ou termina."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接近额度会在你设定的水平发出警告。额度用完会在周期耗尽时触发，并说明继续使用是否消耗额度金。耗尽警告预测提前用完。提前重置提醒在额度早于计划恢复时触发。高峰时段提醒在 Claude 公布的工作日高峰时段开始或结束时通知。"
-          }
-        }
-      }
-    },
-    "Near-limit warns you at the level you set. Limit reached fires when a window maxes out — and whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in — the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "„Nahe dem Limit“ warnt dich bei der von dir gesetzten Schwelle. „Limit erreicht“ wird ausgelöst, wenn ein Fenster ausgeschöpft ist – und ob Weiternutzen Credits verbraucht. Aufbrauch-Warnungen sagen ein vorzeitiges Ausschöpfen voraus. Hinweise bei vorzeitigem Reset erscheinen, wenn ein Limit früher als geplant aufgefüllt wird. Anmelde-Hinweise sagen dir, wenn Claude die gespeicherte Anmeldung dieses Accounts nicht mehr akzeptiert – der einzige standardmäßig aktive Hinweis, denn sonst würde dir nichts sagen, dass die Zahlen nicht mehr aktualisiert werden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota — e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto. Los avisos de sesión te dicen cuándo Claude deja de aceptar el inicio de sesión guardado de esta cuenta: la única alerta activada por defecto, porque si no, nada te avisaría de que los números dejaron de actualizarse."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'approche de la limite vous avertit au niveau que vous choisissez. Limite atteinte se déclenche quand une fenêtre est pleine — et indique si continuer consomme des crédits. Les avertissements d'épuisement prédisent un épuisement anticipé. Les alertes de réinitialisation anticipée se déclenchent quand une limite se recharge plus tôt que prévu. Les alertes de connexion vous préviennent quand Claude cesse d'accepter la connexion enregistrée de ce compte — la seule alerte activée par défaut, car sinon rien ne vous dirait que les chiffres ont cessé de se mettre à jour."
+            "value" : "L'approche de la limite vous avertit au niveau que vous choisissez. Limite atteinte se déclenche quand une fenêtre est pleine et indique si continuer consomme des crédits. Les avertissements d'épuisement prédisent un épuisement anticipé. Les alertes de réinitialisation anticipée se déclenchent quand une limite se recharge plus tôt que prévu. Les alertes de connexion vous préviennent quand Claude cesse d'accepter la connexion enregistrée de ce compte. C'est la seule alerte activée par défaut, car sinon rien ne vous dirait que les chiffres ont cessé de se mettre à jour."
           }
         },
         "ja" : {
@@ -7516,7 +7469,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Proximidade do limite avisa no nível que você definir. Limite atingido dispara quando uma janela esgota — e informa se continuar consome créditos. Avisos de esgotamento preveem um esgotamento antecipado. Alertas de reinício antecipado disparam quando um limite recarrega antes do previsto. Alertas de login avisam quando o Claude deixa de aceitar o login salvo desta conta — o único alerta ativado por padrão, porque senão nada avisaria que os números pararam de atualizar."
+            "value" : "Proximidade do limite avisa no nível que você definir. Limite atingido dispara quando uma janela esgota e informa se continuar consome créditos. Avisos de esgotamento preveem um esgotamento antecipado. Alertas de reinício antecipado disparam quando um limite recarrega antes do previsto. Alertas de login avisam quando o Claude deixa de aceitar o login salvo desta conta. É o único alerta ativado por padrão, porque senão nada avisaria que os números pararam de atualizar."
           }
         },
         "zh-Hans" : {
@@ -8034,24 +7987,24 @@
         }
       }
     },
-    "Notify when Claude's documented weekday peak window starts or ends. This is one Claude-wide policy, not a per-account setting — every connected account's rate-limit alerts still have their own toggles on that account's own screen." : {
+    "Notify when Claude's documented weekday peak window starts or ends. This is one Claude-wide policy, not a per-account setting. Every connected account's rate-limit alerts still have their own toggles on that account's own screen." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Benachrichtigt, wenn Claudes dokumentiertes Stoßzeiten-Fenster an Werktagen beginnt oder endet. Das ist eine Claude-weite Regel, keine Einstellung pro Account – die Limit-Hinweise jedes verbundenen Accounts haben weiterhin ihre eigenen Schalter auf dem Bildschirm des jeweiligen Accounts."
+            "value" : "Benachrichtigt, wenn Claudes dokumentiertes Stoßzeiten-Fenster an Werktagen beginnt oder endet. Das ist eine Claude-weite Regel, keine Einstellung pro Account. Die Limit-Hinweise jedes verbundenen Accounts haben weiterhin ihre eigenen Schalter auf dem Bildschirm des jeweiligen Accounts."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifica cuando comienza o termina la ventana de horario pico documentada de Claude entre semana. Es una política de Claude compartida por todas las cuentas, no una configuración por cuenta — los avisos de límites de cada cuenta conectada siguen teniendo sus propios interruptores en la pantalla de esa cuenta."
+            "value" : "Notifica cuando comienza o termina la ventana de horario pico documentada de Claude entre semana. Es una política de Claude compartida por todas las cuentas, no una configuración por cuenta. Los avisos de límites de cada cuenta conectada siguen teniendo sus propios interruptores en la pantalla de esa cuenta."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prévient quand la fenêtre de pointe documentée de Claude en semaine commence ou se termine. C'est une règle globale de Claude, pas un réglage par compte — les alertes de limites de chaque compte connecté gardent leurs propres interrupteurs sur l'écran de ce compte."
+            "value" : "Prévient quand la fenêtre de pointe documentée de Claude en semaine commence ou se termine. C'est une règle globale de Claude, pas un réglage par compte. Les alertes de limites de chaque compte connecté gardent leurs propres interrupteurs sur l'écran de ce compte."
           }
         },
         "ja" : {
@@ -8069,7 +8022,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifica quando a janela de pico documentada do Claude em dias úteis começa ou termina. É uma política geral do Claude, não um ajuste por conta — os alertas de limite de cada conta conectada continuam com seus próprios controles na tela dessa conta."
+            "value" : "Notifica quando a janela de pico documentada do Claude em dias úteis começa ou termina. É uma política geral do Claude, não um ajuste por conta. Os alertas de limite de cada conta conectada continuam com seus próprios controles na tela dessa conta."
           }
         },
         "zh-Hans" : {
@@ -8172,48 +8125,48 @@
         }
       }
     },
-    "Offline — showing the last update." : {
+    "Offline. Showing the last update." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offline – letzte Aktualisierung wird angezeigt."
+            "value" : "Offline. Letzte Aktualisierung wird angezeigt."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin conexión — se muestra la última actualización."
+            "value" : "Sin conexión. Se muestra la última actualización."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hors ligne — dernière mise à jour affichée."
+            "value" : "Hors ligne. Dernière mise à jour affichée."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オフライン — 最後の更新を表示中。"
+            "value" : "オフライン。最後の更新を表示中。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오프라인 — 마지막 업데이트를 표시 중."
+            "value" : "오프라인. 마지막 업데이트를 표시 중."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sem conexão — mostrando a última atualização."
+            "value" : "Sem conexão. Mostrando a última atualização."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "离线 — 显示上次更新。"
+            "value" : "离线。显示上次更新。"
           }
         }
       }
@@ -8264,24 +8217,24 @@
         }
       }
     },
-    "On the Mac, AIMeter reads the login Claude Code already keeps on this computer — read-only. It never modifies or rotates those tokens; Claude Code stays in charge of its own session." : {
+    "On the Mac, AIMeter only reads the login Claude Code already keeps on this computer. It never modifies or rotates those tokens; Claude Code stays in charge of its own session." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auf dem Mac liest AIMeter die Anmeldung, die Claude Code bereits auf diesem Computer hält – nur lesend. Es ändert oder rotiert diese Tokens nie; Claude Code bleibt für seine eigene Sitzung zuständig."
+            "value" : "Auf dem Mac liest AIMeter nur die Anmeldung, die Claude Code bereits auf diesem Computer hält. Es ändert oder rotiert diese Tokens nie; Claude Code bleibt für seine eigene Sitzung zuständig."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En la Mac, AIMeter lee la sesión que Claude Code ya mantiene en esta computadora — solo lectura. Nunca modifica ni rota esos tokens; Claude Code sigue a cargo de su propia sesión."
+            "value" : "En la Mac, AIMeter solo lee la sesión que Claude Code ya mantiene en esta computadora. Nunca modifica ni rota esos tokens; Claude Code sigue a cargo de su propia sesión."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sur le Mac, AIMeter lit la connexion que Claude Code conserve déjà sur cet ordinateur — en lecture seule. Il ne modifie ni ne renouvelle jamais ces jetons ; Claude Code reste maître de sa propre session."
+            "value" : "Sur le Mac, AIMeter ne fait que lire la connexion que Claude Code conserve déjà sur cet ordinateur. Il ne modifie ni ne renouvelle jamais ces jetons ; Claude Code reste maître de sa propre session."
           }
         },
         "ja" : {
@@ -8299,7 +8252,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Mac, o AIMeter lê o login que o Claude Code já mantém neste computador — somente leitura. Ele nunca modifica nem renova esses tokens; o Claude Code continua no comando da própria sessão."
+            "value" : "No Mac, o AIMeter só lê o login que o Claude Code já mantém neste computador. Ele nunca modifica nem renova esses tokens; o Claude Code continua no comando da própria sessão."
           }
         },
         "zh-Hans" : {
@@ -10959,12 +10912,12 @@
         }
       }
     },
-    "See what your Claude Code sessions on this Mac would cost at API prices. AIMeter reads only the token counts from its local logs — never what you wrote or what it answered." : {
+    "See what your Claude Code sessions on this Mac would cost at API prices. AIMeter reads only the token counts from its local logs, never what you wrote or what it answered." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sieh, was deine Claude-Code-Sitzungen auf diesem Mac zu API-Preisen kosten würden. AIMeter liest nur die Token-Zähler aus den lokalen Protokollen – nie, was du geschrieben oder was es geantwortet hat."
+            "value" : "Sieh, was deine Claude-Code-Sitzungen auf diesem Mac zu API-Preisen kosten würden. AIMeter liest nur die Token-Zähler aus den lokalen Protokollen, nie, was du geschrieben oder was es geantwortet hat."
           }
         },
         "es" : {
@@ -10976,7 +10929,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voyez ce que vos sessions Claude Code sur ce Mac coûteraient au tarif API. AIMeter ne lit que les compteurs de jetons de ses journaux locaux — jamais ce que vous avez écrit ni ce qu'il a répondu."
+            "value" : "Voyez ce que vos sessions Claude Code sur ce Mac coûteraient au tarif API. AIMeter ne lit que les compteurs de jetons de ses journaux locaux, jamais ce que vous avez écrit ni ce qu'il a répondu."
           }
         },
         "ja" : {
@@ -10994,7 +10947,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Veja quanto suas sessões do Claude Code neste Mac custariam a preços da API. O AIMeter lê só as contagens de tokens dos registros locais — nunca o que você escreveu ou o que ele respondeu."
+            "value" : "Veja quanto suas sessões do Claude Code neste Mac custariam a preços da API. O AIMeter lê só as contagens de tokens dos registros locais, nunca o que você escreveu ou o que ele respondeu."
           }
         },
         "zh-Hans" : {
@@ -11189,26 +11142,26 @@
         }
       }
     },
-    "Session, weekly, and top-model usage windows — edit the widget to pick which account." : {
+    "Session, weekly, and top-model usage windows. Edit the widget to pick which account." : {
       "comment" : "Widget description.",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nutzungsfenster für Sitzung, Woche und Top-Modell – bearbeite das Widget, um den Account zu wählen."
+            "value" : "Nutzungsfenster für Sitzung, Woche und Top-Modell. Bearbeite das Widget, um den Account zu wählen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ventanas de uso de sesión, semanal y del modelo principal — edita el widget para elegir la cuenta."
+            "value" : "Ventanas de uso de sesión, semanal y del modelo principal. Edita el widget para elegir la cuenta."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fenêtres d'usage session, hebdomadaire et modèle principal — modifiez le widget pour choisir le compte."
+            "value" : "Fenêtres d'usage session, hebdomadaire et modèle principal. Modifiez le widget pour choisir le compte."
           }
         },
         "ja" : {
@@ -11226,7 +11179,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Janelas de uso de sessão, semanal e do modelo principal — edite o widget para escolher a conta."
+            "value" : "Janelas de uso de sessão, semanal e do modelo principal. Edite o widget para escolher a conta."
           }
         },
         "zh-Hans" : {
@@ -11796,26 +11749,26 @@
         }
       }
     },
-    "Shows one usage window you choose — edit the widget to pick session, weekly, or a per-model limit." : {
+    "Shows one usage window you choose. Edit the widget to pick session, weekly, or a per-model limit." : {
       "comment" : "Description of the Single Limit widget.",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeigt ein Nutzungsfenster deiner Wahl – bearbeite das Widget, um Sitzung, Woche oder ein Modell-Limit zu wählen."
+            "value" : "Zeigt ein Nutzungsfenster deiner Wahl. Bearbeite das Widget, um Sitzung, Woche oder ein Modell-Limit zu wählen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muestra una ventana de uso que elijas — edita el widget para elegir sesión, semanal o un límite por modelo."
+            "value" : "Muestra una ventana de uso que elijas. Edita el widget para elegir sesión, semanal o un límite por modelo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Affiche une fenêtre d'usage de votre choix — modifiez le widget pour choisir session, hebdomadaire ou une limite par modèle."
+            "value" : "Affiche une fenêtre d'usage de votre choix. Modifiez le widget pour choisir session, hebdomadaire ou une limite par modèle."
           }
         },
         "ja" : {
@@ -11833,7 +11786,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostra uma janela de uso à sua escolha — edite o widget para escolher sessão, semanal ou um limite por modelo."
+            "value" : "Mostra uma janela de uso à sua escolha. Edite o widget para escolher sessão, semanal ou um limite por modelo."
           }
         },
         "zh-Hans" : {
@@ -11844,24 +11797,24 @@
         }
       }
     },
-    "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default — updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates." : {
+    "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default. It updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeigt den Sitzungs-Countdown dieses Accounts auf dem Sperrbildschirm und in der Dynamic Island, solange eine Sitzung läuft. Standardmäßig aus – aktualisiert sich, wenn AIMeter oder seine Widgets gerade aktualisieren, nicht sofort, da es keinen Server gibt, der Updates sendet."
+            "value" : "Zeigt den Sitzungs-Countdown dieses Accounts auf dem Sperrbildschirm und in der Dynamic Island, solange eine Sitzung läuft. Standardmäßig aus. Er aktualisiert sich, wenn AIMeter oder seine Widgets gerade aktualisieren, nicht sofort, da es keinen Server gibt, der Updates sendet."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muestra la cuenta regresiva de la sesión de esta cuenta en la Pantalla Bloqueada y en la Dynamic Island mientras haya una sesión activa. Desactivado por defecto — se actualiza cuando AIMeter o sus widgets se refrescan, no al instante, ya que no hay un servidor que envíe actualizaciones."
+            "value" : "Muestra la cuenta regresiva de la sesión de esta cuenta en la Pantalla Bloqueada y en la Dynamic Island mientras haya una sesión activa. Desactivado por defecto. Se actualiza cuando AIMeter o sus widgets se refrescan, no al instante, ya que no hay un servidor que envíe actualizaciones."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Affiche le compte à rebours de session de ce compte sur l'écran verrouillé et dans la Dynamic Island tant qu'une session est en cours. Désactivé par défaut — se met à jour quand AIMeter ou ses widgets s'actualisent, pas instantanément, car aucun serveur n'envoie de mises à jour."
+            "value" : "Affiche le compte à rebours de session de ce compte sur l'écran verrouillé et dans la Dynamic Island tant qu'une session est en cours. Désactivé par défaut. Il se met à jour quand AIMeter ou ses widgets s'actualisent, pas instantanément, car aucun serveur n'envoie de mises à jour."
           }
         },
         "ja" : {
@@ -11879,7 +11832,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostra a contagem regressiva da sessão desta conta na Tela Bloqueada e na Dynamic Island enquanto uma sessão estiver ativa. Desativado por padrão — atualiza quando o AIMeter ou seus widgets atualizam, não na hora, já que não há servidor enviando atualizações."
+            "value" : "Mostra a contagem regressiva da sessão desta conta na Tela Bloqueada e na Dynamic Island enquanto uma sessão estiver ativa. Desativado por padrão. Atualiza quando o AIMeter ou seus widgets atualizam, não na hora, já que não há servidor enviando atualizações."
           }
         },
         "zh-Hans" : {
@@ -12074,12 +12027,12 @@
         }
       }
     },
-    "Sign-in expired — usage can't refresh." : {
+    "Sign-in expired. Usage can't refresh." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anmeldung abgelaufen – Nutzung kann nicht aktualisiert werden."
+            "value" : "Anmeldung abgelaufen. Nutzung kann nicht aktualisiert werden."
           }
         },
         "es" : {
@@ -12091,7 +12044,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connexion expirée — l'usage ne peut pas s'actualiser."
+            "value" : "Connexion expirée. L'usage ne peut pas s'actualiser."
           }
         },
         "ja" : {
@@ -12109,7 +12062,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login expirado — não dá para atualizar o uso."
+            "value" : "Login expirado. Não dá para atualizar o uso."
           }
         },
         "zh-Hans" : {
@@ -12120,12 +12073,12 @@
         }
       }
     },
-    "Signing in here gives AIMeter its own token, separate from Claude Code's — so neither can invalidate the other's." : {
+    "Signing in here gives AIMeter its own token, separate from Claude Code's, so neither can invalidate the other's." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wer sich hier anmeldet, gibt AIMeter ein eigenes Token, getrennt von dem von Claude Code – so kann keines das andere ungültig machen."
+            "value" : "Wer sich hier anmeldet, gibt AIMeter ein eigenes Token, getrennt von dem von Claude Code, sodass keines das andere ungültig machen kann."
           }
         },
         "es" : {
@@ -12137,7 +12090,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se connecter ici donne à AIMeter son propre jeton, distinct de celui de Claude Code — ainsi aucun ne peut invalider l'autre."
+            "value" : "Se connecter ici donne à AIMeter son propre jeton, distinct de celui de Claude Code, ainsi aucun ne peut invalider l'autre."
           }
         },
         "ja" : {
@@ -12155,7 +12108,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entrar aqui dá ao AIMeter um token próprio, separado do Claude Code — assim nenhum invalida o do outro."
+            "value" : "Entrar aqui dá ao AIMeter um token próprio, separado do Claude Code, assim nenhum invalida o do outro."
           }
         },
         "zh-Hans" : {
@@ -12816,55 +12769,6 @@
         }
       }
     },
-    "The menu bar shows one account and one window at a time — pick which above. Turn on the percentage to spell it out beside the gauge; with it off, the value is still in the tooltip." : {
-      "comment" : "Footnote for the menu bar label.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Menüleiste zeigt jeweils einen Account und ein Fenster – wähle oben, welche. Aktiviere den Prozentwert, um ihn neben der Anzeige auszuschreiben; ausgeschaltet steht der Wert weiterhin im Tooltip."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La barra de menús muestra una cuenta y una ventana a la vez; elige cuáles arriba. Activa el porcentaje para mostrarlo junto al indicador; desactivado, el valor sigue en la descripción emergente."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La barre des menus affiche un compte et une fenêtre à la fois — choisissez lesquels ci-dessus. Activez le pourcentage pour l'écrire à côté de la jauge ; désactivé, la valeur reste dans l'infobulle."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メニューバーには一度に1つのアカウントと1つのウインドウが表示されます。どれにするかは上で選びます。パーセントをオンにするとゲージの横に表示し、オフでも値はツールチップに表示されます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메뉴 막대에는 한 번에 계정 하나와 기간 하나가 표시됩니다. 위에서 선택하세요. 백분율을 켜면 게이지 옆에 표시되고, 꺼도 값은 도움말 설명에 남아 있습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A barra de menus mostra uma conta e uma janela por vez — escolha quais acima. Ative a porcentagem para escrevê-la ao lado do medidor; desativada, o valor continua na dica."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单栏一次显示一个账户和一个周期，在上方选择。开启百分比会在仪表旁显示；关闭时数值仍在工具提示中。"
-          }
-        }
-      }
-    },
     "Third usage row" : {
       "localizations" : {
         "de" : {
@@ -12921,12 +12825,12 @@
 
     }
     },
-    "To draw the history chart, AIMeter keeps the percentages it has already fetched — just the numbers and their dates, nothing about what you did — on this device for 30 days. Disconnecting an account deletes its history." : {
+    "To draw the history chart, AIMeter keeps the percentages it has already fetched (just the numbers and their dates, nothing about what you did) on this device for 30 days. Disconnecting an account deletes its history." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um das Verlaufsdiagramm zu zeichnen, behält AIMeter die bereits abgerufenen Prozentwerte – nur die Zahlen und ihre Daten, nichts darüber, was du getan hast – 30 Tage auf diesem Gerät. Das Trennen eines Accounts löscht seinen Verlauf."
+            "value" : "Um das Verlaufsdiagramm zu zeichnen, behält AIMeter die bereits abgerufenen Prozentwerte (nur die Zahlen und ihre Daten, nichts darüber, was du getan hast) 30 Tage auf diesem Gerät. Das Trennen eines Accounts löscht seinen Verlauf."
           }
         },
         "es" : {
@@ -12938,7 +12842,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour tracer l'historique, AIMeter conserve les pourcentages déjà récupérés — seulement les chiffres et leurs dates, rien sur ce que vous avez fait — sur cet appareil pendant 30 jours. Déconnecter un compte supprime son historique."
+            "value" : "Pour tracer l'historique, AIMeter conserve les pourcentages déjà récupérés (seulement les chiffres et leurs dates, rien sur ce que vous avez fait) sur cet appareil pendant 30 jours. Déconnecter un compte supprime son historique."
           }
         },
         "ja" : {
@@ -12956,7 +12860,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para desenhar o gráfico de histórico, o AIMeter guarda as porcentagens que já obteve — só os números e suas datas, nada sobre o que você fez — neste dispositivo por 30 dias. Desconectar uma conta apaga seu histórico."
+            "value" : "Para desenhar o gráfico de histórico, o AIMeter guarda as porcentagens que já obteve (só os números e suas datas, nada sobre o que você fez) neste dispositivo por 30 dias. Desconectar uma conta apaga seu histórico."
           }
         },
         "zh-Hans" : {
@@ -14352,24 +14256,24 @@
         }
       }
     },
-    "When you sign in through AIMeter it requests only the profile scope — what the usage and profile endpoints need — and never the inference scope, so a token issued to AIMeter can't send prompts or spend usage on your behalf even in theory. Either way it only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). The source is open if you want to verify." : {
+    "When you sign in through AIMeter it requests only the profile scope (what the usage and profile endpoints need) and never the inference scope, so a token issued to AIMeter can't send prompts or spend usage on your behalf even in theory. Either way it only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). The source is open if you want to verify." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn du dich über AIMeter anmeldest, fordert es nur den Profil-Bereich an – was die Nutzungs- und Profil-Endpunkte brauchen – und nie den Inferenz-Bereich, sodass ein an AIMeter ausgestelltes Token nicht einmal theoretisch Prompts senden oder Nutzung in deinem Namen verbrauchen kann. So oder so ruft es nur zwei Nur-Lese-Endpunkte auf: deine Nutzungsfenster und dein Profil (um den Plan anzuzeigen). Der Quellcode ist offen, falls du es prüfen möchtest."
+            "value" : "Wenn du dich über AIMeter anmeldest, fordert es nur den Profil-Bereich an (was die Nutzungs- und Profil-Endpunkte brauchen) und nie den Inferenz-Bereich, sodass ein an AIMeter ausgestelltes Token nicht einmal theoretisch Prompts senden oder Nutzung in deinem Namen verbrauchen kann. So oder so ruft es nur zwei Nur-Lese-Endpunkte auf: deine Nutzungsfenster und dein Profil (um den Plan anzuzeigen). Der Quellcode ist offen, falls du es prüfen möchtest."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Al iniciar sesión desde AIMeter solo se solicita el permiso de perfil — el que necesitan los endpoints de uso y de perfil — y nunca el de inferencia, así que un token emitido a AIMeter no puede enviar prompts ni gastar uso en tu nombre, ni siquiera en teoría. En cualquier caso, solo llama a dos endpoints de solo lectura: tus ventanas de uso y tu perfil (para mostrar el plan). El código es abierto si quieres comprobarlo."
+            "value" : "Al iniciar sesión desde AIMeter solo se solicita el permiso de perfil (el que necesitan los endpoints de uso y de perfil) y nunca el de inferencia, así que un token emitido a AIMeter no puede enviar prompts ni gastar uso en tu nombre, ni siquiera en teoría. En cualquier caso, solo llama a dos endpoints de solo lectura: tus ventanas de uso y tu perfil (para mostrar el plan). El código es abierto si quieres comprobarlo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quand vous vous connectez via AIMeter, il ne demande que la portée profil — ce dont les points d'accès d'usage et de profil ont besoin — et jamais la portée inférence, de sorte qu'un jeton délivré à AIMeter ne peut, même en théorie, envoyer des prompts ni consommer de l'usage en votre nom. Dans tous les cas, il n'appelle que deux points d'accès en lecture seule : vos fenêtres d'usage et votre profil (pour afficher le forfait). Le code est ouvert si vous voulez vérifier."
+            "value" : "Quand vous vous connectez via AIMeter, il ne demande que la portée profil (ce dont les points d'accès d'usage et de profil ont besoin) et jamais la portée inférence, de sorte qu'un jeton délivré à AIMeter ne peut, même en théorie, envoyer des prompts ni consommer de l'usage en votre nom. Dans tous les cas, il n'appelle que deux points d'accès en lecture seule : vos fenêtres d'usage et votre profil (pour afficher le forfait). Le code est ouvert si vous voulez vérifier."
           }
         },
         "ja" : {
@@ -14387,7 +14291,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ao entrar pelo AIMeter, ele pede só o escopo de perfil — o que os endpoints de uso e perfil precisam — e nunca o escopo de inferência, então um token emitido para o AIMeter não pode enviar prompts nem gastar uso em seu nome, nem em teoria. De qualquer forma, ele só chama dois endpoints somente leitura: suas janelas de uso e seu perfil (para mostrar o plano). O código é aberto se quiser conferir."
+            "value" : "Ao entrar pelo AIMeter, ele pede só o escopo de perfil (o que os endpoints de uso e perfil precisam) e nunca o escopo de inferência, então um token emitido para o AIMeter não pode enviar prompts nem gastar uso em seu nome, nem em teoria. De qualquer forma, ele só chama dois endpoints somente leitura: suas janelas de uso e seu perfil (para mostrar o plano). O código é aberto se quiser conferir."
           }
         },
         "zh-Hans" : {
@@ -14630,12 +14534,12 @@
         }
       }
     },
-    "With the Dock icon hidden, turn this on so AIMeter is back after a restart — otherwise you'll need to open it yourself." : {
+    "With the Dock icon hidden, turn this on so AIMeter is back after a restart. Otherwise you'll need to open it yourself." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bei ausgeblendetem Dock-Symbol aktiviere dies, damit AIMeter nach einem Neustart wieder da ist – sonst musst du es selbst öffnen."
+            "value" : "Bei ausgeblendetem Dock-Symbol aktiviere dies, damit AIMeter nach einem Neustart wieder da ist. Sonst musst du es selbst öffnen."
           }
         },
         "es" : {
@@ -14647,7 +14551,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avec l'icône du Dock masquée, activez ceci pour qu'AIMeter revienne après un redémarrage — sinon vous devrez l'ouvrir vous-même."
+            "value" : "Avec l'icône du Dock masquée, activez ceci pour qu'AIMeter revienne après un redémarrage. Sinon, vous devrez l'ouvrir vous-même."
           }
         },
         "ja" : {
@@ -14665,7 +14569,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Com o ícone do Dock oculto, ative isto para que o AIMeter volte depois de reiniciar — senão você terá que abri-lo."
+            "value" : "Com o ícone do Dock oculto, ative isto para que o AIMeter volte depois de reiniciar. Senão, você terá que abri-lo."
           }
         },
         "zh-Hans" : {
@@ -14860,24 +14764,24 @@
         }
       }
     },
-    "You sign in on Claude's own page in your browser — never an embedded web view — so AIMeter can't see your password. You only paste back the code Claude shows after you approve." : {
+    "You sign in on Claude's own page in your browser, never in an embedded web view, so AIMeter can't see your password. You only paste back the code Claude shows after you approve." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du meldest dich auf Claudes eigener Seite in deinem Browser an – nie in einer eingebetteten Web-Ansicht –, sodass AIMeter dein Passwort nicht sehen kann. Du fügst nur den Code ein, den Claude nach deiner Zustimmung anzeigt."
+            "value" : "Du meldest dich auf Claudes eigener Seite in deinem Browser an, nie in einer eingebetteten Web-Ansicht, sodass AIMeter dein Passwort nicht sehen kann. Du fügst nur den Code ein, den Claude nach deiner Zustimmung anzeigt."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inicias sesión en la propia página de Claude en tu navegador — nunca en un web view incrustado — así que AIMeter no puede ver tu contraseña. Solo pegas de vuelta el código que Claude muestra cuando apruebas."
+            "value" : "Inicias sesión en la propia página de Claude en tu navegador, nunca en un web view incrustado, así que AIMeter no puede ver tu contraseña. Solo pegas de vuelta el código que Claude muestra cuando apruebas."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous vous connectez sur la page de Claude dans votre navigateur — jamais dans une vue web intégrée — donc AIMeter ne peut pas voir votre mot de passe. Vous ne collez que le code que Claude affiche après votre approbation."
+            "value" : "Vous vous connectez sur la page de Claude dans votre navigateur, jamais dans une vue web intégrée, donc AIMeter ne peut pas voir votre mot de passe. Vous ne collez que le code que Claude affiche après votre approbation."
           }
         },
         "ja" : {
@@ -14895,7 +14799,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Você entra na própria página do Claude no seu navegador — nunca em uma web view embutida — então o AIMeter não vê sua senha. Você só cola de volta o código que o Claude mostra depois de aprovar."
+            "value" : "Você entra na própria página do Claude no seu navegador, nunca em uma web view embutida, então o AIMeter não vê sua senha. Você só cola de volta o código que o Claude mostra depois de aprovar."
           }
         },
         "zh-Hans" : {
@@ -15044,24 +14948,24 @@
         }
       }
     },
-    "Your %@ limit reset ahead of schedule — full capacity available." : {
+    "Your %@ limit reset ahead of schedule. Full capacity available." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein %@-Limit wurde früher als geplant zurückgesetzt – volle Kapazität verfügbar."
+            "value" : "Dein %@-Limit wurde früher als geplant zurückgesetzt. Volle Kapazität verfügbar."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu límite de %@ se reinició antes de lo previsto — capacidad completa disponible."
+            "value" : "Tu límite de %@ se reinició antes de lo previsto. Capacidad completa disponible."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre limite %@ s'est réinitialisée plus tôt que prévu — capacité totale disponible."
+            "value" : "Votre limite %@ s'est réinitialisée plus tôt que prévu. Capacité totale disponible."
           }
         },
         "ja" : {
@@ -15079,7 +14983,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seu limite de %@ reiniciou antes do previsto — capacidade total disponível."
+            "value" : "Seu limite de %@ reiniciou antes do previsto. Capacidade total disponível."
           }
         },
         "zh-Hans" : {
@@ -15136,24 +15040,24 @@
         }
       }
     },
-    "Your sign-in token is read from the Keychain item Claude Code already keeps on this Mac — read-only, and never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead." : {
+    "Your sign-in token is only read from the Keychain item Claude Code already keeps on this Mac, and it never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Anmeldetoken wird aus dem Schlüsselbund-Eintrag gelesen, den Claude Code bereits auf diesem Mac hält – nur lesend, und es verlässt dieses Gerät nie. Das Widget greift nicht direkt auf den Schlüsselbund zu; die Menüleisten-App liefert ihm stattdessen deine Nutzung."
+            "value" : "Dein Anmeldetoken wird nur aus dem Schlüsselbund-Eintrag gelesen, den Claude Code bereits auf diesem Mac hält, und es verlässt dieses Gerät nie. Das Widget greift nicht direkt auf den Schlüsselbund zu; die Menüleisten-App liefert ihm stattdessen deine Nutzung."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu token de inicio de sesión se lee del llavero que Claude Code ya mantiene en esta Mac — de solo lectura, y nunca sale de este dispositivo. El widget no accede al llavero directamente; la app de la barra de menú le pasa tu uso."
+            "value" : "Tu token de inicio de sesión solo se lee del llavero que Claude Code ya mantiene en esta Mac, y nunca sale de este dispositivo. El widget no accede al llavero directamente; la app de la barra de menú le pasa tu uso."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre jeton de connexion est lu depuis l'élément du trousseau que Claude Code conserve déjà sur ce Mac — en lecture seule, et il ne quitte jamais cet appareil. Le widget n'accède pas directement au trousseau ; c'est l'app de la barre des menus qui lui fournit votre usage."
+            "value" : "Votre jeton de connexion est seulement lu depuis l'élément du trousseau que Claude Code conserve déjà sur ce Mac, et il ne quitte jamais cet appareil. Le widget n'accède pas directement au trousseau ; c'est l'app de la barre des menus qui lui fournit votre usage."
           }
         },
         "ja" : {
@@ -15171,7 +15075,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seu token de login é lido do item das Chaves que o Claude Code já mantém neste Mac — somente leitura, e nunca sai deste dispositivo. O widget não acessa as Chaves diretamente; o app da barra de menus é quem lhe passa o uso."
+            "value" : "Seu token de login só é lido do item das Chaves que o Claude Code já mantém neste Mac, e nunca sai deste dispositivo. O widget não acessa as Chaves diretamente; o app da barra de menus é quem lhe passa o uso."
           }
         },
         "zh-Hans" : {
@@ -15646,7 +15550,7 @@
         }
       }
     },
-    "AIMeter lives in the notch now — rest the cursor here to peek, click to open." : {
+    "AIMeter lives in the notch now. Rest the cursor here to peek, click to open." : {
       "comment" : "One-time caption shown inside the notch island's peek on the first launch, so an upgrading user learns it exists.",
       "localizations" : {
         "es" : {
@@ -15658,7 +15562,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter lebt jetzt im Notch – lass den Cursor hier ruhen für die Vorschau, klicke zum Öffnen."
+            "value" : "AIMeter lebt jetzt im Notch. Lass den Cursor hier ruhen für die Vorschau, klicke zum Öffnen."
           }
         },
         "fr" : {

@@ -122,7 +122,7 @@ struct WindowBarRow: View {
                     .font(.system(size: 11))
                     .foregroundStyle(Theme.inkSecondary)
                 Spacer(minLength: 4)
-                Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—")
+                Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--")
                     .font(.system(size: 11, weight: .semibold))
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink)
@@ -212,7 +212,7 @@ struct CircularUsageView: View {
         Gauge(value: min(window?.displayedPct(prefs.displayMode) ?? 0, 100), in: 0...100) {
             Text(caption)
         } currentValueLabel: {
-            Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—")
+            Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--")
         }
         .gaugeStyle(.accessoryCircularCapacity)
     }
@@ -244,7 +244,7 @@ struct RectangularUsageView: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                     Spacer()
-                    Text(slot.window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—")
+                    Text(slot.window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--")
                         .font(.caption.monospacedDigit().weight(.semibold))
                 }
             }

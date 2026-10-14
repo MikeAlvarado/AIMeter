@@ -504,7 +504,7 @@ the account silently freezes at its last snapshot.
   `true` default must load through a presence check, same trap as
   `Preferences.bool(_:_:default:)`.) Once more than one account is connected,
   a notification's title is prefixed with that account's nickname (e.g.
-  "Work — Session limit reset"); a single-account install's copy reads
+  "Work: Session limit reset"); a single-account install's copy reads
   exactly as it always has. A rename re-issues that account's pending
   `reset.`/`runout.` requests from the stored snapshot
   (`RefreshService.rescheduleNotifications`, no fetch) so titles already
@@ -531,7 +531,7 @@ the account silently freezes at its last snapshot.
 ## Presentation rules
 
 - Session and weekly slots are always present (`WindowSlots`); a missing
-  window keeps its slot (em dash + empty bar). The third slot shows the
+  window keeps its slot (`--` + empty bar). The third slot shows the
   real per-model window when the plan reports one (e.g. Max/Team
   Premium's Fable 5 allowance). When it doesn't — most Claude Pro accounts,
   since Fable moved to usage credits — `ModelSlotFallback` (Provider
@@ -905,7 +905,7 @@ the account silently freezes at its last snapshot.
   terracotta where Vibe uses green, yellow and red as everywhere else
   (`UsageLevel`), terracotta alone while usage colors are off; the third slot
   is `WindowSlots`/`ModelSlotFallback` exactly as on the Dashboard, and
-  an empty slot keeps its place with an em dash. **Collapsed, the
+  an empty slot keeps its place with `--`. **Collapsed, the
   island is the notch and shows nothing** — so no menu title or status
   item is ever covered (Xcode's menu runs up to the notch on a 14"); a
   drawn island, having no real notch to hide in, shows its one row —
@@ -981,7 +981,7 @@ the account silently freezes at its last snapshot.
   an actionable "Sign in again" prompt instead (see "Losing a login"
   above), and a lost network (`UsageModel.offlineCodes`, the `URLError`s
   that mean no route rather than a provider answer) shows a quiet
-  "Offline — showing the last update." line in the secondary color
+  "Offline. Showing the last update." line in the secondary color
   (`AccountUsage.isOffline` → `UsageStatusFooter(offline:)`) — nothing is
   wrong with the account, the last snapshot still stands, and the next
   successful fetch clears it.
@@ -1111,7 +1111,11 @@ untranslated in every language on purpose — the Shortcuts action titles
 ("Refresh Usage", "Show Usage"), which the Settings footnote quotes
 verbatim — and the compact menu-bar letters ("S", "W", "C") and
 countdown units ("%lldh %lldm") are localized as short as each script
-allows. Dates/currency use system formatters. To add a language: add
+allows. Dates/currency use system formatters. No em dash (—) in any copy, in
+any language, nor the en dash some languages use for the same pause:
+a comma, colon, period or parentheses instead, and `--` for a figure
+there is none of (Mike's rule, 2026-10-14; code comments and these
+docs are not copy). To add a language: add
 translations to both catalogs (every key that has a Spanish value) and
 the region to the project's `knownRegions`; placeholders must match the
 key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).

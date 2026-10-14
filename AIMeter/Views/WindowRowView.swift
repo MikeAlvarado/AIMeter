@@ -85,7 +85,7 @@ struct WindowRowView: View {
     }
 
     private var percentText: String {
-        window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "—"
+        window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--"
     }
 }
 

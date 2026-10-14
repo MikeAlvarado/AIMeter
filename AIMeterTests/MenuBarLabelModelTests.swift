@@ -96,7 +96,7 @@ final class MenuBarLabelModelTests: XCTestCase {
         XCTAssertEqual(make(.gaugeWithPercent, accountName: "Work").text, "Work 42%")
         XCTAssertEqual(make(.gaugeOnly, accountName: "Work").text, "Work")
         XCTAssertEqual(make(.percentOnly, accountName: "Personal account").text, "Personal 42%")
-        XCTAssertTrue(make(.percentOnly, accountName: "Personal account").accessibilityLabel.hasPrefix("Personal account — "),
+        XCTAssertTrue(make(.percentOnly, accountName: "Personal account").accessibilityLabel.hasPrefix("Personal account: "),
                       "the full name is still spoken")
     }
 
@@ -108,7 +108,7 @@ final class MenuBarLabelModelTests: XCTestCase {
         XCTAssertEqual(label.fraction, 0)
         XCTAssertEqual(label.text, "Work", "only the name survives — there is no figure to spell")
         XCTAssertEqual(label.tint, .normal)
-        XCTAssertEqual(label.accessibilityLabel, "AIMeter — no usage data yet")
+        XCTAssertEqual(label.accessibilityLabel, "AIMeter: no usage data yet")
     }
 
     // MARK: Migration

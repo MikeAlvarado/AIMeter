@@ -109,12 +109,12 @@ struct AccountRow: View {
                 .font(Theme.caption)
                 .foregroundStyle(NotchIslandStyle.reset)
         case .offline:
-            Label(String(localized: "Offline — showing the last update."), systemImage: "wifi.slash")
+            Label(String(localized: "Offline. Showing the last update."), systemImage: "wifi.slash")
                 .font(Theme.caption)
                 .foregroundStyle(NotchIslandStyle.reset)
         case .reauth:
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Label(String(localized: "Sign-in expired — usage can't refresh."), systemImage: "exclamationmark.triangle")
+                Label(String(localized: "Sign-in expired. Usage can't refresh."), systemImage: "exclamationmark.triangle")
                     .font(Theme.caption)
                     .foregroundStyle(Theme.danger)
                 Spacer(minLength: 0)

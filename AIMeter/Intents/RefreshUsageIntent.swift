@@ -65,8 +65,8 @@ enum UsageSummary {
             let values = kinds.compactMap { kind in
                 snapshot.window(for: kind).map { "\(kind.shortName) \(Int($0.displayedPct(mode)))% \(mode.label.lowercased())" }
             }
-            return model.accounts.count > 1 ? "\(usage.account.displayName) — \(values.joined(separator: ", "))" : values.joined(separator: ", ")
+            return model.accounts.count > 1 ? "\(usage.account.displayName): \(values.joined(separator: ", "))" : values.joined(separator: ", ")
         }
-        return lines.isEmpty ? String(localized: "AIMeter — no usage data yet") : lines.joined(separator: ". ")
+        return lines.isEmpty ? String(localized: "AIMeter: no usage data yet") : lines.joined(separator: ". ")
     }
 }

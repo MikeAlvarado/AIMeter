@@ -114,7 +114,7 @@ struct SingleUsageWidget: Widget {
             SingleUsageWidgetView(entry: entry)
         }
         .configurationDisplayName("Single Limit")
-        .description("Shows one usage window you choose — edit the widget to pick session, weekly, or a per-model limit.")
+        .description("Shows one usage window you choose. Edit the widget to pick session, weekly, or a per-model limit.")
         .supportedFamilies([.systemSmall])
     }
 }

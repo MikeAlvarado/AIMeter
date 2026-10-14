@@ -70,7 +70,7 @@ private struct WindowColumn: View {
                         .font(.system(size: 11))
                         .foregroundStyle(Theme.inkSecondary)
                 } else {
-                    Text("—")
+                    Text("--")
                         .font(.system(size: valueSize, weight: .bold))
                         .foregroundStyle(Theme.inkSecondary)
                 }

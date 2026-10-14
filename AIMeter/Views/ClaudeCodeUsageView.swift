@@ -60,7 +60,7 @@ struct ClaudeCodeUsageView: View {
     private func rows(_ aggregate: ClaudeCodeUsageAggregate) -> [(String, String)] {
         let t = aggregate.tokens
         var rows: [(String, String)] = [
-            (String(localized: "Equivalent API cost"), aggregate.cost.map { (aggregate.hasUnpricedModels ? "> " : "≈ ") + UsageFormatting.usd($0) } ?? "—"),
+            (String(localized: "Equivalent API cost"), aggregate.cost.map { (aggregate.hasUnpricedModels ? "> " : "≈ ") + UsageFormatting.usd($0) } ?? "--"),
             (String(localized: "Tokens"), UsageFormatting.tokens(t.total)),
             (String(localized: "Input"), UsageFormatting.tokens(t.input)),
             (String(localized: "Output (incl. thinking)"), UsageFormatting.tokens(t.output)),
@@ -77,17 +77,17 @@ struct ClaudeCodeUsageView: View {
 
     private func modelValue(_ entry: ClaudeCodeUsageAggregate.ModelUsage) -> String {
         let tokens = UsageFormatting.tokens(entry.tokens.total)
-        guard let cost = entry.cost else { return "\(tokens) · —" }
+        guard let cost = entry.cost else { return "\(tokens) · --" }
         return "\(tokens) · ≈ \(UsageFormatting.usd(cost))"
     }
 
     private func footnote(_ usage: ClaudeCodeUsageModel) -> String {
         let verified = ClaudeModelPricing.lastVerified.formatted(date: .abbreviated, time: .omitted)
         if usage.isDemo {
-            return String(localized: "Sample data. Equivalent cost at list prices as of \(verified) — your subscription already covers this usage; it is not a bill.")
+            return String(localized: "Sample data. Equivalent cost at list prices as of \(verified). Your subscription already covers this usage, so this is not a bill.")
         }
         let path = usage.root.path.replacingOccurrences(of: FileManager.default.homeDirectoryForCurrentUser.path, with: "~")
-        var text = String(localized: "Equivalent cost at Anthropic's list prices as of \(verified). Your subscription already covers this usage — it is not a bill. Read from \(path).")
+        var text = String(localized: "Equivalent cost at Anthropic's list prices as of \(verified). Your subscription already covers this usage, so this is not a bill. Read from \(path).")
         if let drift = usage.pricingDrift, drift.theirs > 0 {
             let apart = abs(drift.ours - drift.theirs) / drift.theirs
             let percent = apart.formatted(.percent.precision(.fractionLength(0)))

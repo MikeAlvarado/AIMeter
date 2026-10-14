@@ -294,7 +294,7 @@ final class UsageModel {
             // No route to the endpoint at all — nothing to act on, and the
             // last snapshot is still the best information there is.
             if let i = index(for: accountID) {
-                accounts[i].lastError = String(localized: "Offline — showing the last update.")
+                accounts[i].lastError = String(localized: "Offline. Showing the last update.")
                 accounts[i].isOffline = true
             }
         } catch {

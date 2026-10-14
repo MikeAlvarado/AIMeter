@@ -142,7 +142,7 @@ struct UsageStatusFooter: View {
         if let reauthenticate {
             if showsDividers { Divider().overlay(Theme.track) }
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Label(String(localized: "Sign-in expired — usage can't refresh."), systemImage: "exclamationmark.triangle")
+                Label(String(localized: "Sign-in expired. Usage can't refresh."), systemImage: "exclamationmark.triangle")
                     .font(Theme.caption)
                     .foregroundStyle(Theme.danger)
                 Spacer(minLength: 0)

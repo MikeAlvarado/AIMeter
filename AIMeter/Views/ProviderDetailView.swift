@@ -113,7 +113,7 @@ struct ProviderDetailView: View {
                     }
                     .tint(Theme.accent)
                 }
-                SectionFootnote(text: String(localized: "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default — updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates."))
+                SectionFootnote(text: String(localized: "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default. It updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates."))
                 #endif
 
                 SectionHeader(title: String(localized: "Third usage row"))

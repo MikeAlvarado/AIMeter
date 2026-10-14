@@ -108,7 +108,7 @@ struct MenuBarLabelModel: Equatable {
         text = joined.isEmpty ? nil : joined
 
         guard !windows.isEmpty else {
-            accessibilityLabel = String(localized: "AIMeter — no usage data yet")
+            accessibilityLabel = String(localized: "AIMeter: no usage data yet")
             return
         }
         var spoken = windows.map { kind, window in
@@ -118,7 +118,7 @@ struct MenuBarLabelModel: Equatable {
             spoken += ", " + String(localized: "resets in \(countdown)")
         }
         if let accountName {
-            spoken = "\(accountName) — \(spoken)"
+            spoken = "\(accountName): \(spoken)"
         }
         accessibilityLabel = spoken
     }

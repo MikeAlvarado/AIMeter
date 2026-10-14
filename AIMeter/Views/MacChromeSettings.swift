@@ -50,7 +50,7 @@ struct HidingSettings: View {
             // is mid-settings, so put it back.
             NSApp.activate(ignoringOtherApps: true)
         }
-        SectionFootnote(text: String(localized: "AIMeter keeps running and refreshing your usage either way — hiding only changes what you see. Quit still quits."))
+        SectionFootnote(text: String(localized: "AIMeter keeps running and refreshing your usage either way. Hiding only changes what you see. Quit still quits."))
     }
 
     /// With both icons off and no island there is no visible UI at all,
@@ -128,7 +128,7 @@ struct StartupSettings: View {
 
     private var nudgeRow: some View {
         Label(
-            String(localized: "With the Dock icon hidden, turn this on so AIMeter is back after a restart — otherwise you'll need to open it yourself."),
+            String(localized: "With the Dock icon hidden, turn this on so AIMeter is back after a restart. Otherwise you'll need to open it yourself."),
             systemImage: "info.circle"
         )
         .font(Theme.caption)

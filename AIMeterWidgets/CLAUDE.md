@@ -32,7 +32,7 @@ legacy sentinel if none — rather than each re-deriving it.
   window name, a big figure with the display mode as a one-word suffix
   ("42% left" / "42% used", `DisplayMode.suffix`), the bar, and under it
   the reset line, the optional credits amount, or "Not available" for a
-  slot the account doesn't report (a dash where the figure would be).
+  slot the account doesn't report (`--` where the figure would be).
   Two or three columns, whatever the slots yield; the figure drops from
   28 pt to 22 pt for three so "100% left" still fits. Each column shows
   its own reset line — the grouped-reset rule (`WindowSlots.showsReset`)

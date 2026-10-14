@@ -158,7 +158,7 @@ enum NotificationScheduler {
         for kind in kinds {
             let content = UNMutableNotificationContent()
             content.title = labeled(String(localized: "\(kind.displayName) refilled early"), accountLabel)
-            content.body = String(localized: "Your \(kind.displayName) limit reset ahead of schedule — full capacity available.")
+            content.body = String(localized: "Your \(kind.displayName) limit reset ahead of schedule. Full capacity available.")
             content.sound = .default
 
             // A unique id per event so repeated early resets each notify.
@@ -228,7 +228,7 @@ enum NotificationScheduler {
     /// notifications read exactly as they always have.
     private static func labeled(_ title: String, _ accountLabel: String?) -> String {
         guard let accountLabel else { return title }
-        return "\(accountLabel) — \(title)"
+        return "\(accountLabel): \(title)"
     }
 
     // MARK: - Sign-in alerts (immediate, once per breakage)
