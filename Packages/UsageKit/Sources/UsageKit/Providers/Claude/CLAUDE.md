@@ -170,3 +170,63 @@ repo-root CLAUDE.md):
   the real shape (two sessions, a subagent file, a duplicate line, a
   non-JSON line, two cumulative `cost-state`s, an unknown model, a
   trailing partial line).
+
+## Claude Code session state (`ClaudeCode/ClaudeCodeSession*.swift`, macOS app only)
+
+What the notch island's "working / needs permission / done" comes from
+(see "Claude Code sessions" in the repo-root CLAUDE.md). Shapes measured
+on 2026-10-14 over every log on the development Mac (Claude Code
+2.1.295, desktop app and CLI), shape only, never content:
+
+- Layout: `<encoded-cwd>/<sessionId>.jsonl` is the session's own thread;
+  its subagents write `<sessionId>/subagents/agent-<agentId>.jsonl`, and
+  workflow agents `<sessionId>/subagents/workflows/wf_<id>/agent-<agentId>.jsonl`
+  beside a `journal.jsonl` of `started` / `result` / `failed` /
+  `launched` records (not a log of any agent; skipped). Every record of
+  a subagent file carries `agentId` (equal to the file's id) and
+  `isSidechain: true`; no record of a session's own file has either.
+- Declared on `ClaudeCodeSessionRecord`, nothing else: `type`,
+  `subtype`, `timestamp`, `sessionId`, `agentId`, `isSidechain`,
+  `isMeta`, `isApiErrorMessage`, `cwd`, `interruptedMessageId`,
+  `customTitle` / `aiTitle` (the title records), `message.stop_reason`,
+  the `type` of each `message.content` item (or "a plain string"), and
+  the *presence* of `promptSource`.
+- A turn: a prompt (`user`, plain-string content or `image`+`text`
+  items, with `promptSource`: `sdk`, `typed`, `queued`, or `system` for
+  a task notification, and `origin.kind` `human` / `task-notification`),
+  tool traffic (`assistant` with `stop_reason` `tool_use`, one record per
+  content block, every block of a streamed message carrying the
+  message's final stop reason; `user` records of `tool_result` items), and
+  an end: an `assistant` record whose stop reason is `end_turn`,
+  `stop_sequence`, `max_tokens` or `refusal`, followed by
+  `system`/`stop_hook_summary` (or `turn_duration`); an API error
+  (`isApiErrorMessage`) ends it too.
+- The interruption marker (the user stopping a reply, a tool or a
+  permission prompt): a `user` record whose content is a *list* of
+  `text` items alone and which has no `promptSource` (37 of 37 such
+  records on that Mac; a typed prompt is a plain string, and every
+  prompt has a source). Only one of the 37 also carried
+  `interruptedMessageId` (with string content), which counts on its own.
+  A declined permission writes a `tool_result` with `toolDenialKind`
+  (`user-rejected`; also `automode-blocked`, `automode-unavailable`,
+  `permission-rule`, `interrupted`) and then the marker.
+- `endsTurn` (a finish on the session's own thread, not a prompt: a
+  prompt sent while a turn runs joins it) is how far back the app reads
+  a log it sees for the first time: everything after the previous
+  turn's end is the turn in progress, read from its start.
+- Ignored types (no effect on the state): `attachment`,
+  `queue-operation`, `last-prompt`, `agent-name`, `mode`, `atis-latch`,
+  `pr-link`, `history-suppression`, `bridge-session`,
+  `file-history-snapshot`, `cost-state`; `custom-title` / `ai-title` only
+  name the session (the user's own title wins).
+- Hook events (`ClaudeCodeHookEvent`, documented by Claude Code; fields
+  decoded: `hook_event_name`, `session_id`, `cwd`, `agent_id`,
+  `notification_type`): `UserPromptSubmit` starts a turn,
+  `PermissionRequest` opens a prompt for its agent (fires the moment
+  the prompt shows, unlike the `permission_prompt` notification six
+  seconds later, which is not used), `Stop` / `StopFailure` end the
+  turn, the `idle_prompt` notification ends one the log missed, and
+  `SessionEnd` drops the session. `Stop` does not fire on a user
+  interrupt, and nothing fires when a prompt is answered: the asking
+  agent's next record says it. `SubagentStop` is not used (it also fires
+  for Claude Code's own internal agents after a turn).

@@ -48,9 +48,13 @@ struct MacSettingsView: View {
             // The demo has no Claude Code section to configure (it shows
             // fabricated sessions), same as the single list hid the card.
             if !model.isDemoMode {
-                page(scrolls: false) { ClaudeCodeSettings() }
-                    .tabItem { Label("Claude Code", systemImage: "terminal") }
-                    .tag(Tab.claudeCode)
+                page(scrolls: false) {
+                    ClaudeSessionsSettings()
+                    SettingsGap()
+                    ClaudeCodeSettings()
+                }
+                .tabItem { Label("Claude Code", systemImage: "terminal") }
+                .tag(Tab.claudeCode)
             }
             PrivacyView()
                 .frame(width: Self.width, height: Self.scrollingHeight)
@@ -112,7 +116,9 @@ private struct GeneralSettingsPage: View {
     }
 }
 
-/// "Claude Code": reading the CLI's local logs, and the popover's line.
+/// "Usage": reading the CLI's local logs for token counts, and the
+/// popover's line. Under "Sessions" (`ClaudeSessionsSettings`) in the
+/// Claude Code tab.
 struct ClaudeCodeSettings: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
@@ -120,7 +126,7 @@ struct ClaudeCodeSettings: View {
     var body: some View {
         @Bindable var prefs = prefs
 
-        SectionHeader(title: String(localized: "Claude Code"))
+        SectionHeader(title: String(localized: "Usage"))
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                 Toggle(isOn: $prefs.claudeCodeUsageEnabled) {

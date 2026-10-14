@@ -174,6 +174,30 @@ final class PreferencesModel {
         get { stored.menuBarShowsClaudeCodeLine }
         set { guard stored.menuBarShowsClaudeCodeLine != newValue else { return }; stored.menuBarShowsClaudeCodeLine = newValue; persist(newValue, Preferences.Keys.menuBarShowsClaudeCodeLine, reloadsWidgets: false) }
     }
+    var claudeSessionsEnabled: Bool {
+        get { stored.claudeSessionsEnabled }
+        set { guard stored.claudeSessionsEnabled != newValue else { return }; stored.claudeSessionsEnabled = newValue; persist(newValue, Preferences.Keys.claudeSessionsEnabled, reloadsWidgets: false) }
+    }
+    var claudeSessionsPets: Bool {
+        get { stored.claudeSessionsPets }
+        set { guard stored.claudeSessionsPets != newValue else { return }; stored.claudeSessionsPets = newValue; persist(newValue, Preferences.Keys.claudeSessionsPets, reloadsWidgets: false) }
+    }
+    var claudeSessionsShowsName: Bool {
+        get { stored.claudeSessionsShowsName }
+        set { guard stored.claudeSessionsShowsName != newValue else { return }; stored.claudeSessionsShowsName = newValue; persist(newValue, Preferences.Keys.claudeSessionsShowsName, reloadsWidgets: false) }
+    }
+    var claudeSessionsAvoidsMenus: Bool {
+        get { stored.claudeSessionsAvoidsMenus }
+        set { guard stored.claudeSessionsAvoidsMenus != newValue else { return }; stored.claudeSessionsAvoidsMenus = newValue; persist(newValue, Preferences.Keys.claudeSessionsAvoidsMenus, reloadsWidgets: false) }
+    }
+    var claudeSessionsNotify: Bool {
+        get { stored.claudeSessionsNotify }
+        set { guard stored.claudeSessionsNotify != newValue else { return }; stored.claudeSessionsNotify = newValue; persist(newValue, Preferences.Keys.claudeSessionsNotify, reloadsWidgets: false) }
+    }
+    var claudeSessionsHooksDismissed: Bool {
+        get { stored.claudeSessionsHooksDismissed }
+        set { guard stored.claudeSessionsHooksDismissed != newValue else { return }; stored.claudeSessionsHooksDismissed = newValue; persist(newValue, Preferences.Keys.claudeSessionsHooksDismissed, reloadsWidgets: false) }
+    }
 
     var lastScheduledAt: Date? {
         defaults.object(forKey: Preferences.Keys.lastScheduledAt) as? Date

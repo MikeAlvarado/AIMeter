@@ -2,21 +2,6 @@
 import SwiftUI
 import UsageKit
 
-extension HorizontalAlignment {
-    /// The notch's center. The gap between the wings defines it
-    /// explicitly; every container up to the root inherits it from that
-    /// one child, and the root aligns it with the window's own center —
-    /// which the controller put on the notch. That is how an asymmetric
-    /// peek (one wing closed) stays fused to the notch without anyone
-    /// measuring a wing: the layout is natural, the anchor is a guide.
-    private enum NotchCenter: AlignmentID {
-        static func defaultValue(in context: ViewDimensions) -> CGFloat {
-            context[HorizontalAlignment.center]
-        }
-    }
-    static let notchCenter = HorizontalAlignment(NotchCenter.self)
-}
-
 private struct NotchIslandRowScaleKey: EnvironmentKey {
     static let defaultValue: CGFloat = 1
 }
@@ -33,16 +18,33 @@ extension EnvironmentValues {
     }
 }
 
-/// The wings: with a notch, one on each side of a gap the notch's width,
-/// content hugging the notch like the Dynamic Island's; in a drawn notch
-/// or the pill, one row. Laid out at its natural width — the slab is as
-/// wide as this row — so nothing inside it moves while the island animates.
+/// The wings: with a notch, one on each side of a gap the notch's width
+/// (`NotchWings`), as wide as each other whenever both have something to
+/// show, so the slab stays centered on the notch; in a drawn notch or the
+/// pill, one row. Laid out at its natural width — the slab is as wide as
+/// this row — so nothing inside it moves while the island animates.
+/// Heading the expanded island (`fill`), the row spans the body's width
+/// instead: each wing reaches out to the body's edge, so the figures line
+/// up with the accounts, the sessions and the footer under them. A
+/// Claude Code session never shows here on a real notch: the collapsed
+/// island shows the sessions (`SessionWings`), the peek the figures, one
+/// or the other.
 struct CollapsedRow: View {
     let island: NotchIslandModel
     let mode: NotchIslandGeometry.Mode
     /// The notch's width, the gap between the wings.
     var notchWidth: CGFloat = 0
+    /// The row's height, which a Claude Code session's pets are sized to.
+    var barHeight: CGFloat = 24
+    /// The expanded body's width, when the row heads it; nil for the peek.
+    var fill: CGFloat?
+    /// How far a drawn row may reach either side of the screen's centre
+    /// without covering the menu bar's own items
+    /// (`NotchIslandState.availableWing`), which only the session's name
+    /// gives way to; nil when nothing limits it.
+    var availableWing: CGFloat?
     @Environment(\.notchIslandRowScale) private var scale
+    @Environment(\.displayScale) private var displayScale
 
     /// Inset between a wing's content and the notch.
     static let innerPadding: CGFloat = 12
@@ -53,27 +55,38 @@ struct CollapsedRow: View {
         HStack(spacing: 0) {
             switch mode {
             case .notch:
-                wing(island.collapsed.left, leading: true)
-                Color.clear
-                    .frame(width: notchWidth)
-                    .alignmentGuide(.notchCenter) { $0.width / 2 }
-                wing(island.collapsed.right, leading: false)
+                // Heading the expanded island each wing reaches out to the
+                // body's edge; peeking, both come out as wide whenever both
+                // hold something (a one-sided layout keeps its one wing).
+                let reach = fill.map { max(0, ($0 - notchWidth) / 2) } ?? 0
+                let bothSides = (!island.collapsed.left.isEmpty || primary == nil) && !island.collapsed.right.isEmpty
+                NotchWings(symmetric: fill != nil || bothSides) {
+                    wing(island.collapsed.left, leading: true)
+                        .frame(minWidth: reach, alignment: .leading)
+                    Color.clear.frame(width: notchWidth, height: 0)
+                    wing(island.collapsed.right, leading: false)
+                        .frame(minWidth: reach, alignment: .trailing)
+                }
             case .drawn, .pill:
                 drawnRow
             }
         }
         .fixedSize()
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(island.accessibilityLabel)
+        .accessibilityLabel([island.accessibilityLabel, island.sessions.markLabel].compactMap { $0 }.joined(separator: "; "))
     }
 
     private var primary: NotchIslandModel.Account? { island.primaryAccount }
 
+    /// One wing: the figures, after the account's mark on the left. Always
+    /// a view, an empty one for a side with nothing, so `NotchWings` has
+    /// its three.
     @ViewBuilder
     private func wing(_ segments: [NotchIslandModel.Segment], leading: Bool) -> some View {
-        if !segments.isEmpty || primary == nil && leading {
+        let showsIdentity = leading && (!segments.isEmpty || primary == nil)
+        if !segments.isEmpty || showsIdentity {
             HStack(spacing: 6) {
-                if leading {
+                if showsIdentity {
                     if let primary {
                         ProviderMark(size: 14 * scale, cornerRadius: 4 * scale, icon: primary.icon)
                     } else {
@@ -82,26 +95,93 @@ struct CollapsedRow: View {
                 }
                 SegmentLine(segments: segments, compact: true, scale: scale)
             }
-            .padding(.leading, leading ? Self.outerPadding : Self.innerPadding)
-            .padding(.trailing, leading ? Self.innerPadding : Self.outerPadding)
+            .padding(.leading, leading ? edgePadding : Self.innerPadding)
+            .padding(.trailing, leading ? Self.innerPadding : edgePadding)
             .fixedSize()
+        } else {
+            Color.clear.frame(width: 0, height: 0)
         }
     }
 
-    /// A drawn shape's one row (no notch to hug): the mark and every
-    /// chosen figure, the outer inset on both sides, all of it scaled
-    /// with a taller custom island.
+    /// A drawn shape's one row (no notch to hug, so nothing to swap on a
+    /// hover): the mark and every chosen figure, the outer inset on both
+    /// sides, all of it scaled with a taller custom island; a Claude Code
+    /// session's pets (or mark) and count at its two ends, except heading
+    /// the expanded island, where each pet is in its session's row. With
+    /// the session's name on, the row reads like the notch's: the lead's
+    /// pet and name first, the figures where the notch would be, the other
+    /// pets and the count last.
     private var drawnRow: some View {
-        HStack(spacing: 6 * scale) {
-            if let primary {
-                ProviderMark(size: 14 * scale, cornerRadius: 4 * scale, icon: primary.icon)
+        let sessions = fill == nil ? island.sessions : .none
+        return Group {
+            if sessions.showsName, let lead = sessions.lead {
+                namedRow(sessions: sessions, lead: lead)
             } else {
-                connectGlyph
+                HStack(spacing: 6 * scale) {
+                    if sessions.showsPets {
+                        if !sessions.pets.isEmpty {
+                            PetGroup(slots: sessions.pets, pixel: petPixel)
+                        }
+                    } else if let mark = sessions.mark {
+                        SessionMark(mark: mark, scale: scale)
+                    }
+                    identity
+                    SegmentLine(segments: island.collapsed.left + island.collapsed.right, compact: true, scale: scale)
+                    if fill != nil {
+                        Spacer(minLength: 0)
+                    }
+                    if sessions.count > 0 {
+                        SessionCount(count: sessions.count, scale: scale)
+                    }
+                }
             }
-            SegmentLine(segments: island.collapsed.left + island.collapsed.right, compact: true, scale: scale)
         }
-        .padding(.horizontal, Self.outerPadding * scale)
+        .padding(.horizontal, fill == nil ? Self.outerPadding * scale : ExpandedContent.horizontalPadding)
+        .frame(width: fill)
         .fixedSize()
+    }
+
+    /// The drawn row with the lead session's name, up to
+    /// `NotchIslandGeometry.drawnNameWidth` and only in the room the menu
+    /// bar leaves (`availableWing`, from the screen's centre).
+    private func namedRow(sessions: NotchIslandModel.Sessions, lead: NotchIslandModel.Sessions.Row) -> some View {
+        NamedRowLayout(spacing: 6 * scale, limit: availableWing.map { 2 * ($0 - Self.outerPadding * scale) }) {
+            if sessions.showsPets {
+                PetGroup(slots: sessions.leftPets(named: true), pixel: petPixel)
+            } else if let mark = sessions.mark {
+                SessionMark(mark: mark, scale: scale)
+            }
+            SessionName(name: lead.name, maxWidth: NotchIslandGeometry.drawnNameWidth * scale, scale: scale)
+                .clipped()
+                .layoutValue(key: NamedRowLayout.IsName.self, value: true)
+            identity
+            SegmentLine(segments: island.collapsed.left + island.collapsed.right, compact: true, scale: scale)
+            if sessions.showsPets, !sessions.rightPets(named: true).isEmpty {
+                PetGroup(slots: sessions.rightPets(named: true), pixel: petPixel)
+            }
+            SessionCount(count: sessions.count, scale: scale)
+        }
+    }
+
+    /// The account's mark, or the "Connect" affordance with none.
+    @ViewBuilder
+    private var identity: some View {
+        if let primary {
+            ProviderMark(size: 14 * scale, cornerRadius: 4 * scale, icon: primary.icon)
+        } else {
+            connectGlyph
+        }
+    }
+
+    /// Inset between a wing's content and the slab's outer edge: the body's
+    /// own padding while the row heads the expanded island.
+    private var edgePadding: CGFloat {
+        fill == nil ? Self.outerPadding : ExpandedContent.horizontalPadding
+    }
+
+    /// The pets' pixel: the same as beside the collapsed notch.
+    private var petPixel: CGFloat {
+        SessionPet.pixelSize(beside: barHeight, displayScale: displayScale)
     }
 
     /// With nothing connected the wing is the "Connect" affordance,

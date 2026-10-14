@@ -145,6 +145,7 @@ extension UsageModel {
         accounts = DemoUsageData.accounts().map { AccountUsage(account: $0.account, snapshot: $0.snapshot) }
         #if os(macOS)
         claudeCode?.enterDemo()
+        DemoSessions.shared.reset()
         #endif
     }
 

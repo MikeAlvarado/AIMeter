@@ -127,7 +127,18 @@ enum NotchIslandGeometry {
     /// fixed window is sized to hold. Content past them is clipped by the
     /// window, never re-flowed.
     static let maxWing: CGFloat = 240
-    static let maxBodyHeight: CGFloat = 460
+    /// The widest the lead session's name gets in a drawn notch or the
+    /// pill at the standard height (it grows with `rowScale`): about fifty
+    /// characters, so a session's whole title shows there, where beside a
+    /// real notch it is cut short past 170 pt (`SessionName.maxWidth`).
+    static let drawnNameWidth: CGFloat = 320
+    /// The widest collapsed row a drawn notch or pill is sized for: that
+    /// name with three pets, three windows' figures and the count, at the
+    /// tallest custom height (about 930 pt).
+    static let maxDrawnRow: CGFloat = 960
+    /// Four accounts, the incident notice, five Claude Code sessions and
+    /// the footer.
+    static let maxBodyHeight: CGFloat = 620
     /// Room the window keeps around the slab for the drawn shadow.
     static let shadowPadding: CGFloat = 20
     /// The bar's height when a screen reports none (mid-reconfiguration):
@@ -242,11 +253,11 @@ enum NotchIslandGeometry {
     }
 
     /// The window: fixed, centered on the anchor, wide enough for the
-    /// notch with the widest wings on both sides (never narrower than the
-    /// expanded island) and tall enough for the gap, the bar and the
-    /// tallest body, plus the shadow padding on the sides and below;
-    /// flush with the screen's top edge in every mode. Never wider than
-    /// the screen.
+    /// notch with the widest wings on both sides, or for a drawn row at its
+    /// widest (`maxDrawnRow`), never narrower than the expanded island, and
+    /// tall enough for the gap, the bar and the tallest body, plus the
+    /// shadow padding on the sides and below; flush with the screen's top
+    /// edge in every mode. Never wider than the screen.
     static func windowFrame(_ screen: Screen, mode: Mode, options: Options = Options()) -> CGRect {
         let anchor = anchorX(screen, mode: mode)
         let bar = barHeight(screen, mode: mode, options: options)
@@ -259,7 +270,7 @@ enum NotchIslandGeometry {
                 height: bar + maxBodyHeight
             )
         case .drawn, .pill:
-            content = CGSize(width: max(expandedWidth, 2 * maxWing), height: top + bar + maxBodyHeight)
+            content = CGSize(width: max(expandedWidth, maxDrawnRow), height: top + bar + maxBodyHeight)
         }
         let width = min(screen.frame.width, content.width + 2 * shadowPadding)
         let height = content.height + shadowPadding

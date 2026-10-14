@@ -61,7 +61,7 @@ final class NotchIslandGeometryTests: XCTestCase {
 
     func testDrawnNotchWindowIsFlushWithTheTopCenteredOnTheScreen() {
         let frame = NotchIslandGeometry.windowFrame(plainMac, mode: .drawn)
-        XCTAssertEqual(frame.width, max(NotchIslandGeometry.expandedWidth, 2 * NotchIslandGeometry.maxWing) + 2 * NotchIslandGeometry.shadowPadding)
+        XCTAssertEqual(frame.width, max(NotchIslandGeometry.expandedWidth, NotchIslandGeometry.maxDrawnRow) + 2 * NotchIslandGeometry.shadowPadding, "room for the widest row, a whole session name in it")
         XCTAssertEqual(frame.height, 25 + NotchIslandGeometry.maxBodyHeight + NotchIslandGeometry.shadowPadding)
         XCTAssertEqual(frame.midX, 960, accuracy: 0.001)
         XCTAssertEqual(frame.maxY, 1080, "flush with the top edge, over the menu bar, like the real notch")

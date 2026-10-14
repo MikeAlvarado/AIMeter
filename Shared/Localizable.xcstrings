@@ -4,6 +4,1651 @@
     "" : {
 
     },
+    "A pet for each session" : {
+      "comment" : "Settings switch: a pixel pet beside the notch for each Claude Code session.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Pixeltier pro Sitzung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una mascota por sesión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un compagnon par session"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションごとにペット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션마다 펫"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um bichinho por sessão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个会话一只宠物"
+          }
+        }
+      }
+    },
+    "Off, a spinner and a count instead." : {
+      "comment" : "Caption under the pet switch: what the island shows with pets off.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus: eine Aktivitätsanzeige und die Anzahl."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagado: un indicador de actividad y el número de sesiones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé : un indicateur d'activité et le nombre de sessions."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフにすると、アクティビティインジケータと数を表示します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "끄면 활동 표시기와 개수를 표시합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desativado: um indicador de atividade e o número de sessões."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭后显示活动指示器和数量。"
+          }
+        }
+      }
+    },
+    "Show the session's name" : {
+      "comment" : "Settings, Claude Code tab: the switch for the session's name beside the notch while the island is closed.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namen der Sitzung anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el nombre de la sesión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le nom de la session"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッション名を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션 이름 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar o nome da sessão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示会话名称"
+          }
+        }
+      }
+    },
+    "Beside the notch while the island is closed. Hovering shows it either way." : {
+      "comment" : "Caption under the session name switch: where the name shows, and that the hover shows it whatever the switch says.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neben dem Notch, solange die Insel geschlossen ist. Beim Darüberfahren erscheint er so oder so."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Junto al notch mientras la isla está cerrada. Al pasar el cursor se ve de todos modos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À côté de l’encoche tant que l’îlot est fermé. Au survol, il s’affiche de toute façon."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイランドが閉じている間、ノッチの横に表示します。ポインタを重ねると常に表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아일랜드가 닫혀 있을 때 노치 옆에 표시합니다. 포인터를 올리면 항상 표시됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao lado do notch enquanto a ilha está fechada. Ao passar o cursor, aparece de qualquer jeito."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海岛收起时显示在刘海旁边。悬停时始终会显示。"
+          }
+        }
+      }
+    },
+    "Avoid covering the menu bar" : {
+      "comment" : "Settings, Claude Code tab: the switch that shrinks the notch island before it covers the open app's menus or the menu bar's icons (needs Accessibility).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menüleiste nicht verdecken"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tapar la barra de menús"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pas couvrir la barre des menus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーを隠さない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메뉴 막대를 가리지 않기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não cobrir a barra de menus"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不遮挡菜单栏"
+          }
+        }
+      }
+    },
+    "The island shrinks before it covers the open app's menus or the icons on the right. This needs Accessibility, used only to read where they are." : {
+      "comment" : "Caption under the Avoid covering the menu bar switch: what it does, the permission it needs and what for.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Insel wird schmaler, bevor sie die Menüs der geöffneten App oder die Symbole rechts verdeckt. Dafür sind Bedienungshilfen nötig, die nur lesen, wo diese liegen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La isla se encoge antes de tapar los menús de la app abierta o los íconos de la derecha. Necesita Accesibilidad, que solo se usa para saber dónde están."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’îlot se rétrécit avant de couvrir les menus de l’app ouverte ou les icônes de droite. Cela demande l’Accessibilité, utilisée seulement pour savoir où ils se trouvent."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開いているアプリのメニューや右側のアイコンを隠す前に、アイランドが縮みます。アクセシビリティが必要で、それらの位置を読むためだけに使います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "열려 있는 앱의 메뉴나 오른쪽 아이콘을 가리기 전에 아일랜드가 줄어듭니다. 손쉬운 사용 권한이 필요하며, 그 위치를 읽는 데만 쓰입니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A ilha encolhe antes de cobrir os menus do app aberto ou os ícones da direita. Isso precisa de Acessibilidade, usada só para saber onde eles estão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海岛会在遮挡当前应用的菜单或右侧图标之前缩小。这需要辅助功能权限，仅用于读取它们的位置。"
+          }
+        }
+      }
+    },
+    "Allow AIMeter in Privacy & Security, Accessibility." : {
+      "comment" : "Shown while Avoid covering menus is on but macOS hasn't granted the Accessibility permission; next to an Open Settings button.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube AIMeter unter Datenschutz & Sicherheit, Bedienungshilfen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite AIMeter en Privacidad y seguridad, Accesibilidad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez AIMeter dans Confidentialité et sécurité, Accessibilité."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「プライバシーとセキュリティ」の「アクセシビリティ」でAIMeterを許可してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인정보 보호 및 보안의 손쉬운 사용에서 AIMeter를 허용하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permita o AIMeter em Privacidade e Segurança, Acessibilidade."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在\"隐私与安全性\"的\"辅助功能\"中允许 AIMeter。"
+          }
+        }
+      }
+    },
+    "Accessibility, only if you ask" : {
+      "comment" : "Privacy & data row title (Mac): the optional Accessibility permission.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bedienungshilfen, nur wenn du willst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesibilidad, solo si la pides"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accessibilité, seulement si vous le demandez"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクセシビリティは求めたときだけ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "손쉬운 사용, 원할 때만"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acessibilidade, só se você pedir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辅助功能，仅在你要求时"
+          }
+        }
+      }
+    },
+    "If you turn on \"Avoid covering the menu bar\" in Settings, macOS asks you to allow AIMeter under Accessibility. AIMeter uses it for one thing: reading where the open app's menu titles and the menu bar's icons are, so the notch island can shrink before it covers them. It reads nothing else and changes nothing." : {
+      "comment" : "Privacy & data row text (Mac): what the optional Accessibility permission is used for.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn du in den Einstellungen „Menüleiste nicht verdecken“ einschaltest, bittet dich macOS, AIMeter unter Bedienungshilfen zu erlauben. AIMeter nutzt das für genau eine Sache: zu lesen, wo die Menütitel der geöffneten App und die Symbole der Menüleiste liegen, damit die Notch-Insel schmaler wird, bevor sie sie verdeckt. Es liest nichts anderes und ändert nichts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si activas «No tapar la barra de menús» en Ajustes, macOS te pide permitir AIMeter en Accesibilidad. AIMeter lo usa para una sola cosa: saber dónde están los títulos de menú de la app abierta y los íconos de la barra de menús, para que la isla del notch se encoja antes de taparlos. No lee nada más ni cambia nada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si vous activez « Ne pas couvrir la barre des menus » dans les Réglages, macOS vous demande d’autoriser AIMeter dans Accessibilité. AIMeter s’en sert pour une seule chose : savoir où se trouvent les titres de menu de l’app ouverte et les icônes de la barre des menus, pour que l’îlot de l’encoche se rétrécisse avant de les couvrir. Il ne lit rien d’autre et ne modifie rien."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定で「メニューバーを隠さない」をオンにすると、macOSがアクセシビリティでAIMeterを許可するよう求めます。AIMeterはこれを1つのことにだけ使います。開いているアプリのメニュータイトルとメニューバーのアイコンの位置を読み、ノッチアイランドがそれらを隠す前に縮むようにするためです。ほかには何も読まず、何も変更しません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 \"메뉴 막대를 가리지 않기\"를 켜면 macOS가 손쉬운 사용에서 AIMeter를 허용하도록 요청합니다. AIMeter는 이를 한 가지에만 사용합니다. 열려 있는 앱의 메뉴 제목과 메뉴 막대 아이콘의 위치를 읽어 노치 아일랜드가 가리기 전에 줄어들게 하는 것입니다. 그 밖에는 아무것도 읽거나 바꾸지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se você ativar \"Não cobrir a barra de menus\" nos Ajustes, o macOS pede para permitir o AIMeter em Acessibilidade. O AIMeter usa isso para uma coisa só: saber onde estão os títulos de menu do app aberto e os ícones da barra de menus, para a ilha do notch encolher antes de cobri-los. Ele não lê mais nada e não muda nada."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果你在设置中打开\"不遮挡菜单栏\"，macOS 会请你在\"辅助功能\"中允许 AIMeter。AIMeter 只用它做一件事：读取当前应用菜单标题和菜单栏图标的位置，让刘海岛在遮挡它们之前缩小。它不会读取其他任何内容，也不会做任何更改。"
+          }
+        }
+      }
+    },
+    "%@ needs you" : {
+      "comment" : "Notification title when a Claude Code session asks for permission. The argument is the session's title or folder.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ braucht dich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ te necesita"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ a besoin de vous"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ が対応を待っています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 응답이 필요합니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ precisa de você"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 需要你"
+          }
+        }
+      }
+    },
+    "Claude Code is asking for your permission." : {
+      "comment" : "Notification body when a Claude Code session asks for permission.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code bittet um deine Erlaubnis."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code te está pidiendo permiso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code vous demande votre autorisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeが許可を求めています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code가 권한을 요청하고 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Claude Code está pedindo sua permissão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 正在请求你的许可。"
+          }
+        }
+      }
+    },
+    "Claude Code's settings file isn't valid JSON, so AIMeter left it untouched." : {
+      "comment" : "Shown when installing or removing the hooks finds ~/.claude/settings.json unreadable.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Einstellungsdatei von Claude Code ist kein gültiges JSON, daher hat AIMeter sie nicht verändert."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El archivo de ajustes de Claude Code no es JSON válido, así que AIMeter no lo tocó."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fichier de réglages de Claude Code n'est pas un JSON valide, AIMeter n'y a donc pas touché."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeの設定ファイルが有効なJSONではないため、AIMeterは変更しませんでした。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code의 설정 파일이 올바른 JSON이 아니어서 AIMeter가 변경하지 않았습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O arquivo de ajustes do Claude Code não é um JSON válido, então o AIMeter não mexeu nele."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 的设置文件不是有效的 JSON，因此 AIMeter 未做任何更改。"
+          }
+        }
+      }
+    },
+    "A Claude Code session needs permission" : {
+      "comment" : "VoiceOver label for the mark beside the notch while a session waits for a permission prompt.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Claude-Code-Sitzung braucht eine Erlaubnis"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una sesión de Claude Code necesita permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une session Claude Code a besoin d'une autorisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのセッションが許可を求めています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 세션에 권한이 필요합니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma sessão do Claude Code precisa de permissão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有 Claude Code 会话需要授权"
+          }
+        }
+      }
+    },
+    "A Claude Code session finished" : {
+      "comment" : "VoiceOver label for the check beside the notch right after a session finishes.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Claude-Code-Sitzung ist fertig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una sesión de Claude Code terminó"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une session Claude Code est terminée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのセッションが完了しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 세션이 완료되었습니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma sessão do Claude Code terminou"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有 Claude Code 会话已完成"
+          }
+        }
+      }
+    },
+    "Claude Code sessions working: %lld" : {
+      "comment" : "VoiceOver label for the spinner and count beside the notch.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktive Claude-Code-Sitzungen: %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesiones de Claude Code trabajando: %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions Claude Code en cours : %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業中のClaude Codeセッション：%lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 중인 Claude Code 세션: %lld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessões do Claude Code trabalhando: %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在工作的 Claude Code 会话：%lld"
+          }
+        }
+      }
+    },
+    "Working" : {
+      "comment" : "A Claude Code session's status in the notch island, for its first minute.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En cours"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabalhando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工作中"
+          }
+        }
+      }
+    },
+    "Working for %@" : {
+      "comment" : "A Claude Code session's status in the notch island. The argument is a compact duration such as 3m or 1h 5m.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitet seit %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajando desde hace %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En cours depuis %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業中・%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@째 작업 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabalhando há %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已工作 %@"
+          }
+        }
+      }
+    },
+    "Needs permission" : {
+      "comment" : "A Claude Code session's status in the notch island while it waits for the user to allow a tool.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Braucht Erlaubnis"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesita permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisation requise"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "許可が必要"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한 필요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisa de permissão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要授权"
+          }
+        }
+      }
+    },
+    "Done just now" : {
+      "comment" : "A Claude Code session's status in the notch island, in the first minute after it finished.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eben fertig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminó ahora mismo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé à l'instant"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "たった今完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금 완료"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminou agora mesmo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刚刚完成"
+          }
+        }
+      }
+    },
+    "Done %@ ago" : {
+      "comment" : "A Claude Code session's status in the notch island. The argument is a compact duration such as 2m.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig vor %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminó hace %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé il y a %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@前に完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 전 완료"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminou há %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@前完成"
+          }
+        }
+      }
+    },
+    "%lld more" : {
+      "comment" : "Under the notch island's Claude Code sessions, how many more there are than the rows shown.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld weitere"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de plus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ほか%lld件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개 더"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还有 %lld 个"
+          }
+        }
+      }
+    },
+    "Install Claude Code hooks to see when a session needs permission." : {
+      "comment" : "One-line invitation in the notch island, next to Not now and Install.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere die Hooks von Claude Code, um zu sehen, wann eine Sitzung eine Erlaubnis braucht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala los hooks de Claude Code para ver cuándo una sesión necesita permiso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installez les hooks de Claude Code pour voir quand une session a besoin d'une autorisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのフックをインストールすると、セッションが許可を求めたときに分かります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 훅을 설치하면 세션에 권한이 필요할 때 알 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale os hooks do Claude Code para ver quando uma sessão precisa de permissão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装 Claude Code 的 hooks，即可看到会话何时需要授权。"
+          }
+        }
+      }
+    },
+    "Install" : {
+      "comment" : "Button that adds AIMeter's hooks to Claude Code's settings.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "comment" : "Button that takes AIMeter's hooks out of Claude Code's settings.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retirer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제거"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
+          }
+        }
+      }
+    },
+    "Show sessions in the notch" : {
+      "comment" : "Settings switch: Claude Code's sessions in the notch island.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungen im Notch anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar las sesiones en el notch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les sessions dans l’encoche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチにセッションを表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치에 세션 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar as sessões no notch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在刘海中显示会话"
+          }
+        }
+      }
+    },
+    "The notch island is off." : {
+      "comment" : "Under the Show sessions in the notch switch while the island itself is turned off.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Notch-Insel ist aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La isla del notch está desactivada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’îlot de l’encoche est désactivé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチアイランドはオフです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치 아일랜드가 꺼져 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A ilha do notch está desativada."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海岛已关闭。"
+          }
+        }
+      }
+    },
+    "Notify when a session needs you" : {
+      "comment" : "Settings switch: a notification when a Claude Code session needs the user, that is, asks for permission.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilung, wenn eine Sitzung dich braucht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisar cuando una sesión te necesite"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifier quand une session a besoin de vous"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションに対応が必要なときに通知"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션에 응답이 필요할 때 알림"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisar quando uma sessão precisar de você"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会话需要你时通知"
+          }
+        }
+      }
+    },
+    "When a session asks for your permission." : {
+      "comment" : "Caption under the switch that notifies when a Claude Code session needs the user, while Claude Code's hooks are installed.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn eine Sitzung um deine Erlaubnis bittet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando una sesión te pida permiso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand une session vous demande votre autorisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションが許可を求めたとき。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션이 권한을 요청할 때."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando uma sessão pedir sua permissão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会话请求你的许可时。"
+          }
+        }
+      }
+    },
+    "When a session asks for your permission, once the hooks below are in." : {
+      "comment" : "Caption under the switch that notifies when a Claude Code session needs the user, while Claude Code's hooks aren't installed: only the hooks tell AIMeter that a session asks.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn eine Sitzung um deine Erlaubnis bittet, sobald die Hooks unten installiert sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando una sesión te pida permiso, una vez instalados los hooks de abajo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand une session vous demande votre autorisation, une fois les hooks ci-dessous installés."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションが許可を求めたとき。下のフックを追加すると使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션이 권한을 요청할 때. 아래의 훅을 설치하면 사용할 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando uma sessão pedir sua permissão, depois que os hooks abaixo estiverem instalados."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会话请求你的许可时。需先安装下方的 hooks。"
+          }
+        }
+      }
+    },
+    "AIMeter reads only whether each session is working, waiting or done, and its title and folder, from the logs in ~/.claude/projects. It never reads your prompts or Claude's replies, and nothing leaves this Mac. Installing the hooks adds AIMeter to ~/.claude/settings.json and backs the file up first; everything else in it stays as it is." : {
+      "comment" : "Footnote under the Sessions card in Settings, Claude Code tab.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter liest aus den Protokollen in ~/.claude/projects nur, ob eine Sitzung arbeitet, wartet oder fertig ist, sowie ihren Titel und Ordner. Deine Prompts und die Antworten von Claude liest es nie, und nichts verlässt diesen Mac. Beim Installieren der Hooks trägt sich AIMeter in ~/.claude/settings.json ein und sichert die Datei vorher; alles andere darin bleibt, wie es ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter solo lee si cada sesión está trabajando, esperando o terminada, y su título y carpeta, de los registros en ~/.claude/projects. Nunca lee tus prompts ni las respuestas de Claude, y nada sale de este Mac. Instalar los hooks agrega AIMeter a ~/.claude/settings.json y antes respalda el archivo; todo lo demás queda igual."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter lit seulement si chaque session travaille, attend ou a terminé, ainsi que son titre et son dossier, dans les journaux de ~/.claude/projects. Il ne lit jamais vos prompts ni les réponses de Claude, et rien ne quitte ce Mac. Installer les hooks ajoute AIMeter à ~/.claude/settings.json après une sauvegarde du fichier ; tout le reste demeure tel quel."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterが~/.claude/projectsのログから読むのは、各セッションが作業中・待機中・完了のどれかと、そのタイトルとフォルダだけです。プロンプトやClaudeの返答は読まず、何もこのMacの外に送りません。フックをインストールすると、ファイルをバックアップしてから~/.claude/settings.jsonにAIMeterを追加します。ほかの設定はそのままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 ~/.claude/projects의 로그에서 각 세션이 작업 중인지, 대기 중인지, 끝났는지와 그 제목 및 폴더만 읽습니다. 프롬프트나 Claude의 답변은 절대 읽지 않으며, 이 Mac 밖으로 아무것도 보내지 않습니다. 훅을 설치하면 파일을 먼저 백업한 뒤 ~/.claude/settings.json에 AIMeter를 추가하며, 나머지 내용은 그대로 둡니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter lê apenas se cada sessão está trabalhando, esperando ou concluída, além do título e da pasta, a partir dos registros em ~/.claude/projects. Ele nunca lê seus prompts nem as respostas do Claude, e nada sai deste Mac. Instalar os hooks adiciona o AIMeter a ~/.claude/settings.json e faz um backup do arquivo antes; todo o resto continua igual."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 只从 ~/.claude/projects 中的日志读取每个会话是在工作、等待还是已完成，以及它的标题和文件夹。它从不读取你的提示词或 Claude 的回复，也不会把任何内容传出这台 Mac。安装 hooks 时，AIMeter 会先备份 ~/.claude/settings.json，再把自己加入其中；其余内容保持不变。"
+          }
+        }
+      }
+    },
+    "Permission prompts" : {
+      "comment" : "Row title in Settings, Claude Code tab: the hooks that report permission requests.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berechtigungsanfragen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitudes de permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demandes d’autorisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "許可のリクエスト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한 요청"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedidos de permissão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授权请求"
+          }
+        }
+      }
+    },
+    "Claude Code's hooks tell AIMeter when a session asks." : {
+      "comment" : "Caption under Permission prompts while the hooks are installed.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Hooks von Claude Code melden AIMeter, wenn eine Sitzung fragt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los hooks de Claude Code le avisan a AIMeter cuando una sesión lo pide."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les hooks de Claude Code signalent à AIMeter quand une session demande."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションが許可を求めると、Claude CodeのフックがAIMeterに知らせます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션이 요청하면 Claude Code 훅이 AIMeter에 알려 줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os hooks do Claude Code avisam o AIMeter quando uma sessão pede."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会话请求授权时，Claude Code 的 hooks 会通知 AIMeter。"
+          }
+        }
+      }
+    },
+    "Needs Claude Code's hooks, added in one click." : {
+      "comment" : "Caption under Permission prompts while the hooks aren't installed.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Braucht die Hooks von Claude Code, mit einem Klick hinzugefügt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requiere los hooks de Claude Code, que se agregan con un clic."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nécessite les hooks de Claude Code, ajoutés en un clic."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのフックが必要です。ワンクリックで追加できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 훅이 필요하며, 클릭 한 번으로 추가됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requer os hooks do Claude Code, adicionados com um clique."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要 Claude Code 的 hooks，一键即可添加。"
+          }
+        }
+      }
+    },
+    "Claude Code sessions" : {
+      "comment" : "Privacy & data row title.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude-Code-Sitzungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesiones de Claude Code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions Claude Code"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのセッション"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 세션"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessões do Claude Code"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 会话"
+          }
+        }
+      }
+    },
+    "To show which Claude Code sessions are working in the notch island, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is and when it was written, plus each session's title and folder: never your prompts or the replies. It keeps nothing and sends nothing anywhere; turn it off in Settings. If you install the optional hooks, Claude Code passes each event to AIMeter over a private connection on this Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest." : {
+      "comment" : "Privacy & data row text for the Claude Code sessions.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um auf der Notch-Insel zu zeigen, welche Claude-Code-Sitzungen arbeiten, verfolgt AIMeter die Sitzungsprotokolle in ~/.claude/projects und liest nur, was jeder Eintrag ist und wann er geschrieben wurde, dazu Titel und Ordner jeder Sitzung: nie deine Prompts oder die Antworten. Es speichert nichts und sendet nichts irgendwohin; du kannst es in den Einstellungen ausschalten. Wenn du die optionalen Hooks installierst, gibt Claude Code jedes Ereignis über eine private Verbindung auf diesem Mac, die nur dein Benutzerkonto erreicht, an AIMeter weiter; AIMeter liest, um welche Sitzung es geht und was passiert ist, und verwirft den Rest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para mostrar en la isla del notch qué sesiones de Claude Code están trabajando, AIMeter sigue los registros de sesión en ~/.claude/projects y solo lee qué es cada registro y cuándo se escribió, además del título y la carpeta de cada sesión: nunca tus prompts ni las respuestas. No guarda nada ni envía nada a ningún lado; puedes desactivarlo en Ajustes. Si instalas los hooks opcionales, Claude Code le pasa cada evento a AIMeter por una conexión privada en este Mac a la que solo tu cuenta tiene acceso; AIMeter lee de qué sesión se trata y qué pasó, y descarta el resto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour montrer dans l’îlot de l’encoche quelles sessions Claude Code travaillent, AIMeter suit les journaux de session de ~/.claude/projects et ne lit que la nature de chaque entrée et l'heure à laquelle elle a été écrite, ainsi que le titre et le dossier de chaque session : jamais vos prompts ni les réponses. Il ne garde rien et n'envoie rien nulle part ; vous pouvez le désactiver dans les Réglages. Si vous installez les hooks facultatifs, Claude Code transmet chaque événement à AIMeter par une connexion privée sur ce Mac, accessible à votre seul compte ; AIMeter lit de quelle session il s'agit et ce qui s'est passé, et ignore le reste."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチアイランドに作業中のClaude Codeセッションを表示するため、AIMeterは~/.claude/projectsのセッションログを追い、各記録の種類と書き込まれた時刻、そして各セッションのタイトルとフォルダだけを読み取ります。プロンプトや返答は読みません。何も保存せず、どこにも送信しません。設定でオフにできます。オプションのフックをインストールすると、Claude Codeはこのアカウントだけが使えるこのMac上の専用の接続で各イベントをAIMeterに渡します。AIMeterはどのセッションで何が起きたかだけを読み取り、残りは破棄します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치 아일랜드에 작업 중인 Claude Code 세션을 표시하기 위해 AIMeter는 ~/.claude/projects의 세션 로그를 따라가며 각 기록의 종류와 작성 시각, 그리고 각 세션의 제목과 폴더만 읽습니다. 프롬프트나 답변은 절대 읽지 않습니다. 아무것도 저장하거나 보내지 않으며, 설정에서 끌 수 있습니다. 선택 사항인 훅을 설치하면 Claude Code는 이 Mac에서 사용자 계정만 접근할 수 있는 비공개 연결로 각 이벤트를 AIMeter에 전달하며, AIMeter는 어떤 세션에서 무슨 일이 있었는지만 읽고 나머지는 버립니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para mostrar na ilha do notch quais sessões do Claude Code estão trabalhando, o AIMeter acompanha os registros de sessão em ~/.claude/projects e lê apenas o que é cada registro e quando foi escrito, além do título e da pasta de cada sessão: nunca seus prompts nem as respostas. Ele não guarda nada e não envia nada a lugar nenhum; você pode desativar isso nos Ajustes. Se você instalar os hooks opcionais, o Claude Code passa cada evento ao AIMeter por uma conexão privada neste Mac que só a sua conta alcança; o AIMeter lê de qual sessão se trata e o que aconteceu, e descarta o resto."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为了在刘海岛中显示哪些 Claude Code 会话正在工作，AIMeter 会跟踪 ~/.claude/projects 中的会话日志，只读取每条记录的类型和写入时间，以及每个会话的标题和文件夹，从不读取你的提示词或回复。它不保存任何内容，也不向任何地方发送；你可以在设置中关闭。如果你安装了可选的 hooks，Claude Code 会通过这台 Mac 上只有你的账户才能访问的私有连接把每个事件交给 AIMeter；AIMeter 只读取事件属于哪个会话、发生了什么，其余一概丢弃。"
+          }
+        }
+      }
+    },
     "--" : {
       "localizations" : {
         "de" : {

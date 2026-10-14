@@ -8,11 +8,16 @@ private struct AccountListHeightKey: PreferenceKey {
 }
 
 /// The expanded layer: an incident notice while there is one, every
-/// account in one grid (`AccountGrid`; more than four scroll), and the
+/// account in one grid (`AccountGrid`; more than four scroll), Claude
+/// Code's sessions while there are any (`SessionsSection`), and the
 /// footer's three controls. Presents no sheets of its own — Connect, Sign in again and
 /// Settings route through `AppChrome`, the same rule as the popover.
 struct ExpandedContent: View {
     let island: NotchIslandModel
+    /// The body's inset from the slab, which every section and the
+    /// header's wings (`CollapsedRow.fill`) share, so all of them start and
+    /// end at the same two edges.
+    static let horizontalPadding: CGFloat = 18
     @State private var listHeight: CGFloat = 0
     private static let maxListHeight: CGFloat = 360
     private static let scrollsPast = 4
@@ -30,17 +35,21 @@ struct ExpandedContent: View {
                     .background(Theme.accent.opacity(0.16), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
             accountList
+            if !island.sessions.isEmpty {
+                Rectangle().fill(NotchIslandStyle.hairline).frame(height: 1)
+                SessionsSection(sessions: island.sessions)
+            }
             Rectangle().fill(NotchIslandStyle.hairline).frame(height: 1)
             IslandFooter()
         }
-        .padding(.horizontal, 18)
+        .padding(.horizontal, Self.horizontalPadding)
         .padding(.top, 12)
         .padding(.bottom, 14)
     }
 
     @ViewBuilder
     private var accountList: some View {
-        // Centered: the grid is as wide as its columns, never wider.
+        // Edge to edge: the separators spread the columns over the width.
         let rows = AccountGrid(accounts: island.accounts).frame(maxWidth: .infinity)
         if island.accounts.count > Self.scrollsPast {
             // Measured, not `.frame(maxHeight:)`: a `ScrollView` reports an
@@ -62,12 +71,16 @@ struct ExpandedContent: View {
 
 /// Every account in one grid, so their windows sit in the same columns
 /// with the same gap between them, whatever each one reports, and the
-/// grid centered in the island. Each column is as wide as its widest
-/// figures; the bars sit in a row of their own and take the column's
-/// width without widening it (`gridCellUnsizedAxes`), so every bar in a
-/// column has the same track. Headers, dividers and status lines span
-/// the grid the same way. The figures are 12 pt; when the grid would not
-/// fit the island's width, 11, then 10.
+/// grid spanning the island edge to edge: the separator columns are the
+/// only flexible ones and share the spare width evenly, so the first
+/// column starts at the body's left edge and the last ends at its right
+/// one, where the sessions, the dividers and the footer start and end.
+/// Each figure column is as wide as its widest figures; the bars sit in a
+/// row of their own and take the column's width without widening it
+/// (`gridCellUnsizedAxes`), so every bar in a column has the same track.
+/// Headers, dividers and status lines span the grid the same way. The
+/// figures are 12 pt; when the grid would not fit the island's width, 11,
+/// then 10.
 struct AccountGrid: View {
     let accounts: [NotchIslandModel.Account]
 
@@ -96,9 +109,14 @@ struct AccountGrid: View {
                         let segment = account.segments.indices.contains(column) ? account.segments[column] : nil
                         if column > 0 {
                             if segment != nil {
+                                // The separators take the island's spare
+                                // width, evenly: the first column starts at
+                                // the left edge and the last ends at the
+                                // right one, like the sections around it.
                                 Text(verbatim: "|")
                                     .font(NotchIslandStyle.font(12 * scale))
                                     .foregroundStyle(NotchIslandStyle.separator)
+                                    .frame(maxWidth: .infinity)
                             } else {
                                 Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
                             }
@@ -214,7 +232,8 @@ struct IslandFooter: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            control("arrow.clockwise", String(localized: "Refresh")) {
+            // The outer glyphs sit on the body's edges, like everything above.
+            control("arrow.clockwise", String(localized: "Refresh"), alignment: .leading) {
                 Task { await model.refreshAll() }
             }
             .disabled(model.isRefreshing || model.isDemoMode)
@@ -223,18 +242,18 @@ struct IslandFooter: View {
                 AppChrome.revealMainWindow()
             }
             Spacer()
-            control("gearshape", String(localized: "Settings…")) {
+            control("gearshape", String(localized: "Settings…"), alignment: .trailing) {
                 AppChrome.openSettings()
             }
         }
     }
 
-    private func control(_ symbol: String, _ title: String, action: @escaping () -> Void) -> some View {
+    private func control(_ symbol: String, _ title: String, alignment: Alignment = .center, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(NotchIslandStyle.control)
-                .frame(width: 24, height: 20)
+                .frame(width: 24, height: 20, alignment: alignment)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

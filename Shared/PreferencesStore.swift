@@ -250,6 +250,31 @@ struct Preferences: Sendable {
     var claudeCodeUsageDismissed: Bool = false
     /// One "Claude Code today: …" line under the popover's accounts.
     var menuBarShowsClaudeCodeLine: Bool = false
+    // MARK: Claude Code sessions (macOS)
+    //
+    // Keys and loading: `PreferencesStore+ClaudeSessions.swift`.
+    /// The island shows Claude Code's sessions: a mark beside the notch
+    /// while one works, and the sessions in the expanded island. On by
+    /// default (it reads only whether each session is working), so it
+    /// loads through the presence check.
+    var claudeSessionsEnabled: Bool = true
+    /// A pixel pet for each session beside the notch, rather than a
+    /// spinner and a count. On by default, so presence-checked.
+    var claudeSessionsPets: Bool = true
+    /// The session's name beside its pet while the island is collapsed,
+    /// the way Vibe Island's compact island reads. Off by default, so the
+    /// collapsed island stays short; the peek shows the name either way.
+    var claudeSessionsShowsName: Bool = false
+    /// Shrink the island before it covers the open app's menus, which
+    /// takes the Accessibility permission (the status items on the right
+    /// are always spared). Off by default.
+    var claudeSessionsAvoidsMenus: Bool = false
+    /// A notification when a session needs the user: it asked for
+    /// permission, which only the hooks tell. A turn ending is not
+    /// announced. Off by default.
+    var claudeSessionsNotify: Bool = false
+    /// The island's invitation to install the hooks was dismissed.
+    var claudeSessionsHooksDismissed: Bool = false
 
     var lastScheduledAt: Date?
 
@@ -327,6 +352,7 @@ struct Preferences: Sendable {
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
         prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
         prefs.menuBarShowsClaudeCodeLine = defaults.bool(forKey: Keys.menuBarShowsClaudeCodeLine)
+        prefs.loadClaudeSessions(from: defaults)
         if let timestamp = defaults.object(forKey: Keys.lastScheduledAt) as? Date {
             prefs.lastScheduledAt = timestamp
         }

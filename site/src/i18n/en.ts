@@ -194,6 +194,12 @@ export const en = {
         ],
       },
       {
+        heading: 'Command-line sessions in the notch (Mac)',
+        paragraphs: [
+          'On while the notch island is, and off with one switch in Settings. To show which Claude Code sessions are working, waiting for your permission or done, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is and when it was written, plus each session’s title and folder: never prompts, replies or tool input. It keeps nothing and sends nothing anywhere. If you install the optional hooks, AIMeter adds one entry per event to ~/.claude/settings.json (backing the file up first and keeping everything else), and Claude Code passes each event to AIMeter over a private connection on that Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest. Remove takes the entries out again. The feature does not exist on iOS.',
+        ],
+      },
+      {
         heading: 'Notifications',
         paragraphs: [
           'All alerts are generated locally on the device from the reset dates and percentages already in the snapshot. No push service is involved, and nothing is delivered unless you granted notification permission.',
@@ -250,7 +256,7 @@ export const en = {
       {
         heading: 'Acknowledgments',
         paragraphs: [
-          'The notch island owes its feel to three projects that got there first. boring.notch, by TheBoredTeam on GitHub, was the reference for how a notch panel should move: a window that never resizes, a black slab sized by its own content, one spring carrying size, corners and shadow together. It was read, not copied; AIMeter’s island is its own implementation under the MIT license. Vibe Island set the one-line format the island shows. Atoll, by Ebullioscopic, showed the options a screen without a notch needs, from the pill to hiding until the cursor comes; it was studied the same way. Thanks to all three.',
+          'The notch island owes its feel to three projects that got there first. boring.notch, by TheBoredTeam on GitHub, was the reference for how a notch panel should move: a window that never resizes, a black slab sized by its own content, one spring carrying size, corners and shadow together. It was read, not copied; AIMeter’s island is its own implementation under the MIT license. Vibe Island set the one-line format the island shows, and how a session reads while it is closed: its pets at one end, the count at the other. Atoll, by Ebullioscopic, showed the options a screen without a notch needs, from the pill to hiding until the cursor comes; it was studied the same way. Thanks to all three.',
         ],
       },
     ],

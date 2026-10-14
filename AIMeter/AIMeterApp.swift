@@ -32,6 +32,7 @@ struct AIMeterApp: App {
                     // is where it gets the app's one `PreferencesModel`.
                     AppEnvironment.prefs = prefs
                     AppChrome.startNotchIslandIfEnabled()
+                    AppChrome.updateClaudeSessions()
                 }
                 #endif
         }

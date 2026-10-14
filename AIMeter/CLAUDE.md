@@ -248,7 +248,8 @@
   two cards. The first: a live preview of the **peek** — what hovering
   shows — as this screen draws it (the real notch's silhouette, or the
   drawn notch or pill at the chosen height), from the same
-  `NotchIslandModel.current` the panel draws; "Show usage in the notch",
+  `NotchIslandModel.current` the panel draws (a session's name there is
+  cut short to the card, `previewWing`); "Show usage in the notch",
   whose setter goes through `PreferencesModel.setNotchIsland(enabled:)`
   and `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left /
   Right pill, only on a Mac with a notch; the "Account" menu
@@ -278,19 +279,39 @@
   are on), "Reset countdown" (not for `multi`) and
   "Account name" (2+ only) toggles; the footnote also points at the
   Shortcuts-app route to a system-wide key);
-  **Claude Code** (`ClaudeCodeSettings`, absent in demo mode — a demo
-  switched on with the tab open falls back to General): "Read Claude
-  Code's local usage logs" (off by default; its `onChange` drives
-  `UsageModel.claudeCode?.setEnabled`) and, once on, "Show today's total
-  in the menu bar"; and **Privacy & data** (`PrivacyView` itself, a tab
-  rather than a pushed screen). `DEBUG` only: the
+  **Claude Code** (absent in demo mode — a demo switched on with the
+  tab open falls back to General), two cards: "Sessions"
+  (`ClaudeSessionsSettings`, see "Claude Code sessions" in the repo-root
+  CLAUDE.md: "Show sessions in the notch", with "The notch island is
+  off." under it while it is; "Notify when a session needs you", when a
+  session asks for permission (its caption adds "once the hooks below
+  are in" while they aren't), which asks for the permission and shows
+  the same denied row as the notification cards; and "Permission
+  prompts" with Install or Remove,
+  the hooks' failure in red under it; each switch restarts the monitor
+  through `AppChrome.updateClaudeSessions`; "A pet for each session",
+  under the first while it is on, with "Off, a spinner and a count
+  instead." under it, and "Show the session's name" under that, with
+  "Beside the notch while the island is closed. Hovering shows it either
+  way.", and under that, while it is on, "Avoid covering the menu bar", which
+  asks macOS for the Accessibility permission when switched on (the
+  system's own prompt) and, while the permission is missing, shows
+  "Allow AIMeter in Privacy & Security, Accessibility." with an Open
+  Settings button to that pane; the permission is re-checked whenever
+  the app comes forward) and "Usage"
+  (`ClaudeCodeSettings`: "Read Claude Code's local usage logs", off by
+  default, whose `onChange` drives `UsageModel.claudeCode?.setEnabled`,
+  and, once on, "Show today's total in the menu bar"); and **Privacy &
+  data** (`PrivacyView` itself, a tab rather than a pushed screen). `DEBUG` only: the
   `-AIMeterSettingsTab <tab>` launch argument (a `MacSettingsView.Tab`
   raw value: `general`, `notchIsland`, `menuBar`, `claudeCode`,
   `privacy`) opens Settings on that tab a second after launch, so each
   tab can be checked or captured without a click.
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
-  Keychain, no tracking, and on macOS the opt-in Claude Code log reading
-  and the opt-in login item), how connecting
+  Keychain, no tracking, and on macOS the opt-in Claude Code log reading,
+  the Claude Code sessions with their optional hooks, the optional
+  Accessibility permission and what it reads, and the opt-in login
+  item), how connecting
   works (per platform), the one requested OAuth scope (`user:profile`) as a
   chip + the two read-only endpoints called + the anonymous status-page
   check and where to turn it off, and the independence/MIT/
@@ -355,9 +376,12 @@
   windows resetting where the snapshot says the week began and once a
   week before that, sessions idle at night), and on macOS
   `DemoUsageData.codingSessions` (the Claude Code section under its
-  neutral demo title), so every screen (rate limits, sparklines, history
-  chart, pace, forecast, spend/extra cards, coding sessions) can be
-  explored without a real Claude account. Its names are deliberately
+  neutral demo title) and `DemoUsageData.claudeSessions` (the notch
+  island's sessions, through `DemoSessions`: four with neutral titles,
+  their pets picked by id, see "Claude Code sessions" in the repo-root
+  CLAUDE.md), so every screen (rate limits, sparklines, history
+  chart, pace, forecast, spend/extra cards, coding sessions, the
+  island's pets) can be explored without a real Claude account. Its names are deliberately
   neutral — "Personal", "Work", and the per-model window "Top model",
   never a provider or product name —
   because demo mode is where App Store screenshots come from, and
@@ -496,7 +520,17 @@
     `NotchIslandInteraction` (Shared, tested), and the controller only
     arms the one timer it asks for and hands the view the level it lands
     on. Three levels: **collapsed** is the bare notch (a drawn notch or
-    pill shows its row, unless concealed — see below); staying on it for
+    pill shows its row, unless concealed — see below; a Claude Code
+    session at work adds its pets (or, with "Show the session's name",
+    its pet and name) on the left and their count on the right,
+    centered on the notch,
+    `SessionWings`, the slab growing and shrinking with them on the
+    opening spring; a drawn notch's or pill's row puts its pets and
+    count at its two ends, or with the name reads like the notch's, the
+    lead's pet and name first and the other pets before the count, the
+    name in the room the rest of the row and the menu bar leave,
+    `NamedRowLayout`);
+    staying on it for
     the dwell (`notchIslandHoverDelay`, 250 ms by default) opens the **peek**,
     the wings beside the notch with the chosen windows' figures, on the
     side(s) `notchIslandLayout` says (both, left or right — a one-sided
@@ -559,12 +593,24 @@
     `XCTestConfigurationFilePath` is set, so a test run never puts a
     panel on the tester's notch. The wings (`CollapsedRow`, or its
     "Connect" glyph with no accounts) are the peek and stay as the
-    expanded island's header.
+    expanded island's header. They never show a Claude Code session:
+    with one at work the peek is `SessionWings(peeking:)` instead, the
+    session's pet and name staying put and what it is doing joining the
+    count on the right; with none, the figures. Whatever changes swaps
+    over (`AnyTransition.notchSwap`: the old fades out in 0.12 s before
+    the new fades in, so the two never show over each other); peeking
+    with figures on both
+    sides, the two wings come out as wide as each other, each one's
+    figures at its outer end (`NotchWings`), so the slab stays centered,
+    while a one-sided layout keeps its one wing; heading the expanded
+    island (`CollapsedRow.fill`, the body's width) each wing reaches out
+    to the body's edge, since every pet is in its session's row there.
   - **Motion** — boring.notch's system, rebuilt (it is GPL-3.0: read for
     the recipe, nothing copied). The window is sized **once** per
     screen, to the largest island it can show plus the shadow
     (`NotchIslandGeometry.windowFrame`: the notch with the widest wings
-    on both sides, never narrower than `expandedWidth`, the bar plus
+    on both sides, or a drawn row at its widest, `maxDrawnRow`, a whole
+    session name in it; never narrower than `expandedWidth`, the bar plus
     `maxBodyHeight` tall, `shadowPadding` around; centered on the notch
     — on the screen for the drawn one — flush with the top edge), and
     **never resized**. Everything that moves is SwiftUI layout inside
@@ -592,16 +638,18 @@
     (a touch of overshoot) and 0.45 / 1.0 on the way shut (none). The
     body and the reveal caption come and go with
     `.scale(0.8, anchor: .top)` + opacity on `.smooth(0.35)`, so they
-    unfold out of the bar while the slab grows under them; the wings
-    fade in over 0.25 s; the hover flap (`hoverFlap`, 10×3 pt, collapsed
+    unfold out of the bar while the slab grows under them; what sits
+    beside the notch swaps over 0.3 s, the old out before the new in
+    (`AnyTransition.notchSwap`); the hover flap (`hoverFlap`, 10×3 pt, collapsed
     only) and the shadow ride an `interactiveSpring` (0.38 / 0.8).
     Nothing under Reduce Motion. No measurement goes up and no frame
-    comes down: the wings' gap carries a custom alignment guide
-    (`HorizontalAlignment.notchCenter`, the gap's center), every
-    container up to the root inherits it from that one child, and the
-    root aligns it with the window's center, which the controller put
-    on the notch — so an asymmetric peek stays fused to the notch and
-    the body is centered under it without anyone measuring a wing.
+    comes down: the wings' layout (`NotchWings`) reports a custom
+    alignment guide (`HorizontalAlignment.notchCenter`, its gap's
+    center), every container up to the root inherits it from that one
+    child, and the root aligns it with the window's center, which the
+    controller put on the notch — so the slab stays fused to the notch,
+    one wing or two, and the body is centered under it without the
+    window measuring anything.
     Every `SegmentView` text is `lineLimit(1)` + horizontal `fixedSize`,
     so a segment never wraps while the slab animates. The window
     server decides which pixels of a transparent window take the mouse
@@ -652,7 +700,13 @@
     views in the window", a crash on the first peek — so the hosting
     view sits inside `NotchIslandContainerView`, a plain autoresizing
     container that forwards `hitTest` to it, with `sizingOptions` empty.
-  - **No timers while collapsed.** While open, one `.task` sleeps to
+  - **No timers while collapsed**, but for a Claude Code session's:
+    its pets step on a shared 8 Hz `TimelineView` inside each
+    `PixelPetView` (a leaf, so the slab's identity never changes), only
+    while one is shown; with pets off the spinner is the `rays` symbol
+    under a repeating variable-color symbol effect, which the system
+    animates; and the monitor's task, not the view's, puts the "just
+    finished" pet away. While open, one `.task` sleeps to
     each minute boundary and refreshes the relative resets, cancelled on
     collapse — a sleep rather than a `TimelineView`, since swapping the
     slab in and out of one would change its identity at the very moment
@@ -669,7 +723,15 @@
     figure), and the collapsed element still speaks the primary
     account's figures.
   - More than four accounts scroll inside a height-capped list measured
-    the same way `MenuBarView` measures its own.
+    the same way `MenuBarView` measures its own. Under them, while any
+    Claude Code session is shown, `SessionsSection`: up to five rows
+    (`SessionRowView`: the pet at 1.5 pt a pixel, with its "!" while it
+    waits, or the mark with pets off; the name with the folder dimmed
+    after a title; and the status on the trailing edge, yellow while it
+    needs permission), "N more", and while the hooks aren't installed the
+    `HooksInvitation` line (Install / Not now). `maxBodyHeight` (620) is
+    sized for four accounts, the incident notice, five sessions and the
+    footer.
   - The accounts are one SwiftUI `Grid` (`AccountGrid`,
     `NotchIslandRows.swift`): a row of figures (`SegmentText`) and a row
     of bars (`SegmentBar`) per account, with the header, dividers and
@@ -678,7 +740,13 @@
     of an account with fewer windows) is `gridCellUnsizedAxes`: with
     flexible cells instead, `Grid` splits its width into equal columns
     and a wider column pushed the grid 13 pt past the island's edge
-    (measured). `ViewThatFits` tries the grid at 12, 11 and 10 pt.
+    (measured). The separators' columns are the flexible ones, so the
+    grid spans the body edge to edge, its first column on the left edge,
+    its last on the right, the gaps even. `ViewThatFits` tries the grid
+    at 12, 11 and 10 pt. One inset, `ExpandedContent.horizontalPadding`
+    (18 pt), gives the header's wings, the accounts, the sessions and the
+    footer the same two edges; the footer draws its outer icons against
+    them.
 - **macOS hiding & re-entry** (`AppDelegate` + `AppChrome`, the project's
   only AppDelegate — SwiftUI has no scene hook for either concern):
   - `hideDockIcon` → `.accessory` activation policy, applied in

@@ -187,6 +187,27 @@ enum DemoUsageData {
         return series
     }
 
+    #if os(macOS)
+    /// The macOS demo's Claude Code sessions for the notch island
+    /// (`DemoSessions`), with neutral titles and folders like the rest of
+    /// the demo. The ids are picked for their pets (`SessionPet.deal`): a
+    /// fox in sunglasses waiting for a permission prompt, a cat in
+    /// headphones and a bunny with a bow at work, a ghost in a beanie done
+    /// a moment ago. Ordered the way the tracker orders real ones: the
+    /// active by the start of their turn, then the finished.
+    static func claudeSessions(now: Date = Date()) -> [ClaudeCodeSessionActivity] {
+        func session(_ id: String, _ title: String?, _ project: String, _ state: ClaudeCodeSessionActivity.State) -> ClaudeCodeSessionActivity {
+            ClaudeCodeSessionActivity(id: id, customTitle: title, project: project, state: state, lastActivity: now)
+        }
+        return [
+            session("demo-35", "Refactor the API client", "backend", .needsPermission(since: now.addingTimeInterval(-6 * 60))),
+            session("demo-663", "Ship the onboarding", "my-app", .working(since: now.addingTimeInterval(-3 * 60))),
+            session("demo-48", nil, "website", .working(since: now.addingTimeInterval(-60))),
+            session("demo-264", "Write the release notes", "docs", .finished(at: now.addingTimeInterval(-2 * 60))),
+        ]
+    }
+    #endif
+
     /// Fabricated "coding sessions on this Mac" figures for the macOS
     /// demo (the Claude Code section), one aggregate per bucket, nesting
     /// the way rolling windows do. Model names are neutral stand-ins for

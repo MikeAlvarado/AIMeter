@@ -132,6 +132,11 @@ struct NotchIslandSettings: View {
 
     // MARK: - Preview
 
+    /// Half the room a drawn row has in the preview, inside the card's
+    /// margins: a long session name is cut short there rather than
+    /// pushing the row past the card.
+    static let previewWing: CGFloat = 200
+
     /// The island as this screen shows it with the cursor on it: the
     /// wings beside the real notch's silhouette, or the drawn notch or
     /// pill with its row, at the chosen height, over a neutral strip.
@@ -143,7 +148,7 @@ struct NotchIslandSettings: View {
         let notchWidth: CGFloat
         if case .notch(let rect) = mode { notchWidth = rect.width } else { notchWidth = 0 }
         let barHeight = NotchIslandGeometry.barHeight(screen, mode: mode, options: options)
-        return CollapsedRow(island: island, mode: mode, notchWidth: notchWidth)
+        return CollapsedRow(island: island, mode: mode, notchWidth: notchWidth, availableWing: Self.previewWing)
             .frame(height: barHeight)
             .notchIslandSurface(mode: mode, barHeight: barHeight)
             .environment(\.notchIslandRowScale, NotchIslandGeometry.rowScale(screen, mode: mode, options: options))

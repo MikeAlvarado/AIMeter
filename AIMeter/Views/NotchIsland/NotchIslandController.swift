@@ -29,6 +29,11 @@ final class NotchIslandState {
     /// Out of sight: hidden until hovered, or behind a full-screen app,
     /// on a screen without a notch (`NotchIslandVisibility.isConcealed`).
     var isConcealed = false
+    /// How wide each wing beside a real notch may grow without covering
+    /// the menu bar's own items (`NotchIslandClearance`), or on a screen
+    /// without one half the drawn row, from the screen's centre; nil when
+    /// nothing limits it. Only the collapsed island's session name reads it.
+    var availableWing: CGFloat?
 }
 
 /// What the island's tree reports back to the controller.
@@ -64,8 +69,9 @@ final class NotchIslandController {
     static let settleDelay: Duration = .milliseconds(700)
 
     // Members below are internal rather than private so
-    // `NotchIslandController+Screen.swift` and `+Pointer.swift` can reach
-    // them; nothing outside this type's three files should touch them.
+    // `NotchIslandController+Screen.swift`, `+Pointer.swift` and
+    // `+Clearance.swift` can reach them; nothing outside this type's four
+    // files should touch them.
     private(set) var isRunning = false
     let state = NotchIslandState()
     var interaction = NotchIslandInteraction()
@@ -94,6 +100,13 @@ final class NotchIslandController {
     /// stay hidden on the desktop afterwards.
     var fullScreenWatchTask: Task<Void, Never>?
     var activePollTask: Task<Void, Never>?
+    /// The menu bar's clearance (`+Clearance.swift`): only the latest
+    /// measurement is published, the apps last found with status items
+    /// are the ones the watch reads again, and the watch runs only while
+    /// the Accessibility path does.
+    var clearanceGeneration = 0
+    var statusItemApps: [pid_t] = []
+    var clearanceWatchTask: Task<Void, Never>?
     private var timerTask: Task<Void, Never>?
     private var settleTask: Task<Void, Never>?
     private var revealTask: Task<Void, Never>?
@@ -157,6 +170,7 @@ final class NotchIslandController {
         fullScreenTask = nil
         fullScreenWatchTask = nil
         activePollTask = nil
+        stopClearanceWatch()
         removeClickMonitors()
         // Dropped without a leave: nothing may arm a timer once stopped.
         pointerInside = false

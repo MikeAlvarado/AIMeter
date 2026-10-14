@@ -120,6 +120,22 @@ can be added later.
   session logs the CLI keeps in `~/.claude/projects`. Only the usage
   fields are decoded, never your prompts or the replies, and nothing
   leaves the Mac. Not a bill: your subscription already covers it.
+- **Claude Code sessions in the notch** (macOS, on with the island):
+  each Claude Code session at work gets a little pixel pet beside the
+  notch (one of six creatures, six colors and six accessories, its own
+  for as long as the session lasts) that walks while the session works,
+  shakes beside a yellow "!" when it waits for your permission, and
+  falls asleep when it finishes. The one that needs you leads, and a
+  count sits on the other side of the notch (Settings can add the
+  session's name); hover to see its name and what it is doing, or open
+  the island for every session and your usage. Settings can
+  swap the pets for a plain spinner. Any number of
+  sessions, from the desktop app or the CLI. It reads only the shape of
+  the session logs in `~/.claude/projects`; one click (in Settings or in
+  the island) adds AIMeter to Claude Code's hooks, so it also knows the
+  moment a session asks for permission. An optional notification says
+  when a session needs you: when it asks for permission, never just
+  because a turn ended.
 - Peak hours: earlier versions showed Anthropic's weekday peak window,
   during which Claude session usage burned faster. Anthropic removed that
   policy in May 2026 and no plan documents one today, so the indicator
@@ -194,6 +210,12 @@ no parameters, nothing about you in it; off with the "Check service
 status" toggle in Settings). Nothing else:
 no analytics, no crash reporting, no third-party SDKs, no server of ours.
 
+**The one optional permission on the Mac** — "Avoid covering the menu
+bar" (Settings, Claude Code) asks macOS for Accessibility, and AIMeter
+uses it for one thing: reading where the open app's menu titles and the
+menu bar's icons are, so the notch island shrinks before it covers them.
+It reads nothing else and changes nothing.
+
 **What is stored, and where**
 - OAuth tokens: device Keychain only (`AfterFirstUnlock`; on iOS in the
   App Group keychain access group so the widget can refresh usage itself).
@@ -213,6 +235,23 @@ only the usage fields of each record (never conversation content), keeps
 a small index of counts in `~/Library/Application Support/AIMeter/`, and
 deletes that index when you turn it off. `Scripts/probe-claude-code-logs.sh`
 prints exactly which fields it looks at.
+
+**Claude Code sessions (macOS)**: on while the notch island is (Settings →
+Claude Code turns it off). AIMeter follows `~/.claude/projects` to tell
+which sessions are working, waiting or done, decoding only each record's
+type, time, ids and stop reason, the types of its content items, and the
+session's title and folder: never prompts, replies or tool input. Nothing
+is stored or sent. The optional hooks (Install, in Settings → Claude Code
+or in the island) add one entry per event to `~/.claude/settings.json`,
+backed up first to `settings.json.aimeter-backup`, everything else kept.
+Each entry posts the event to a Unix socket in
+`~/Library/Application Support/AIMeter/`, only while AIMeter is running,
+in the background and always successfully, so Claude Code never waits on
+it; AIMeter reads the event's name, session, folder and agent from it and
+discards the rest. The file keeps its permissions (readable by you
+alone). Remove puts the file back exactly as it was, or, if you changed
+it since, takes out just AIMeter's entries; if you delete AIMeter without
+removing them they simply do nothing.
 
 **Notifications** are generated locally on the device
 (`UNUserNotificationCenter`) from the reset dates already in the snapshot
@@ -388,7 +427,8 @@ carrying size, corners and shadow together. It was read, not copied:
 AIMeter's island is its own implementation, written from scratch under
 this repository's MIT license, and no boring.notch code is in this tree.
 Vibe Island set the one-line format the island shows
-(`5h 42% 2h 58m | 7d 61% 3d 3h`).
+(`5h 42% 2h 58m | 7d 61% 3d 3h`) and the way it shows a Claude Code
+session while collapsed: its pets at one end, the count at the other.
 [Atoll](https://github.com/Ebullioscopic/Atoll) (GPL-3.0) showed which
 options a screen without a notch needs — the pill like the iPhone's
 island, its height, hiding until the cursor comes, staying out of

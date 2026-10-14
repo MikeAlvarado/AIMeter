@@ -44,6 +44,7 @@ extension NotchIslandController {
         updateConcealment()
         updatePointerTracking()
         scheduleFullScreenChecks()
+        refreshClearance()
         guard changed || !panel.isVisible else { return }
         // Laid out and drawn before it is shown: the window server samples
         // which pixels take the mouse when a window appears. SwiftUI may
@@ -92,9 +93,24 @@ extension NotchIslandController {
         // A full-screen app comes and goes with a Space change (above) or
         // an app switch, which can bring a full-screen Space forward.
         let fullScreen: @Sendable (Notification) -> Void = { [weak self] _ in
-            Task { @MainActor [weak self] in self?.scheduleFullScreenChecks() }
+            Task { @MainActor [weak self] in
+                self?.scheduleFullScreenChecks()
+                // Another app brings its own menus, and maybe a new
+                // status item.
+                self?.scheduleClearanceChecks()
+            }
         }
         observers.append((workspace, workspace.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main, using: fullScreen)))
+        // An app's status item comes and goes with the app; one launched
+        // can take a few seconds to put it up.
+        let launched: @Sendable (Notification) -> Void = { [weak self] _ in
+            Task { @MainActor [weak self] in self?.scheduleClearanceChecks(after: [.seconds(1), .seconds(4)]) }
+        }
+        let quit: @Sendable (Notification) -> Void = { [weak self] _ in
+            Task { @MainActor [weak self] in self?.scheduleClearanceChecks() }
+        }
+        observers.append((workspace, workspace.addObserver(forName: NSWorkspace.didLaunchApplicationNotification, object: nil, queue: .main, using: launched)))
+        observers.append((workspace, workspace.addObserver(forName: NSWorkspace.didTerminateApplicationNotification, object: nil, queue: .main, using: quit)))
         // While AIMeter itself is frontmost the global pointer monitor
         // hears nothing, so the pointer is polled for that stretch.
         let activity: @Sendable (Notification) -> Void = { [weak self] _ in

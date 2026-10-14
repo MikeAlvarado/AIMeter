@@ -37,6 +37,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // scene got there first.
         DispatchQueue.main.async {
             AppChrome.startNotchIslandIfEnabled()
+            AppChrome.updateClaudeSessions()
         }
         #if DEBUG
         if MacSettingsView.launchTab != nil {
@@ -201,6 +202,20 @@ enum AppChrome {
         } else {
             notchIsland.stop()
         }
+        updateClaudeSessions()
+    }
+
+    // MARK: Claude Code sessions
+
+    /// Starts or stops the session monitor (see "Claude Code sessions" in
+    /// the repo-root CLAUDE.md): it runs while the island shows sessions
+    /// (the island on, and "Show sessions in the notch" on) or while the
+    /// "done" notification is on. Called at launch, by the island's switch
+    /// and by the Claude Code tab's.
+    static func updateClaudeSessions() {
+        guard let prefs = AppEnvironment.prefs else { return }
+        let shows = prefs.notchIslandEnabled && prefs.claudeSessionsEnabled
+        ClaudeSessionMonitor.shared.update(enabled: shows || prefs.claudeSessionsNotify, notifies: prefs.claudeSessionsNotify)
     }
 
     /// Windows belonging to the dashboard scene, matched on the identifier

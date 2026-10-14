@@ -43,6 +43,18 @@ struct PrivacyView: View {
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(
+                            systemName: "sparkles",
+                            title: String(localized: "Claude Code sessions"),
+                            text: String(localized: "To show which Claude Code sessions are working in the notch island, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is and when it was written, plus each session's title and folder: never your prompts or the replies. It keeps nothing and sends nothing anywhere; turn it off in Settings. If you install the optional hooks, Claude Code passes each event to AIMeter over a private connection on this Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest.")
+                        )
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
+                            systemName: "accessibility",
+                            title: String(localized: "Accessibility, only if you ask"),
+                            text: String(localized: "If you turn on \"Avoid covering the menu bar\" in Settings, macOS asks you to allow AIMeter under Accessibility. AIMeter uses it for one thing: reading where the open app's menu titles and the menu bar's icons are, so the notch island can shrink before it covers them. It reads nothing else and changes nothing.")
+                        )
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
                             systemName: "power",
                             title: String(localized: "Opening at login is yours to choose"),
                             text: String(localized: "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS, which asks you to approve it, and turning it back off removes it. All it does when it starts is read your usage.")

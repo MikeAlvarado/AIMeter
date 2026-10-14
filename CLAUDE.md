@@ -60,6 +60,27 @@ assets and string catalog from there.
   detail). The reading itself is UsageKit's
   `Providers/Claude/ClaudeCode/` (pricing table, line parser,
   incremental reader, aggregates).
+- `AIMeter/Services/ClaudeSessions/` (macOS): Claude Code's sessions in
+  the notch island, see "Claude Code sessions" below.
+  `ClaudeSessionMonitor` (the observable state the island reads),
+  `DemoSessions` (what it reads instead in demo mode),
+  `ClaudeSessionLogWatcher` (FSEvents on `~/.claude/projects`, reading
+  only the bytes added), `ClaudeHookListener` (the hooks' Unix socket)
+  and `ClaudeCodeHooks` (the one-click install into
+  `~/.claude/settings.json`); the rules are UsageKit's
+  `Providers/Claude/ClaudeCode/ClaudeCodeSession.swift` (the record and
+  hook-event shapes) and `ClaudeCodeSessionTracker.swift`. The views:
+  `AIMeter/Views/NotchIsland/NotchIslandSessions.swift` (what sits
+  beside the notch), `NotchIslandSessionRows.swift` (the expanded
+  island's rows, the hooks invitation), `PixelPetView.swift` (the pets,
+  their "!" and their group) and `NotchIslandController+Clearance.swift`
+  (where the menu bar's own items are) over
+  `Shared/NotchIslandModel+Sessions.swift`,
+  `Shared/NotchIslandClearance.swift` and the pets themselves,
+  `Shared/SessionPet.swift` (identity, the deal, the clock) and
+  `SessionPet+Sprites.swift` (the hand-drawn pixels), all pure and
+  tested, and `AIMeter/Views/ClaudeSessionsSettings.swift` (the
+  "Sessions" card of Settings' Claude Code tab).
 - `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
   `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
   row builders, `ProviderDetailRows`), `HistoryCard.swift` (the Swift
@@ -90,8 +111,13 @@ assets and string catalog from there.
   stack the content is drawn on), `NotchIslandView.swift` (the root: the
   slab as the natural size of its content, the springs and transitions,
   `NotchIslandModel.current`), `NotchIslandCollapsedRow.swift` (the wings
-  with the `notchCenter` alignment guide, and the segment line),
-  `NotchIslandRows.swift` (expanded content: account rows, footer) and
+  and the segment line), `NotchWings.swift` (the `notchCenter` alignment
+  guide and `NotchWings`, the layout that keeps the wings centered on the
+  notch),
+  `NotchIslandRows.swift` (expanded content: account rows, footer),
+  `NotchIslandSessions.swift`, `NotchIslandSessionRows.swift` and
+  `NotchIslandController+Clearance.swift` (Claude Code's sessions, see
+  below) and
   `NotchIslandSettings.swift` (its two Settings cards) — over the four
   pure files in `Shared/`
   (`NotchIslandModel.swift`, `NotchIslandGeometry.swift`,
@@ -652,6 +678,176 @@ the account silently freezes at its last snapshot.
   user-editable — and verifying it against the pricing page is part of
   every release. iOS: nothing, deliberately (no logs there, and the iOS
   build never reads another app's files).
+- Claude Code sessions (macOS, **on by default** with the island,
+  `Preferences.claudeSessionsEnabled`): which of this Mac's Claude Code
+  sessions are working, waiting for a permission prompt or just
+  finished, shown by the notch island. Every Claude Code client on the
+  Mac (the desktop app, a second copy of it, the CLI) writes its
+  sessions to the same `~/.claude/projects`, so one watcher sees them
+  all, any number at once. Two sources feed UsageKit's pure
+  `ClaudeCodeSessionTracker`:
+  - **The logs, always** (`ClaudeSessionLogWatcher`): FSEvents says
+    which files changed and only the bytes added since the last read
+    are parsed, keyed by size and offset like the usage reader, never
+    by modification date. A file seen for the first time is read from
+    its last 256 KB and, for a session's own log, further back (4× at a
+    time, up to 16 MB) until it holds the previous turn's end
+    (`ClaudeCodeSessionRecord.endsTurn`): a session already at work when
+    AIMeter launched otherwise counted its time from wherever the window
+    began (measured: "Working for 3m" on a 189 MB log whose turn had
+    started 15 minutes before). A session's own `<id>.jsonl` is read before its
+    subagents' (`<id>/subagents/agent-<agent>.jsonl`, workflow agents a
+    level deeper; a workflow's `journal.jsonl` is nobody's). Only the
+    record's shape is decoded (`ClaudeCodeSessionRecord`: type,
+    subtype, time, ids, stop reason, the *types* of the content items,
+    whether it has a prompt source, and the title records), so no
+    prompt, reply or tool input is ever read; the shapes are in the
+    Claude provider's CLAUDE.md. A turn starts with a prompt or tool
+    traffic and ends with a reply whose stop reason ends it, the
+    `stop_hook_summary` / `turn_duration` record, an API error, or the
+    interruption marker. A subagent's records only keep its parent
+    working. A record older than the newest one that decided a
+    session's state never changes it (another file read late, or the
+    log catching up with a hook).
+  - **The hooks, once installed** (`ClaudeCodeHooks`; one click in the
+    island or in Settings, and "Remove" takes exactly them out again):
+    six events (`UserPromptSubmit`, `PermissionRequest`, `Notification`,
+    `Stop`, `StopFailure`, `SessionEnd`) each get one `async` command
+    (Claude Code never waits for it) that posts the event's JSON with
+    `/usr/bin/curl` to `~/Library/Application Support/AIMeter/claude-hooks.sock`,
+    only while that socket exists, and always exits 0.
+    `ClaudeHookListener`, an `NWListener` on that Unix socket (nothing
+    listens on the network, and only this user can connect), decodes
+    the event's name, session, folder, agent and notification kind and
+    nothing else. The hooks add what the log can't say: a permission
+    prompt (`PermissionRequest`, open until the agent that asked writes
+    its log again, so another subagent's work never clears it) and a
+    turn's start and end the moment they happen. Hooks never see a user
+    interrupt (`Stop` doesn't fire for one), so the log's marker stays
+    the authority there. The install keeps every other key and hook in
+    `~/.claude/settings.json`, backs the file up first
+    (`settings.json.aimeter-backup`), refuses a file that isn't valid
+    JSON, replaces an older AIMeter entry instead of doubling it, and
+    writes through a file created with the original's permissions that
+    then takes its name (Claude Code keeps it `600`, and it may hold
+    secrets; a plain atomic write recreated it world-readable). Remove,
+    when nothing else changed since the install, puts the backed-up
+    file back byte for byte and deletes the backup; otherwise it takes
+    out just AIMeter's entries. Running sessions pick either change up
+    without a restart (Claude Code watches its settings); with AIMeter
+    gone the entries do nothing.
+  What shows: collapsed on a real notch, the island reads the way Vibe
+  Island's compact island does (`SessionWings`): the lead session (the
+  one waiting for a permission prompt if any, so it is never left in the
+  count, else the newest at work) on the notch's left, with the second
+  of three beside it, and on its right the other pets (three in all at
+  most, `PetGroup`) and a small badge counting every session they stand
+  for: a short island. "Show the session's name"
+  (`claudeSessionsShowsName`, off by default) puts the lead's whole name
+  beside its pet instead, the other pets moving to the right; it makes
+  the island far wider, since both sides keep one width. The name is cut
+  short past 170 pt and the peek's "Working for 3m" past 150 pt: the
+  panel is sized once for wings up to `NotchIslandGeometry.maxWing`
+  (240 pt), and a wider slab is clipped at the window's edge and loses
+  its rounded corners (it did, with a long title and a 220 pt cap).
+  A drawn notch or the pill has no notch to keep clear and a panel sized
+  for its widest row (`NotchIslandGeometry.maxDrawnRow`), so there the
+  name runs to `drawnNameWidth` (320 pt, about fifty characters, larger
+  with a taller island): on a wide screen a session's whole title shows.
+  Collapsed, the name also takes only the room the menu bar leaves
+  (`NotchIslandClearance`, `NotchIslandState.availableWing`) with "Avoid
+  covering the menu bar" on (`claudeSessionsAvoidsMenus`, off by
+  default), which asks for the Accessibility permission: the open app's
+  menu titles on the left and the status items on the right, both from
+  the Accessibility API (the app's menu bar, and every app's "extras"
+  bar), since macOS shows another app's menus to nothing else and, on
+  macOS 27, `MenuBarAgent` draws every status item, so the public window
+  list carries none of them (measured: only the agent's bar at level 24
+  and a zero-size window per app). Level-25 windows in that list, where
+  status items lived before, still count with no permission. Only those
+  frames are ever read, on a queue of their own (the first read of an
+  app takes tens of milliseconds, 1.5 s for every app running here,
+  later ones a few for all of them), on every relocation, after an app
+  switch, launch or quit, and every 20 s while the permission path runs,
+  then asking only the apps found with status items, since an item that
+  changes width (a temperature, a battery's percentage) moves every item
+  left of it (`NotchIslandController+Clearance.swift`). On a screen
+  without a notch that room is measured from the line down its centre,
+  which the drawn row is centred on (`NotchIslandClearance.anchor`), and
+  the name gets what the rest of the row leaves of it (`NamedRowLayout`).
+  With less than 48 pt left for it, the island
+  drops the name and is the short one. The peek is not limited: the
+  pointer is on it. Both sides are as wide as each other, each
+  one's content at its outer end (`NotchWings`), so the island stays
+  centered on the notch. Nothing at all shows when no session is
+  active. A pet (`SessionPet`) is one of six creatures drawn by hand on
+  a 12 × 10 grid (drop, ghost, cat, bunny, frog, fox), in one of six
+  colors (no yellow and no red, which already mean a permission prompt
+  and a limit in the island), with one of six accessories fitted to it
+  (none, sunglasses, top hat, beanie, bow, headphones): 216
+  combinations, the one a session's id points at through FNV-1a (the
+  same on every launch, unlike `hashValue`), dealt so no two sessions on
+  screen share one. It walks in place while its session works, shakes
+  beside a yellow "!" while it waits for permission (beside it, never
+  above its head, so it stays inside the bar) and sleeps under a
+  blinking "z" for 8 s after the turn ends
+  (`ClaudeSessionMonitor.finishedMarkDuration`). `PixelPetView` paints
+  `SessionPet.pixels` on a shared 8 Hz clock (a `TimelineView`, so it
+  runs only while a pet is shown; still under Reduce Motion), its
+  canvas in two thirds of the bar on whole device pixels
+  (`SessionPet.pixelSize(beside:)`: 1.5 pt on a MacBook's 32 pt notch,
+  the body half the bar's height, as on the mockup the pets were
+  approved on), the body rather than the canvas centered on its row
+  (`SessionPet.bodyLift`: the hat's headroom is all above the body),
+  with air on both sides (12 pt from the slab's ear, 10 from the notch)
+  and a soft glow in its own color, like Vibe Island's pets. With "A
+  pet for each session" off (`claudeSessionsPets`, on by default) the
+  pets' place holds a spinner (the `rays` symbol under a repeating
+  variable-color effect in the labels' white, since the system's
+  progress indicator reads a dim gray on black), a yellow alert or a
+  check. On a real notch the peek is dynamic, one thing or the other
+  and never both: with a session at work it shows that session in full
+  (its pet and name stay where they were, name shown or not, and what
+  it is doing, "Working for 3m" or "Needs permission" in yellow, joins
+  the count on the right), and only with none does it show the usage
+  figures. Whatever changes fades out before the new fades in
+  (`AnyTransition.notchSwap`). The drawn notch and the pill, which have
+  no hover swap, keep the pets and the count at the two ends of their
+  row; with the session's name, the row reads like the notch's: the
+  lead's pet and name first, the figures where the notch would be, the
+  other pets and the count last. Expanded, the header carries the
+  figures alone: each pet shows once, in its session's row.
+  Expanded, under the accounts, a "Claude Code" section lists up to
+  five sessions, each with its pet (the title, else the folder; the
+  folder after a title) and "Working for 3m", "Needs permission" or
+  "Done 2m ago": active
+  ones first by the start of their turn, then those that finished in
+  the last ten minutes. A "working" session silent for 30 minutes is
+  dropped as a crash. While the hooks aren't installed the section ends
+  with a one-line invitation (Install, or "Not now":
+  `claudeSessionsHooksDismissed`). An optional "needs you" notification
+  (`claudeSessionsNotify`, off by default, `claudesession.`
+  identifiers, "Notify when a session needs you") asks for the
+  permission when switched on and fires once each time a session starts
+  waiting for a permission prompt, which only the hooks can tell (its
+  caption says so while they aren't installed); a turn ending is never
+  announced, since a notification for every turn was noise (Mike's call,
+  2026-10-15: notify only when a session needs something). The notice is
+  taken back once the prompt is answered or the session ends
+  (`ClaudeSessionMonitor.newlyAsking` / `noLongerAsking`, tested), and a
+  starting monitor clears what a previous run left delivered. The monitor
+  runs while the island shows sessions or that notification is on
+  (`AppChrome.updateClaudeSessions`), never under XCTest. Demo mode
+  never shows a real session (its captures come from the demo): the
+  island shows the demo's own instead (`DemoSessions`, dealt from
+  `DemoUsageData.claudeSessions` each time the demo starts), four with
+  neutral titles and folders whose ids are picked for their pets (a fox
+  in sunglasses waiting for a permission prompt, a cat in headphones and
+  a bunny with a bow at work, a ghost in a beanie done), under the
+  neutral title "Coding sessions on this Mac" and with no hooks
+  invitation.
+  iOS: nothing, impossible by construction (no Claude Code there, and an
+  iOS app can't read another app's files).
 - Peak hours — **retired** (`ClaudePeakSchedule.current` is nil since
   2026-09-22). Anthropic introduced a policy in March 2026 where Claude
   Code session usage on Pro and Max burned faster 5-11 AM PT on weekdays,
@@ -761,7 +957,14 @@ the account silently freezes at its last snapshot.
 - Claude Code prefs (App Group, macOS-only meaning): `claudeCodeUsageEnabled`
   (default **false**), `claudeCodeUsageDismissed` (default false),
   `menuBarShowsClaudeCodeLine` (default false) — see "Claude Code local
-  usage" above.
+  usage" above; and `claudeSessionsEnabled` (default **true**,
+  presence-checked), `claudeSessionsPets` (default **true**,
+  presence-checked), `claudeSessionsShowsName` (default false),
+  `claudeSessionsAvoidsMenus` (default false),
+  `claudeSessionsNotify` (default false) and
+  `claudeSessionsHooksDismissed` (default false), whose keys and loading
+  live in `Shared/PreferencesStore+ClaudeSessions.swift` — see "Claude
+  Code sessions" above.
 - Notch island prefs (same App Group store, macOS-only meaning):
   `notchIslandEnabled` (the struct's default is **false**; the real
   default is written once, at the first launch of 2.0, by
@@ -907,7 +1110,11 @@ the account silently freezes at its last snapshot.
   is `WindowSlots`/`ModelSlotFallback` exactly as on the Dashboard, and
   an empty slot keeps its place with `--`. **Collapsed, the
   island is the notch and shows nothing** — so no menu title or status
-  item is ever covered (Xcode's menu runs up to the notch on a 14"); a
+  item is ever covered (Xcode's menu runs up to the notch on a 14"),
+  with one exception: while a Claude Code session works, waits for a
+  permission prompt or has just finished, its pets and their count sit
+  either side of the notch, centered on it (see "Claude Code
+  sessions"); a
   drawn island, having no real notch to hide in, shows its one row —
   unless it is **concealed** (`NotchIslandVisibility.isConcealed`):
   always with "Hide until hovered", or while a full-screen app has its
@@ -940,11 +1147,13 @@ the account silently freezes at its last snapshot.
   cursor has to **stay** on the notch for the hover delay
   (`notchIslandHoverDelay`, 250 ms by default) before the island
   **peeks** — passing over the notch on the way to a menu does nothing —
-  and the peek is the wings: the *primary*
-  account's `notchIslandMetrics` (1–3, filtered to what it reports like
+  and the peek is the wings (with no Claude Code session at work; with
+  one, the peek shows that session, see "Claude Code sessions"): the
+  *primary* account's `notchIslandMetrics` (1–3, filtered to what it reports like
   `menuBarMetrics`, falling back to `glanceMetric`) as compact
   `label percent` figures beside the notch, on the side(s)
-  `NotchIslandLayout` says (`bothSides`: first left, rest right;
+  `NotchIslandLayout` says (`bothSides`: first left, rest right, the
+  two wings as wide as each other so the slab stays centered;
   `leftOnly`; `rightOnly`), no resets; with nothing connected the wing
   carries a "Connect" affordance routed through `AppChrome.connect(.add)`.
   Staying on the open wings 1 s more, or a **click** at any time, opens
@@ -962,12 +1171,15 @@ the account silently freezes at its last snapshot.
   never takes keyboard focus, so there is no Esc. Once, on the first
   launch with the island on, it peeks by itself for a few seconds with a
   one-line caption saying what it is (`notchIslandRevealed`). Expanded,
-  the wings stay as the header and every account gets a row — identity header, the full line (label, percent, `↻` reset) with a 2 pt
+  the wings stay as the header, reaching out to the body's edges, and
+  every account gets a row — identity header, the full line (label, percent, `↻` reset) with a 2 pt
   bar under each segment, and a status line only when there is one —
-  all accounts in one grid (`AccountGrid`), so their windows share
-  columns and the gap between them, every bar in a column has that
-  column's width, and the grid is centered; the figures step down from
-  12 to 11, then 10 pt when the grid would not fit. The status line:
+  all accounts in one grid (`AccountGrid`) spanning the island edge to
+  edge, so their windows share columns, the gaps between them are
+  spread evenly and every bar in a column has that column's width; the
+  header, the accounts, the sessions and the footer share one left and
+  one right edge (`ExpandedContent.horizontalPadding`). The figures
+  step down from 12 to 11, then 10 pt when the grid would not fit. The status line:
   "Updated 31 min ago" past `AppConfig.staleAfter`, the offline line, the
   "Sign in again" prompt (`AppChrome.connect(.reconnect)`), or the raw
   error — plus the incident notice while the provider reports one, and a
@@ -1170,7 +1382,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
 - Tests: UsageKit's (`swift test`; fixture
   `Tests/UsageKitTests/Fixtures/claude-usage-response.json` is a real
   captured response — mapping tests assert against it;
-  `AIMETER_LIVE_TEST=1` enables an opt-in live test) and the app's own
+  `AIMETER_LIVE_TEST=1` enables an opt-in live test;
+  `ClaudeCodeSessionTests` pins the session rules on the measured record
+  shapes) and the app's own
   `AIMeterTests` target (`xcodebuild test -scheme AIMeter`, hosted in
   `AIMeter.app` on either platform, `@testable import AIMeter`), which
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
@@ -1201,7 +1415,21 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   segments, resets, the spoken summary, and that the demo timeline ends
   on the demo snapshot), and on macOS `ClaudeCodeUsageModel` over a
   scratch logs folder (scan, buckets, the popover line, off deletes the
-  index) plus the token/USD formatters. Two
+  index) plus the token/USD formatters, and Claude Code's sessions: the
+  preferences, the mark, count and rows, the hooks' edits to Claude
+  Code's settings, whose log a path is, and a hook request's body
+  (`ClaudeSessionsTests`, with the demo's sessions and the pets their ids
+  deal, which the website's videos show, the room a drawn row's name
+  gets, and which changes the "needs you" notification announces or
+  takes back; nothing there opens the socket or
+  touches `~/.claude`), and the pets: every combination reachable and distinct,
+  an id's pet pinned, the deal's uniqueness and order independence,
+  every creature, accessory and pose inside its canvas on every tick,
+  and the pixel size (`SessionPetTests`), and how far the wings beside
+  the notch may reach: the status items found in a window list or
+  placed by the Accessibility API (this Mac's, measured on macOS 27), the
+  menus' edge, the narrower side for both, and on a screen without a
+  notch the room either side of its centre (`NotchIslandClearanceTests`). Two
   seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
   with `platformServices: false` (no migration — it probes the real
   Keychain — no scheduler/observers, no notification sweep) and
@@ -1281,8 +1509,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 - Credit where it is due, and only that. The notch island's motion
-  system follows boring.notch (GPL-3.0), its line format follows Vibe
-  Island, and its options for screens without a notch — the pill, the
+  system follows boring.notch (GPL-3.0), its line format and the way it
+  shows a Claude Code session while collapsed (its pets at one end, the
+  count at the other) follow Vibe Island, and its options for screens without a notch — the pill, the
   height, hide until hovered, hide from captures — follow Atoll
   (GPL-3.0, a boring.notch descendant); all three are named in the
   README's Acknowledgments, the website's support page and the relevant
@@ -1300,7 +1529,12 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   the app is today. Hiding the Dock icon via `.accessory` is routine for
   menu-bar utilities and unproblematic. A global re-entry hotkey was
   rejected precisely because it would add an Accessibility/Input Monitoring
-  permission and the review scrutiny that comes with it. Separately,
+  permission and the review scrutiny that comes with it. The one
+  Accessibility use there is, since 2.1, is opt-in and narrow: "Avoid
+  covering the menu bar" asks for it only when switched on and reads only
+  where the open app's menu titles and the menu bar's status items are
+  (see "Claude Code sessions"), disclosed
+  in `PrivacyView` and the website's privacy page. Separately,
   `ENABLE_APP_SANDBOX = NO` is pre-existing and would have to change for
   Mac App Store distribution regardless of any of this.
 

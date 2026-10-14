@@ -102,6 +102,14 @@ struct NotchIslandRoot: View {
         )
         .animation(levelAnimation, value: state.level)
         .animation(flapAnimation, value: state.isHovering)
+        // A session starting or ending grows or shrinks the collapsed
+        // island by its two sides, on the opening spring; so does another
+        // session taking the lead, or the menu bar leaving its name more
+        // or less room.
+        .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.mark)
+        .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.count)
+        .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.lead?.id)
+        .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: state.availableWing)
         .contentShape(Rectangle())
         .onHover(perform: actions.hover)
         .onTapGesture(perform: actions.tap)
@@ -122,17 +130,30 @@ struct NotchIslandRoot: View {
 
     /// The top row: collapsed on a notch Mac it is a clear rect the notch's
     /// size (black on black, invisible, the slab *is* the notch) that
-    /// swells by `hoverFlap` while the cursor rests on it; from the peek
-    /// on, the wings. The drawn notch has nowhere to hide its row, so it
-    /// always shows it.
+    /// swells by `hoverFlap` while the cursor rests on it, or, while a
+    /// Claude Code session works, waits or just finished, the session's
+    /// mark and count either side of the notch; from the peek on, the
+    /// wings. The drawn notch has nowhere to hide its row, so it always
+    /// shows it.
     @ViewBuilder
     private func header(island: NotchIslandModel) -> some View {
         switch state.mode {
         case .notch(let notch):
-            if state.level > .collapsed {
-                CollapsedRow(island: island, mode: state.mode, notchWidth: notch.width)
+            // With a Claude Code session at work the peek shows that
+            // session, without one the figures: one or the other.
+            let sessionsShown = island.sessions.mark != nil
+            if state.level == .expanded || (state.level == .peek && !sessionsShown) {
+                CollapsedRow(island: island, mode: state.mode, notchWidth: notch.width, barHeight: state.barHeight,
+                             fill: state.level == .expanded ? bodyWidth : nil)
                     .frame(height: state.barHeight)
-                    .transition(.opacity.animation(.smooth(duration: 0.25)))
+                    .transition(.notchSwap)
+            } else if sessionsShown {
+                let flap = state.level == .collapsed && state.isHovering ? NotchIslandGeometry.hoverFlap : .zero
+                SessionWings(sessions: island.sessions, notchWidth: notch.width, extraWidth: flap.width,
+                             barHeight: state.barHeight, peeking: state.level == .peek,
+                             availableWing: state.availableWing)
+                    .frame(height: state.barHeight + flap.height)
+                    .transition(.notchSwap)
             } else {
                 let flap = state.isHovering ? NotchIslandGeometry.hoverFlap : .zero
                 Color.clear
@@ -143,7 +164,9 @@ struct NotchIslandRoot: View {
                     .alignmentGuide(.notchCenter) { $0.width / 2 }
             }
         case .drawn, .pill:
-            CollapsedRow(island: island, mode: state.mode)
+            CollapsedRow(island: island, mode: state.mode, barHeight: state.barHeight,
+                         fill: state.level == .expanded ? bodyWidth : nil,
+                         availableWing: state.availableWing)
                 .frame(height: state.barHeight)
         }
     }
@@ -216,7 +239,14 @@ extension NotchIslandModel {
     /// panel draws and what Settings previews, so the preview is the
     /// truth (the same rule as `MenuBarLabelModel.current`).
     static func current(model: UsageModel, prefs: PreferencesModel, now: Date = Date(), layout: NotchIslandLayout? = nil) -> NotchIslandModel {
-        NotchIslandModel(
+        // The demo is where the store and site captures come from: it
+        // shows its own fabricated sessions (`DemoSessions`), and no real
+        // session (or its name) ever shows in it.
+        let source: (sessions: [ClaudeCodeSessionActivity], justFinished: ClaudeCodeSessionActivity?) =
+            !prefs.claudeSessionsEnabled ? ([], nil)
+            : model.isDemoMode ? (DemoSessions.shared.sessions, DemoSessions.shared.justFinished)
+            : (ClaudeSessionMonitor.shared.sessions, ClaudeSessionMonitor.shared.justFinished)
+        return NotchIslandModel(
             accounts: model.accounts.map { usage in
                 AccountInput(
                     account: usage.account,
@@ -241,6 +271,10 @@ extension NotchIslandModel {
                 let what = incident.status.incidentTitle ?? incident.status.description
                 return String(localized: "\(name) reports an incident: \(what)")
             },
+            sessions: source.sessions,
+            justFinished: source.justFinished,
+            sessionPets: prefs.claudeSessionsPets,
+            sessionNames: prefs.claudeSessionsShowsName,
             now: now
         )
     }

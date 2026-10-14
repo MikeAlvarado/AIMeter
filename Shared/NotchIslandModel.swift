@@ -113,6 +113,9 @@ struct NotchIslandModel: Equatable {
     /// "Claude reports an incident: …" while the provider's status page
     /// reports one, nil on a normal day.
     let incident: String?
+    /// Claude Code's sessions on this Mac: the mark beside the notch and
+    /// the expanded island's rows (`NotchIslandModel+Sessions.swift`).
+    let sessions: Sessions
     /// Always carries every account's full values, with the account's
     /// nickname in front once two or more are connected (the same
     /// convention the notifications use).
@@ -130,6 +133,10 @@ struct NotchIslandModel: Equatable {
         glanceMetric: UsageWindow.Kind,
         layout: NotchIslandLayout,
         incident: String?,
+        sessions activity: [ClaudeCodeSessionActivity] = [],
+        justFinished: ClaudeCodeSessionActivity? = nil,
+        sessionPets: Bool = true,
+        sessionNames: Bool = false,
         now: Date = Date()
     ) {
         let several = inputs.count > 1
@@ -166,6 +173,7 @@ struct NotchIslandModel: Equatable {
             layout: layout, now: now
         )
         self.incident = incident
+        sessions = Sessions(sessions: activity, justFinished: justFinished, showsPets: sessionPets, showsName: sessionNames, now: now)
         accessibilityLabel = accounts.isEmpty
             ? String(localized: "AIMeter: no usage data yet")
             : accounts.map(\.accessibilityLabel).joined(separator: "; ")

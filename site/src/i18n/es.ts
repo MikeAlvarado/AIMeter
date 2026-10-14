@@ -194,6 +194,12 @@ export const es = {
         ],
       },
       {
+        heading: 'Sesiones de la línea de comandos en el notch (Mac)',
+        paragraphs: [
+          'Encendido mientras la isla del notch lo está, y se apaga con un interruptor en Ajustes. Para mostrar qué sesiones de Claude Code están trabajando, esperando tu permiso o terminadas, AIMeter sigue los registros de sesión en ~/.claude/projects y solo lee qué es cada registro y cuándo se escribió, además del título y la carpeta de cada sesión: nunca prompts, respuestas ni entradas de herramientas. No guarda nada ni envía nada a ningún lado. Si instalas los hooks opcionales, AIMeter agrega una entrada por evento a ~/.claude/settings.json (respalda el archivo antes y conserva todo lo demás), y Claude Code le pasa cada evento a AIMeter por una conexión privada en ese Mac a la que solo tu cuenta tiene acceso; AIMeter lee de qué sesión se trata y qué pasó, y descarta el resto. “Quitar” saca esas entradas de nuevo. La función no existe en iOS.',
+        ],
+      },
+      {
         heading: 'Notificaciones',
         paragraphs: [
           'Todas las alertas se generan localmente en el dispositivo a partir de las fechas de reinicio y los porcentajes que ya están en el registro. No interviene ningún servicio push, y nada se entrega si no concediste el permiso de notificaciones.',
@@ -250,7 +256,7 @@ export const es = {
       {
         heading: 'Agradecimientos',
         paragraphs: [
-          'La isla del notch le debe su sensación a tres proyectos que llegaron antes. boring.notch, de TheBoredTeam en GitHub, fue la referencia de cómo debe moverse un panel en el notch: una ventana que nunca cambia de tamaño, una placa negra del tamaño de su propio contenido, un solo resorte que lleva tamaño, esquinas y sombra a la vez. Se leyó, no se copió; la isla de AIMeter es una implementación propia bajo licencia MIT. Vibe Island definió el formato de una línea que muestra la isla. Atoll, de Ebullioscopic, mostró las opciones que necesita una pantalla sin notch, de la pastilla a ocultarse hasta que llega el cursor; se estudió igual. Gracias a los tres.',
+          'La isla del notch le debe su sensación a tres proyectos que llegaron antes. boring.notch, de TheBoredTeam en GitHub, fue la referencia de cómo debe moverse un panel en el notch: una ventana que nunca cambia de tamaño, una placa negra del tamaño de su propio contenido, un solo resorte que lleva tamaño, esquinas y sombra a la vez. Se leyó, no se copió; la isla de AIMeter es una implementación propia bajo licencia MIT. Vibe Island definió el formato de una línea que muestra la isla, y cómo se lee una sesión con la isla cerrada: sus mascotas en un extremo, el conteo en el otro. Atoll, de Ebullioscopic, mostró las opciones que necesita una pantalla sin notch, de la pastilla a ocultarse hasta que llega el cursor; se estudió igual. Gracias a los tres.',
         ],
       },
     ],
