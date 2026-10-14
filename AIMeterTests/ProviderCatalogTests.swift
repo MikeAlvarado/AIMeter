@@ -15,6 +15,16 @@ final class ProviderCatalogTests: XCTestCase {
         XCTAssertEqual(legacy.credentialStrategy, .managed)
     }
 
+    func testFallbackAccountKeepsItsOwnID() {
+        let fallback = ProviderCatalog.fallbackAccount(for: "7F2C-work")
+        XCTAssertEqual(fallback.accountID, "7F2C-work", "its own Keychain key, never another account's")
+        XCTAssertEqual(fallback.providerID, ProviderCatalog.defaultProviderID)
+        XCTAssertEqual(fallback.credentialStrategy, .managed)
+        let legacy = ProviderCatalog.fallbackAccount(for: ClaudeKeychainCredentialSource.legacyAccountID)
+        XCTAssertEqual(legacy.accountID, ProviderCatalog.legacyAccount.accountID, "the legacy id falls back to the legacy account")
+        XCTAssertEqual(legacy.displayName, ProviderCatalog.legacyAccount.displayName)
+    }
+
     func testMakeProviderBuildsTheClaudeProvider() {
         let keychain = KeychainStore(service: "aimeter.tests")
         let bundle = ProviderCatalog.makeProvider(for: .managed("x", name: "X"), keychain: keychain)

@@ -132,7 +132,11 @@ assets and string catalog from there.
 - **Provider seam** (what a second provider plugs into): every provider
   family is resolved through `Shared/ProviderCatalog.swift` —
   `displayName(for:)` (the plain-text name, never a logo), the
-  `legacyAccount` sentinel every widget fallback uses, and
+  `legacyAccount` sentinel every widget fallback uses,
+  `fallbackAccount(for:)` (what the widget's self-fetch builds for an id
+  the registry can't place: that id's own login, never the legacy
+  account's — whose figures would otherwise be saved under the wrong
+  account), and
   `makeProvider(for:keychain:transport:)`, the one switch on
   `providerID` that builds a `UsageProvider` plus the `CredentialStore`
   to clear on disconnect, and `statusSource(for:)` /

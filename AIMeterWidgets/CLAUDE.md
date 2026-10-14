@@ -119,7 +119,12 @@ legacy sentinel if none — rather than each re-deriving it.
   intents' option queries, the placeholders) reads that sentinel from
   `ProviderCatalog.legacyAccount` rather than spelling it out, and the
   self-fetch builds its provider through `ProviderCatalog.makeProvider`
-  from the registry's `providerID` for that account.
+  from the registry's `providerID` for that account — or, when the
+  registry can't place the id (a read that came back empty),
+  `ProviderCatalog.fallbackAccount(for:)`: the same id as a managed
+  login of the default provider. It used to fall back to the legacy
+  account itself, which fetched that account's usage with its login and
+  saved it under the requested id.
 
 ## Live Activity (Session window, iOS only)
 

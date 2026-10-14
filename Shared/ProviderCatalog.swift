@@ -31,10 +31,20 @@ nonisolated enum ProviderCatalog {
     /// the literal `"claude"` accountID whose Keychain item, snapshot, and
     /// history survived the upgrade unchanged.
     static var legacyAccount: ConnectedAccount {
+        fallbackAccount(for: ClaudeKeychainCredentialSource.legacyAccountID)
+    }
+
+    /// What a caller holding only an accountID fetches as when the registry
+    /// can't place it (a read that came back empty, or the legacy id before
+    /// the migration ran): that same id — so its own Keychain key — as a
+    /// managed login of the default provider. For the legacy id this is
+    /// `legacyAccount` exactly; for any other it can never borrow another
+    /// account's login and file that account's figures under this one.
+    static func fallbackAccount(for accountID: String) -> ConnectedAccount {
         ConnectedAccount(
-            accountID: ClaudeKeychainCredentialSource.legacyAccountID,
-            providerID: ClaudeProvider.providerID,
-            displayName: displayName(for: ClaudeProvider.providerID),
+            accountID: accountID,
+            providerID: defaultProviderID,
+            displayName: displayName(for: defaultProviderID),
             credentialStrategy: .managed
         )
     }

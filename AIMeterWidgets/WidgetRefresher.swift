@@ -77,11 +77,12 @@ enum WidgetRefresher {
             service: AppConfig.keychainService,
             accessGroup: AppConfig.keychainAccessGroup
         )
-        // The registry says which provider this account is; an id the
-        // registry doesn't know (the legacy fallback before migration) is
-        // the default provider's.
+        // The registry says which provider this account is. An id it can't
+        // place still fetches with its own login, as the default
+        // provider's — never the legacy account's, whose figures would
+        // then be saved under this id.
         let account = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)
-            ?? ProviderCatalog.legacyAccount
+            ?? ProviderCatalog.fallbackAccount(for: accountID)
         let provider = ProviderCatalog.makeProvider(
             for: account, keychain: keychain, transport: URLSessionTransport(session: session)
         ).provider
