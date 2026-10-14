@@ -59,6 +59,12 @@ struct PrivacyView: View {
                             title: String(localized: "Opening at login is yours to choose"),
                             text: String(localized: "AIMeter never adds itself to your login items. If you turn on \"Open at Login\" in Settings, it registers with macOS, which asks you to approve it, and turning it back off removes it. All it does when it starts is read your usage.")
                         )
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
+                            systemName: "arrow.down.circle",
+                            title: String(localized: "Updates come from GitHub"),
+                            text: String(localized: "Once a day AIMeter asks GitHub (api.github.com) whether there is a newer version, and downloads it from the project's release page. The request carries nothing about you, and you can turn the check off in Settings.")
+                        )
                         #endif
                     }
                 }

@@ -37,6 +37,8 @@ struct MenuBarView: View {
                     compact: true
                 )
             }
+            // Only while an update waits for a restart.
+            UpdateReadyNotice()
 
             if model.needsConnection {
                 DisconnectedPrompt(buttonLabel: "Connect Claude account", verticalPadding: 10) {

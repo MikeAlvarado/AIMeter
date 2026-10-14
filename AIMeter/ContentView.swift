@@ -8,6 +8,9 @@ struct ContentView: View {
     #if os(iOS)
     /// Compact height == iPhone in landscape → fullscreen usage mode.
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    /// This version's notes, once after the App Store installs it (the
+    /// Mac shows them in its update window instead).
+    @State private var whatsNew = WhatsNew.dueAtLaunch()
     #endif
 
     var body: some View {
@@ -41,6 +44,9 @@ struct ContentView: View {
                     await model.refreshAllIfStale()
                 }
             }
+        }
+        .sheet(item: $whatsNew, onDismiss: { WhatsNew.lastSeen = AppVersion.current }) { release in
+            WhatsNewSheet(release: release) { whatsNew = nil }
         }
         #endif
         .task {

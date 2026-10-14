@@ -163,11 +163,12 @@ export const en = {
     sections: [
       {
         heading: 'What leaves your device',
-        paragraphs: ['Only HTTPS requests to the provider whose usage you asked AIMeter to read, and nothing to us, because there is no “us” to send it to.'],
+        paragraphs: ['Only HTTPS requests to the provider whose usage you asked AIMeter to read (and, on the Mac, to GitHub for updates), and nothing to us, because there is no “us” to send it to.'],
         bullets: [
           'api.anthropic.com — /api/oauth/usage for your limits and spend numbers, and /api/oauth/profile to resolve your plan name (re-checked at most every 6 hours).',
           'claude.ai and console.anthropic.com — the standard OAuth sign-in exchange when you connect an account through the app. You sign in on the provider’s own page in your browser, never in an embedded web view, and paste back the code it shows.',
           'status.claude.com — one anonymous request to the public status page on each refresh, to tell a service incident apart from a problem with your account. It carries nothing about you and can be turned off in Settings.',
+          'api.github.com and github.com (Mac only): once a day, a request asking whether a newer version of AIMeter exists, and its download from the project’s release page when there is one. It carries nothing about you and can be turned off in Settings.',
           'This website is static: no analytics, no cookies, fonts are self-hosted and no third-party request is made. It is served by GitHub Pages, whose ordinary server logs are GitHub’s.',
         ],
       },

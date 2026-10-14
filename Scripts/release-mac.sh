@@ -24,6 +24,29 @@ EXPORT="$WORK/export"
 ZIP="$WORK/AIMeter-macOS.zip"
 mkdir -p "$WORK"
 
+# The update notice and the What's New sheet show this version's notes
+# from AIMeter/WhatsNew.json: no release without them, in every language
+# the app speaks, and without an em dash. The tag the release gets must be
+# this same version: the updater compares it with the running app's.
+MARKETING="$(sed -n 's/^[[:space:]]*MARKETING_VERSION = \(.*\);/\1/p' "$ROOT/AIMeter.xcodeproj/project.pbxproj" | sort -u)"
+[[ "$MARKETING" == "$VERSION" ]] || { echo "MARKETING_VERSION is $MARKETING, not $VERSION"; exit 1 }
+python3 -I - "$ROOT/AIMeter/WhatsNew.json" "$VERSION" <<'PY' || exit 1
+import json, sys
+notes, version = json.load(open(sys.argv[1], encoding="utf-8")), sys.argv[2]
+languages = {"en", "es", "de", "fr", "ja", "ko", "pt-BR", "zh-Hans"}
+release = next((r for r in notes["releases"] if r["version"] == version), None)
+if not release or not release["items"]:
+    sys.exit(f"AIMeter/WhatsNew.json has no notes for {version}")
+for item in release["items"]:
+    for table in (item["title"], item["detail"]):
+        missing = languages - {k for k, v in table.items() if v.strip()}
+        if missing:
+            sys.exit(f"{item['symbol']}: missing {sorted(missing)}")
+        if any("—" in v for v in table.values()):
+            sys.exit(f"{item['symbol']}: an em dash")
+print(f"== What's New for {version}: {len(release['items'])} items in {len(languages)} languages")
+PY
+
 if [[ -d "$ARCHIVE" ]] && plutil -extract Distributions xml1 -o - "$ARCHIVE/Info.plist" 2>/dev/null | grep -q "Developer ID"; then
   # Rerun with the same work dir after an interrupted wait: the archive
   # is already with the notary service, so only the wait is left.

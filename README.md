@@ -114,6 +114,12 @@ can be added later.
   failing at the same time says so under its error — so an outage reads
   as their outage, not as a problem with your account. On a normal day
   nothing is shown; the check can be turned off in Settings.
+- **What's new, and updates on the Mac**: after an update, a short sheet
+  lists what changed, in your language. The Mac app updates itself from
+  the project's GitHub releases: a daily check, a background download
+  whose signature must match the developer's, and an install only when
+  you restart from its notice ("Later" leaves it waiting). Off with
+  "Check for updates automatically" in Settings.
 - **Claude Code on this Mac** (macOS, opt-in, off by default): what your
   Claude Code sessions would have cost at API list prices — tokens per
   model for today, the last 7 days, the last 30 days and all time — read from the
@@ -159,6 +165,9 @@ can be added later.
 - **Mac**: [download AIMeter-macOS.zip](https://github.com/MikeAlvarado/AIMeter/releases/latest/download/AIMeter-macOS.zip)
   from the latest release — signed with Developer ID and notarized by
   Apple — unzip it and move AIMeter to Applications. macOS 14 or later.
+  From then on it updates itself: once a day it checks the latest
+  release, downloads a newer one in the background, checks its
+  signature, and installs it when you restart from its notice.
   Or build it yourself (see [Building](#building)).
 
 ## Website
@@ -207,7 +216,11 @@ shows up) and, for the iOS sign-in flow, the standard
 OAuth exchange with `claude.ai` / `console.anthropic.com` — plus one
 anonymous GET of the public status page (`status.claude.com/api/v2/summary.json`,
 no parameters, nothing about you in it; off with the "Check service
-status" toggle in Settings). Nothing else:
+status" toggle in Settings). On the Mac only, once a day, a request to
+`api.github.com` asking whether a newer release exists, and the
+download of `AIMeter-macOS.zip` from the project's GitHub release when
+there is one (off with "Check for updates automatically" in Settings).
+Nothing else:
 no analytics, no crash reporting, no third-party SDKs, no server of ours.
 
 **The one optional permission on the Mac** — "Avoid covering the menu
@@ -346,6 +359,14 @@ resumes the wait instead of uploading again. Both macOS targets build
 with the hardened runtime, which notarization requires. Tag the commit (`git tag <version>`), then
 `gh release create <version> <zip>` with the release notes.
 
+Before either: bump `MARKETING_VERSION`, and add the version's notes to
+`AIMeter/WhatsNew.json` in all eight languages. The iPhone shows them
+once after the App Store update, and the Mac's update notice shows them
+before installing. The script refuses a version whose notes are missing
+or whose `MARKETING_VERSION` differs. The tag must be that same version
+and the asset must keep the name `AIMeter-macOS.zip`: the Mac's updater
+compares the tag with its own version and downloads that asset.
+
 ### Validating the endpoint
 
 Before trusting the app, you can see exactly what it reads:
@@ -370,7 +391,9 @@ Packages/UsageKit      provider-agnostic Swift Package (no UI imports)
 AIMeter/                multiplatform SwiftUI app (iOS + macOS);
                         AccountMigration upgrades a pre-multi-account
                         install in place; Views/NotchIsland/ is the
-                        macOS notch island (panel, controller, views)
+                        macOS notch island (panel, controller, views);
+                        Services/Updates/ is the Mac's own updater, and
+                        WhatsNew.json each release's notes (8 languages)
 AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage (one
                         number), AIMeterAllAccounts (every account at
                         once), and a Live Activity (iOS) — all render App

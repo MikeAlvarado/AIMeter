@@ -1,0 +1,102 @@
+{
+  "releases": [
+    {
+      "version": "2.1.0",
+      "items": [
+        {
+          "symbol": "paintpalette",
+          "title": {
+            "en": "Yellow and red as you near a limit",
+            "es": "Amarillo y rojo al acercarte a un límite",
+            "de": "Gelb und Rot, wenn ein Limit naht",
+            "fr": "Jaune et rouge à l'approche d'une limite",
+            "ja": "上限が近づくと黄色と赤に",
+            "ko": "한도에 가까워지면 노란색과 빨간색",
+            "pt-BR": "Amarelo e vermelho perto do limite",
+            "zh-Hans": "接近上限时显示黄色和红色"
+          },
+          "detail": {
+            "en": "Bars turn yellow above 70% used and red above 85%. You can keep them in one color in Settings.",
+            "es": "Las barras se ponen amarillas por encima del 70 % usado y rojas por encima del 85 %. Puedes dejarlas de un solo color en Ajustes.",
+            "de": "Balken werden über 70 % Nutzung gelb und über 85 % rot. In den Einstellungen kannst du sie einfarbig lassen.",
+            "fr": "Les barres passent au jaune au-delà de 70 % d'utilisation et au rouge au-delà de 85 %. Vous pouvez les garder d'une seule couleur dans les Réglages.",
+            "ja": "使用量が70%を超えるとバーは黄色、85%を超えると赤になります。設定で1色のままにもできます。",
+            "ko": "사용량이 70%를 넘으면 막대가 노란색, 85%를 넘으면 빨간색이 됩니다. 설정에서 한 가지 색으로 유지할 수도 있습니다.",
+            "pt-BR": "As barras ficam amarelas acima de 70% de uso e vermelhas acima de 85%. Nos Ajustes, você pode deixá-las de uma só cor.",
+            "zh-Hans": "用量超过 70% 时进度条变黄，超过 85% 时变红。也可以在设置中保持同一种颜色。"
+          }
+        },
+        {
+          "symbol": "chart.xyaxis.line",
+          "title": {
+            "en": "A cleaner history",
+            "es": "Un historial más limpio",
+            "de": "Ein saubererer Verlauf",
+            "fr": "Un historique plus net",
+            "ja": "すっきりした履歴",
+            "ko": "더 깔끔한 기록",
+            "pt-BR": "Um histórico mais limpo",
+            "zh-Hans": "更清晰的历史记录"
+          },
+          "detail": {
+            "en": "Charts no longer show stray spikes when the app and a widget refresh at the same time.",
+            "es": "Las gráficas ya no muestran picos sueltos cuando la app y un widget se actualizan al mismo tiempo.",
+            "de": "Diagramme zeigen keine vereinzelten Spitzen mehr, wenn App und Widget gleichzeitig aktualisieren.",
+            "fr": "Les graphiques n'affichent plus de pics isolés quand l'app et un widget s'actualisent en même temps.",
+            "ja": "アプリとウィジェットが同時に更新しても、グラフに不要なスパイクが出なくなりました。",
+            "ko": "앱과 위젯이 동시에 새로 고쳐도 그래프에 엉뚱한 스파이크가 더 이상 나타나지 않습니다.",
+            "pt-BR": "Os gráficos não mostram mais picos soltos quando o app e um widget atualizam ao mesmo tempo.",
+            "zh-Hans": "应用和小组件同时刷新时，图表不再出现多余的尖峰。"
+          }
+        },
+        {
+          "symbol": "list.bullet.rectangle",
+          "title": {
+            "en": "Settings in a clearer order",
+            "es": "Ajustes en un orden más claro",
+            "de": "Einstellungen in klarerer Reihenfolge",
+            "fr": "Des réglages mieux ordonnés",
+            "ja": "わかりやすくなった設定の並び",
+            "ko": "더 명확해진 설정 순서",
+            "pt-BR": "Ajustes em uma ordem mais clara",
+            "zh-Hans": "设置顺序更清晰"
+          },
+          "detail": {
+            "en": "Each account's screen goes from your usage to its alerts, then to its settings.",
+            "es": "La pantalla de cada cuenta va de tu uso a sus avisos y luego a sus ajustes.",
+            "de": "Der Bildschirm jedes Accounts führt von deiner Nutzung zu den Hinweisen und dann zu den Einstellungen.",
+            "fr": "L'écran de chaque compte va de votre usage à ses alertes, puis à ses réglages.",
+            "ja": "各アカウントの画面は、使用量、通知、設定の順に並びます。",
+            "ko": "각 계정 화면이 사용량, 알림, 설정 순서로 정리되었습니다.",
+            "pt-BR": "A tela de cada conta vai do seu uso aos alertas e depois aos ajustes.",
+            "zh-Hans": "每个账户的页面依次显示用量、提醒和设置。"
+          }
+        },
+        {
+          "symbol": "arrow.down.circle",
+          "platforms": ["macOS"],
+          "title": {
+            "en": "Updates on its own",
+            "es": "Se actualiza sola",
+            "de": "Aktualisiert sich selbst",
+            "fr": "Se met à jour toute seule",
+            "ja": "自動でアップデート",
+            "ko": "스스로 업데이트",
+            "pt-BR": "Atualiza sozinho",
+            "zh-Hans": "自动更新"
+          },
+          "detail": {
+            "en": "AIMeter checks for a new version every day, downloads it, and installs it when you restart from the notice.",
+            "es": "AIMeter busca una versión nueva cada día, la descarga y la instala cuando reinicias desde el aviso.",
+            "de": "AIMeter sucht täglich nach einer neuen Version, lädt sie herunter und installiert sie, wenn du über den Hinweis neu startest.",
+            "fr": "AIMeter recherche une nouvelle version chaque jour, la télécharge et l'installe quand vous redémarrez depuis l'avis.",
+            "ja": "AIMeterは毎日新しいバージョンを確認してダウンロードし、通知から再起動するとインストールします。",
+            "ko": "AIMeter가 매일 새 버전을 확인해 다운로드하고, 알림에서 재시작하면 설치합니다.",
+            "pt-BR": "O AIMeter procura uma versão nova todo dia, baixa e instala quando você reinicia pelo aviso.",
+            "zh-Hans": "AIMeter 每天检查新版本并下载，在你从提示中重启时安装。"
+          }
+        }
+      ]
+    }
+  ]
+}

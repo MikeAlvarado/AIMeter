@@ -25,6 +25,8 @@ system, and behaviors. It should be enough to rebuild the app from zero.
   builds and even codesigns fine without the Keychain entitlement; it only
   fails at runtime on a real device (the Simulator is lenient about it).
 - Background task ID: `com.mikealvarado.aimeter.refresh`
+- macOS update check (`NSBackgroundActivityScheduler`):
+  `com.mikealvarado.aimeter.updates.activity` (`AppUpdater.activityID`)
 - Widget kinds: `AIMeterUsage` ("Usage Limits": the account's windows,
   rows in the small family, columns with a big figure each in the medium),
   `AIMeterSingleUsage` (single-window widget, user-configurable via
@@ -141,6 +143,14 @@ assets and string catalog from there.
   accessors, so the field list exists once; `MetricChips.swift` is the
   1–3 window chip row the menu bar's
   `multi` style and the notch island's wings both configure with.
+- Updates and What's new (see "Updates (macOS) and What's new" below):
+  `AIMeter/WhatsNew.json` (each release's notes, eight languages) read
+  by `AIMeter/Services/WhatsNew.swift`, drawn by
+  `AIMeter/Views/WhatsNewView.swift`; `AIMeter/Services/AppVersion.swift`
+  compares versions; the Mac's updater is `AIMeter/Services/Updates/`
+  (`AppUpdater`, the state and schedule; `UpdateFeed`, GitHub's release;
+  `UpdateInstaller`, download, checks and the swap) with its window,
+  Settings section and notices in `AIMeter/Views/UpdateViews.swift`.
 
 ## Architecture rules (non-negotiable)
 
@@ -553,6 +563,64 @@ the account silently freezes at its last snapshot.
   broken login is announced by the app's own next refresh or its
   `BGAppRefreshTask`, not by the widget that hit it first. Cancelled URL tasks are not
   surfaced as errors.
+
+## Updates (macOS) and What's new
+
+- **What's new** (both platforms): each release's notes live in
+  `AIMeter/WhatsNew.json`, a resource rather than catalog strings, every
+  item (an SF Symbol, a title, a line or two of detail, optionally
+  `platforms: ["macOS"]` or `["iOS"]`) written in all eight languages
+  and never with an em dash (`WhatsNewTests` holds both;
+  `Scripts/release-mac.sh` refuses a version without its entry or whose
+  `MARKETING_VERSION` differs). `WhatsNew.dueAtLaunch()` decides, once
+  per launch: notes newer than `pref.whatsNewSeenVersion` (App Group) up
+  to the running version, newest first, skipped versions' notes added
+  up; with no version recorded yet, a fresh install shows nothing and
+  an install that already has accounts (an upgrade from before this
+  existed) gets this version's notes; nothing to show records the
+  version at once. iOS presents them as a sheet on the Dashboard
+  (`ContentView`) after the App Store update; the Mac in its update
+  window. Text follows the app's own language
+  (`Bundle.main.preferredLocalizations`), then the language without its
+  region, then English.
+- **Updates (macOS only; the iOS build has none of it)**: `AppUpdater`
+  checks a minute after launch and then once a day
+  (`NSBackgroundActivityScheduler`, 2 h tolerance) while
+  `Preferences.checksForUpdates` is on (default **on**,
+  presence-checked; Settings → General → "Updates", which also has
+  "Check Now" and the state; "Check for Updates…" in the app menu does
+  the same and opens the update window). The feed is GitHub's
+  `releases/latest` for this repository (`UpdateFeed`; no server of
+  ours, the same release the site's Download button points at): a
+  release is an offer only when it is not a draft or pre-release, its
+  tag is a version newer than the running one, and it has
+  `AIMeter-macOS.zip`. `UpdateInstaller.prepare` downloads that zip to
+  `~/Library/Caches/com.mikealvarado.aimeter/Updates/<version>/`, checks
+  its SHA-256 against the asset's `digest`, unpacks it with `ditto`,
+  and keeps it only if the app inside is validly signed, Apple-anchored,
+  this bundle ID and the same team as the running app (nested code
+  included), and carries exactly the offered version. An unsigned build
+  has no team to hold a download to, so it never updates
+  (`AppUpdater.isAvailable`). A ready update raises one notification
+  (`update.<version>`; `NotificationRouter`, the app's only
+  `UNUserNotificationCenter` delegate, opens the update window on a
+  click and lets just that notification show while the app is in
+  front) and the `UpdateReadyNotice` at the top of the menu bar popover
+  and the Dashboard, plus an icon beside Settings in the notch island's
+  footer. Nothing installs until "Restart to Update" in the update
+  window (the new version's notes, from the downloaded app's own
+  `WhatsNew.json`): a shell script that outlives the app waits for it to
+  quit, sets the running copy aside, moves the new one into its place
+  (putting the old one back if that fails), deletes the previous
+  version and the download, and opens the new one; the notes are marked
+  seen first, so they don't show again after the restart. "Later"
+  closes the window; the notices stay, and the notification comes back a
+  day later. A copy that can't be replaced where it is (translocated, or
+  in a folder this user can't write) opens the release page instead.
+  Each launch removes whatever a past update left behind. `DEBUG` only:
+  `-AIMeterUpdateFeed <url>` points the check at another feed (a
+  `file://` JSON shaped like GitHub's) to try the whole path without a
+  release.
 
 ## Presentation rules
 
@@ -1048,7 +1116,8 @@ the account silently freezes at its last snapshot.
   `TimelineView` in the `MenuBarExtra` label: on macOS 27 that re-renders
   the status item from inside its own render and the app never finishes
   launching, 100 % CPU; 1.6.0 shipped with that bug, fixed in 2.0) and `menuBarShowsAccountName` (default off, offered only with 2+
-  accounts). All default to the behavior that shipped before they
+  accounts), and `checksForUpdates` (the daily update check, default
+  **on**, presence-checked; see "Updates (macOS) and What's new"). All default to the behavior that shipped before they
   existed, so an upgrade never changes an existing install — including
   the one migration: `menuBarShowsPercentage`, the pre-style bool, is
   only read at load now, to derive `menuBarStyle` for an install that
@@ -1310,7 +1379,9 @@ opacities for labels (82 %), resets (50 %) and separators (22 %)
 
 ## Localization
 
-English source; complete translations in Spanish, German, French,
+English source (plus each release's notes in `AIMeter/WhatsNew.json`,
+which carries its own eight languages, see "Updates (macOS) and What's
+new"); complete translations in Spanish, German, French,
 Japanese, Korean, Brazilian Portuguese and Simplified Chinese (the six
 added for 1.6.1 were written in-house on 2026-10-07 against the English
 key, its comment and the Spanish, and are open to native review); the
@@ -1392,7 +1463,11 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   usage levels and the usage-colors switch with its presence-checked
-  default (`UsageLevelTests`), the
+  default (`UsageLevelTests`), versions and the bundled What's New notes
+  (every language, no em dash) with the rules for which are due
+  (`WhatsNewTests`), on macOS the update feed against a captured GitHub
+  response (`AIMeterTests/Fixtures/github-release-latest.json`), the
+  offer rules and the install script (`UpdateFeedTests`), the
   service-status throttle, aging, banner and footer-line rules
   (`ServiceStatusTests`, with a stub `ServiceStatusSource` injected
   through `UsageModel.serviceStatusSources`), the menu bar label's
@@ -1443,8 +1518,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
 
 - MIT license. README includes: undocumented-endpoint disclaimer, privacy
   /data-transparency section (which lists every host the app talks to —
-  the usage/profile endpoints, the OAuth page on iOS, and the public
-  status page), build instructions with the user's own team ID, no
+  the usage/profile endpoints, the OAuth page on iOS, the public
+  status page, and on the Mac GitHub's release API and download), build
+  instructions with the user's own team ID, no
   affiliation with Anthropic.
 - The App Store Connect app record's **Name** is `AIMeter: Usage Tracker`,
   not the bare `AIMeter` — that exact string is already registered to
@@ -1536,7 +1612,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   (see "Claude Code sessions"), disclosed
   in `PrivacyView` and the website's privacy page. Separately,
   `ENABLE_APP_SANDBOX = NO` is pre-existing and would have to change for
-  Mac App Store distribution regardless of any of this.
+  Mac App Store distribution regardless of any of this, and so would the
+  updater: a Mac App Store build must not update itself.
 
 ## Workflow
 
@@ -1567,7 +1644,11 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   export uploads straight to the notary service with that account
   (`destination` `upload`, then `xcodebuild -exportNotarizedApp` once
   Apple is done) — no local certificate, no `notarytool` profile. See
-  README → "Releasing".
+  README → "Releasing". Every release, both platforms: bump
+  `MARKETING_VERSION`, add its notes to `AIMeter/WhatsNew.json` in all
+  eight languages (the script checks), tag it with exactly that version
+  and keep the asset's name `AIMeter-macOS.zip`, which is what the Mac's
+  updater looks for.
 - Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
   `swift test` in `Packages/UsageKit` must pass warning-free, and
   `xcodebuild test -scheme AIMeter` (the app's own unit tests) on at

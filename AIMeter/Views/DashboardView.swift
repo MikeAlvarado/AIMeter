@@ -46,6 +46,10 @@ struct DashboardView: View {
                         fallbackURL: ProviderCatalog.statusPageURL(for: incident.providerID)
                     )
                 }
+                #if os(macOS)
+                // Only while an update waits for a restart.
+                UpdateReadyNotice()
+                #endif
                 providerSection
                 #if os(macOS)
                 // Per machine, not per account — see `ClaudeCodeUsageModel`.

@@ -25,9 +25,12 @@ struct AIMeterApp: App {
                 // Hands the delegate a way to reopen this scene from a plain
                 // AppKit callback, which has no access to SwiftUI's
                 // environment actions.
+                .environment(AppUpdater.shared)
                 .onAppear {
                     AppChrome.openDashboard = { openWindow(id: Self.dashboardWindowID) }
                     AppChrome.openSettingsAction = { openSettings() }
+                    AppChrome.openUpdateWindowAction = { openWindow(id: Self.updateWindowID) }
+                    AppChrome.deliverPendingUpdateWindow()
                     // The notch island lives outside the scene graph; this
                     // is where it gets the app's one `PreferencesModel`.
                     AppEnvironment.prefs = prefs
@@ -52,6 +55,13 @@ struct AIMeterApp: App {
         // memorized. ⌘R lives here (and in the popover, which has no main
         // menu); the Dashboard's refresh button no longer declares its own.
         .commands {
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates…") {
+                    AppChrome.openUpdateWindow()
+                    Task { await AppUpdater.shared.check(userInitiated: true) }
+                }
+                .disabled(!AppUpdater.shared.isAvailable)
+            }
             CommandMenu("Usage") {
                 Button("Refresh All") {
                     Task { await model.refreshAll() }
@@ -85,6 +95,7 @@ struct AIMeterApp: App {
             MenuBarView()
                 .environment(model)
                 .environment(prefs)
+                .environment(AppUpdater.shared)
                 .tint(Theme.accent)
                 .preferredColorScheme(prefs.appearance.colorScheme)
         } label: {
@@ -103,13 +114,27 @@ struct AIMeterApp: App {
             MacSettingsView()
                 .environment(model)
                 .environment(prefs)
+                .environment(AppUpdater.shared)
                 .tint(Theme.accent)
                 .preferredColorScheme(prefs.appearance.colorScheme)
         }
+
+        // The update notice: the new version's notes with Restart to
+        // Update, or this version's notes after a manual install.
+        Window(String(localized: "Software Update"), id: Self.updateWindowID) {
+            UpdateWindow()
+                .environment(AppUpdater.shared)
+                .tint(Theme.accent)
+                .preferredColorScheme(prefs.appearance.colorScheme)
+        }
+        .windowResizability(.contentSize)
+        .defaultPosition(.center)
         #endif
     }
 
     /// Identifies the dashboard scene so the macOS AppDelegate can reopen it
     /// by id after both icons have been hidden.
     static let dashboardWindowID = "dashboard"
+    /// The macOS update window (`UpdateWindow`).
+    static let updateWindowID = "update"
 }

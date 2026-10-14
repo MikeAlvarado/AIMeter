@@ -2,6 +2,7 @@
 import AppKit
 import SwiftUI
 import UsageKit
+import UserNotifications
 
 /// The project's only AppDelegate. SwiftUI exposes no scene-level hook for
 /// the activation policy, nor for "the user launched AIMeter while it was
@@ -10,6 +11,9 @@ import UsageKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillFinishLaunching(_ notification: Notification) {
         AppChrome.terminateOtherInstances()
+        // Before launch finishes, so a click on the update notification
+        // that launched the app still reaches it.
+        UNUserNotificationCenter.current().delegate = AppChrome.notificationRouter
         let prefs = Preferences.load()
         // Applied before first paint so a hidden Dock icon never flashes,
         // and no window opens in the wrong appearance first.
@@ -39,6 +43,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             AppChrome.startNotchIslandIfEnabled()
             AppChrome.updateClaudeSessions()
         }
+        AppUpdater.shared.start(automatic: prefs.checksForUpdates)
         #if DEBUG
         if MacSettingsView.launchTab != nil {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -178,6 +183,40 @@ enum AppChrome {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    // MARK: Updates
+
+    /// Opens the update window (`AIMeterApp.updateWindowID`). The dashboard
+    /// scene publishes SwiftUI's `openWindow` here on appear; a request
+    /// made before that (the notes after a manual update, at launch) waits
+    /// in `pendingUpdateWindow` for it.
+    static var openUpdateWindowAction: (() -> Void)?
+    static var pendingUpdateWindow = false
+
+    static func openUpdateWindow() {
+        if let openUpdateWindowAction {
+            openUpdateWindowAction()
+            NSApp.activate(ignoringOtherApps: true)
+        } else {
+            pendingUpdateWindow = true
+        }
+    }
+
+    static func deliverPendingUpdateWindow() {
+        guard pendingUpdateWindow else { return }
+        pendingUpdateWindow = false
+        openUpdateWindow()
+    }
+
+    /// Closed before the restart, so window restoration doesn't bring it
+    /// back over the new version.
+    static func closeUpdateWindow() {
+        NSApp.windows
+            .filter { $0.identifier?.rawValue.hasPrefix(AIMeterApp.updateWindowID) == true }
+            .forEach { $0.close() }
+    }
+
+    static let notificationRouter = NotificationRouter()
+
     // MARK: Notch island
 
     /// The one island (see "macOS notch island" in `AIMeter/CLAUDE.md`).
@@ -226,6 +265,25 @@ enum AppChrome {
         NSApp.windows.filter {
             $0.identifier?.rawValue.hasPrefix(AIMeterApp.dashboardWindowID) == true
         }
+    }
+}
+/// Routes a click on the update notification to the update window, and
+/// lets that one notification show while AIMeter is in front. Every other
+/// notification keeps the system's default (not shown in front).
+final class NotificationRouter: NSObject, UNUserNotificationCenterDelegate {
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        guard response.notification.request.identifier.hasPrefix(AppUpdater.notificationPrefix) else { return }
+        await MainActor.run { AppChrome.openUpdateWindow() }
+    }
+
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        notification.request.identifier.hasPrefix(AppUpdater.notificationPrefix) ? [.banner, .list] : []
     }
 }
 #endif

@@ -163,11 +163,12 @@ export const es = {
     sections: [
       {
         heading: 'Qué sale de tu dispositivo',
-        paragraphs: ['Solo peticiones HTTPS al proveedor cuyo uso le pediste a AIMeter que lea, y nada hacia nosotros, porque no hay un “nosotros” al que enviarlo.'],
+        paragraphs: ['Solo peticiones HTTPS al proveedor cuyo uso le pediste a AIMeter que lea (y, en la Mac, a GitHub para las actualizaciones), y nada hacia nosotros, porque no hay un “nosotros” al que enviarlo.'],
         bullets: [
           'api.anthropic.com — /api/oauth/usage para tus límites y cifras de gasto, y /api/oauth/profile para resolver el nombre de tu plan (se vuelve a consultar como máximo cada 6 horas).',
           'claude.ai y console.anthropic.com — el intercambio OAuth estándar al conectar una cuenta desde la app. Inicias sesión en la página del propio proveedor en tu navegador, nunca en una vista web incrustada, y pegas de vuelta el código que te muestra.',
           'status.claude.com — una petición anónima a la página pública de estado en cada actualización, para distinguir un incidente del servicio de un problema con tu cuenta. No lleva nada sobre ti y se puede apagar en Ajustes.',
+          'api.github.com y github.com (solo en Mac): una vez al día, una consulta para saber si hay una versión más nueva de AIMeter y, si la hay, su descarga desde la página de versiones del proyecto. No lleva nada sobre ti y se puede apagar en Ajustes.',
           'Este sitio es estático: sin analíticas, sin cookies, con tipografías alojadas aquí mismo y sin peticiones a terceros. Lo sirve GitHub Pages, cuyos registros ordinarios de servidor son de GitHub.',
         ],
       },

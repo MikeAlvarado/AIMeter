@@ -243,7 +243,10 @@
   (`HidingSettings`: Hide Dock icon / Hide menu bar icon, with a warning
   row once both are hidden and the island is off) and "Startup"
   (`StartupSettings`: Open at Login, with a pending-approval row and a
-  nudge when the Dock icon is hidden but the login item is off);
+  nudge when the Dock icon is hidden but the login item is off), then
+  "Updates" (`UpdatesSettings`, `UpdateViews.swift`: "Check for updates
+  automatically", the updater's state with "Check Now" or, once one is
+  ready, "Restart to Update", and a footnote saying when it installs);
   **Notch island** (`NotchIslandSettings`,
   two cards. The first: a live preview of the **peek** — what hovering
   shows — as this screen draws it (the real notch's silhouette, or the
@@ -310,8 +313,8 @@
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
   Keychain, no tracking, and on macOS the opt-in Claude Code log reading,
   the Claude Code sessions with their optional hooks, the optional
-  Accessibility permission and what it reads, and the opt-in login
-  item), how connecting
+  Accessibility permission and what it reads, the opt-in login item and
+  the daily update check against GitHub), how connecting
   works (per platform), the one requested OAuth scope (`user:profile`) as a
   chip + the two read-only endpoints called + the anonymous status-page
   check and where to turn it off, and the independence/MIT/
@@ -747,6 +750,31 @@
     (18 pt), gives the header's wings, the accounts, the sessions and the
     footer the same two edges; the footer draws its outer icons against
     them.
+- **What's new** (both platforms, `WhatsNewView`): a release's notes, a
+  header and one row per item (its symbol on the accent wash, title,
+  detail) over the caller's buttons (`CapsuleActionButton`). iOS shows
+  it as a sheet over the Dashboard once after an update ("Continue"),
+  as tall as the notes (`WhatsNewSheet`: the content measured, one
+  height detent plus the home indicator's inset, the full height and a
+  scroll only for notes taller than the screen); the Mac in the update
+  window, which is its content's size too. Which notes are due, and why the notes
+  are JSON: "Updates (macOS) and What's new" in the repo-root CLAUDE.md.
+- **macOS update window** (`UpdateWindow`, a `Window` scene,
+  `AIMeterApp.updateWindowID`, opened through
+  `AppChrome.openUpdateWindow`, the same bridge shape as
+  `openDashboard`; a request made before the Dashboard scene appeared
+  waits in `pendingUpdateWindow`): with an update ready, "AIMeter 2.1.0
+  is ready" over its notes (or a link to the release on GitHub when it
+  has none), a line saying to move the app to Applications when it
+  can't be replaced in place, and "Later" / "Restart to Update"; after
+  a version installed by hand, this version's notes and "Continue";
+  otherwise the check's state ("Check for Updates…" in the app menu
+  opens it while it checks). Closed before the restart, so window
+  restoration never brings it back over the new version. The
+  `UpdateReadyNotice` ("AIMeter 2.1.0 is ready", the accent wash, opens
+  this window) sits at the top of the menu bar popover and the
+  Dashboard while an update waits; the notch island's footer adds an
+  icon beside Settings.
 - **macOS hiding & re-entry** (`AppDelegate` + `AppChrome`, the project's
   only AppDelegate — SwiftUI has no scene hook for either concern):
   - `hideDockIcon` → `.accessory` activation policy, applied in

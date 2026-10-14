@@ -158,6 +158,10 @@ final class PreferencesModel {
     }
     /// The geometry options a screen without a notch is laid out with.
     var notchIslandOptions: NotchIslandGeometry.Options { stored.notchIslandOptions }
+    var checksForUpdates: Bool {
+        get { stored.checksForUpdates }
+        set { guard stored.checksForUpdates != newValue else { return }; stored.checksForUpdates = newValue; persist(newValue, Preferences.Keys.checksForUpdates, reloadsWidgets: false) }
+    }
     var checksServiceStatus: Bool {
         get { stored.checksServiceStatus }
         set { guard stored.checksServiceStatus != newValue else { return }; stored.checksServiceStatus = newValue; persist(newValue, Preferences.Keys.checksServiceStatus, reloadsWidgets: false) }

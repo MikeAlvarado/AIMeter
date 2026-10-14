@@ -242,17 +242,23 @@ struct IslandFooter: View {
                 AppChrome.revealMainWindow()
             }
             Spacer()
+            if let ready = AppUpdater.shared.readyUpdate {
+                // An update waits for a restart: its notice, beside Settings.
+                control("arrow.down.circle.fill", String(localized: "AIMeter \(ready.version.description) is ready"), tint: Theme.accent) {
+                    AppChrome.openUpdateWindow()
+                }
+            }
             control("gearshape", String(localized: "Settings…"), alignment: .trailing) {
                 AppChrome.openSettings()
             }
         }
     }
 
-    private func control(_ symbol: String, _ title: String, alignment: Alignment = .center, action: @escaping () -> Void) -> some View {
+    private func control(_ symbol: String, _ title: String, tint: Color = NotchIslandStyle.control, alignment: Alignment = .center, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(NotchIslandStyle.control)
+                .foregroundStyle(tint)
                 .frame(width: 24, height: 20, alignment: alignment)
                 .contentShape(Rectangle())
         }

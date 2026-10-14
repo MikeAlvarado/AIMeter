@@ -167,6 +167,9 @@ struct Preferences: Sendable {
     /// policy), turning AIMeter into a menu-bar-only utility. The app keeps
     /// running and refreshing either way.
     var hideDockIcon: Bool = false
+    /// The daily check for a newer Mac release (`AppUpdater`). On by
+    /// default, so it loads through the presence check.
+    var checksForUpdates: Bool = true
 
     // MARK: Notch island (macOS)
     //
@@ -296,6 +299,7 @@ struct Preferences: Sendable {
         static let menuBarShowsAccountName = "pref.menuBarShowsAccountName"
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
+        static let checksForUpdates = "pref.checksForUpdates"
         static let checksServiceStatus = "pref.checksServiceStatus"
         static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
         static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
@@ -347,6 +351,7 @@ struct Preferences: Sendable {
         prefs.menuBarShowsAccountName = defaults.bool(forKey: Keys.menuBarShowsAccountName)
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
+        prefs.checksForUpdates = bool(defaults, Keys.checksForUpdates, default: true)
         prefs.loadNotchIsland(from: defaults)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
