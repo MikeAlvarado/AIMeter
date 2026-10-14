@@ -96,9 +96,9 @@ private struct GeneralSettingsPage: View {
             PeakNotificationsSettings()
         }
         SettingsGap()
-        ServiceStatusSettings()
-        SettingsGap()
         BackgroundRefreshSettings()
+        SettingsGap()
+        ServiceStatusSettings()
         SettingsGap()
         HidingSettings()
         SettingsGap()

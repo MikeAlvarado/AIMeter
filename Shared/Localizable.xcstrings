@@ -3825,6 +3825,52 @@
         }
       }
     },
+    "Bars turn yellow above 70% used and red above 85%. Off, every bar stays one color." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balken werden über 70 % Nutzung gelb und über 85 % rot. Ausgeschaltet bleibt jeder Balken einfarbig."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las barras se ponen amarillas por encima del 70 % usado y rojas por encima del 85 %. Apagado, todas se quedan de un solo color."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les barres passent au jaune au-delà de 70 % d'utilisation et au rouge au-delà de 85 %. Désactivé, chaque barre garde une seule couleur."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用量が70%を超えるとバーは黄色に、85%を超えると赤になります。オフにすると、すべてのバーが1色のままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용량이 70%를 넘으면 막대가 노란색, 85%를 넘으면 빨간색이 됩니다. 끄면 모든 막대가 한 가지 색으로 유지됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As barras ficam amarelas acima de 70% de uso e vermelhas acima de 85%. Desativado, cada barra fica de uma só cor."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用量超过 70% 时进度条变黄，超过 85% 时变红。关闭后，每个进度条都保持同一种颜色。"
+          }
+        }
+      }
+    },
     "Battery" : {
       "localizations" : {
         "de" : {
@@ -8076,52 +8122,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "现在"
-          }
-        }
-      }
-    },
-    "Off, every bar stays one color, however much you've used." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ausgeschaltet bleibt jeder Balken einfarbig, egal wie viel du verbraucht hast."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apagado, cada barra se queda de un solo color, sin importar cuánto hayas usado."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactivé, chaque barre garde une seule couleur, quel que soit votre usage."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オフにすると、使用量にかかわらず、すべてのバーが1色のままになります。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "끄면 사용량과 관계없이 모든 막대가 한 가지 색으로 유지됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativado, cada barra fica de uma só cor, não importa quanto você usou."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭后，无论用量多少，每个进度条都保持同一种颜色。"
           }
         }
       }
@@ -14718,6 +14718,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "超过 70% 时黄色，超过 85% 时红色"
+          }
+        }
+      }
+    },
+    "Yellow and red" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelb und Rot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarillo y rojo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jaune et rouge"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黄色と赤"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노란색과 빨간색"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarelo e vermelho"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黄色和红色"
           }
         }
       }

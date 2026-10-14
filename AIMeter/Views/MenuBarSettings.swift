@@ -19,6 +19,13 @@ struct MenuBarSettings: View {
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                 preview
+                if prefs.notchIslandEnabled, !prefs.statusItemVisible {
+                    // Right under the preview: why the item it shows isn't
+                    // in the menu bar right now.
+                    Label(String(localized: "Hidden while the notch island is on."), systemImage: "eye.slash")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
                 Divider().overlay(Theme.track)
 
                 if model.accounts.count > 1 {
@@ -57,15 +64,8 @@ struct MenuBarSettings: View {
                     }
                 }
                 let rows = toggleRows
-                let showsHiddenNote = prefs.notchIslandEnabled && !prefs.statusItemVisible
-                if showsHiddenNote || !rows.isEmpty {
+                if !rows.isEmpty {
                     Divider().overlay(Theme.track)
-                }
-                if showsHiddenNote {
-                    Label(String(localized: "Hidden while the notch island is on."), systemImage: "eye.slash")
-                        .font(Theme.caption)
-                        .foregroundStyle(Theme.inkSecondary)
-                    if !rows.isEmpty { Divider().overlay(Theme.track) }
                 }
                 ForEach(Array(rows.enumerated()), id: \.element) { index, row in
                     if index > 0 { Divider().overlay(Theme.track) }

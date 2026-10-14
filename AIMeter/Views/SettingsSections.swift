@@ -117,13 +117,13 @@ struct AppearanceSettings: View {
         SectionHeader(title: String(localized: "Usage colors"))
         Card {
             Toggle(isOn: $prefs.usageColors) {
-                Text("Yellow above 70%, red above 85%")
+                Text("Yellow and red")
                     .font(Theme.rowTitle)
                     .foregroundStyle(Theme.ink)
             }
             .tint(Theme.accent)
         }
-        SectionFootnote(text: String(localized: "Off, every bar stays one color, however much you've used."))
+        SectionFootnote(text: String(localized: "Bars turn yellow above 70% used and red above 85%. Off, every bar stays one color."))
 
         SettingsGap()
         SectionHeader(title: String(localized: "Reset timers"))

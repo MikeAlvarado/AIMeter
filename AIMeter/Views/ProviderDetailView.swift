@@ -74,24 +74,15 @@ struct ProviderDetailView: View {
                     }
                 }
 
-                SectionHeader(title: String(localized: "Third usage row"))
+                SectionHeader(title: String(localized: "Notifications"))
                     .padding(.top, Theme.sectionSpacing - 10)
-                Card {
-                    VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                        SegmentedPill(
-                            options: ModelSlotFallback.allCases.map { ($0, $0.label) },
-                            selection: $prefs.modelSlotFallback
-                        )
-                        Divider().overlay(Theme.track)
-                        Toggle(isOn: $prefs.showCreditsAmount) {
-                            Text("Show credit amounts")
-                                .font(Theme.rowTitle)
-                                .foregroundStyle(Theme.ink)
-                        }
-                        .tint(Theme.accent)
-                    }
-                }
-                SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line."))
+                NotificationTogglesCard(accountID: accountID)
+                SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
+
+                SectionHeader(title: String(localized: "Smart notifications"))
+                    .padding(.top, Theme.sectionSpacing - 10)
+                SmartNotificationTogglesCard(accountID: accountID)
+                SectionFootnote(text: SmartNotificationTogglesCard.footnote)
 
                 #if os(iOS)
                 // macOS's equivalent (which window the menu bar gauge
@@ -125,6 +116,25 @@ struct ProviderDetailView: View {
                 SectionFootnote(text: String(localized: "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default — updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates."))
                 #endif
 
+                SectionHeader(title: String(localized: "Third usage row"))
+                    .padding(.top, Theme.sectionSpacing - 10)
+                Card {
+                    VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                        SegmentedPill(
+                            options: ModelSlotFallback.allCases.map { ($0, $0.label) },
+                            selection: $prefs.modelSlotFallback
+                        )
+                        Divider().overlay(Theme.track)
+                        Toggle(isOn: $prefs.showCreditsAmount) {
+                            Text("Show credit amounts")
+                                .font(Theme.rowTitle)
+                                .foregroundStyle(Theme.ink)
+                        }
+                        .tint(Theme.accent)
+                    }
+                }
+                SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line."))
+
                 if let spend = usage?.snapshot?.spend {
                     SectionHeader(title: String(localized: "Spend"))
                         .padding(.top, Theme.sectionSpacing - 10)
@@ -136,16 +146,6 @@ struct ProviderDetailView: View {
                         .padding(.top, Theme.sectionSpacing - 10)
                     DetailRowsCard(rows: ProviderDetailRows.extraUsage(extra))
                 }
-
-                SectionHeader(title: String(localized: "Notifications"))
-                    .padding(.top, Theme.sectionSpacing - 10)
-                NotificationTogglesCard(accountID: accountID)
-                SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
-
-                SectionHeader(title: String(localized: "Smart notifications"))
-                    .padding(.top, Theme.sectionSpacing - 10)
-                SmartNotificationTogglesCard(accountID: accountID)
-                SectionFootnote(text: SmartNotificationTogglesCard.footnote)
 
                 if !model.isDemoMode {
                     // The discoverable route to the same rename the

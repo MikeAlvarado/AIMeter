@@ -23,9 +23,9 @@ struct SettingsView: View {
                     PeakNotificationsSettings()
                 }
                 SettingsGap()
-                ServiceStatusSettings()
-                SettingsGap()
                 BackgroundRefreshSettings()
+                SettingsGap()
+                ServiceStatusSettings()
                 SettingsGap()
                 PrivacyLinkSettings()
                 SettingsGap()

@@ -166,29 +166,35 @@
   footnote — rendered only while `ClaudePeakSchedule.current` is non-nil,
   which it isn't today (the policy is retired); a **Forecast** card
   (`ForecastCard`) listing any of that account's windows projected to run
-  out early or an all-clear row; a "Third usage row" card with the
-  Auto/Hidden/Credits pill (governs the third-slot fallback above,
-  defaults to Auto, shared across accounts) plus a "Show credit amounts"
-  toggle (off by default, also shared) for the Credits row's money
-  subtitle; on iOS only, a "Lock Screen widget" pill for `glanceMetric`
-  (macOS's equivalent lives in Settings now — see "Display prefs" in the
-  repo-root CLAUDE.md), options read live from this account's snapshot,
-  and a "Live Activity" toggle (also iOS only — see
-  `AIMeterWidgets/CLAUDE.md`) for this account's Session countdown on the
-  Lock Screen/Dynamic Island, off by default; Spend and Extra usage
-  cards (label/value rows, currency formatted) for this account; per-window
+  out early or an all-clear row; per-window
   reset notification toggles plus a **Smart notifications** card
   (`SmartNotificationTogglesCard`, one toggle per `SmartAlert` case in
   declaration order: Near-limit warnings with a threshold
   slider, Limit reached, Run-out warnings, Early-reset alerts, and
   Sign-in alerts — all five scoped to this one account, and Sign-in alerts
   the only toggle in the app that starts **on**, for the reason documented
-  on `NotificationPreferences.reauthAlertsEnabled`); an **Account** card — a
+  on `NotificationPreferences.reauthAlertsEnabled`); on iOS only, a "Lock
+  Screen widget" pill for `glanceMetric`
+  (macOS's equivalent lives in Settings now — see "Display prefs" in the
+  repo-root CLAUDE.md), options read live from this account's snapshot,
+  and a "Live Activity" toggle (also iOS only — see
+  `AIMeterWidgets/CLAUDE.md`) for this account's Session countdown on the
+  Lock Screen/Dynamic Island, off by default; a "Third usage row" card with the
+  Auto/Hidden/Credits pill (governs the third-slot fallback above,
+  defaults to Auto, shared across accounts) plus a "Show credit amounts"
+  toggle (off by default, also shared) for the Credits row's money
+  subtitle; Spend and Extra usage
+  cards (label/value rows, currency formatted) for this account; an **Account** card — a
   Name row showing the current nickname, and tapping it opens the same
   rename alert the Dashboard header's context menu uses (see "Renaming"
   above), hidden in demo mode; a disconnect button, on both
   platforms (macOS previously had none — a gap multi-account made
   untenable, since it's now the only way to remove a non-primary account).
+  The order runs from what the account shows to what it does: its data
+  (limits, history, forecast), what alerts about it, the glance surfaces
+  that read it, how its rows are drawn, its billing, and the account
+  itself — and it keeps the Spend card, the one with amounts, well below
+  every card a store capture shows (see `Scripts/StoreFrames/CLAUDE.md`).
   All of these are Claude-specific display prefs, so they live here rather
   than in the app-wide Settings screen — a future provider's own detail
   view would carry its own equivalents instead of sharing these. Peak-hours
@@ -215,11 +221,13 @@
   is one Claude-wide policy with nothing account-specific to scope it
   to; see "Peak hours" in the repo-root CLAUDE.md — the whole card is
   gated on `ClaudePeakSchedule.current` being non-nil, so it doesn't
-  render while the policy is retired), a "Service status" card with the
+  render while the policy is retired), the refresh cadence menu, then a
+  "Service status" card with the
   one "Check service status" toggle (`Preferences.checksServiceStatus`,
   default on; its `onChange` mirrors the value into the model through
-  `setChecksServiceStatus`, same shape as the refresh-cadence handler),
-  the refresh cadence menu (all app-wide, not per account), a "Privacy &
+  `setChecksServiceStatus`, same shape as the refresh-cadence handler) —
+  how often a refresh runs before what else it checks, all app-wide, not
+  per account — a "Privacy &
   data" link, an "Open Source" row (GitHub mark, opens the repo URL), and
   — for a connected install — the "Demo mode" card last. **macOS**
   (`MacSettingsView`, the Settings scene) spreads the same sections over
@@ -258,13 +266,14 @@
   `step:`, which draws a tick per step); **Menu bar** (`MenuBarSettings`: a live
   preview of the status item label on a light and a dark strip, rendered
   from the very same `MenuBarLabelModel.current` the `MenuBarExtra` uses,
-  so the preview is the truth; the same "Account" menu (2+ accounts only);
+  so the preview is the truth, with a "Hidden while the notch island is
+  on." note right under it while the island has the icon hidden (it says
+  why the previewed item isn't in the menu bar); the same "Account" menu
+  (2+ accounts only);
   the Style menu (`MenuBarStyle`); the window pill for single styles or the
   multi-select window chips for `multi` (1–3, options' order kept), under a
   "Window" or "Windows" title so the choice never reads as one more style
   or account control;
-  a "Hidden while the notch island is on." note while the island has
-  the icon hidden;
   then the "Yellow above 70%, red above 85%" (only while usage colors
   are on), "Reset countdown" (not for `multi`) and
   "Account name" (2+ only) toggles; the footnote also points at the
