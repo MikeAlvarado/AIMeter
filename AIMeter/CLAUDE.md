@@ -670,6 +670,15 @@
     account's figures.
   - More than four accounts scroll inside a height-capped list measured
     the same way `MenuBarView` measures its own.
+  - The accounts are one SwiftUI `Grid` (`AccountGrid`,
+    `NotchIslandRows.swift`): a row of figures (`SegmentText`) and a row
+    of bars (`SegmentBar`) per account, with the header, dividers and
+    status line spanning it. Everything that should follow the columns
+    rather than set them (the bars, the spanning rows, the empty cells
+    of an account with fewer windows) is `gridCellUnsizedAxes`: with
+    flexible cells instead, `Grid` splits its width into equal columns
+    and a wider column pushed the grid 13 pt past the island's edge
+    (measured). `ViewThatFits` tries the grid at 12, 11 and 10 pt.
 - **macOS hiding & re-entry** (`AppDelegate` + `AppChrome`, the project's
   only AppDelegate — SwiftUI has no scene hook for either concern):
   - `hideDockIcon` → `.accessory` activation policy, applied in

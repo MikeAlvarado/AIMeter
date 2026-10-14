@@ -963,7 +963,11 @@ the account silently freezes at its last snapshot.
   launch with the island on, it peeks by itself for a few seconds with a
   one-line caption saying what it is (`notchIslandRevealed`). Expanded,
   the wings stay as the header and every account gets a row — identity header, the full line (label, percent, `↻` reset) with a 2 pt
-  bar under each segment, and a status line only when there is one:
+  bar under each segment, and a status line only when there is one —
+  all accounts in one grid (`AccountGrid`), so their windows share
+  columns and the gap between them, every bar in a column has that
+  column's width, and the grid is centered; the figures step down from
+  12 to 11, then 10 pt when the grid would not fit. The status line:
   "Updated 31 min ago" past `AppConfig.staleAfter`, the offline line, the
   "Sign in again" prompt (`AppChrome.connect(.reconnect)`), or the raw
   error — plus the incident notice while the provider reports one, and a

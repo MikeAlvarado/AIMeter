@@ -126,7 +126,8 @@ struct CollapsedRow: View {
 
 /// The Vibe-style run: `5h 42% ↻2h 58m | 7d 61% ↻3d 7h`. Compact drops
 /// the reset; the full line keeps it and hangs a 2 pt bar under each
-/// segment, as wide as the segment.
+/// segment, as wide as the segment. The expanded island lays its full
+/// segments out in `AccountGrid` instead, so accounts share columns.
 struct SegmentLine: View {
     let segments: [NotchIslandModel.Segment]
     var compact: Bool
@@ -155,36 +156,57 @@ struct SegmentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 4) {
-                Text(segment.label)
-                    .foregroundStyle(NotchIslandStyle.label)
-                Text(segment.percent)
-                    .foregroundStyle(NotchIslandStyle.tint(segment.tint))
-                if !compact, let reset = segment.reset {
-                    // The reset glyph says what the third figure is: a
-                    // time until the window turns over, not more usage.
-                    Text(verbatim: "↻\(reset)")
-                        .foregroundStyle(NotchIslandStyle.reset)
-                }
-            }
-            .font(NotchIslandStyle.font(compact ? 11 * scale : 12))
-            // A segment is one line, always.
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
+            SegmentText(segment: segment, compact: compact, scale: scale)
             if !compact {
-                GeometryReader { proxy in
-                    ZStack(alignment: .leading) {
-                        Capsule().fill(NotchIslandStyle.track)
-                        Capsule().fill(NotchIslandStyle.tint(segment.tint))
-                            .frame(width: proxy.size.width * segment.fraction)
-                    }
-                }
-                .frame(height: 2)
-                .accessibilityHidden(true)
+                SegmentBar(segment: segment)
             }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(segment.accessibilityLabel)
+    }
+}
+
+/// A segment's figures on one line: label, percent in its level's color,
+/// and (full line only) the reset.
+struct SegmentText: View {
+    let segment: NotchIslandModel.Segment
+    var compact: Bool
+    var scale: CGFloat = 1
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Text(segment.label)
+                .foregroundStyle(NotchIslandStyle.label)
+            Text(segment.percent)
+                .foregroundStyle(NotchIslandStyle.tint(segment.tint))
+            if !compact, let reset = segment.reset {
+                // The reset glyph says what the third figure is: a
+                // time until the window turns over, not more usage.
+                Text(verbatim: "↻\(reset)")
+                    .foregroundStyle(NotchIslandStyle.reset)
+            }
+        }
+        .font(NotchIslandStyle.font((compact ? 11 : 12) * scale))
+        // A segment is one line, always.
+        .lineLimit(1)
+        .fixedSize(horizontal: true, vertical: false)
+    }
+}
+
+/// The 2 pt bar under a full segment, as wide as whatever holds it.
+struct SegmentBar: View {
+    let segment: NotchIslandModel.Segment
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule().fill(NotchIslandStyle.track)
+                Capsule().fill(NotchIslandStyle.tint(segment.tint))
+                    .frame(width: proxy.size.width * segment.fraction)
+            }
+        }
+        .frame(height: 2)
+        .accessibilityHidden(true)
     }
 }
 #endif
