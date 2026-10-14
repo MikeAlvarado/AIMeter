@@ -200,10 +200,14 @@ above); no new target, no push entitlement.
   synced into both targets already like `Theme.swift`/`AppConfig.swift` —
   both the app (start/update/end) and this extension (render) need the
   type. `severity` rides along so the bar can call the same
-  `UsageWindow.tint(usedPct:severity:)` every other surface uses (see
+  `UsageWindow.tint(usedPct:severity:usageColors:)` (terracotta / yellow /
+  red, `UsageLevel`) every other surface uses (see
   "Design system" in the repo-root CLAUDE.md) instead of a simplified
   percentage-only copy that would miss a provider-flagged critical window
-  under the raw threshold.
+  under the raw threshold. The switch is read from the App Group at
+  render (`Preferences.load().usageColors`) rather than carried in the
+  `ContentState`: a new field there would not decode from an activity an
+  older build started.
 - Presentation: chosen from 3 mocked layout concepts (Minimal, Detailed,
   Bold stat) — "Detailed" shipped, since it mirrors the row rhythm this
   app's own usage rows already use elsewhere. Lock Screen banner and the

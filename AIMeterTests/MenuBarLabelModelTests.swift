@@ -71,14 +71,18 @@ final class MenuBarLabelModelTests: XCTestCase {
     }
 
     func testDangerTintOnlyWhenAskedAndOnlyPastTheThreshold() {
-        let hot = snapshot(session: 85)
+        let hot = snapshot(session: 90)
         XCTAssertEqual(make(.gaugeWithPercent, snapshot: hot).tint, .normal, "off by default")
         XCTAssertEqual(make(.gaugeWithPercent, snapshot: hot, tints: true).tint, .danger)
         XCTAssertEqual(make(.gaugeWithPercent, snapshot: hot, displayMode: .remaining, tints: true).tint, .danger,
                        "the threshold is on usage, whatever is displayed")
-        XCTAssertEqual(make(.gaugeWithPercent, tints: true).tint, .normal, "42% used is not red")
+        XCTAssertEqual(make(.gaugeWithPercent, tints: true).tint, .normal, "42% used is not tinted")
+        XCTAssertEqual(make(.gaugeWithPercent, snapshot: snapshot(session: 75), tints: true).tint, .warning)
+        XCTAssertEqual(make(.gaugeWithPercent, snapshot: snapshot(session: 75)).tint, .normal, "yellow is off by default too")
         XCTAssertEqual(make(.multi, snapshot: snapshot(weekly: 90), metrics: [.session, .weekly], tints: true).tint, .danger,
                        "any listed window past the threshold")
+        XCTAssertEqual(make(.multi, snapshot: snapshot(session: 75, weekly: 90), metrics: [.session, .weekly], tints: true).tint, .danger,
+                       "the most urgent listed window wins")
     }
 
     func testCountdownAppendsToSingleStylesOnly() {

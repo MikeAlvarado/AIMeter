@@ -109,7 +109,7 @@ export const es = {
       'Elige de qué lado del notch van las alas y qué ventanas listan; activarla oculta el ícono de la barra',
       'En una pantalla sin notch: un notch dibujado o una pastilla, su altura, y si espera fuera de la vista hasta que llegue el cursor',
       'Cuenta regresiva al reinicio y nombre de la cuenta, opcionales',
-      'En rojo cuando una ventana pasa del 80 %',
+      'En amarillo cuando una ventana pasa del 70 %, en rojo del 85 %',
       'Oculta el ícono del Dock, el de la barra, o ambos',
       'Abrir al iniciar sesión, opcional y siempre visible en Ajustes',
       '⌘R actualizar, ⌘N agregar cuenta, y dos acciones de Atajos que puedes ligar a cualquier tecla',

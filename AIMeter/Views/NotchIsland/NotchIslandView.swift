@@ -204,8 +204,10 @@ enum NotchIslandStyle {
         .system(size: size, weight: .semibold, design: .monospaced).monospacedDigit()
     }
 
+    /// The usage levels' colors, except a brighter yellow: on pure black
+    /// the cards' warm yellow reads dull.
     static func tint(_ tint: NotchIslandModel.Tint) -> Color {
-        tint == .danger ? Theme.danger : Theme.accent
+        tint == .warning ? Theme.islandWarning : tint.color
     }
 }
 
@@ -230,6 +232,7 @@ extension NotchIslandModel {
             resetStyle: prefs.resetStyle,
             modelSlotFallback: prefs.modelSlotFallback,
             showCreditsAmount: prefs.showCreditsAmount,
+            usageColors: prefs.usageColors,
             metrics: prefs.notchIslandMetrics,
             glanceMetric: prefs.glanceMetric,
             layout: layout ?? prefs.notchIslandLayout,

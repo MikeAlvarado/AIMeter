@@ -28,7 +28,8 @@ enum NotchIslandLayout: String, CaseIterable, Sendable {
 /// here is the only place a figure lives — the popover, the Dashboard
 /// and the tooltip carry the same data.
 struct NotchIslandModel: Equatable {
-    enum Tint: Equatable { case normal, danger }
+    /// The same three levels as every other bar (`UsageLevel`).
+    typealias Tint = UsageLevel
 
     /// One account's footer line, in priority order: a dead login beats
     /// a network error beats a provider error beats age.
@@ -124,6 +125,7 @@ struct NotchIslandModel: Equatable {
         resetStyle: ResetStyle,
         modelSlotFallback: ModelSlotFallback,
         showCreditsAmount: Bool,
+        usageColors: Bool,
         metrics: [UsageWindow.Kind],
         glanceMetric: UsageWindow.Kind,
         layout: NotchIslandLayout,
@@ -136,7 +138,8 @@ struct NotchIslandModel: Equatable {
             let segments = slots.map { slot in
                 Self.segment(
                     kind: slot.kind, window: slot.window, snapshot: input.snapshot, compact: false,
-                    displayMode: displayMode, resetStyle: resetStyle, showCreditsAmount: showCreditsAmount, now: now
+                    displayMode: displayMode, resetStyle: resetStyle, showCreditsAmount: showCreditsAmount,
+                    usageColors: usageColors, now: now
                 )
             }
             let status = Self.status(of: input, now: now)
@@ -159,7 +162,8 @@ struct NotchIslandModel: Equatable {
         self.primaryID = primary?.account.accountID
         collapsed = Self.collapsed(
             for: primary, displayMode: displayMode, resetStyle: resetStyle, modelSlotFallback: modelSlotFallback,
-            showCreditsAmount: showCreditsAmount, metrics: metrics, glanceMetric: glanceMetric, layout: layout, now: now
+            showCreditsAmount: showCreditsAmount, usageColors: usageColors, metrics: metrics, glanceMetric: glanceMetric,
+            layout: layout, now: now
         )
         self.incident = incident
         accessibilityLabel = accounts.isEmpty
@@ -179,7 +183,7 @@ struct NotchIslandModel: Equatable {
     /// `layout`. A missing primary (no accounts) leaves both wings empty.
     private static func collapsed(
         for primary: AccountInput?, displayMode: DisplayMode, resetStyle: ResetStyle,
-        modelSlotFallback: ModelSlotFallback, showCreditsAmount: Bool, metrics: [UsageWindow.Kind],
+        modelSlotFallback: ModelSlotFallback, showCreditsAmount: Bool, usageColors: Bool, metrics: [UsageWindow.Kind],
         glanceMetric: UsageWindow.Kind, layout: NotchIslandLayout, now: Date
     ) -> Collapsed {
         guard let primary else { return Collapsed(left: [], right: []) }
@@ -189,7 +193,8 @@ struct NotchIslandModel: Equatable {
         let segments = kinds.map { kind in
             segment(
                 kind: kind, window: primary.snapshot?.window(for: kind), snapshot: primary.snapshot, compact: true,
-                displayMode: displayMode, resetStyle: resetStyle, showCreditsAmount: showCreditsAmount, now: now
+                displayMode: displayMode, resetStyle: resetStyle, showCreditsAmount: showCreditsAmount,
+                usageColors: usageColors, now: now
             )
         }
         switch layout {
@@ -201,7 +206,7 @@ struct NotchIslandModel: Equatable {
 
     private static func segment(
         kind: UsageWindow.Kind, window: UsageWindow?, snapshot: UsageSnapshot?, compact: Bool,
-        displayMode: DisplayMode, resetStyle: ResetStyle, showCreditsAmount: Bool, now: Date
+        displayMode: DisplayMode, resetStyle: ResetStyle, showCreditsAmount: Bool, usageColors: Bool, now: Date
     ) -> Segment {
         // An empty slot still needs its length for the label; a placeholder
         // window yields the kind's default through the public seam.
@@ -215,7 +220,6 @@ struct NotchIslandModel: Equatable {
         }
         let shown = window.displayedPct(displayMode)
         let percent = "\(Int(shown))%"
-        let danger = window.severity == .critical || window.severity == .exceeded || window.usedPct >= 80
         var spoken = String(localized: "\(kind.shortName): \(Int(shown))% \(displayMode.label)")
 
         // The wings show only the figure (no room, and no clock to tick it);
@@ -230,7 +234,7 @@ struct NotchIslandModel: Equatable {
         }
         return Segment(
             kind: kind, label: label, percent: percent, fraction: min(max(shown / 100, 0), 1), reset: reset,
-            tint: danger ? .danger : .normal, accessibilityLabel: spoken
+            tint: window.level(usageColors: usageColors), accessibilityLabel: spoken
         )
     }
 

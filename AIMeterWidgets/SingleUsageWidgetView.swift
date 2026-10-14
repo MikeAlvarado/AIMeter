@@ -17,7 +17,7 @@ struct SingleUsageWidgetView: View {
             Spacer(minLength: 10)
             UsageBarView(
                 value: entry.window?.displayedPct(entry.prefs.displayMode),
-                tint: entry.window?.tint ?? Theme.accent
+                tint: entry.window?.tint(usageColors: entry.prefs.usageColors) ?? Theme.accent
             )
             resetLine
         }

@@ -47,7 +47,7 @@ struct WindowRowView: View {
 
             UsageBarView(
                 value: window?.displayedPct(prefs.displayMode),
-                tint: window?.tint ?? Theme.accent
+                tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent
             )
 
             if pace != nil || showsResetLine || moneySubtitle != nil {

@@ -578,8 +578,8 @@ the account silently freezes at its last snapshot.
   timeline above — one Swift Charts area + line per window segment, so
   the curve breaks at a reset instead of drawing a cliff, a dashed rule at
   each reset (only up to `HistoryChartData.maxResetRules`, 12, in range —
-  a week of sessions would otherwise hatch the chart), and a faint dashed line at 80 % (the same threshold that
-  turns a bar red; the curve itself stays one color). Y is fixed 0–100 and
+  a week of sessions would otherwise hatch the chart), and a faint dashed line at 85 % (the same threshold that
+  turns a bar red, `UsageLevel.dangerAbove`; the curve itself stays one color). Y is fixed 0–100 and
   labeled "% of limit" in the footnote — the data is never tokens.
   Until the range holds two samples an hour apart the card shows
   "Recording since …" instead of asserting a shape from one point. The
@@ -700,7 +700,8 @@ the account silently freezes at its last snapshot.
     toggle changes.
 - Display prefs (App Group, shared with widgets): Remaining/Used,
   Relative/Absolute reset style (tap any reset line to toggle), appearance
-  System/Light/Dark, refresh cadence, and `glanceMetric`
+  System/Light/Dark, usage colors (`usageColors`, see "Design system"),
+  refresh cadence, and `glanceMetric`
   (widgets read all of these straight from the App Group when they
   render, but nothing re-renders them until their next timeline reload,
   so `PreferencesModel` reloads timelines once per burst of changes to a
@@ -821,8 +822,10 @@ the account silently freezes at its last snapshot.
   `percentOnly`, `bar`, `battery`, `multi`), `menuBarMetrics` (the 1–3
   windows `multi` lists, default session + weekly, filtered at render
   time to what the primary account reports — the same live-options rule
-  as `glanceMetric`), `menuBarTintsAtDanger` (red at ≥ 80 % used or a
-  critical severity, default off), `menuBarShowsResetCountdown` (default
+  as `glanceMetric`), `menuBarTintsAtDanger` (the bars' `UsageLevel`
+  color — yellow above 70 %, red above 85 % used or a critical severity —
+  default off, offered only while `usageColors` is on; the key keeps its
+  first name), `menuBarShowsResetCountdown` (default
   off; while on, the label reads `MinuteClock.now`, an observable date a
   main-actor task advances at each minute boundary — **never** a
   `TimelineView` in the `MenuBarExtra` label: on macOS 27 that re-renders
@@ -846,7 +849,7 @@ the account silently freezes at its last snapshot.
   `battery` are rendered to an `NSImage` with `ImageRenderer` (a status
   item flattens arbitrary SwiftUI shapes but draws an `Image(nsImage:)`
   faithfully) — a *template* image, so it follows a light or dark menu
-  bar, except under the danger tint, where it carries the real
+  bar, except under a tint, where it carries the real `Theme.warning` or
   `Theme.danger` and is marked non-template. Whatever the style, the exact
   value(s) stay in the tooltip and the accessibility label.
 - Notch island (macOS, 2.0): a pure-black panel fused to the MacBook's
@@ -882,9 +885,11 @@ the account silently freezes at its last snapshot.
   the reset is the bare countdown or clock time per `ResetStyle` (the
   full "Resets in …" sentence stays in the accessibility label), and a
   credits slot shows `SpendStatus.amountLabel` there when
-  `showCreditsAmount` is on; tint is `UsageWindow.tint`'s rule, always
-  on (the island is a colored surface, unlike the monochrome status
-  item) — two colors, terracotta where Vibe uses green; the third slot
+  `showCreditsAmount` is on; tint is the bars' rule
+  (`UsageWindow.level(usageColors:)`) with no switch of its own (the
+  island is a colored surface, unlike the monochrome status item) —
+  terracotta where Vibe uses green, yellow and red as everywhere else
+  (`UsageLevel`), terracotta alone while usage colors are off; the third slot
   is `WindowSlots`/`ModelSlotFallback` exactly as on the Dashboard, and
   an empty slot keeps its place with an em dash. **Collapsed, the
   island is the notch and shows nothing** — so no menu title or status
@@ -1038,16 +1043,37 @@ for the menu bar which already brackets the section with its own, and
 button — dashboard and menu bar, `buttonLabel`/`verticalPadding`
 parametrized per surface, caller still owns the wrapping container).
 
-Bar/percentage color is one decision, `UsageWindow.tint`
-(`Shared/WindowDisplay.swift`) — `Theme.danger` when the provider flags a
-window `critical`/`exceeded` *or* `usedPct >= 80`, `Theme.accent`
-otherwise. Two colors, nothing else, on purpose. Exposed as a static,
-`tint(usedPct:severity:)`, so a caller that only carries those two values
+Bar/percentage color is one decision, `UsageLevel`
+(`Shared/WindowDisplay.swift`, read as `UsageWindow.level` /
+`.tint(usageColors:)`) —
+`Theme.accent` (terracotta) up to 70 % used, `Theme.warning` (a warm
+yellow that sits with the terracotta on ivory and charcoal — a cold, pure
+yellow glared on a light widget) from 71 % or when the provider flags `warning`, `Theme.danger` (a pure
+red, no orange in it, so it never reads as a darker terracotta) from
+86 % or when it flags `critical`/`exceeded` (`warningAbove` 70,
+`dangerAbove` 85, both strict, compared on the whole percent every
+surface prints — they all truncate — so a bar reading "70%" is never
+yellow even when the endpoint reports 70.6). Three colors, nothing else, on purpose: a
+glance tells room, heads-up and nearly out apart, the way Claude's own
+usage menu does. The thresholds are on *used* whatever `DisplayMode`
+shows. The yellow and red are the user's to turn off, once for every
+surface (`Preferences.usageColors`, Settings → "Usage colors", on by
+default and presence-checked): off, every bar, widget, Live Activity and
+island segment draws at `.normal`, terracotta whatever the figure or the
+provider's flag — the level itself is still computed, only its color is
+withheld (`UsageWindow.level(usageColors:)`). Exposed as a static,
+`tint(usedPct:severity:usageColors:)`, so a caller that only carries those two values
 (not a full `UsageWindow`) can still make the same call rather than
 re-deriving a simplified copy — the Live Activity's `ContentState` does
-exactly this (see `AIMeterWidgets/CLAUDE.md`). The notch island keeps
-the same two colors (their dark variants, drawn in a forced dark
-`colorScheme`) on a surface that is pure black whatever the appearance —
+exactly this (see `AIMeterWidgets/CLAUDE.md`). The menu bar applies the
+same levels only when asked (`menuBarTintsAtDanger`, the most urgent of
+its listed windows, and only while usage colors are on — Settings
+doesn't offer the switch otherwise); otherwise the status item stays
+monochrome. The
+Lock Screen accessories stay system-tinted. The notch island keeps
+the same three colors (their dark variants, drawn in a forced dark
+`colorScheme`), except a brighter yellow, `Theme.islandWarning` — the
+cards' warm yellow reads dull on black — on a surface that is pure black whatever the appearance —
 the color of the hardware, not of the theme — with white at fixed
 opacities for labels (82 %), resets (50 %) and separators (22 %)
 (`NotchIslandStyle`).
@@ -1129,6 +1155,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
+  usage levels and the usage-colors switch with its presence-checked
+  default (`UsageLevelTests`), the
   service-status throttle, aging, banner and footer-line rules
   (`ServiceStatusTests`, with a stub `ServiceStatusSource` injected
   through `UsageModel.serviceStatusSources`), the menu bar label's

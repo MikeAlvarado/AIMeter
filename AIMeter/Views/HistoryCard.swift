@@ -9,7 +9,7 @@ import UsageKit
 /// instead of a curve.
 ///
 /// The line breaks at every reset (one series per window segment) with a
-/// dashed rule marking the boundary, and a faint dashed line at 80 % — the
+/// dashed rule marking the boundary, and a faint dashed line at 85 % — the
 /// same threshold that turns a bar red. One color for the curve, on
 /// purpose; the data is "% of limit", never tokens, and the footnote says
 /// so.

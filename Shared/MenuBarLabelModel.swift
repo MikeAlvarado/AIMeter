@@ -40,7 +40,8 @@ enum MenuBarStyle: String, CaseIterable, Sendable {
 /// it. Pure so the text, fraction and tint rules are unit-tested rather
 /// than eyeballed in a menu bar.
 struct MenuBarLabelModel: Equatable {
-    enum Tint: Equatable { case normal, danger }
+    /// The bars' three levels (`UsageLevel`); `.normal` draws monochrome.
+    typealias Tint = UsageLevel
 
     static let maxMetrics = 3
     /// A nickname longer than this is cut: the status item has no room
@@ -84,10 +85,8 @@ struct MenuBarLabelModel: Equatable {
         let primary = windows.first?.1
 
         fraction = primary.map { min(max($0.displayedPct(displayMode) / 100, 0), 1) } ?? 0
-        let isDanger: (UsageWindow) -> Bool = { window in
-            tintsAtDanger && (window.severity == .critical || window.severity == .exceeded || window.usedPct >= 80)
-        }
-        tint = windows.contains { isDanger($0.1) } ? .danger : .normal
+        // The most urgent of the listed windows, only when asked for.
+        tint = tintsAtDanger ? windows.map(\.1.level).max() ?? .normal : .normal
 
         let shortName = accountName.map { String($0.prefix(Self.accountNameLimit)) }
         let countdown: String? = {

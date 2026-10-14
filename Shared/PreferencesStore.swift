@@ -116,6 +116,11 @@ struct Preferences: Sendable {
     /// default — opt-in extra detail, only visible when a Credits row is
     /// actually showing.
     var showCreditsAmount: Bool = false
+    /// Bars turn yellow above 70 % used and red above 85 % (`UsageLevel`);
+    /// off, every bar — widgets, Live Activity and notch island included —
+    /// stays terracotta whatever the figure, and the menu bar's own tint
+    /// isn't offered. On by default, so it loads through the presence check.
+    var usageColors: Bool = true
     /// Which connected account the macOS status item's gauge tracks.
     /// `MenuBarExtra` has no per-instance configuration the way widgets do
     /// (there's exactly one status item), so this is the one place a
@@ -144,9 +149,10 @@ struct Preferences: Sendable {
     /// render time to the ones the primary account actually reports —
     /// same live-options rule as `glanceMetric`).
     var menuBarMetrics: [UsageWindow.Kind] = [.session, .weekly]
-    /// Draws the label in `Theme.danger` once the window would be red on
-    /// the dashboard (≥ 80 % used or provider-flagged critical). Off by
-    /// default: the menu bar stays monochrome unless asked.
+    /// Draws the label in the window's `UsageLevel` color once it would be
+    /// yellow (above 70 % used) or red (above 85 % or provider-flagged critical)
+    /// on the dashboard. Off by default: the menu bar stays monochrome
+    /// unless asked. The key keeps its first name.
     var menuBarTintsAtDanger: Bool = false
     /// Appends the primary window's reset countdown ("· 1h 20m").
     var menuBarShowsResetCountdown: Bool = false
@@ -255,6 +261,7 @@ struct Preferences: Sendable {
         static let modelSlotFallback = "pref.modelSlotFallback"
         static let glanceMetric = "pref.glanceMetric"
         static let showCreditsAmount = "pref.showCreditsAmount"
+        static let usageColors = "pref.usageColors"
         static let primaryAccountID = "pref.primaryAccountID"
         static let menuBarShowsPercentage = "pref.menuBarShowsPercentage"
         static let menuBarStyle = "pref.menuBarStyle"
@@ -297,6 +304,7 @@ struct Preferences: Sendable {
             prefs.glanceMetric = value
         }
         prefs.showCreditsAmount = defaults.bool(forKey: Keys.showCreditsAmount)
+        prefs.usageColors = bool(defaults, Keys.usageColors, default: true)
         prefs.primaryAccountID = defaults.string(forKey: Keys.primaryAccountID)
         prefs.menuBarShowsPercentage = bool(defaults, Keys.menuBarShowsPercentage, default: true)
         if let raw = defaults.string(forKey: Keys.menuBarStyle), let value = MenuBarStyle(rawValue: raw) {

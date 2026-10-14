@@ -17,10 +17,10 @@ nonisolated struct SessionActivityAttributes: ActivityAttributes {
         var usedPct: Double
         var resetsAt: Date
         var isPeak: Bool
-        /// Carried alongside `usedPct` so `UsageWindow.tint(usedPct:severity:)`
-        /// can make the same red/terracotta call every other surface makes —
-        /// a provider-flagged "critical"/"exceeded" window should turn red
-        /// here too, not just past the raw percentage threshold.
+        /// Carried alongside `usedPct` so `UsageWindow.tint(usedPct:severity:usageColors:)`
+        /// can make the same terracotta/yellow/red call every other surface
+        /// makes — a provider-flagged "critical"/"exceeded" window should
+        /// turn red here too, not just past the raw percentage threshold.
         var severity: UsageWindow.Severity?
     }
 

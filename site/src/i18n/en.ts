@@ -109,7 +109,7 @@ export const en = {
       'Pick which side of the notch the wings use and which windows they list; turning it on hides the menu bar icon',
       'On a display without a notch: a drawn notch or a pill, its height, and whether it waits out of sight until the cursor comes',
       'Optional reset countdown and account name',
-      'Red once a window passes 80 %',
+      'Yellow once a window passes 70 %, red past 85 %',
       'Hide the Dock icon, the menu bar icon, or both',
       'Open at login, opt-in and visibly toggleable',
       '⌘R refresh, ⌘N add account, and two Shortcuts actions you can bind to any key',

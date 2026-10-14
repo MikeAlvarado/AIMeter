@@ -58,7 +58,9 @@ can be added later.
   or a widget happens to fetch next, not instantly.
 - Dashboard with one card per connected account (plan badge, per-window
   reset countdowns, a small 24-hour sparkline per window), and a
-  fullscreen landscape mode on iPhone.
+  fullscreen landscape mode on iPhone. Every bar reads at a glance:
+  terracotta up to 70 % used, yellow up to 85 %, red past it — the same on iPhone, iPad, Mac, widgets and the Live Activity,
+  and one switch in Settings to keep every bar terracotta instead.
 - A **History** chart on each account's detail screen: the percent of
   each limit used over the last day, week, or month, with every reset
   marked — drawn from samples the app and widgets already record, kept on
@@ -83,7 +85,7 @@ can be added later.
   whether screenshots and recordings leave the island out.
 - macOS menu bar styles: gauge with or without the number, number only, a
   bar, a battery, or two or three windows side by side — plus an optional
-  reset countdown, the account's name, and red once a window passes 80 %.
+  reset countdown, the account's name, and yellow past 70 % / red past 85 %.
   Settings shows a live preview on a light and a dark menu bar.
 - Keyboard shortcuts on the Mac (a "Usage" menu: ⌘R refresh, ⌘N add
   account, ⌘⇧U used/remaining, ⌘⇧A reset-time style) and two

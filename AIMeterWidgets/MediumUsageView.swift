@@ -81,7 +81,7 @@ private struct WindowColumn: View {
             .padding(.top, 2)
             UsageBarView(
                 value: window?.displayedPct(prefs.displayMode),
-                tint: window?.tint ?? Theme.accent
+                tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent
             )
             .padding(.top, 7)
             subtitle

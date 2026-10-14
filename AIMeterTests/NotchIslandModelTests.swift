@@ -41,6 +41,7 @@ final class NotchIslandModelTests: XCTestCase {
         resetStyle: ResetStyle = .relative,
         fallback: ModelSlotFallback = .auto,
         showCreditsAmount: Bool = false,
+        usageColors: Bool = true,
         metrics: [UsageWindow.Kind] = [.session, .weekly],
         glanceMetric: UsageWindow.Kind = .session,
         layout: NotchIslandLayout = .bothSides,
@@ -48,7 +49,7 @@ final class NotchIslandModelTests: XCTestCase {
     ) -> NotchIslandModel {
         NotchIslandModel(
             accounts: inputs ?? [input()], primaryID: primaryID, displayMode: displayMode, resetStyle: resetStyle,
-            modelSlotFallback: fallback, showCreditsAmount: showCreditsAmount, metrics: metrics,
+            modelSlotFallback: fallback, showCreditsAmount: showCreditsAmount, usageColors: usageColors, metrics: metrics,
             glanceMetric: glanceMetric, layout: layout, incident: incident, now: now
         )
     }
@@ -86,14 +87,33 @@ final class NotchIslandModelTests: XCTestCase {
         XCTAssertTrue(remaining.accessibilityLabel.contains("58%"))
     }
 
-    func testTintTurnsRedAtEightyOrOnSeverity() {
-        XCTAssertEqual(segments(make())[0].tint, .normal)
-        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 85))]))[0].tint, .danger)
-        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 85))], displayMode: .remaining))[0].tint, .danger,
+    func testTintIsTerracottaToSeventyYellowToEightyFiveThenRed() {
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 70))]))[0].tint, .normal)
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 71))]))[0].tint, .warning)
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 85))]))[0].tint, .warning)
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 86))]))[0].tint, .danger)
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 70.6))]))[0].tint, .normal,
+                       "the color follows the figure shown, and 70.6 reads 70%")
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 85.9))]))[0].tint, .warning,
+                       "85.9 reads 85%, still yellow")
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 90))]))[0].tint, .danger)
+        XCTAssertEqual(segments(make([input(snapshot: snapshot(session: 90))], displayMode: .remaining))[0].tint, .danger,
                        "the threshold is on usage, whatever is displayed")
         var flagged = snapshot()
         flagged.windows[1].severity = .critical
         XCTAssertEqual(segments(make([input(snapshot: flagged)]))[1].tint, .danger)
+        var warned = snapshot(session: 10)
+        warned.windows[0].severity = .warning
+        XCTAssertEqual(segments(make([input(snapshot: warned)]))[0].tint, .warning)
+    }
+
+    func testUsageColorsOffKeepsEverySegmentTerracotta() {
+        var flagged = snapshot(session: 90, weekly: 78)
+        flagged.windows[2].severity = .critical
+        let island = make([input(snapshot: flagged)], usageColors: false)
+        XCTAssertEqual(segments(island).map(\.tint), [.normal, .normal, .normal],
+                       "off means no yellow and no red, a provider's flag included")
+        XCTAssertEqual((island.collapsed.left + island.collapsed.right).map(\.tint), [.normal, .normal])
     }
 
     // MARK: Resets

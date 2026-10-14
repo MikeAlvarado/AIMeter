@@ -8080,6 +8080,52 @@
         }
       }
     },
+    "Off, every bar stays one color, however much you've used." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgeschaltet bleibt jeder Balken einfarbig, egal wie viel du verbraucht hast."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagado, cada barra se queda de un solo color, sin importar cuánto hayas usado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé, chaque barre garde une seule couleur, quel que soit votre usage."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフにすると、使用量にかかわらず、すべてのバーが1色のままになります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "끄면 사용량과 관계없이 모든 막대가 한 가지 색으로 유지됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desativado, cada barra fica de uma só cor, não importa quanto você usou."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭后，无论用量多少，每个进度条都保持同一种颜色。"
+          }
+        }
+      }
+    },
     "Off-peak now" : {
       "localizations" : {
         "de" : {
@@ -9063,48 +9109,48 @@
         }
       }
     },
-    "Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 30 days. Dashed lines mark resets; the red line is the 80% mark." : {
+    "Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 30 days. Dashed lines mark resets; the red line is the 85% mark." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prozent des verbrauchten Limits, erfasst bei jeder Aktualisierung durch AIMeter oder ein Widget und 30 Tage auf diesem Gerät gespeichert. Gestrichelte Linien markieren Resets; die rote Linie ist die 80-%-Marke."
+            "value" : "Prozent des verbrauchten Limits, erfasst bei jeder Aktualisierung durch AIMeter oder ein Widget und 30 Tage auf diesem Gerät gespeichert. Gestrichelte Linien markieren Resets; die rote Linie ist die 85-%-Marke."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Porcentaje del límite usado, muestreado cada vez que AIMeter o un widget actualiza y guardado en este dispositivo 30 días. Las líneas discontinuas marcan reinicios; la línea roja es el 80 %."
+            "value" : "Porcentaje del límite usado, muestreado cada vez que AIMeter o un widget actualiza y guardado en este dispositivo 30 días. Las líneas discontinuas marcan reinicios; la línea roja es el 85 %."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pourcentage de la limite utilisé, relevé à chaque actualisation par AIMeter ou un widget et conservé 30 jours sur cet appareil. Les pointillés marquent les réinitialisations ; la ligne rouge est le seuil de 80 %."
+            "value" : "Pourcentage de la limite utilisé, relevé à chaque actualisation par AIMeter ou un widget et conservé 30 jours sur cet appareil. Les pointillés marquent les réinitialisations ; la ligne rouge est le seuil de 85 %."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "上限に対する使用率です。AIMeterまたはウィジェットが更新するたびに記録し、このデバイスに30日間保持します。破線はリセット、赤い線は80%の目安です。"
+            "value" : "上限に対する使用率です。AIMeterまたはウィジェットが更新するたびに記録し、このデバイスに30日間保持します。破線はリセット、赤い線は85%の目安です。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "한도 대비 사용 비율입니다. AIMeter나 위젯이 새로 고칠 때마다 기록하여 이 기기에 30일간 보관합니다. 점선은 초기화, 빨간 선은 80% 지점입니다."
+            "value" : "한도 대비 사용 비율입니다. AIMeter나 위젯이 새로 고칠 때마다 기록하여 이 기기에 30일간 보관합니다. 점선은 초기화, 빨간 선은 85% 지점입니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Porcentagem do limite usada, amostrada sempre que o AIMeter ou um widget atualiza e guardada neste dispositivo por 30 dias. As linhas tracejadas marcam reinícios; a linha vermelha é a marca de 80%."
+            "value" : "Porcentagem do limite usada, amostrada sempre que o AIMeter ou um widget atualiza e guardada neste dispositivo por 30 dias. As linhas tracejadas marcam reinícios; a linha vermelha é a marca de 85%."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已用额度的百分比，在 AIMeter 或小组件每次刷新时采样，并在本设备上保存 30 天。虚线标记重置；红线是 80% 刻度。"
+            "value" : "已用额度的百分比，在 AIMeter 或小组件每次刷新时采样，并在本设备上保存 30 天。虚线标记重置；红线是 85% 刻度。"
           }
         }
       }
@@ -9657,52 +9703,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下次刷新开始记录"
-          }
-        }
-      }
-    },
-    "Red at 80% used" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rot ab 80 % verbraucht"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rojo al 80 % usado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rouge à 80 % utilisé"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用率80%で赤く表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "80% 사용 시 빨간색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vermelho a 80% usado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用量达 80% 时显示红色"
           }
         }
       }
@@ -13474,6 +13474,52 @@
         }
       }
     },
+    "Usage colors" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzungsfarben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colores de uso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleurs d'utilisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用量の色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용량 색상"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cores de uso"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用量颜色"
+          }
+        }
+      }
+    },
     "Usage Window" : {
       "comment" : "The display name for a usage window option.",
       "isCommentAutoGenerated" : true,
@@ -14626,6 +14672,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隐藏程序坞图标后，开启此项可让 AIMeter 在重启后自动回来，否则需要你手动打开。"
+          }
+        }
+      }
+    },
+    "Yellow above 70%, red above 85%" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelb über 70 %, Rot über 85 %"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarillo sobre 70 %, rojo sobre 85 %"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jaune au-delà de 70 %, rouge au-delà de 85 %"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "70%超で黄色、85%超で赤"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "70% 초과 시 노란색, 85% 초과 시 빨간색"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarelo acima de 70%, vermelho acima de 85%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超过 70% 时黄色，超过 85% 时红色"
           }
         }
       }

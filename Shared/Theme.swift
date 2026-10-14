@@ -13,8 +13,17 @@ enum Theme {
     static let accent = Color(light: 0xD97757, dark: 0xE08B6D)
     /// Soft accent wash for pills, selected segments, icon chips.
     static let accentWash = Color(light: 0xD97757, dark: 0xE08B6D).opacity(0.14)
-    /// Burnt red for windows ≥ 90% used or provider-flagged critical.
-    static let danger = Color(light: 0xB3261E, dark: 0xE5695E)
+    /// Warm yellow for usage above 70 % or provider-flagged warning —
+    /// clearly yellow, with enough warmth to sit with the terracotta on
+    /// ivory and charcoal cards (a cold, pure yellow glared on a light
+    /// widget). The notch island, on pure black, uses `islandWarning`.
+    static let warning = Color(light: 0xDDA712, dark: 0xF0BF3A)
+    /// The warning yellow on the notch island's black.
+    static let islandWarning = Color(hex: 0xF5C443)
+    /// Pure red for usage above 85 %, errors, and major incidents — no
+    /// orange in it, so it never reads as a darker terracotta, on a card
+    /// or on the notch island's black.
+    static let danger = Color(light: 0xD70015, dark: 0xFF3B30)
 
     /// Screen background: warm ivory / warm charcoal.
     static let background = Color(light: 0xFAF9F5, dark: 0x262624)

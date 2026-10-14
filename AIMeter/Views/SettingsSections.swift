@@ -82,8 +82,8 @@ struct DemoModeSettings: View {
     }
 }
 
-/// "Appearance", "Display" and "Reset timers": how every surface draws
-/// the figures.
+/// "Appearance", "Display", "Usage colors" and "Reset timers": how every
+/// surface draws the figures.
 struct AppearanceSettings: View {
     @Environment(PreferencesModel.self) private var prefs
 
@@ -112,6 +112,18 @@ struct AppearanceSettings: View {
             )
         }
         SectionFootnote(text: String(localized: "Whether bars and percentages show how much you have left or how much you've used."))
+
+        SettingsGap()
+        SectionHeader(title: String(localized: "Usage colors"))
+        Card {
+            Toggle(isOn: $prefs.usageColors) {
+                Text("Yellow above 70%, red above 85%")
+                    .font(Theme.rowTitle)
+                    .foregroundStyle(Theme.ink)
+            }
+            .tint(Theme.accent)
+        }
+        SectionFootnote(text: String(localized: "Off, every bar stays one color, however much you've used."))
 
         SettingsGap()
         SectionHeader(title: String(localized: "Reset timers"))

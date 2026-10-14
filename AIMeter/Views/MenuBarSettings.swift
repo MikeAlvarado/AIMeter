@@ -56,22 +56,24 @@ struct MenuBarSettings: View {
                         )
                     }
                 }
-                Divider().overlay(Theme.track)
-
-                if prefs.notchIslandEnabled, !prefs.statusItemVisible {
+                let rows = toggleRows
+                let showsHiddenNote = prefs.notchIslandEnabled && !prefs.statusItemVisible
+                if showsHiddenNote || !rows.isEmpty {
+                    Divider().overlay(Theme.track)
+                }
+                if showsHiddenNote {
                     Label(String(localized: "Hidden while the notch island is on."), systemImage: "eye.slash")
                         .font(Theme.caption)
                         .foregroundStyle(Theme.inkSecondary)
-                    Divider().overlay(Theme.track)
+                    if !rows.isEmpty { Divider().overlay(Theme.track) }
                 }
-                toggle("Red at 80% used", isOn: $prefs.menuBarTintsAtDanger)
-                if prefs.menuBarStyle != .multi {
-                    Divider().overlay(Theme.track)
-                    toggle("Reset countdown", isOn: $prefs.menuBarShowsResetCountdown)
-                }
-                if model.accounts.count > 1 {
-                    Divider().overlay(Theme.track)
-                    toggle("Account name", isOn: $prefs.menuBarShowsAccountName)
+                ForEach(Array(rows.enumerated()), id: \.element) { index, row in
+                    if index > 0 { Divider().overlay(Theme.track) }
+                    switch row {
+                    case .tint: toggle("Yellow above 70%, red above 85%", isOn: $prefs.menuBarTintsAtDanger)
+                    case .countdown: toggle("Reset countdown", isOn: $prefs.menuBarShowsResetCountdown)
+                    case .accountName: toggle("Account name", isOn: $prefs.menuBarShowsAccountName)
+                    }
                 }
             }
         }
@@ -116,6 +118,22 @@ struct MenuBarSettings: View {
                 .foregroundStyle(Theme.ink)
         }
         .tint(Theme.accent)
+    }
+
+    private enum ToggleRow: Hashable {
+        case tint, countdown, accountName
+    }
+
+    /// The switches under the window choice. The tint is the status
+    /// item's own opt-in to the bars' colors, so it isn't offered while
+    /// usage colors are off for every bar; the countdown has no place in
+    /// `multi`; the name only tells two or more accounts apart.
+    private var toggleRows: [ToggleRow] {
+        var rows: [ToggleRow] = []
+        if prefs.usageColors { rows.append(.tint) }
+        if prefs.menuBarStyle != .multi { rows.append(.countdown) }
+        if model.accounts.count > 1 { rows.append(.accountName) }
+        return rows
     }
 
     private var glanceOptions: [UsageWindow.Kind] {

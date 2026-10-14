@@ -129,7 +129,7 @@ struct WindowBarRow: View {
             }
             UsageBarView(
                 value: window?.displayedPct(prefs.displayMode),
-                tint: window?.tint ?? Theme.accent
+                tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent
             )
             if showsReset, let resetsAt = window?.resetsAt {
                 HStack(spacing: 3) {

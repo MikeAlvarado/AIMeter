@@ -39,7 +39,7 @@ struct SessionLiveActivity: Widget {
                     VStack(alignment: .leading, spacing: 4) {
                         UsageBarView(
                             value: context.state.usedPct,
-                            tint: UsageWindow.tint(usedPct: context.state.usedPct, severity: context.state.severity)
+                            tint: UsageWindow.tint(usedPct: context.state.usedPct, severity: context.state.severity, usageColors: Preferences.load().usageColors)
                         )
                         countdown(context.state, size: 11)
                     }
@@ -109,7 +109,7 @@ private struct LockScreenView: View {
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink)
             }
-            UsageBarView(value: state.usedPct, tint: UsageWindow.tint(usedPct: state.usedPct, severity: state.severity))
+            UsageBarView(value: state.usedPct, tint: UsageWindow.tint(usedPct: state.usedPct, severity: state.severity, usageColors: Preferences.load().usageColors))
                 .frame(height: Theme.barHeight)
             HStack(spacing: 4) {
                 Image(systemName: "arrow.circlepath")

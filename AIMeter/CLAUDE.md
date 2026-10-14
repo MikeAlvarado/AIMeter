@@ -157,7 +157,7 @@
   ago", `UsageModel.serviceStatusFootnote`, absent until the first check
   of a launch lands or while the check is turned off); a **History** card
   (`HistoryCard`: window pill, 24 h / 7 days / 30 days pill, the Swift
-  Charts curve with reset rules and the 80 % line, or "Recording since …"
+  Charts curve with reset rules and the 85 % line, or "Recording since …"
   until an hour of samples exists — see "History" in the repo-root
   CLAUDE.md); a **Peak hours** card
   (`PeakHoursCard`, see "Peak hours" in the repo-root CLAUDE.md, identical
@@ -198,7 +198,8 @@
   repo-root CLAUDE.md (hidden today: the policy is retired).
 - **Settings**: built from one view per section
   (`SettingsSections.swift`: `DemoModeSettings`, `AppearanceSettings` —
-  the appearance / display mode / reset style pills —,
+  the appearance / display mode / reset style pills and the "Usage
+  colors" switch —,
   `PeakNotificationsSettings`, `ServiceStatusSettings`,
   `BackgroundRefreshSettings`, `PrivacyLinkSettings`,
   `OpenSourceSettings`; each draws its header, card and footnote and
@@ -206,7 +207,7 @@
   differently. **iOS** (`SettingsView`, a sheet with Done) stacks them in
   one list: while `isDemoMode` is true, or while nothing is connected, the
   "Demo mode" section (Exit Demo with its footnote, or View Demo) leads
-  it, above everything else; then appearance / display mode / reset
+  it, above everything else; then appearance / display mode / usage colors / reset
   style, a "Notifications" card with the one Peak-hours alerts toggle
   (the single exception to "no notification toggles here" — every other
   toggle moved fully into each account's own Provider Detail once there
@@ -264,7 +265,8 @@
   or account control;
   a "Hidden while the notch island is on." note while the island has
   the icon hidden;
-  then the "Red at 80% used", "Reset countdown" (not for `multi`) and
+  then the "Yellow above 70%, red above 85%" (only while usage colors
+  are on), "Reset countdown" (not for `multi`) and
   "Account name" (2+ only) toggles; the footnote also points at the
   Shortcuts-app route to a system-wide key);
   **Claude Code** (`ClaudeCodeSettings`, absent in demo mode — a demo

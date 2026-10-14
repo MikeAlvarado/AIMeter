@@ -54,6 +54,10 @@ final class PreferencesModel {
         get { stored.showCreditsAmount }
         set { guard stored.showCreditsAmount != newValue else { return }; stored.showCreditsAmount = newValue; persist(newValue, Preferences.Keys.showCreditsAmount, reloadsWidgets: true) }
     }
+    var usageColors: Bool {
+        get { stored.usageColors }
+        set { guard stored.usageColors != newValue else { return }; stored.usageColors = newValue; persist(newValue, Preferences.Keys.usageColors, reloadsWidgets: true) }
+    }
     var primaryAccountID: String? {
         get { stored.primaryAccountID }
         set { guard stored.primaryAccountID != newValue else { return }; stored.primaryAccountID = newValue; persist(newValue, Preferences.Keys.primaryAccountID, reloadsWidgets: false) }

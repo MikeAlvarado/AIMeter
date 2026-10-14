@@ -11,8 +11,8 @@ import UsageKit
 /// always has; the bar and battery are drawn into an `NSImage` with
 /// `ImageRenderer`, because a status item flattens arbitrary SwiftUI
 /// shapes but renders an `Image(nsImage:)` faithfully. That image is a
-/// *template* (so it adapts to a light or dark menu bar) except when the
-/// danger tint applies, where it carries the real red. Either way the
+/// *template* (so it adapts to a light or dark menu bar) except when a
+/// tint applies, where it carries the real yellow or red. Either way the
 /// exact value stays reachable through the tooltip and the accessibility
 /// label — a menu bar with no room to spare is exactly where that matters.
 struct MenuBarLabel: View {
@@ -24,9 +24,9 @@ struct MenuBarLabel: View {
             case .gaugeWithPercent, .gaugeOnly:
                 Image(systemName: "gauge.with.needle", variableValue: model.fraction)
             case .bar:
-                Image(nsImage: MenuBarGlyph.bar(fraction: model.fraction, danger: model.tint == .danger))
+                Image(nsImage: MenuBarGlyph.bar(fraction: model.fraction, tint: model.tint))
             case .battery:
-                Image(nsImage: MenuBarGlyph.battery(fraction: model.fraction, danger: model.tint == .danger))
+                Image(nsImage: MenuBarGlyph.battery(fraction: model.fraction, tint: model.tint))
             case .percentOnly, .multi:
                 EmptyView()
             }
@@ -35,7 +35,7 @@ struct MenuBarLabel: View {
                     .monospacedDigit()
             }
         }
-        .foregroundStyle(model.tint == .danger ? AnyShapeStyle(Theme.danger) : AnyShapeStyle(.primary))
+        .foregroundStyle(model.tint == .normal ? AnyShapeStyle(.primary) : AnyShapeStyle(model.tint.color))
         .help(valueLabel)
         .accessibilityLabel(valueLabel)
     }
@@ -103,7 +103,7 @@ extension MenuBarLabelModel {
             metric: prefs.glanceMetric,
             metrics: prefs.menuBarMetrics,
             modelSlotFallback: prefs.modelSlotFallback,
-            tintsAtDanger: prefs.menuBarTintsAtDanger,
+            tintsAtDanger: prefs.usageColors && prefs.menuBarTintsAtDanger,
             showsCountdown: prefs.menuBarShowsResetCountdown,
             accountName: showsName ? usage?.account.displayName : nil,
             now: now
@@ -113,16 +113,20 @@ extension MenuBarLabelModel {
 
 /// The two drawn glyphs, rendered at the screen's scale. Template images
 /// are drawn in black and let AppKit recolor them for the menu bar; a
-/// danger image carries `Theme.danger` itself and is marked non-template
+/// tinted image carries the level's own color and is marked non-template
 /// so that color survives.
 @MainActor
 enum MenuBarGlyph {
-    static func bar(fraction: Double, danger: Bool) -> NSImage {
-        render(BarGlyph(fraction: fraction, color: danger ? Theme.danger : .black), template: !danger)
+    static func bar(fraction: Double, tint: UsageLevel) -> NSImage {
+        render(BarGlyph(fraction: fraction, color: color(tint)), template: tint == .normal)
     }
 
-    static func battery(fraction: Double, danger: Bool) -> NSImage {
-        render(BatteryGlyph(fraction: fraction, color: danger ? Theme.danger : .black), template: !danger)
+    static func battery(fraction: Double, tint: UsageLevel) -> NSImage {
+        render(BatteryGlyph(fraction: fraction, color: color(tint)), template: tint == .normal)
+    }
+
+    private static func color(_ tint: UsageLevel) -> Color {
+        tint == .normal ? .black : tint.color
     }
 
     private static func render<Content: View>(_ content: Content, template: Bool) -> NSImage {
