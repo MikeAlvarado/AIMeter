@@ -50,6 +50,18 @@ final class HistoryChartDataTests: XCTestCase {
         XCTAssertEqual(week.points.count, 6)
     }
 
+    func testOneRefreshRecordedTwiceIsOnePoint() {
+        let twice = [
+            sample(hoursAgo: 3, used: 90),
+            sample(hoursAgo: 2, used: 94),
+            sample(hoursAgo: 2, used: 94),  // the widget's copy, same second
+            sample(hoursAgo: 1, used: 95),
+        ]
+        let day = HistoryChartData(samples: twice, range: .day, now: now)
+        XCTAssertEqual(day.points.map(\.usedPct), [90, 94, 95])
+        XCTAssertEqual(Set(day.points.map(\.date)).count, day.points.count, "no two points share an instant")
+    }
+
     func testSummarySpeaksSpanPeakAndResets() {
         let samples = [sample(hoursAgo: 5, used: 20), sample(hoursAgo: 3, used: 82), sample(hoursAgo: 1, used: 2)]
         let data = HistoryChartData(samples: samples, range: .day, now: now)

@@ -30,6 +30,39 @@ public enum UsageTimeline {
     /// `resetsAt` moving later by more than this is a new window; the
     /// endpoint reports microsecond jitter on what is one boundary.
     public static let resetDateTolerance: TimeInterval = 60
+    /// Two samples closer than this are one refresh recorded twice: on iOS
+    /// the app and its widget both fetch when the app comes forward, and
+    /// each writes what it got — often within the same second, which the
+    /// file's whole-second dates then make identical. The later one stands.
+    public static let sameRefreshWindow: TimeInterval = 60
+
+    /// `series` with `sample` added: in place of the last sample when that
+    /// one is the same refresh (`sameRefreshWindow`), after it otherwise.
+    public static func appending(_ sample: TimelineSample, to series: [TimelineSample]) -> [TimelineSample] {
+        var series = series
+        if let last = series.last, isSameRefresh(last.timestamp, sample.timestamp) {
+            series[series.count - 1] = sample
+        } else {
+            series.append(sample)
+        }
+        return series
+    }
+
+    /// One sample per refresh, for series written before `appending` kept
+    /// them that way: a sample followed by the same refresh gives way to it.
+    public static func deduplicated(_ samples: [TimelineSample]) -> [TimelineSample] {
+        samples.indices.compactMap { index in
+            let next = samples.index(after: index)
+            guard next < samples.endIndex, isSameRefresh(samples[index].timestamp, samples[next].timestamp) else {
+                return samples[index]
+            }
+            return nil
+        }
+    }
+
+    static func isSameRefresh(_ a: Date, _ b: Date) -> Bool {
+        abs(b.timeIntervalSince(a)) < sameRefreshWindow
+    }
 
     /// True when `current` belongs to a later window than `previous`:
     /// either its reset date moved on (weekly boundaries are fixed

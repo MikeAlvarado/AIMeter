@@ -49,10 +49,14 @@ struct HistoryCard: View {
     private func chart(_ data: HistoryChartData) -> some View {
         Chart {
             ForEach(data.points) { point in
+                // Unstacked: Swift Charts stacks areas that share an x by
+                // default, so two samples at one instant drew a spike to
+                // twice the figure.
                 AreaMark(
                     x: .value("Time", point.date),
                     y: .value("Used", point.usedPct),
-                    series: .value("Window", point.segment)
+                    series: .value("Window", point.segment),
+                    stacking: .unstacked
                 )
                 .foregroundStyle(
                     LinearGradient(colors: [Theme.accent.opacity(0.28), Theme.accent.opacity(0.02)], startPoint: .top, endPoint: .bottom)
@@ -146,7 +150,8 @@ struct Sparkline: View {
 
     var body: some View {
         Chart(data.points) { point in
-            AreaMark(x: .value("Time", point.date), y: .value("Used", point.usedPct))
+            // Unstacked for the same reason as the History card's area.
+            AreaMark(x: .value("Time", point.date), y: .value("Used", point.usedPct), stacking: .unstacked)
                 .foregroundStyle(Theme.inkSecondary.opacity(0.14))
                 .interpolationMethod(.linear)
             LineMark(x: .value("Time", point.date), y: .value("Used", point.usedPct))

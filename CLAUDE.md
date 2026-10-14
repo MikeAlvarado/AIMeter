@@ -431,7 +431,14 @@ the account silently freezes at its last snapshot.
   `resetsAt` moved later by more than a minute (weekly boundaries are
   fixed anchors) or its figure fell by the same 10-point threshold the
   predictor uses. Writes are atomic; the app and the widget may both
-  append, and a rarely lost sample is accepted over a lock. The app reads
+  append, and a rarely lost sample is accepted over a lock. Both stores
+  keep one sample per refresh: on iOS the app and its widget both fetch
+  when the app comes forward and each records what it got, often within
+  the same second (which the file's whole-second dates make identical),
+  so a sample within `UsageTimeline.sameRefreshWindow` (60 s) of the last
+  replaces it (`UsageTimeline.appending`; `UsageHistoryStore.record` does
+  the same for the predictor's ring), and `UsageTimeline.deduplicated`
+  applies the rule at read time to files written before it. The app reads
   the file once per account into `UsageModel.timelines`
   (`UsageModel+History.swift`), reloaded after each successful fetch and
   on each foreground sweep (the widget may have appended), so the
@@ -576,7 +583,10 @@ the account silently freezes at its last snapshot.
   used over time for one of the account's reported windows (window and
   24 h / 7 days / 30 days pills), from `HistoryChartData` over the
   timeline above — one Swift Charts area + line per window segment, so
-  the curve breaks at a reset instead of drawing a cliff, a dashed rule at
+  the curve breaks at a reset instead of drawing a cliff (the areas
+  `stacking: .unstacked`, here and in the sparkline: Swift Charts stacks
+  areas that share an x by default, so one refresh recorded twice drew a
+  thin spike to twice the figure), a dashed rule at
   each reset (only up to `HistoryChartData.maxResetRules`, 12, in range —
   a week of sessions would otherwise hatch the chart), and a faint dashed line at 85 % (the same threshold that
   turns a bar red, `UsageLevel.dangerAbove`; the curve itself stays one color). Y is fixed 0–100 and

@@ -57,6 +57,12 @@ public struct UsageHistoryStore: @unchecked Sendable {
             if let last = series.last, window.usedPct < last.usedPct - Self.resetDropThreshold {
                 series = []
             }
+            // The app and the iOS widget can record one refresh twice; a
+            // second sample a moment after the first would only tilt the
+            // recent slope (`UsageTimeline.sameRefreshWindow`).
+            if let last = series.last, UsageTimeline.isSameRefresh(last.timestamp, now) {
+                series.removeLast()
+            }
             series.append(UsageSample(timestamp: now, usedPct: window.usedPct))
             if series.count > Self.maxSamplesPerKind {
                 series.removeFirst(series.count - Self.maxSamplesPerKind)

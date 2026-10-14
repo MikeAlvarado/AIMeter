@@ -46,13 +46,15 @@ public struct UsageTimelineStore: Sendable {
         load(accountID).kinds
     }
 
-    /// Appends one sample per window in the snapshot and compacts.
+    /// Adds one sample per window in the snapshot — or, when the last one
+    /// is the same refresh recorded by the other process, replaces it
+    /// (`UsageTimeline.appending`) — and compacts.
     public func record(_ snapshot: UsageSnapshot, for accountID: String, at now: Date = Date()) {
         var file = load(accountID)
         for window in snapshot.windows {
             let key = window.kind.storageKey
-            var series = file.kinds[key] ?? []
-            series.append(TimelineSample(timestamp: now, usedPct: window.usedPct, resetsAt: window.resetsAt))
+            let sample = TimelineSample(timestamp: now, usedPct: window.usedPct, resetsAt: window.resetsAt)
+            let series = UsageTimeline.appending(sample, to: file.kinds[key] ?? [])
             file.kinds[key] = UsageTimeline.compacted(series, now: now, rawWindow: Self.rawWindow, retention: Self.retention)
         }
         save(file, for: accountID)

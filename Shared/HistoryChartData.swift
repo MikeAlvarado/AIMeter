@@ -84,7 +84,10 @@ struct HistoryChartData: Equatable {
         self.start = start
         end = now
         recordingSince = samples.first?.timestamp
-        let inRange = samples.filter { $0.timestamp >= start && $0.timestamp <= now }
+        // One point per refresh: a file written before the store kept it
+        // that way can hold the same refresh twice, a second apart or at
+        // the very same second.
+        let inRange = UsageTimeline.deduplicated(samples.filter { $0.timestamp >= start && $0.timestamp <= now })
         var built: [Point] = []
         var resets: [Date] = []
         for (segment, window) in UsageTimeline.segments(inRange).enumerated() {

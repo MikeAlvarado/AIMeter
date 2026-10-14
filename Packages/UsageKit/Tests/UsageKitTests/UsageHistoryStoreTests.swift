@@ -33,6 +33,16 @@ final class UsageHistoryStoreTests: XCTestCase {
         XCTAssertEqual(samples[0].timestamp, now)
     }
 
+    func testTheSameRefreshRecordedTwiceKeepsOneSample() {
+        let store = UsageHistoryStore(userDefaults: defaults)
+        let resets = now.addingTimeInterval(3600)
+        store.record(snapshot(40, resetsAt: resets), for: "claude", at: now)
+        store.record(snapshot(40.5, resetsAt: resets), for: "claude", at: now.addingTimeInterval(1))
+        store.record(snapshot(45, resetsAt: resets), for: "claude", at: now.addingTimeInterval(1800))
+        XCTAssertEqual(store.samples(for: "claude", kind: .session).map(\.usedPct), [40.5, 45],
+                       "a second sample a moment later would only tilt the recent slope")
+    }
+
     func testResetDropDiscardsPriorSamples() {
         let store = UsageHistoryStore(userDefaults: defaults)
         store.record(snapshot(80, resetsAt: now.addingTimeInterval(3600)), for: "claude", at: now)

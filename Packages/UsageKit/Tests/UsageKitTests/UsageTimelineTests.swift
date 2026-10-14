@@ -66,7 +66,43 @@ final class UsageTimelineTests: XCTestCase {
         XCTAssertEqual(kept.first?.timestamp, Date(timeIntervalSince1970: oldBucket + 600), "the peak sample itself survives")
     }
 
+    // MARK: One sample per refresh
+
+    func testTheSameRefreshReplacesTheLastSampleInsteadOfAppending() {
+        let series = [sample(0, used: 40), sample(30, used: 50)]
+        let again = TimelineSample(timestamp: t0.addingTimeInterval(30 * 60 + 1), usedPct: 51, resetsAt: series[1].resetsAt)
+        XCTAssertEqual(UsageTimeline.appending(again, to: series), [series[0], again], "the app and the widget, a second apart")
+        let next = sample(60, used: 55)
+        XCTAssertEqual(UsageTimeline.appending(next, to: series), series + [next])
+        XCTAssertEqual(UsageTimeline.appending(next, to: []), [next])
+    }
+
+    func testDeduplicatedKeepsTheLaterOfOneRefreshRecordedTwice() {
+        let a = sample(0, used: 40), b = sample(30, used: 50), c = sample(60, used: 55)
+        let sameSecond = TimelineSample(timestamp: b.timestamp, usedPct: 50, resetsAt: b.resetsAt)
+        let secondLater = TimelineSample(timestamp: b.timestamp.addingTimeInterval(1), usedPct: 50, resetsAt: b.resetsAt)
+        XCTAssertEqual(UsageTimeline.deduplicated([a, b, sameSecond, c]), [a, sameSecond, c])
+        XCTAssertEqual(UsageTimeline.deduplicated([a, b, secondLater, c]), [a, secondLater, c])
+        XCTAssertEqual(UsageTimeline.deduplicated([a, b, c]), [a, b, c], "half an hour apart is two refreshes")
+        XCTAssertEqual(UsageTimeline.deduplicated([]), [])
+    }
+
     // MARK: Store
+
+    func testStoreKeepsOneSamplePerRefresh() {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("timeline-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = UsageTimelineStore(directory: directory)
+        let snapshot = UsageSnapshot(providerID: "p", planName: nil, fetchedAt: t0, windows: [
+            UsageWindow(kind: .weekly, usedPct: 95, resetsAt: nil),
+        ])
+        store.record(snapshot, for: "acc", at: t0)
+        store.record(snapshot, for: "acc", at: t0.addingTimeInterval(0.4))
+        store.record(snapshot, for: "acc", at: t0.addingTimeInterval(1800))
+        let weekly = store.samples(for: "acc", kind: .weekly)
+        XCTAssertEqual(weekly.count, 2, "the widget's copy of the app's refresh is not a second point")
+        XCTAssertEqual(Set(weekly.map(\.timestamp)).count, 2)
+    }
 
     func testStoreRecordsPerKindAndClears() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("timeline-\(UUID().uuidString)", isDirectory: true)
