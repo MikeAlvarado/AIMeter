@@ -792,7 +792,7 @@
   `AIMeterApp.updateWindowID`, opened through
   `AppChrome.openUpdateWindow`, the same bridge shape as
   `openDashboard`; a request made before the Dashboard scene appeared
-  waits in `pendingUpdateWindow`): with an update ready, "AIMeter 2.1.0
+  waits in `pendingUpdateWindow`): with an update ready, "AIMeter 3.0.0
   is ready" over its notes without their cards (or a link to the
   release on GitHub when it has none), a line saying to move the app to
   Applications when it can't be replaced in place, and "Later" /
@@ -807,7 +807,7 @@
   could open a window afterwards (measured, after the app was killed with
   the notes open: no island either, before `AIMeterApp.init` published the
   preferences). The
-  `UpdateReadyNotice` ("AIMeter 2.1.0 is ready", the accent wash, opens
+  `UpdateReadyNotice` ("AIMeter 3.0.0 is ready", the accent wash, opens
   this window) sits at the top of the menu bar popover and the
   Dashboard while an update waits; the notch island's footer adds an
   icon beside Settings.

@@ -8,7 +8,7 @@ import { AUTHOR_URL, COPYRIGHT_YEAR, GITHUB_URL } from '../lib/site'
 
 export function DocPage({ page, children }: { page: DocPageData; children?: ReactNode }) {
   const { t } = useLanguage()
-  useDocumentMeta(`${page.title} — AIMeter`, page.description)
+  useDocumentMeta(`${page.title} · AIMeter`, page.description)
   return (
     <main className="px-inset-sm nav:px-inset nav:pt-40 flex flex-col pt-32 pb-16">
       <article className="mx-auto flex w-full max-w-2xl flex-col gap-10">

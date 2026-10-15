@@ -72,10 +72,16 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   real 200 on the privacy and support URLs), writes `sitemap.xml`,
   `robots.txt` and `.nojekyll`.
 - `scripts/images.mjs` — turns a `Scripts/store-frames.sh` work dir
-  (`raw/`, `widget-shots/`) into the WebP files in `src/assets`.
+  (`raw/`, `widget-shots/`) into the WebP files in `src/assets`. The
+  alerts capture is `raw/detail-smart-site.png`, not the store's: the
+  page shows a capture whole, and the store's leaves the footnote that
+  names the provider in view (the store frame cuts it off).
 - `scripts/island.mjs` — turns the notch island captures (two top-edge
   strips and the expanded panel alone, see `Scripts/StoreFrames/CLAUDE.md`
   → "Not store assets") into `src/assets/island-*.webp`.
+  `scripts/island-strips.mjs` builds those two strips from the desktop
+  picture and the panel captured alone, when the real top edge holds
+  windows or other apps' status items.
 - `public/` — favicons and `apple-touch-icon.png` from the app icon,
   `icon-192/512.png` + `site.webmanifest`, `og.png` (1200×630, the
   centre crop of the store header asset).

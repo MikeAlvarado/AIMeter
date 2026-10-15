@@ -4,7 +4,7 @@ import { useLanguage } from '../hooks/useLanguage'
 
 export function NotFound() {
   const { t } = useLanguage()
-  useDocumentMeta(`${t.notFound.title} — AIMeter`, t.notFound.body)
+  useDocumentMeta(`${t.notFound.title} · AIMeter`, t.notFound.body)
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-4 px-6 text-center">
       <h1 className="font-display text-section text-ink">{t.notFound.title}</h1>

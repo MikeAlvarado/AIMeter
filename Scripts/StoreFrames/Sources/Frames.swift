@@ -156,7 +156,7 @@ func renderFrames(rawDir: String, outDir: String, specs: [FrameSpec]) {
 }
 
 let phoneSpecs: [FrameSpec] = [
-    FrameSpec(name: "iphone-01-all-limits", headline: "All your AI limits,\none glance.", subhead: "Session, weekly and per-model windows for every account you connect, live.", image: "dashboard.png", textOnTop: true, device: .phone),
+    FrameSpec(name: "iphone-01-all-limits", headline: "All your AI limits,\none glance.", subhead: "Every window of every account,\nyellow and red as you near a limit.", image: "dashboard.png", textOnTop: true, device: .phone),
     FrameSpec(name: "iphone-02-widgets", headline: "Widgets that\nkeep score.", subhead: "Small, medium, large and Lock Screen. One account or all of them.", image: "home-widgets.png", textOnTop: true, device: .phone, tilt: 4),
     FrameSpec(name: "iphone-03-history", headline: "Every reset,\ncharted.", subhead: "24 hours, 7 days or 30 days for each limit, kept on your device.", image: "detail-week30.png", textOnTop: false, device: .phone),
     FrameSpec(name: "iphone-04-alerts", headline: "Alerts before you\nhit the wall.", subhead: "Near-limit, run-out, early-reset and sign-in alerts, per account.", image: "detail-smart.png", textOnTop: true, device: .phone, tilt: 4),
@@ -168,7 +168,7 @@ let phoneSpecs: [FrameSpec] = [
 ]
 
 let padSpecs: [FrameSpec] = [
-    FrameSpec(name: "ipad-01-all-limits", headline: "All your AI limits, one glance.", subhead: "Session, weekly and per-model windows for every account you connect, live.", image: "ipad-dashboard.png", textOnTop: true, device: .pad, tilt: -2),
+    FrameSpec(name: "ipad-01-all-limits", headline: "All your AI limits, one glance.", subhead: "Every window of every account,\nyellow and red as you near a limit.", image: "ipad-dashboard.png", textOnTop: true, device: .pad, tilt: -2),
     FrameSpec(name: "ipad-02-history", headline: "Every reset, charted.", subhead: "24 hours, 7 days or 30 days for each limit, kept on your device.", image: "ipad-detail.png", textOnTop: true, device: .pad, tilt: 2),
     // Not the alerts screen on iPad: the 13" display is tall enough that
     // the Spend and Extra usage cards — dollar amounts, a price reference

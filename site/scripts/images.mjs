@@ -13,7 +13,9 @@ const jobs = [
   ['raw/dashboard.png', 'dashboard', 1000],
   ['raw/dashboard-dark.png', 'dashboard-dark', 1000],
   ['raw/detail-week30.png', 'detail-week30', 1000],
-  ['raw/detail-smart.png', 'detail-smart', 1000],
+  // The landing shows the whole capture, so it gets its own, scrolled until
+  // the footnote that names the provider is below the fold.
+  ['raw/detail-smart-site.png', 'detail-smart', 1000],
   ['raw/detail-top.png', 'detail-top', 1000],
   ['raw/home-widgets.png', 'home-widgets', 1100],
   ['raw/ipad-dashboard.png', 'ipad-dashboard', 1400],

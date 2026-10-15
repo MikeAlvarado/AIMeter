@@ -1,8 +1,83 @@
 {
   "releases": [
     {
-      "version": "2.1.0",
+      "version": "3.0.0",
       "items": [
+        {
+          "symbol": "pawprint.fill",
+          "title": {
+            "en": "Your Claude Code sessions in the notch",
+            "es": "Tus sesiones de Claude Code en el notch",
+            "de": "Deine Claude-Code-Sitzungen im Notch",
+            "fr": "Vos sessions Claude Code dans l'encoche",
+            "ja": "Claude Codeのセッションをノッチに",
+            "ko": "노치에 Claude Code 세션 표시",
+            "pt-BR": "Suas sessões do Claude Code no notch",
+            "zh-Hans": "刘海中的 Claude Code 会话"
+          },
+          "detail": {
+            "en": "Each session at work gets a little pixel pet beside the notch. It walks while the session works, shakes when it needs your permission and sleeps when it is done. Open the island to see every session.",
+            "es": "Cada sesión en curso tiene una mascota de píxeles junto al notch. Camina mientras la sesión trabaja, se agita cuando necesita tu permiso y duerme cuando termina. Abre la isla para ver todas las sesiones.",
+            "de": "Jede laufende Sitzung bekommt ein kleines Pixeltier neben dem Notch. Es läuft, während die Sitzung arbeitet, zappelt, wenn sie deine Erlaubnis braucht, und schläft, wenn sie fertig ist. Öffne die Insel, um alle Sitzungen zu sehen.",
+            "fr": "Chaque session en cours a son petit compagnon en pixels à côté de l'encoche. Il marche pendant que la session travaille, s'agite quand elle a besoin de votre autorisation et dort quand elle a terminé. Ouvrez l'îlot pour voir toutes les sessions.",
+            "ja": "作業中のセッションごとに、ノッチの横に小さなピクセルのペットが現れます。セッションが動いている間は歩き、許可が必要なときは揺れ、終わると眠ります。アイランドを開くとすべてのセッションを確認できます。",
+            "ko": "작업 중인 세션마다 노치 옆에 작은 픽셀 펫이 나타납니다. 세션이 작업하는 동안 걷고, 권한이 필요하면 흔들리고, 끝나면 잠듭니다. 아일랜드를 열면 모든 세션을 볼 수 있습니다.",
+            "pt-BR": "Cada sessão em andamento ganha um bichinho de pixels ao lado do notch. Ele anda enquanto a sessão trabalha, se agita quando precisa da sua permissão e dorme quando termina. Abra a ilha para ver todas as sessões.",
+            "zh-Hans": "每个进行中的会话都会在刘海旁出现一只像素小宠物。会话工作时它会走动，需要你授权时会摇晃，完成后会睡觉。打开刘海岛即可查看所有会话。"
+          },
+          "platforms": ["macOS"],
+          "feature": "sessions"
+        },
+        {
+          "symbol": "rectangle.split.3x1",
+          "title": {
+            "en": "Every account in the same columns",
+            "es": "Todas las cuentas en las mismas columnas",
+            "de": "Alle Konten in denselben Spalten",
+            "fr": "Tous les comptes dans les mêmes colonnes",
+            "ja": "すべてのアカウントを同じ列に",
+            "ko": "모든 계정을 같은 열에",
+            "pt-BR": "Todas as contas nas mesmas colunas",
+            "zh-Hans": "所有账户对齐同一列"
+          },
+          "detail": {
+            "en": "The open notch island lines up every account's limits in shared columns, from edge to edge, so they read at a glance.",
+            "es": "La isla del notch abierta alinea los límites de todas tus cuentas en las mismas columnas, de orilla a orilla, para leerlos de un vistazo.",
+            "de": "Die geöffnete Notch-Insel richtet die Limits aller Konten in gemeinsamen Spalten von Rand zu Rand aus, damit du sie auf einen Blick erfasst.",
+            "fr": "L'îlot de l'encoche ouvert aligne les limites de tous vos comptes dans les mêmes colonnes, d'un bord à l'autre, pour les lire d'un coup d'œil.",
+            "ja": "開いたノッチアイランドでは、すべてのアカウントの上限が端から端まで同じ列にそろい、ひと目で読めます。",
+            "ko": "열린 노치 아일랜드가 모든 계정의 한도를 가장자리까지 같은 열에 맞춰 한눈에 볼 수 있습니다.",
+            "pt-BR": "A ilha do notch aberta alinha os limites de todas as suas contas nas mesmas colunas, de borda a borda, para ler tudo de relance.",
+            "zh-Hans": "展开的刘海岛会将所有账户的上限从边到边对齐在同一列中，一眼就能看清。"
+          },
+          "platforms": ["macOS"],
+          "feature": "notchIsland"
+        },
+        {
+          "symbol": "menubar.rectangle",
+          "title": {
+            "en": "Session names, clear of your menu bar",
+            "es": "Nombres de sesión, sin tapar tu barra de menús",
+            "de": "Sitzungsnamen, ohne die Menüleiste zu verdecken",
+            "fr": "Les noms des sessions, sans couvrir la barre des menus",
+            "ja": "セッション名を表示、メニューバーは隠さずに",
+            "ko": "메뉴 막대를 가리지 않는 세션 이름",
+            "pt-BR": "Nomes das sessões, sem cobrir a barra de menus",
+            "zh-Hans": "显示会话名称，不遮挡菜单栏"
+          },
+          "detail": {
+            "en": "Show the working session's name beside the notch, in Settings, Claude Code. With Accessibility allowed, the island shrinks before it covers your menus or the icons on the right.",
+            "es": "Muestra el nombre de la sesión en curso junto al notch, en Ajustes, Claude Code. Con Accesibilidad permitida, la isla se encoge antes de tapar tus menús o los íconos de la derecha.",
+            "de": "Zeig den Namen der laufenden Sitzung neben dem Notch, in den Einstellungen unter Claude Code. Mit erlaubten Bedienungshilfen wird die Insel schmaler, bevor sie deine Menüs oder die Symbole rechts verdeckt.",
+            "fr": "Affichez le nom de la session en cours à côté de l'encoche, dans Réglages, Claude Code. Avec l'Accessibilité autorisée, l'îlot se rétrécit avant de couvrir vos menus ou les icônes de droite.",
+            "ja": "設定の「Claude Code」で、作業中のセッション名をノッチの横に表示できます。アクセシビリティを許可すると、メニューや右側のアイコンを隠す前にアイランドが縮みます。",
+            "ko": "설정의 Claude Code에서 작업 중인 세션 이름을 노치 옆에 표시할 수 있습니다. 손쉬운 사용을 허용하면 메뉴나 오른쪽 아이콘을 가리기 전에 아일랜드가 줄어듭니다.",
+            "pt-BR": "Mostre o nome da sessão em andamento ao lado do notch, em Ajustes, Claude Code. Com a Acessibilidade permitida, a ilha encolhe antes de cobrir seus menus ou os ícones da direita.",
+            "zh-Hans": "可在设置的 Claude Code 中，于刘海旁显示正在工作的会话名称。允许辅助功能后，刘海岛会在遮挡你的菜单或右侧图标之前缩小。"
+          },
+          "platforms": ["macOS"],
+          "feature": "sessionNames"
+        },
         {
           "symbol": "paintpalette",
           "title": {
@@ -24,6 +99,30 @@
             "ko": "사용량이 70%를 넘으면 막대가 노란색, 85%를 넘으면 빨간색이 됩니다. 설정에서 한 가지 색으로 유지할 수도 있습니다.",
             "pt-BR": "As barras ficam amarelas acima de 70% de uso e vermelhas acima de 85%. Nos Ajustes, você pode deixá-las de uma só cor.",
             "zh-Hans": "用量超过 70% 时进度条变黄，超过 85% 时变红。也可以在设置中保持同一种颜色。"
+          },
+          "feature": "colors"
+        },
+        {
+          "symbol": "hand.wave.fill",
+          "title": {
+            "en": "A tour of AIMeter",
+            "es": "Un tutorial de AIMeter",
+            "de": "Eine Tour durch AIMeter",
+            "fr": "Une visite d'AIMeter",
+            "ja": "AIMeterのツアー",
+            "ko": "AIMeter 둘러보기",
+            "pt-BR": "Um tour pelo AIMeter",
+            "zh-Hans": "AIMeter 导览"
+          },
+          "detail": {
+            "en": "A first launch starts with a short tour of each part, with a button to turn it on. Settings opens it again any time.",
+            "es": "La primera vez que abres la app, un tutorial breve te muestra cada parte, con un botón para activarla. Puedes volver a verlo en Ajustes cuando quieras.",
+            "de": "Beim ersten Start zeigt eine kurze Tour jeden Teil, mit einer Taste zum Einschalten. In den Einstellungen kannst du sie jederzeit wieder öffnen.",
+            "fr": "Au premier lancement, une courte visite présente chaque partie, avec un bouton pour l'activer. Vous pouvez la rouvrir à tout moment dans les Réglages.",
+            "ja": "初めて起動すると、各機能を短いツアーで紹介し、オンにするボタンも表示します。設定からいつでも見直せます。",
+            "ko": "처음 실행하면 짧은 둘러보기가 각 기능을 소개하고 켜는 버튼도 보여 줍니다. 설정에서 언제든 다시 볼 수 있습니다.",
+            "pt-BR": "Na primeira abertura, um tour rápido mostra cada parte, com um botão para ativá-la. Você pode revê-lo nos Ajustes quando quiser.",
+            "zh-Hans": "首次打开时，简短的导览会逐一介绍各项功能，并附上打开按钮。随时可在设置中再次查看。"
           }
         },
         {

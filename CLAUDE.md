@@ -1657,7 +1657,7 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   menu-bar utilities and unproblematic. A global re-entry hotkey was
   rejected precisely because it would add an Accessibility/Input Monitoring
   permission and the review scrutiny that comes with it. The one
-  Accessibility use there is, since 2.1, is opt-in and narrow: "Avoid
+  Accessibility use there is, since 3.0, is opt-in and narrow: "Avoid
   covering the menu bar" asks for it only when switched on and reads only
   where the open app's menu titles and the menu bar's status items are
   (see "Claude Code sessions"), disclosed

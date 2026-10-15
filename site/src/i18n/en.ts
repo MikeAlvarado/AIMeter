@@ -2,7 +2,7 @@ import type { Dictionary } from './types'
 
 export const en = {
   meta: {
-    title: 'AIMeter — Your AI limits, at a glance',
+    title: 'AIMeter: Your AI limits, at a glance',
     description:
       'AIMeter shows how much of your AI subscription is left: session, weekly and per-model limits in widgets, on the Lock Screen and in the Mac menu bar. Free, open source, no server.',
   },
@@ -106,15 +106,17 @@ export const en = {
     styles: ['Gauge with the number', 'Gauge only', 'Number only', 'Bar', 'Battery', 'Two or three windows side by side'],
     extras: [
       'Notch island: 5h 42% 2h 58m | 7d 61% 3d 3h beside the notch, every account with bars and resets when it opens',
+      'A pixel pet beside the notch for each command-line coding session at work: it walks while the session works, shakes when it needs your permission and sleeps when it is done, with a count on the other side',
       'Pick which side of the notch the wings use and which windows they list; turning it on hides the menu bar icon',
       'On a display without a notch: a drawn notch or a pill, its height, and whether it waits out of sight until the cursor comes',
       'Optional reset countdown and account name',
       'Yellow once a window passes 70 %, red past 85 %',
       'Hide the Dock icon, the menu bar icon, or both',
       'Open at login, opt-in and visibly toggleable',
+      'Updates itself: a daily check, a download in the background, and an install only when you restart from the notice',
       '⌘R refresh, ⌘N add account, and two Shortcuts actions you can bind to any key',
     ],
-    note: 'The Mac app is not on the Mac App Store: it reads the login your command-line tools already keep, which the store’s sandbox does not allow. It comes as a zip notarized by Apple, for macOS 14 or later.',
+    note: 'The Mac app is not on the Mac App Store: it reads the login your command-line tools already keep, which the store’s sandbox does not allow. It comes as a zip notarized by Apple, for macOS 14 or later, and keeps itself up to date.',
     download: 'Download for Mac',
     build: 'Build it from source',
     islandAlt: 'The notch island on a MacBook, three states: the bare notch; two figures beside it once the cursor rests there; and, expanded, two accounts with every window, a bar and the time to its reset.',
@@ -159,15 +161,15 @@ export const en = {
     description: 'What AIMeter reads, what it stores on your device, and what never leaves it.',
     intro:
       'AIMeter has no server and no account of its own. It reads your usage from your AI provider with the login you grant it, keeps a copy on your device so widgets can render, and sends nothing anywhere else. This page lists every data flow so you can check each one against the source.',
-    updated: 'Last updated: 7 October 2026',
+    updated: 'Last updated: 15 October 2026',
     sections: [
       {
         heading: 'What leaves your device',
         paragraphs: ['Only HTTPS requests to the provider whose usage you asked AIMeter to read (and, on the Mac, to GitHub for updates), and nothing to us, because there is no “us” to send it to.'],
         bullets: [
-          'api.anthropic.com — /api/oauth/usage for your limits and spend numbers, and /api/oauth/profile to resolve your plan name (re-checked at most every 6 hours).',
-          'claude.ai and console.anthropic.com — the standard OAuth sign-in exchange when you connect an account through the app. You sign in on the provider’s own page in your browser, never in an embedded web view, and paste back the code it shows.',
-          'status.claude.com — one anonymous request to the public status page on each refresh, to tell a service incident apart from a problem with your account. It carries nothing about you and can be turned off in Settings.',
+          'api.anthropic.com: /api/oauth/usage for your limits and spend numbers, and /api/oauth/profile to resolve your plan name (re-checked at most every 6 hours).',
+          'claude.ai and console.anthropic.com: the standard OAuth sign-in exchange when you connect an account through the app. You sign in on the provider’s own page in your browser, never in an embedded web view, and paste back the code it shows.',
+          'status.claude.com: one anonymous request to the public status page on each refresh, to tell a service incident apart from a problem with your account. It carries nothing about you and can be turned off in Settings.',
           'api.github.com and github.com (Mac only): once a day, a request asking whether a newer version of AIMeter exists, and its download from the project’s release page when there is one. It carries nothing about you and can be turned off in Settings.',
           'This website is static: no analytics, no cookies, fonts are self-hosted and no third-party request is made. It is served by GitHub Pages, whose ordinary server logs are GitHub’s.',
         ],
@@ -198,6 +200,12 @@ export const en = {
         heading: 'Command-line sessions in the notch (Mac)',
         paragraphs: [
           'On while the notch island is, and off with one switch in Settings. To show which Claude Code sessions are working, waiting for your permission or done, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is and when it was written, plus each session’s title and folder: never prompts, replies or tool input. It keeps nothing and sends nothing anywhere. If you install the optional hooks, AIMeter adds one entry per event to ~/.claude/settings.json (backing the file up first and keeping everything else), and Claude Code passes each event to AIMeter over a private connection on that Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest. Remove takes the entries out again. The feature does not exist on iOS.',
+        ],
+      },
+      {
+        heading: 'Accessibility (Mac, opt-in)',
+        paragraphs: [
+          'Only if you turn on “Avoid covering the menu bar” in Settings does macOS ask you to allow AIMeter under Accessibility. AIMeter uses it for one thing: reading where the open app’s menu titles and the menu bar’s icons are, so the notch island can shrink before it covers them. It reads nothing else, changes nothing, keeps nothing and sends nothing anywhere.',
         ],
       },
       {
@@ -240,7 +248,7 @@ export const en = {
     title: 'Support',
     description: 'How to connect an account, what the alerts mean, and where to ask for help.',
     intro: 'AIMeter is built and maintained by one person, in the open. Most answers are below; anything else is a GitHub issue or an email away.',
-    updated: 'For AIMeter 2.0',
+    updated: 'For AIMeter 3.0',
     sections: [
       {
         heading: 'Connecting on iPhone and iPad',
@@ -273,7 +281,15 @@ export const en = {
       },
       {
         q: 'Where is the Mac version?',
-        a: 'Not on the Mac App Store: the Mac app reads the login your command-line tool keeps, which the store’s sandbox forbids. Build it from the source in a few minutes; a free developer account is enough for your own machines. The README walks through it.',
+        a: 'Not on the Mac App Store: the Mac app reads the login your command-line tool keeps, which the store’s sandbox forbids. Download it from the project’s releases (Download for Mac, a zip notarized by Apple) or build it from source; the README walks through both. From 3.0 on it keeps itself up to date.',
+      },
+      {
+        q: 'What are the little pets beside the notch?',
+        a: 'Each Claude Code session at work on that Mac gets a pixel pet: it walks while the session works, shakes beside a yellow ! when it needs your permission, and falls asleep for a few seconds when it is done. The count on the other side of the notch says how many sessions there are. Rest the cursor on the notch to see the session’s name and what it is doing, or click for every session and your usage. In Settings, the Claude Code tab turns the pets, the name or the whole feature off, and installs the optional hooks that tell AIMeter the moment a session asks for permission.',
+      },
+      {
+        q: 'How does the Mac app update?',
+        a: 'It checks the project’s GitHub releases a minute after launch and then once a day, downloads a newer version in the background, and keeps it only if it checks out: the same signature, the same app, the announced version. Then it tells you, and installs only when you choose Restart to Update. Settings, General has the daily check and Check Now; the app menu has Check for Updates.',
       },
       {
         q: 'What does the third row show?',
@@ -281,7 +297,7 @@ export const en = {
       },
       {
         q: 'Does the app see my conversations?',
-        a: 'No. It calls two read-only endpoints, your usage windows and your profile, with a token that cannot run prompts. The optional Mac feature that reads the CLI’s local logs decodes only token counts, never content.',
+        a: 'No. It calls two read-only endpoints, your usage windows and your profile, with a token that cannot run prompts. The optional Mac feature that reads the CLI’s local logs decodes only token counts, never content. The notch’s session view reads only what each log record is and when it was written, plus each session’s title and folder.',
       },
       {
         q: 'How do I delete my data?',

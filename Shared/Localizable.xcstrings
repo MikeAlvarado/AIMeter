@@ -17085,7 +17085,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Werktags 5–11 Uhr PT kann die Sitzungsnutzung von Claude schneller aufgebraucht werden."
+            "value" : "Werktags 5-11 Uhr PT kann die Sitzungsnutzung von Claude schneller aufgebraucht werden."
           }
         },
         "es" : {
@@ -17121,7 +17121,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "工作日太平洋时间上午 5–11 点，Claude 会话用量可能消耗更快。"
+            "value" : "工作日太平洋时间上午 5-11 点，Claude 会话用量可能消耗更快。"
           }
         }
       }

@@ -38,11 +38,22 @@ accounts, "Personal" on the default mark and "Work" on a briefcase):
 `ipad-dashboard-dark.png` (the app's Appearance on Dark), plus `appicon.png` (`AIMeter/Assets.xcassets/AppIcon.appiconset/ios-light.png`)
 and `home-widgets.png` (from `shots`). Capture with
 `xcrun simctl io <udid> screenshot <file>` on a device nobody else is
-using (iPhone 17e and iPad Pro 13" M5 last time); the demo build is a
+using (iPhone 17e and iPad Pro 13" M5 for 2.0 and 3.0); the demo build is a
 plain `xcodebuild build` for the simulator, installed with
 `simctl install` and launched with `simctl launch`. Never place real
 accounts on a simulator for this; demo data is the source of every
-store image.
+store image. The 3.0 set (2026-10-14) was taken with a clean status
+bar (`xcrun simctl status_bar <udid> override --time 9:41 --batteryState
+charged --batteryLevel 100 …`; 2.0's showed the real time) and the
+simulator's own appearance for the dark captures (`xcrun simctl ui
+<udid> appearance dark`); demo mode came from a temporary DEBUG check
+for `-AIMeterDemo` at the end of `UsageModel.init`, never committed,
+instead of tapping through Settings. `detail-smart.png` is scrolled so
+the footnote under the alerts starts about two thirds down: the frame
+shows the top two thirds of the capture, and the footnote's sixth line
+names the provider. The website shows a capture whole, so it gets its
+own, `detail-smart-site.png`, scrolled until the card's bottom meets the
+screen's and the footnote is below the fold (`site/scripts/images.mjs`).
 
 ## Rules (store metadata is reviewed like the app)
 
@@ -99,7 +110,9 @@ add three pills (Free · Open source · No account).
     Scripts/store-frames.sh <work-dir> notch [es]  # → <work-dir>/notch-frames (see "Not store assets")
 
 The script copies sources rather than symlinking them: SwiftPM did not
-notice edits behind a symlink and rendered stale views once. Run it from
+notice edits behind a symlink and rendered stale views once. Its list of
+`Shared/` files is explicit, so a new file a copied one depends on has
+to join it (3.0 added the sessions' model, preferences and pets). Run it from
 a checkout whose `Shared/` matches the build you are shipping, since the
 widget views come from the working tree.
 
@@ -126,7 +139,17 @@ crops the strips, lays the panel over the collapsed strip (mirroring the
 desktop below the menu bar so no window shows) and writes the three
 `island-*.webp` files into `site/src/assets/` (see `site/CLAUDE.md`).
 The 2.0.0 set was taken on 2026-10-09 on a 14" M4 Max (1512 pt wide,
-the panel's frame at x 401). The one thing this pipeline renders for it
+the panel's frame at x 401). The 3.0.0 set (2026-10-14) could not use
+the real top edge: it held the working Mac's windows and other apps'
+status items beside the notch. So every piece was captured alone, on
+transparency: the desktop picture (`screencapture -o -l` of the
+WindowManager "Wallpaper" window that is on screen; the menu bar is
+transparent, so nothing else belongs in the strip) and the island's
+panel collapsed, peeking and expanded, and `site/scripts/island-strips.mjs
+<work-dir> 401` lays the first two panels over the wallpaper to make the
+two strips `island.mjs` reads. A window capture taken a few seconds after
+launch once returned the panel's previous frame (an expanded island while
+the screen showed it collapsed): look at each capture before using it. The one thing this pipeline renders for it
 is `Scripts/store-frames.sh <work-dir> notch`: two 16:9 frames
 (2400×1350, `notch-frames/notch-01-island.png` and `notch-02-peek.png`)
 in the style above — backdrop, one claim, the capture in a bezel — from
