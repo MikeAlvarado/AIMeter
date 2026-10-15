@@ -4,6 +4,1369 @@
     "" : {
 
     },
+    "Welcome to AIMeter" : {
+      "comment" : "Tour: the first step's title, and the tour window's name on the Mac.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen bei AIMeter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te damos la bienvenida a AIMeter"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenue dans AIMeter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterへようこそ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter에 오신 것을 환영합니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boas-vindas ao AIMeter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎使用 AIMeter"
+          }
+        }
+      }
+    },
+    "Your AI subscription's limits at a glance: every window, how much is left, and when it resets." : {
+      "comment" : "Tour, first step: what AIMeter is.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Limits deines KI-Abos auf einen Blick: jedes Fenster, wie viel übrig ist und wann es zurückgesetzt wird."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los límites de tu suscripción de IA de un vistazo: cada ventana, cuánto te queda y cuándo se reinicia."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les limites de votre abonnement IA en un coup d’œil : chaque fenêtre, ce qu’il en reste et quand elle se réinitialise."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIサブスクリプションの上限をひと目で。ウインドウごとの残りと、リセットされる時刻がわかります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 구독의 한도를 한눈에 보세요. 기간마다 남은 양과 재설정 시점을 알려 줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os limites da sua assinatura de IA num relance: cada janela, quanto resta e quando ela reinicia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一眼看清 AI 订阅的额度：每个周期还剩多少，何时重置。"
+          }
+        }
+      }
+    },
+    "Widgets that keep score" : {
+      "comment" : "Tour step title (iPhone and iPad): the Home Screen and Lock Screen widgets.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, die mitzählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets que llevan la cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des widgets qui tiennent le compte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残りを見守るウィジェット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남은 양을 챙겨 주는 위젯"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets que acompanham tudo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替你盯着额度的小组件"
+          }
+        }
+      }
+    },
+    "Touch and hold the Home Screen, tap Edit, then Add Widget, and pick AIMeter. The Lock Screen has one too." : {
+      "comment" : "Tour step (iPhone and iPad): how to add a widget, with the system's own button names.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halte den Home-Bildschirm gedrückt, tippe auf „Bearbeiten“ und dann auf „Widget hinzufügen“ und wähle AIMeter. Auch der Sperrbildschirm hat eins."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantén presionada la pantalla de inicio, toca Editar, luego Agregar widget y elige AIMeter. La pantalla bloqueada también tiene uno."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maintenez le doigt sur l’écran d’accueil, touchez Modifier, puis Ajouter un widget, et choisissez AIMeter. L’écran verrouillé en a un aussi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホーム画面を長押しして「編集」、「ウィジェットを追加」の順にタップし、AIMeterを選びます。ロック画面用もあります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈 화면을 길게 누른 다음 편집, 위젯 추가를 차례로 탭하고 AIMeter를 선택하세요. 잠금 화면용도 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenha pressionada a Tela de Início, toque em Editar, depois em Adicionar Widget, e escolha o AIMeter. A Tela Bloqueada também tem um."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住主屏幕，轻点\"编辑\"，再轻点\"添加小组件\"，然后选择 AIMeter。锁定屏幕也有。"
+          }
+        }
+      }
+    },
+    "Alerts before you hit the wall" : {
+      "comment" : "Tour step title: the notifications.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinweise, bevor du ans Limit stößt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos antes de llegar al límite"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des alertes avant d’atteindre la limite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限に達する前にお知らせ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한도에 닿기 전에 알림"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos antes de bater no limite"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用尽之前先提醒你"
+          }
+        }
+      }
+    },
+    "Allow notifications, then choose in each account which alerts you want: near a limit, an early run-out, a reset." : {
+      "comment" : "Tour step: the notifications, and that each account picks its own.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Mitteilungen und wähle dann in jedem Account die Hinweise, die du willst: nahe am Limit, vorzeitig aufgebraucht, zurückgesetzt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite las notificaciones y elige en cada cuenta qué avisos quieres: cerca del límite, un agotamiento anticipado, un reinicio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez les notifications, puis choisissez dans chaque compte les alertes voulues : limite proche, épuisement anticipé, réinitialisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知を許可したら、アカウントごとに受け取る通知を選べます。上限が近いとき、早めに使い切りそうなとき、リセットされたとき。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림을 허용한 다음 계정마다 원하는 알림을 고르세요. 한도 근접, 조기 소진, 재설정 알림이 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permita as notificações e escolha em cada conta os avisos que quer: perto do limite, esgotamento antecipado, reinício."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许通知后，可在每个账户中选择想要的提醒：接近额度、提前耗尽、已重置。"
+          }
+        }
+      }
+    },
+    "Yellow and red as you near a limit" : {
+      "comment" : "Tour step title: the bars' warning colors (the same words as the 2.1.0 note).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelb und Rot, wenn ein Limit naht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarillo y rojo al acercarte a un límite"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jaune et rouge à l’approche d’une limite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限が近づくと黄色と赤に"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한도에 가까워지면 노란색과 빨간색"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarelo e vermelho perto do limite"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接近上限时显示黄色和红色"
+          }
+        }
+      }
+    },
+    "Bars turn yellow above 70% used and red above 85%, so you see a limit coming." : {
+      "comment" : "Tour step: what the bars' colors mean.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balken werden über 70 % Nutzung gelb und über 85 % rot, damit du ein Limit kommen siehst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las barras se ponen amarillas por encima del 70 % usado y rojas por encima del 85 %, para que veas venir un límite."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les barres passent au jaune au-delà de 70 % d’utilisation et au rouge au-delà de 85 %, pour voir venir une limite."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用量が70%を超えるとバーは黄色に、85%を超えると赤になり、上限が近いことがわかります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용량이 70%를 넘으면 막대가 노란색, 85%를 넘으면 빨간색이 되어 한도가 다가오는 것을 알 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As barras ficam amarelas acima de 70% de uso e vermelhas acima de 85%, para você ver um limite chegando."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用量超过 70% 时进度条变黄，超过 85% 时变红，让你提前看到额度将尽。"
+          }
+        }
+      }
+    },
+    "Your limits in the notch" : {
+      "comment" : "Tour step title (Mac): the notch island.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Limits im Notch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus límites en el notch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos limites dans l’encoche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチに上限を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치에 표시되는 한도"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus limites no notch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海里的额度"
+          }
+        }
+      }
+    },
+    "Rest the cursor on the notch to see your figures, and click to see every account. It never takes focus." : {
+      "comment" : "Tour step (Mac): how the notch island works.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lass den Zeiger auf dem Notch ruhen, um deine Werte zu sehen, und klicke, um alle Accounts zu sehen. Die Insel nimmt nie den Fokus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja el cursor sobre el notch para ver tus cifras y haz clic para ver todas las cuentas. Nunca roba el foco."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laissez le pointeur sur l’encoche pour voir vos chiffres, et cliquez pour voir tous les comptes. L’îlot ne prend jamais le focus."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチにポインタを置くと数値が表示され、クリックするとすべてのアカウントが見られます。フォーカスを奪うことはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치에 포인터를 올려 두면 수치가 보이고, 클릭하면 모든 계정이 보입니다. 포커스를 가져가지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe o cursor sobre o notch para ver seus números e clique para ver todas as contas. A ilha nunca rouba o foco."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把指针停在刘海上即可查看数字，点按可查看所有账户。它从不抢占焦点。"
+          }
+        }
+      }
+    },
+    "Show in the notch" : {
+      "comment" : "Tour button (Mac): turns the notch island on.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Notch anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en el notch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher dans l’encoche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ノッチに表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치에 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar no notch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在刘海中显示"
+          }
+        }
+      }
+    },
+    "A pet for each Claude Code session" : {
+      "comment" : "Tour step title (Mac): Claude Code's sessions beside the notch.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Pixeltier pro Claude-Code-Sitzung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una mascota por cada sesión de Claude Code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un compagnon par session Claude Code"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのセッションごとにペット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 세션마다 펫"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um bichinho por sessão do Claude Code"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个 Claude Code 会话一只宠物"
+          }
+        }
+      }
+    },
+    "Each session at work gets a pixel pet beside the notch. Install the hooks and AIMeter also knows the moment a session asks for permission." : {
+      "comment" : "Tour step (Mac): the pets, and what the optional hooks add.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede laufende Sitzung bekommt ein Pixeltier neben dem Notch. Mit den Hooks weiß AIMeter auch sofort, wenn eine Sitzung um Erlaubnis fragt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada sesión en curso tiene una mascota de píxeles junto al notch. Instala los hooks y AIMeter también sabrá en cuanto una sesión pida permiso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque session en cours a son compagnon en pixels à côté de l’encoche. Installez les hooks et AIMeter saura aussi dès qu’une session demande une autorisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業中のセッションごとに、ノッチの横にピクセルのペットが現れます。フックをインストールすると、セッションが許可を求めた瞬間もわかります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 중인 세션마다 노치 옆에 픽셀 펫이 나타납니다. 훅을 설치하면 세션이 권한을 요청하는 순간도 AIMeter가 알 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada sessão em andamento ganha um bichinho de pixels ao lado do notch. Instale os hooks e o AIMeter também saberá na hora quando uma sessão pedir permissão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个正在工作的会话都会在刘海旁有一只像素宠物。安装 hooks 后，会话请求授权的那一刻 AIMeter 也会知道。"
+          }
+        }
+      }
+    },
+    "Install hooks" : {
+      "comment" : "Tour button (Mac): adds AIMeter's hooks to Claude Code's settings.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hooks installieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar hooks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer les hooks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フックをインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "훅 설치"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar hooks"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装 hooks"
+          }
+        }
+      }
+    },
+    "Names, without covering your menu bar" : {
+      "comment" : "Tour step title (Mac): the session's name beside the notch, with the island keeping clear of the menu bar.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namen, ohne deine Menüleiste zu verdecken"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombres, sin tapar tu barra de menús"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les noms, sans couvrir votre barre des menus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前を表示、メニューバーは隠さずに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메뉴 막대를 가리지 않고 이름 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomes, sem cobrir sua barra de menus"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示名称，不遮挡菜单栏"
+          }
+        }
+      }
+    },
+    "Show the working session's name beside the notch. With Accessibility allowed, the island shrinks before it covers your menus or the icons on the right." : {
+      "comment" : "Tour step (Mac): the name option and the Accessibility permission it can use.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeig den Namen der laufenden Sitzung neben dem Notch. Mit erlaubten Bedienungshilfen wird die Insel schmaler, bevor sie deine Menüs oder die Symbole rechts verdeckt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra el nombre de la sesión en curso junto al notch. Con Accesibilidad permitida, la isla se encoge antes de tapar tus menús o los íconos de la derecha."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichez le nom de la session en cours à côté de l’encoche. Avec l’Accessibilité autorisée, l’îlot se rétrécit avant de couvrir vos menus ou les icônes de droite."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業中のセッション名をノッチの横に表示します。アクセシビリティを許可すると、メニューや右側のアイコンを隠す前にアイランドが縮みます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 중인 세션 이름을 노치 옆에 표시합니다. 손쉬운 사용을 허용하면 메뉴나 오른쪽 아이콘을 가리기 전에 아일랜드가 줄어듭니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostre o nome da sessão em andamento ao lado do notch. Com a Acessibilidade permitida, a ilha encolhe antes de cobrir seus menus ou os ícones da direita."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在刘海旁显示正在工作的会话名称。允许辅助功能后，刘海岛会在遮挡你的菜单或右侧图标之前缩小。"
+          }
+        }
+      }
+    },
+    "Turn on" : {
+      "comment" : "Tour button (Mac): turns on the session's name and the menu bar clearance, asking for Accessibility.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einschalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンにする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开"
+          }
+        }
+      }
+    },
+    "Ready when your Mac is" : {
+      "comment" : "Tour step title (Mac): opening at login.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereit, sobald dein Mac es ist"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo en cuanto enciendes tu Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt dès que votre Mac l’est"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Macと一緒に準備完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac이 켜지면 바로 준비"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto assim que o Mac liga"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac 一开机就准备好"
+          }
+        }
+      }
+    },
+    "Open AIMeter at login, so the menu bar, the notch and the widgets stay current." : {
+      "comment" : "Tour step (Mac): why open at login.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne AIMeter bei der Anmeldung, damit Menüleiste, Notch und Widgets aktuell bleiben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre AIMeter al iniciar sesión, para que la barra de menús, el notch y los widgets estén siempre al día."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez AIMeter à l’ouverture de session, pour que la barre des menus, l’encoche et les widgets restent à jour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時にAIMeterを開いておけば、メニューバー、ノッチ、ウィジェットが常に最新です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인할 때 AIMeter를 열면 메뉴 막대, 노치, 위젯이 항상 최신 상태로 유지됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o AIMeter ao iniciar a sessão, para a barra de menus, o notch e os widgets ficarem sempre em dia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录时打开 AIMeter，让菜单栏、刘海和小组件始终保持最新。"
+          }
+        }
+      }
+    },
+    "Connect your account" : {
+      "comment" : "Tour's last step title: connecting an account.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde deinen Account"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecta tu cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez votre compte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントを接続"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정을 연결하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecte sua conta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接你的账户"
+          }
+        }
+      }
+    },
+    "Sign in with your Claude account. AIMeter only ever reads your limits." : {
+      "comment" : "Tour's last step: what connecting does.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich mit deinem Claude-Account an. AIMeter liest nur deine Limits."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con tu cuenta de Claude. AIMeter solo lee tus límites."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous avec votre compte Claude. AIMeter ne lit que vos limites."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claudeアカウントでサインインします。AIMeterが読むのは上限だけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 계정으로 로그인하세요. AIMeter는 한도만 읽습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre com sua conta Claude. O AIMeter só lê seus limites."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用你的 Claude 账户登录。AIMeter 只读取你的额度。"
+          }
+        }
+      }
+    },
+    "Allow notifications" : {
+      "comment" : "Tour button: asks for the notification permission.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen erlauben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir notificaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser les notifications"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知を許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 허용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir notificações"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许通知"
+          }
+        }
+      }
+    },
+    "Connected" : {
+      "comment" : "Tour's last step, once an account is connected.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta conectada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte connecté"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta conectada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已连接"
+          }
+        }
+      }
+    },
+    "On" : {
+      "comment" : "Tour: under a step whose feature is already on.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜짐"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已打开"
+          }
+        }
+      }
+    },
+    "Skip tour" : {
+      "comment" : "Tour: leaves it, at any step.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour überspringen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saltar tutorial"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passer la visite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツアーをスキップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "둘러보기 건너뛰기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pular o tour"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跳过导览"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld" : {
+      "comment" : "Tour: VoiceOver label for the page dots. The step on screen, then how many there are.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt %lld von %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso %lld de %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape %lld sur %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ステップ %lld/%lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "총 %2$lld단계 중 %1$lld단계"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etapa %lld de %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %1$lld 步，共 %2$lld 步"
+          }
+        }
+      }
+    },
+    "Show the tour" : {
+      "comment" : "Settings row: opens the tour again.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour zeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver el tutorial"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la visite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツアーを見る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "둘러보기 보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver o tour"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看导览"
+          }
+        }
+      }
+    },
+    "What each part of AIMeter does, one at a time, with a button to turn it on." : {
+      "comment" : "Footnote under Show the tour in Settings.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was jeder Teil von AIMeter macht, einer nach dem anderen, mit einer Taste zum Einschalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qué hace cada parte de AIMeter, una por una, con un botón para activarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce que fait chaque partie d’AIMeter, une à une, avec un bouton pour l’activer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterの各機能を1つずつ紹介し、オンにするボタンも用意しています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter의 각 기능을 하나씩 소개하고, 켜는 버튼도 함께 보여 줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que cada parte do AIMeter faz, uma de cada vez, com um botão para ativá-la."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐一介绍 AIMeter 的每项功能，并附上打开它的按钮。"
+          }
+        }
+      }
+    },
+    "Turn on what's new" : {
+      "comment" : "Mac update window title after an update installed from its notice: the new features still off, each with its button.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues einschalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa lo nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez les nouveautés"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新機能をオンにする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로운 기능 켜기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative as novidades"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开新功能"
+          }
+        }
+      }
+    },
     "A pet for each session" : {
       "comment" : "Settings switch: a pixel pet beside the notch for each Claude Code session.",
       "localizations" : {

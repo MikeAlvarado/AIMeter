@@ -4,7 +4,7 @@ import UsageKit
 @main
 struct AIMeterApp: App {
     @State private var model = UsageModel()
-    @State private var prefs = PreferencesModel()
+    @State private var prefs: PreferencesModel
     #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     /// Ticks the status item's reset countdown once a minute — see
@@ -13,6 +13,18 @@ struct AIMeterApp: App {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
     #endif
+
+    init() {
+        let prefs = PreferencesModel()
+        _prefs = State(initialValue: prefs)
+        #if os(macOS)
+        // The notch island lives outside the scene graph, and gets the app's
+        // one `PreferencesModel` here, before any window: a launch that
+        // restores some other window instead of the Dashboard (whose
+        // `onAppear` hands it over as well) must still start the island.
+        AppEnvironment.prefs = prefs
+        #endif
+    }
 
     var body: some Scene {
         WindowGroup(id: Self.dashboardWindowID) {
@@ -31,6 +43,8 @@ struct AIMeterApp: App {
                     AppChrome.openSettingsAction = { openSettings() }
                     AppChrome.openUpdateWindowAction = { openWindow(id: Self.updateWindowID) }
                     AppChrome.deliverPendingUpdateWindow()
+                    AppChrome.openTourWindowAction = { openWindow(id: Self.tourWindowID) }
+                    AppChrome.deliverPendingTourWindow()
                     // The notch island lives outside the scene graph; this
                     // is where it gets the app's one `PreferencesModel`.
                     AppEnvironment.prefs = prefs
@@ -120,13 +134,28 @@ struct AIMeterApp: App {
         }
 
         // The update notice: the new version's notes with Restart to
-        // Update, or this version's notes after a manual install.
+        // Update, or this version's notes after a manual install. The model
+        // and preferences are for the new features' cards.
         Window(String(localized: "Software Update"), id: Self.updateWindowID) {
             UpdateWindow()
+                .environment(model)
+                .environment(prefs)
                 .environment(AppUpdater.shared)
                 .tint(Theme.accent)
                 .preferredColorScheme(prefs.appearance.colorScheme)
         }
+        .windowResizability(.contentSize)
+        .defaultPosition(.center)
+
+        // The tour (`Tour`): at the first launch, and from Settings.
+        Window(String(localized: "Welcome to AIMeter"), id: Self.tourWindowID) {
+            TourWindow()
+                .environment(model)
+                .environment(prefs)
+                .tint(Theme.accent)
+                .preferredColorScheme(prefs.appearance.colorScheme)
+        }
+        .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
         .defaultPosition(.center)
         #endif
@@ -137,4 +166,6 @@ struct AIMeterApp: App {
     static let dashboardWindowID = "dashboard"
     /// The macOS update window (`UpdateWindow`).
     static let updateWindowID = "update"
+    /// The macOS tour window (`TourWindow`).
+    static let tourWindowID = "tour"
 }

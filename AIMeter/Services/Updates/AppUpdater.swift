@@ -42,6 +42,10 @@ final class AppUpdater {
     private(set) var lastChecked: Date?
     /// This version's notes, after a version installed by hand.
     var notesToShow: WhatsNew.Release?
+    /// This version's new features still off, with the buttons that turn
+    /// them on, after a version installed from the notice, whose notes
+    /// were read before the restart (`Tour.pendingOffers`).
+    var offersToShow: WhatsNew.Release?
 
     var readyUpdate: Prepared? {
         if case .ready(let prepared) = phase { prepared } else { nil }
@@ -76,15 +80,38 @@ final class AppUpdater {
     // MARK: Lifecycle
 
     /// At launch: tidy what an earlier update left, show this version's
-    /// notes if it was installed by hand, and start the daily check.
-    func start(automatic: Bool) {
+    /// notes if it was installed by hand (or its new features still off,
+    /// if it was installed from the notice), and start the daily check.
+    /// `showsNotes` is false while the tour opens instead (`Tour`), which
+    /// covers what is new.
+    func start(automatic: Bool, showsNotes: Bool = true) {
         guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
         UpdateInstaller.cleanUp(keeping: nil)
-        if let due = WhatsNew.dueAtLaunch() {
-            notesToShow = due
-            AppChrome.openUpdateWindow()
+        if showsNotes {
+            if let due = WhatsNew.dueAtLaunch() {
+                notesToShow = due
+                AppChrome.openUpdateWindow()
+            } else {
+                // Next turn: the scene hands `AppEnvironment` the
+                // preferences the check reads once it has appeared.
+                DispatchQueue.main.async { self.offerNewFeatures() }
+            }
         }
         setAutomaticChecks(automatic)
+    }
+
+    /// The features this version's notes name that are still off and were
+    /// never offered: shown once, in the update window.
+    private func offerNewFeatures() {
+        guard let model = AppEnvironment.shared, let prefs = AppEnvironment.prefs,
+              let current = AppVersion.current else { return }
+        let offers = Tour.pendingOffers(in: WhatsNew.load()?.release(current), offered: Tour.offered) { feature in
+            TourActions.applies(feature, prefs: prefs)
+                && !TourActions.isActive(feature, model: model, prefs: prefs, notificationsAllowed: false)
+        }
+        guard let offers else { return }
+        offersToShow = offers
+        AppChrome.openUpdateWindow()
     }
 
     /// Settings' "Check for updates automatically".
@@ -176,10 +203,22 @@ final class AppUpdater {
         defaults.set(Date().addingTimeInterval(Self.checkInterval), forKey: Self.remindAfterKey)
     }
 
-    /// The window's "Continue" after this version's notes.
+    /// The window's "Continue" after this version's notes. Their features'
+    /// cards were shown with them, so they count as offered.
     func dismissNotes() {
+        if let notes = notesToShow {
+            Tour.markOffered(notes.items.compactMap(\.tourFeature))
+        }
         notesToShow = nil
         WhatsNew.lastSeen = AppVersion.current
+    }
+
+    /// The window's "Continue" after the new features' cards.
+    func dismissOffers() {
+        if let offers = offersToShow {
+            Tour.markOffered(offers.items.compactMap(\.tourFeature))
+        }
+        offersToShow = nil
     }
 
     // MARK: Notification

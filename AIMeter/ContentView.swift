@@ -8,9 +8,16 @@ struct ContentView: View {
     #if os(iOS)
     /// Compact height == iPhone in landscape → fullscreen usage mode.
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    /// The full tour at the first launch (see `Tour`), and again from
+    /// Settings (`.tourShowRequest`).
+    @State private var showsTour = Tour.dueAtLaunch()
+    /// The tour's last step asked to connect: the Dashboard's Connect sheet
+    /// opens once the tour is gone (`.tourConnectRequest`).
+    @State private var connectsAfterTour = false
     /// This version's notes, once after the App Store installs it (the
-    /// Mac shows them in its update window instead).
-    @State private var whatsNew = WhatsNew.dueAtLaunch()
+    /// Mac shows them in its update window instead); never over a first
+    /// launch's tour, which shows what is new as well.
+    @State private var whatsNew = Tour.dueAtLaunch() ? nil : WhatsNew.dueAtLaunch()
     #endif
 
     var body: some View {
@@ -47,6 +54,24 @@ struct ContentView: View {
         }
         .sheet(item: $whatsNew, onDismiss: { WhatsNew.lastSeen = AppVersion.current }) { release in
             WhatsNewSheet(release: release) { whatsNew = nil }
+                // Its features' cards show with the notes: offered.
+                .onAppear { Tour.markOffered(release.items.compactMap(\.tourFeature)) }
+        }
+        .fullScreenCover(isPresented: $showsTour, onDismiss: {
+            guard connectsAfterTour else { return }
+            connectsAfterTour = false
+            NotificationCenter.default.post(name: .tourConnectRequest, object: nil)
+        }) {
+            TourCover { connect in
+                Tour.finish()
+                connectsAfterTour = connect
+                showsTour = false
+            }
+        }
+        .task {
+            for await _ in NotificationCenter.default.notifications(named: .tourShowRequest) {
+                showsTour = true
+            }
         }
         #endif
         .task {

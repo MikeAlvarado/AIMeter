@@ -228,7 +228,8 @@
   `setChecksServiceStatus`, same shape as the refresh-cadence handler) —
   how often a refresh runs before what else it checks, all app-wide, not
   per account — a "Privacy &
-  data" link, an "Open Source" row (GitHub mark, opens the repo URL), and
+  data" link, "Show the tour" (`TourSettings`, see "Tour" below), an
+  "Open Source" row (GitHub mark, opens the repo URL), and
   — for a connected install — the "Demo mode" card last. **macOS**
   (`MacSettingsView`, the Settings scene) spreads the same sections over
   toolbar tabs, the way a Mac app's settings are, at a fixed 540 pt
@@ -246,7 +247,8 @@
   nudge when the Dock icon is hidden but the login item is off), then
   "Updates" (`UpdatesSettings`, `UpdateViews.swift`: "Check for updates
   automatically", the updater's state with "Check Now" or, once one is
-  ready, "Restart to Update", and a footnote saying when it installs);
+  ready, "Restart to Update", and a footnote saying when it installs),
+  then "Show the tour";
   **Notch island** (`NotchIslandSettings`,
   two cards. The first: a live preview of the **peek** — what hovering
   shows — as this screen draws it (the real notch's silhouette, or the
@@ -489,7 +491,9 @@
   `colorScheme`. One `NotchIslandController` (`AppChrome.notchIsland`),
   started from `AIMeterApp`'s dashboard `onAppear` — which also publishes
   the app's `PreferencesModel` to `AppEnvironment.prefs`, the island
-  living outside the scene graph — and again, idempotently, from
+  living outside the scene graph (`AIMeterApp.init` publishes it first,
+  so a launch that restores some other window and no Dashboard still
+  starts the island) — and again, idempotently, from
   `applicationDidFinishLaunching`; `AppChrome.setNotchIsland(enabled:)`
   starts and stops it live from Settings. The tree reads
   `NotchIslandState` (data only: level, mode, bar height, the collapsed
@@ -752,25 +756,57 @@
     them.
 - **What's new** (both platforms, `WhatsNewView`): a release's notes, a
   header and one row per item (its symbol on the accent wash, title,
-  detail) over the caller's buttons (`CapsuleActionButton`). iOS shows
-  it as a sheet over the Dashboard once after an update ("Continue"),
-  as tall as the notes (`WhatsNewSheet`: the content measured, one
-  height detent plus the home indicator's inset, the full height and a
-  scroll only for notes taller than the screen); the Mac in the update
-  window, which is its content's size too. Which notes are due, and why the notes
-  are JSON: "Updates (macOS) and What's new" in the repo-root CLAUDE.md.
+  detail) over the caller's buttons (`CapsuleActionButton`); an item
+  that names a tour feature has that feature's card under its text,
+  indented past the symbol (`TourFeatureCard`: the animation at 140 pt
+  and the button that turns it on, or "On"), for the features that
+  apply here and were off as the notes opened (decided once, so a card
+  turned on from there stays to say "On"), or that only explain. iOS
+  shows it as a sheet over the Dashboard once after an update
+  ("Continue"), as tall as the notes (`WhatsNewSheet`: the content
+  measured, one height detent plus the home indicator's inset, the full
+  height and a scroll only for notes taller than the screen); the Mac in
+  the update window, which is its content's size too: the notes scroll
+  once they pass the screen's height less 200 pt, the buttons pinned
+  under them in sight. Which notes are
+  due, and why the notes are JSON: "Updates (macOS) and What's new" in
+  the repo-root CLAUDE.md.
+- **Tour** (both platforms, `TourView`; see "Tour" in the repo-root
+  CLAUDE.md for who gets it and the steps): "Skip tour" at the top
+  right, the step's animation (`TourVisual`, 170 pt, on the accent wash,
+  or on a dark desk for the Mac's notch scenes; each loops on a spring
+  while shown and holds its last frame under Reduce Motion), its title
+  and line, the buttons (the action and "Not now", "Later" on the last
+  step; or "On" / "Connected" and "Continue", "Done" on the last), and
+  the dots (one VoiceOver element, "Step 2 of 6"). What is on is read
+  again after each action and whenever the app comes back to the front
+  (from a system prompt or System Settings). The Mac's window
+  (`TourWindow`) is 460 pt wide with a hidden title bar, centered;
+  closing it counts as skipping. iOS's cover (`TourCover`) centers the
+  step and scrolls only when a large text size needs it. Settings'
+  "Show the tour" row (`TourSettings`: the sparkles glyph on the wash,
+  a chevron, a footnote) sits above "Open Source" on both platforms.
+  `DEBUG` only: the `-AIMeterShowTour YES` launch argument opens the
+  tour at launch on any install, to check or capture it.
 - **macOS update window** (`UpdateWindow`, a `Window` scene,
   `AIMeterApp.updateWindowID`, opened through
   `AppChrome.openUpdateWindow`, the same bridge shape as
   `openDashboard`; a request made before the Dashboard scene appeared
   waits in `pendingUpdateWindow`): with an update ready, "AIMeter 2.1.0
-  is ready" over its notes (or a link to the release on GitHub when it
-  has none), a line saying to move the app to Applications when it
-  can't be replaced in place, and "Later" / "Restart to Update"; after
-  a version installed by hand, this version's notes and "Continue";
-  otherwise the check's state ("Check for Updates…" in the app menu
-  opens it while it checks). Closed before the restart, so window
-  restoration never brings it back over the new version. The
+  is ready" over its notes without their cards (or a link to the
+  release on GitHub when it has none), a line saying to move the app to
+  Applications when it can't be replaced in place, and "Later" /
+  "Restart to Update"; after a version installed by hand, this
+  version's notes with their cards and "Continue"; after one installed
+  from the notice, "Turn on what's new" with the new features still off
+  and "Continue"; otherwise the check's state ("Check for Updates…" in the app menu
+  opens it while it checks). Closed before the restart, and kept out of
+  window restoration altogether (`NonRestorableWindow`, like the tour's):
+  a relaunch that restored only this window would open no Dashboard, the
+  scene that hands `AppChrome` its window bridges on appear, so nothing
+  could open a window afterwards (measured, after the app was killed with
+  the notes open: no island either, before `AIMeterApp.init` published the
+  preferences). The
   `UpdateReadyNotice` ("AIMeter 2.1.0 is ready", the accent wash, opens
   this window) sits at the top of the menu bar popover and the
   Dashboard while an update waits; the notch island's footer adds an

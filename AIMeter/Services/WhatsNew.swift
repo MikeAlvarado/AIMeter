@@ -25,6 +25,9 @@ nonisolated struct WhatsNew: Decodable, Equatable, Sendable {
         let detail: [String: String]
         /// "iOS" and/or "macOS"; absent, the item is for both.
         let platforms: [String]?
+        /// A `TourFeature` raw value: the note then carries that feature's
+        /// animation and its button to turn it on (see `Tour`).
+        let feature: String?
         var id: String { symbol + (title["en"] ?? "") }
     }
 

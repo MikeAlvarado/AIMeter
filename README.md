@@ -114,8 +114,13 @@ can be added later.
   failing at the same time says so under its error — so an outage reads
   as their outage, not as a problem with your account. On a normal day
   nothing is shown; the check can be turned off in Settings.
-- **What's new, and updates on the Mac**: after an update, a short sheet
-  lists what changed, in your language. The Mac app updates itself from
+- **A tour, and what's new**: the first launch walks through each part
+  of AIMeter, one at a time, with a short animation and a button that
+  turns it on (notifications, the notch island, Claude Code's hooks, the
+  login item), and ends by connecting your account; Settings opens it
+  again. After an update, a short sheet lists what changed, in your
+  language, and a new feature that is still off comes with the same
+  animation and button. The Mac app updates itself from
   the project's GitHub releases: a daily check, a background download
   whose signature must match the developer's, and an install only when
   you restart from its notice ("Later" leaves it waiting). Off with
@@ -392,8 +397,9 @@ AIMeter/                multiplatform SwiftUI app (iOS + macOS);
                         AccountMigration upgrades a pre-multi-account
                         install in place; Views/NotchIsland/ is the
                         macOS notch island (panel, controller, views);
-                        Services/Updates/ is the Mac's own updater, and
-                        WhatsNew.json each release's notes (8 languages)
+                        Services/Updates/ is the Mac's own updater,
+                        WhatsNew.json each release's notes (8 languages),
+                        and Views/Tour/ the first launch's tour
 AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage (one
                         number), AIMeterAllAccounts (every account at
                         once), and a Live Activity (iOS) — all render App

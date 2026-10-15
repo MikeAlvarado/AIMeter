@@ -42,6 +42,9 @@ final class WhatsNewTests: XCTestCase {
                 for platform in item.platforms ?? [] {
                     XCTAssertTrue(["iOS", "macOS"].contains(platform), platform)
                 }
+                if let feature = item.feature {
+                    XCTAssertNotNil(TourFeature(rawValue: feature), "a feature the tour knows: \(feature)")
+                }
             }
         }
         let versions = notes.releases.compactMap { AppVersion($0.version) }
@@ -55,8 +58,8 @@ final class WhatsNewTests: XCTestCase {
         WhatsNew.Release(version: "2.1.0", items: [WhatsNewTests.item("a")]),
     ])
 
-    private static func item(_ symbol: String, platforms: [String]? = nil) -> WhatsNew.Item {
-        WhatsNew.Item(symbol: symbol, title: ["en": symbol], detail: ["en": symbol], platforms: platforms)
+    static func item(_ symbol: String, platforms: [String]? = nil, feature: String? = nil) -> WhatsNew.Item {
+        WhatsNew.Item(symbol: symbol, title: ["en": symbol], detail: ["en": symbol], platforms: platforms, feature: feature)
     }
 
     func testAFreshInstallHasNothingToCatchUpOn() {

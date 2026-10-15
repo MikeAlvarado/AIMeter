@@ -103,8 +103,16 @@ struct DashboardView: View {
             refreshRequests += 1
             await model.refreshAll()
         }
-        .sheet(isPresented: $showingSettings) {
+        // "Show the tour" closes Settings first; the tour opens once the
+        // sheet is gone.
+        .sheet(isPresented: $showingSettings, onDismiss: Tour.deliverPendingShow) {
             SettingsSheet()
+        }
+        // The tour's last step: connect, once the tour has closed.
+        .task {
+            for await _ in NotificationCenter.default.notifications(named: .tourConnectRequest) {
+                showingConnect = true
+            }
         }
         #endif
         .sheet(isPresented: $showingConnect) {

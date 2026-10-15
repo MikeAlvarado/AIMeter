@@ -43,7 +43,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             AppChrome.startNotchIslandIfEnabled()
             AppChrome.updateClaudeSessions()
         }
-        AppUpdater.shared.start(automatic: prefs.checksForUpdates)
+        // A first launch opens the tour, which shows what is new as well.
+        let tourDue = Tour.dueAtLaunch()
+        if tourDue {
+            AppChrome.openTourWindow()
+        }
+        AppUpdater.shared.start(automatic: prefs.checksForUpdates, showsNotes: !tourDue)
         #if DEBUG
         if MacSettingsView.launchTab != nil {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -213,6 +218,30 @@ enum AppChrome {
         NSApp.windows
             .filter { $0.identifier?.rawValue.hasPrefix(AIMeterApp.updateWindowID) == true }
             .forEach { $0.close() }
+    }
+
+    // MARK: Tour
+
+    /// Opens the tour's window (`AIMeterApp.tourWindowID`): at the first
+    /// launch, and from Settings. The same bridge as the update window's:
+    /// the dashboard scene publishes `openWindow` here on appear, and a
+    /// request made before that waits in `pendingTourWindow`.
+    static var openTourWindowAction: (() -> Void)?
+    static var pendingTourWindow = false
+
+    static func openTourWindow() {
+        if let openTourWindowAction {
+            openTourWindowAction()
+            NSApp.activate(ignoringOtherApps: true)
+        } else {
+            pendingTourWindow = true
+        }
+    }
+
+    static func deliverPendingTourWindow() {
+        guard pendingTourWindow else { return }
+        pendingTourWindow = false
+        openTourWindow()
     }
 
     static let notificationRouter = NotificationRouter()

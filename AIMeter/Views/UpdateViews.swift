@@ -4,79 +4,119 @@ import UsageKit
 
 /// The update window (`AIMeterApp.updateWindowID`): the new version's notes
 /// with "Restart to Update" and "Later" once an update is ready; this
-/// version's notes with "Continue" after a version installed by hand;
-/// otherwise the check's progress ("Check for Updates…" in the app menu
-/// opens it too).
+/// version's notes with "Continue" after a version installed by hand; the
+/// new features still off, with their buttons, after a version installed
+/// from the notice; otherwise the check's progress ("Check for Updates…"
+/// in the app menu opens it too).
 struct UpdateWindow: View {
     @Environment(AppUpdater.self) private var updater
     @Environment(\.dismissWindow) private var dismissWindow
+    /// The notes' height, measured: they scroll above the buttons once
+    /// they are taller than most of the screen (a release's notes with
+    /// their features' cards can be), and the buttons stay in sight.
+    @State private var notesHeight: CGFloat = 0
 
     var body: some View {
-        Group {
-            if let ready = updater.readyUpdate {
-                WhatsNewView(
-                    release: ready.notes ?? WhatsNew.Release(version: ready.version.description, items: []),
-                    title: String(localized: "AIMeter \(ready.version.description) is ready")
-                ) {
-                    if ready.notes == nil {
-                        Link(String(localized: "Release notes on GitHub"), destination: ready.page)
-                            .font(.callout.weight(.semibold))
-                            .foregroundStyle(Theme.accent)
-                    }
-                    if !UpdateInstaller.canReplace(Bundle.main.bundleURL) {
-                        Text("Move AIMeter to your Applications folder to update it in place. Until then, Restart to Update opens the download page.")
-                            .font(.callout)
-                            .foregroundStyle(Theme.inkSecondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    HStack(spacing: 10) {
-                        CapsuleActionButton(title: String(localized: "Later"), prominent: false) {
-                            updater.later()
-                            close()
-                        }
-                        CapsuleActionButton(title: String(localized: "Restart to Update")) {
-                            updater.install()
-                        }
-                        .keyboardShortcut(.defaultAction)
-                    }
-                }
-            } else if let notes = updater.notesToShow {
-                WhatsNewView(release: notes) {
-                    CapsuleActionButton(title: String(localized: "Continue")) {
-                        updater.dismissNotes()
-                        close()
-                    }
-                    .keyboardShortcut(.defaultAction)
-                }
-            } else {
-                status
+        VStack(spacing: 0) {
+            ScrollView {
+                notes
+                    .padding([.horizontal, .top], 28)
+                    .padding(.bottom, 22)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { notesHeight = $0 }
             }
+            .scrollBounceBehavior(.basedOnSize)
+            .frame(height: min(notesHeight > 0 ? notesHeight : Self.maxNotesHeight, Self.maxNotesHeight))
+            actions
+                .padding([.horizontal, .bottom], 28)
         }
-        .padding(28)
         .frame(width: 440)
         .background(Theme.background)
+        .background(NonRestorableWindow())
         .onDisappear {
             if updater.notesToShow != nil { updater.dismissNotes() }
+            if updater.offersToShow != nil { updater.dismissOffers() }
+        }
+    }
+
+    /// Most of the screen, less the buttons and some air around the window.
+    private static var maxNotesHeight: CGFloat {
+        (NSScreen.main?.visibleFrame.height ?? 800) - 200
+    }
+
+    @ViewBuilder
+    private var notes: some View {
+        if let ready = updater.readyUpdate {
+            WhatsNewView(
+                release: ready.notes ?? WhatsNew.Release(version: ready.version.description, items: []),
+                title: String(localized: "AIMeter \(ready.version.description) is ready"),
+                showsFeatures: false
+            ) {
+                if ready.notes == nil {
+                    Link(String(localized: "Release notes on GitHub"), destination: ready.page)
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(Theme.accent)
+                }
+                if !UpdateInstaller.canReplace(Bundle.main.bundleURL) {
+                    Text("Move AIMeter to your Applications folder to update it in place. Until then, Restart to Update opens the download page.")
+                        .font(.callout)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        } else if let notes = updater.notesToShow {
+            WhatsNewView(release: notes) { EmptyView() }
+        } else if let offers = updater.offersToShow {
+            WhatsNewView(release: offers, title: String(localized: "Turn on what's new")) { EmptyView() }
+        } else {
+            status
+        }
+    }
+
+    @ViewBuilder
+    private var actions: some View {
+        if updater.readyUpdate != nil {
+            HStack(spacing: 10) {
+                CapsuleActionButton(title: String(localized: "Later"), prominent: false) {
+                    updater.later()
+                    close()
+                }
+                CapsuleActionButton(title: String(localized: "Restart to Update")) {
+                    updater.install()
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        } else if updater.notesToShow != nil {
+            CapsuleActionButton(title: String(localized: "Continue")) {
+                updater.dismissNotes()
+                close()
+            }
+            .keyboardShortcut(.defaultAction)
+        } else if updater.offersToShow != nil {
+            CapsuleActionButton(title: String(localized: "Continue")) {
+                updater.dismissOffers()
+                close()
+            }
+            .keyboardShortcut(.defaultAction)
+        } else {
+            CapsuleActionButton(title: String(localized: "OK")) { close() }
+                .keyboardShortcut(.defaultAction)
         }
     }
 
     private var status: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(spacing: 12) {
-                if updater.phase == .checking || isDownloading {
-                    ProgressView().controlSize(.small)
-                } else {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(Theme.accent)
-                }
-                Text(UpdateStatus.line(for: updater))
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(Theme.ink)
-                    .fixedSize(horizontal: false, vertical: true)
+        HStack(spacing: 12) {
+            if updater.phase == .checking || isDownloading {
+                ProgressView().controlSize(.small)
+            } else {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(Theme.accent)
             }
-            CapsuleActionButton(title: String(localized: "OK")) { close() }
-                .keyboardShortcut(.defaultAction)
+            Text(UpdateStatus.line(for: updater))
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
         }
     }
 

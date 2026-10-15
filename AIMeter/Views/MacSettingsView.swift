@@ -110,6 +110,8 @@ private struct GeneralSettingsPage: View {
         SettingsGap()
         UpdatesSettings()
         SettingsGap()
+        TourSettings()
+        SettingsGap()
         OpenSourceSettings()
         if !DemoModeSettings.leads(model) {
             SettingsGap()

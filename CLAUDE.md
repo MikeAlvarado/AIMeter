@@ -151,6 +151,15 @@ assets and string catalog from there.
   (`AppUpdater`, the state and schedule; `UpdateFeed`, GitHub's release;
   `UpdateInstaller`, download, checks and the swap) with its window,
   Settings section and notices in `AIMeter/Views/UpdateViews.swift`.
+- The tour (see "Tour" below): `AIMeter/Services/Tour.swift` (the
+  features, the steps, who is due, what an update still offers) over
+  `AIMeter/Views/Tour/`: `TourView.swift` (the steps, and the feature
+  card the notes reuse), `TourActions.swift` (each feature's button,
+  whether it is on, whether it applies here), `TourText.swift` (the
+  words), `TourVisuals.swift` and `TourVisuals+Mac.swift` (the
+  animations, drawn from the app's own pieces) and
+  `TourPresentation.swift` (the Mac's window, the iOS cover, Settings'
+  row).
 
 ## Architecture rules (non-negotiable)
 
@@ -582,7 +591,48 @@ the account silently freezes at its last snapshot.
   (`ContentView`) after the App Store update; the Mac in its update
   window. Text follows the app's own language
   (`Bundle.main.preferredLocalizations`), then the language without its
-  region, then English.
+  region, then English. An item may name a tour feature (`feature`, a
+  `TourFeature` raw value, checked by `WhatsNewTests`): it then carries
+  that feature's card under its text (`TourFeatureCard`, its animation
+  and the button that turns it on, or "On"), for the features that
+  apply here and were off when the notes opened, or that only explain
+  (the colors). The Mac's notice before an update installs shows no
+  cards (the running version can't turn on what only the next one has).
+- **Tour** (both platforms, `Tour`): a fresh install (no account in the
+  registry and `pref.tourCompleted` unset) opens with the full tour
+  instead of any notes: one step at a time, each an animation of the
+  feature drawn from the app's own pieces (its bars and colors, a
+  widget, a notification, the island, the pets), a title and a line, a
+  button that turns it on the way its Settings switch does (asking for
+  the permission where one is needed, never anything a switch couldn't
+  undo) with "Not now" beside it, or "On" (a login item still waiting
+  for approval says so, with the way to the pane) and "Continue"; "Skip
+  tour" leaves at any step, and dots count the steps. The Mac's steps
+  are the welcome, the notch island, Claude Code's sessions (the
+  hooks), the session's name with the menu bar clearance (the
+  Accessibility permission), notifications, Open at Login and
+  connecting; iOS's the welcome, how to add a widget, notifications and
+  connecting. A step that can't show here is passed over as the tour
+  runs (`TourActions.applies`): the two Claude Code steps while the
+  island is off or where Claude Code has never run (its logs folder
+  doesn't exist; installing the hooks there would create its folder).
+  Connecting comes last, opening the Dashboard's Connect sheet once the
+  tour has closed (the Mac through `AppChrome.connect`, iOS through
+  `.tourConnectRequest`); with an account already there (demo mode's
+  included, the way "Add account" hides there) the step reads
+  "Connected". Finishing, skipping or closing it sets
+  `pref.tourCompleted`, counts its features as offered
+  (`pref.tourOfferedFeatures`) and this version's notes as read. The
+  Mac shows it in its own window (`AIMeterApp.tourWindowID`, opened at
+  launch by `AppDelegate` through `AppChrome.openTourWindow`, the
+  update window's bridge), iOS as a full-screen cover from
+  `ContentView`; Settings → "Show the tour" (General on the Mac) opens
+  it again, on iOS once the Settings sheet is gone
+  (`Tour.deliverPendingShow`). After an update installed from the Mac's
+  notice, whose notes were read before the restart, the update window
+  opens once with "Turn on what's new": the features this version's
+  notes name that apply here, are still off and were never offered
+  (`Tour.pendingOffers`), each with its card.
 - **Updates (macOS only; the iOS build has none of it)**: `AppUpdater`
   checks a minute after launch and then once a day
   (`NSBackgroundActivityScheduler`, 2 h tolerance) while
@@ -1464,8 +1514,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes
-  (every language, no em dash) with the rules for which are due
-  (`WhatsNewTests`), on macOS the update feed against a captured GitHub
+  (every language, no em dash, every named feature one the tour knows)
+  with the rules for which are due (`WhatsNewTests`), the tour's
+  audience, steps and the offers after an update (`TourTests`), on macOS the update feed against a captured GitHub
   response (`AIMeterTests/Fixtures/github-release-latest.json`), the
   offer rules and the install script (`UpdateFeedTests`), the
   service-status throttle, aging, banner and footer-line rules
