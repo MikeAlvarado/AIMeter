@@ -1,24 +1,15 @@
 import { ArrowUpRight, Download } from 'lucide-react'
-import islandCollapsed from '../../assets/island-collapsed.webp'
-import islandExpanded from '../../assets/island-expanded.webp'
-import islandPeek from '../../assets/island-peek.webp'
 import { useLanguage } from '../../hooks/useLanguage'
 import { useRevealOnScroll } from '../../hooks/useRevealOnScroll'
 import { GITHUB_BUILD_URL, MAC_DOWNLOAD_URL } from '../../lib/site'
 import { MenuBarStrip } from '../ui/MenuBarStrip'
 import { MixedHeading } from '../ui/MixedHeading'
 
-const ISLAND_STATES = [
-  { src: islandCollapsed, width: 1104, height: 96 },
-  { src: islandPeek, width: 1104, height: 96 },
-  { src: islandExpanded, width: 1104, height: 527 },
-]
-
 export function Mac() {
   const { t } = useLanguage()
   const ref = useRevealOnScroll<HTMLDivElement>()
   return (
-    <section className="px-inset-sm nav:px-inset nav:py-32 py-20">
+    <section id="mac" className="px-inset-sm nav:px-inset nav:py-32 py-20">
       <div ref={ref} className="nav:flex-row nav:gap-16 mx-auto flex max-w-6xl flex-col gap-10">
         <div data-reveal className="nav:basis-[40%] flex flex-col gap-4">
           <MixedHeading text={t.mac.heading} className="text-section leading-[1.02]" />
@@ -43,22 +34,6 @@ export function Mac() {
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-8">
-          <div data-reveal className="flex flex-col gap-3">
-            {ISLAND_STATES.map((state, i) => (
-              <figure key={state.src} className="flex flex-col gap-1.5">
-                <img
-                  src={state.src}
-                  alt={i === 0 ? t.mac.islandAlt : ''}
-                  width={state.width}
-                  height={state.height}
-                  loading="lazy"
-                  decoding="async"
-                  className="ring-ink/10 w-full rounded-xl ring-1"
-                />
-                <figcaption className="text-ink-2 text-xs">{t.mac.islandStates[i]}</figcaption>
-              </figure>
-            ))}
-          </div>
           <div data-reveal>
             <MenuBarStrip labels={t.mac.styles} />
           </div>

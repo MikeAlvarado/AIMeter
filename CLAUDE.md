@@ -48,7 +48,9 @@ assets and string catalog from there.
   "Service status" below), `UsageModel+History.swift` (the chart's
   in-memory timeline cache) and
   `UsageModel+macOS.swift` (refresh schedule, wake/activation observers,
-  `AppEnvironment`); members those extensions share are internal rather
+  `AppEnvironment`), plus, `DEBUG` only, `IslandDirector.swift` (what the
+  website's video recorder tells the island, see "Claude Code sessions"
+  below); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
   three files: `NotificationPreferences.swift` (the toggles, plus
   `SmartAlert` — the five per-account families addressed as one enum, so
@@ -963,7 +965,10 @@ the account silently freezes at its last snapshot.
   in sunglasses waiting for a permission prompt, a cat in headphones and
   a bunny with a bow at work, a ghost in a beanie done), under the
   neutral title "Coding sessions on this Mac" and with no hooks
-  invitation.
+  invitation. `DEBUG` only: `IslandDirector` (`-AIMeterIslandDirector
+  YES`) lets `Scripts/island-video.sh` drive the island's level and the
+  demo's sessions while it records the website's videos (see
+  `Scripts/IslandVideo/CLAUDE.md`).
   iOS: nothing, impossible by construction (no Claude Code there, and an
   iOS app can't read another app's files).
 - Peak hours — **retired** (`ClaudePeakSchedule.current` is nil since
@@ -1629,10 +1634,11 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   structure, the content rules (the landing page follows the store's
   no-third-party-names posture; the privacy and support pages name the
   hosts, factually) and the three URLs App Store Connect points at
-  (marketing, support, privacy policy). Its images come from the store
-  pipeline above (`site/scripts/images.mjs`), plus the notch island's
-  three captures (`site/scripts/island.mjs`, see "Not store assets" in
-  `Scripts/StoreFrames/CLAUDE.md`).
+  (marketing, support, privacy policy). Its iPhone's screens are drawn in
+  the page from the app's own colors, copy and demo figures
+  (`site/src/components/phone`), and its videos of the notch island at
+  work come from the real app in demo mode (`Scripts/island-video.sh`,
+  see `Scripts/IslandVideo/CLAUDE.md`).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
 - Credit where it is due, and only that. The notch island's motion

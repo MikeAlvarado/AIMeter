@@ -522,7 +522,10 @@
     idempotent), and the panel is re-framed
     only when the screen, the options or the frame actually changed.
     `DEBUG` only: the `-AIMeterForceDrawnNotch YES` launch argument
-    tries the drawn forms on a Mac with a real notch.
+    tries the drawn forms on a Mac with a real notch, and
+    `-AIMeterIslandDirector YES` hands the island to the website's video
+    recorder (`IslandDirector`; `NotchIslandController.direct` opens a
+    level as if the cursor had, see `Scripts/IslandVideo/CLAUDE.md`).
   - **Interaction**: every cursor and click event is fed to the pure
     `NotchIslandInteraction` (Shared, tested), and the controller only
     arms the one timer it asks for and hands the view the level it lands

@@ -7,7 +7,6 @@ import { Mac } from '../components/sections/Mac'
 import { OpenSource } from '../components/sections/OpenSource'
 import { Privacy } from '../components/sections/Privacy'
 import { Statement } from '../components/sections/Statement'
-import { Widgets } from '../components/sections/Widgets'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useLanguage } from '../hooks/useLanguage'
 import { scrollToSection } from '../lib/scroll'
@@ -26,13 +25,10 @@ export function Home() {
 
   return (
     <main className="flex flex-col">
-      <div className="sticky top-0 z-0">
-        <Hero />
-      </div>
-      <div className="bg-bg relative z-10">
+      <Hero />
+      <div className="bg-bg relative">
         <Statement />
         <Features />
-        <Widgets />
         <Mac />
         <Privacy />
         <OpenSource />

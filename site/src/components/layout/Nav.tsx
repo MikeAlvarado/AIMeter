@@ -28,7 +28,7 @@ export function Nav() {
 
   const labels: Record<(typeof SECTION_IDS)[number], string> = {
     features: t.nav.features,
-    widgets: t.nav.widgets,
+    mac: t.nav.mac,
     privacy: t.nav.privacy,
     'open-source': t.nav.openSource,
   }

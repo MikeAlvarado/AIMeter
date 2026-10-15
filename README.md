@@ -405,6 +405,8 @@ AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage 
                         once), and a Live Activity (iOS) — all render App
                         Group snapshots and, on iOS, refresh themselves
                         when stale
+Scripts/IslandVideo/    records the website's notch island videos from the
+                        running app in demo mode (`Scripts/island-video.sh`)
 Scripts/StoreFrames/    renders the App Store screenshots, header and
                         search-results card from the app's own views
                         (`Scripts/store-frames.sh`; see its CLAUDE.md)

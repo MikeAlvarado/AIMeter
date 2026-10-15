@@ -30,55 +30,111 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
 - `src/components/layout/` — `Nav` (fixed pill, blur, shrinks after 60 %
   of a viewport; anchors scroll on the home page and navigate to `/#id`
   elsewhere), `MobileMenu`, `LanguageToggle`, `Footer` (lives inside the
-  closing card).
+  closing section).
 - `src/components/sections/` — in page order: `Hero` (full bleed,
-  flush with the window's sides and top; pinned with `sticky`, the next
-  section slides over it while `useHeroRecede` scales and dims the card
-  and rounds its corners in, up to the other cards' radius), `Statement` (word-by-word brighten driven
-  by `useScrollProgress`), `Features` (hairline rows, number + title +
-  body + points + a phone capture), `Widgets` (dark card: the three
-  widget kinds, Lock Screen / Live Activity, widget renders, the
-  home-screen capture), `Mac` (the notch island's three captures —
-  collapsed, peek, expanded — with a caption each, `MenuBarStrip`, a
-  CSS illustration of the six status-item styles, plus the "Download
-  for Mac" link and the "build from source" link), `Privacy`
-  (four cards + link to `/privacy`), `OpenSource`, `Closing` (dark card
-  + footer).
+  flush with the window's sides and top, and since 3.0 centred on the
+  notch: the pills, the headline, the line and the downloads in one
+  centred column, and under them `NotchDemo`; it scrolls away with the
+  page, no longer pinned, since the demo makes it taller than a
+  viewport; behind all of it, the "+" grid, `PlusGrid`), `Statement` (word-by-word brighten driven
+  by `useScrollProgress`), `Features` (what the app does, in one place:
+  the six features as a vertical tab list, hairline rows with the number
+  and the title, the chosen one opening to its body and points, and one
+  iPhone beside them whose screen is drawn live, the chosen feature's,
+  see `components/phone` below. The phone stays put and only its screen
+  changes, the new one fading in over the old while the status bar turns
+  light or dark with it. It moves on by itself every 7 s, a line filling
+  over the active row, written straight to the line's style rather than
+  through state, so the phone isn't drawn again every frame; pointing at
+  it, focusing it or scrolling it away pauses it, and with reduced motion
+  only a click changes it. On a phone the iPhone comes first. Since 3.0
+  the widgets have no section of their own: they are one of the phone's
+  screens, and the page is about a third shorter), `Mac` ("Any Mac, any screen": what the island
+  does on a screen without a notch and the status item, `MenuBarStrip`,
+  a CSS illustration of the six status-item styles, the extras list,
+  plus the "Download for Mac" link and the "build from source" link;
+  the island's three stills it used to show gave way to the hero's
+  videos), `Privacy`
+  (four cards + link to `/privacy`), `OpenSource`, `Closing` (full
+  bleed like the hero, flush with the window's sides and bottom, so the
+  page opens and closes on the same dark backdrop: the closing line, the
+  downloads and the footer).
 - `src/components/ui/` — `MixedHeading` (`*word*` → accent italic,
-  `\n` → line break), `PhoneFrame` (near-black bezel + hairline, same
-  treatment as the store frames), `AppStoreBadge` (drawn, not an image),
-  `MacDownloadBadge` (beside it in the hero and the closing card: the
+  `\n` → line break), `AppStoreBadge` (drawn, not an image),
+  `MacDownloadBadge` (beside it in the hero and the closing section: the
   accent, a laptop, never the Apple mark — the Mac app is not on the Mac
   App Store; it links to `MAC_DOWNLOAD_URL`, the newest release's
   `AIMeter-macOS.zip`, a name every release keeps so the link never
   needs a bump), `GitHubLink`, `BrandIcons` (Apple and GitHub paths from Simple Icons,
-  CC0), `GrainOverlay`, `DotGrid`, `Pill`, `MenuBarStrip`.
+  CC0), `GrainOverlay`, `DotGrid`, `Pill`, `MenuBarStrip`,
+  `PlusGrid` (the dark sections' ground since 3.0, after Mike's own
+  portfolio header, in place of the glow from above they had, which
+  read as the design reference the page started from: a grid of faint
+  ivory "+" marks, a cell about 48 pt, each with its own weight and
+  turn from a seeded random, that take the accent and spin as the
+  pointer passes and fade back still in the accent; the pointer is
+  followed over the whole section, so the trail runs under the text and
+  the demo too, written straight to the cells, never through state; the
+  grid is calmer behind the section's words, `calm`, an ellipse mask.
+  With no pointer a few cells twinkle every 600 ms; with reduced motion
+  it stays still. The closing has it behind its words, not the footer),
+  and
+  `NotchDemo`, the notch island at work the way a product's own demo
+  shows it: a MacBook (a near-black bezel, the hinge and the base with
+  its groove) playing one scene's recording at a time, the iPhone app
+  (`Device` around the live Dashboard) over its lower right from the
+  `nav` breakpoint up, and under it the scenes as tabs (Limits, Sessions,
+  Needs you, each with a progress underline) with the scene's title and
+  line. Each video plays to its end and hands over to the next; off
+  screen it pauses (an `IntersectionObserver`); with reduced motion
+  nothing plays by itself (the poster shows, with the controls). The
+  videos are `src/assets/videos/island-<scene>-<lang>.mp4` with a `.webp`
+  poster each, one set per language, from `Scripts/island-video.sh` (see
+  `Scripts/IslandVideo/CLAUDE.md`). On a phone the screen is cut 4:3
+  around the notch (`object-top`), so the island reads at a useful size.
+- `src/components/phone/` — the iPhone the page draws instead of showing
+  captures, so its screens move and follow the language: `Device` (the
+  store frames' near-black bezel and hairline, and the status bar and
+  the Dynamic Island over a 390 × 844 pt screen scaled to whatever width
+  it gets; one image to assistive tech), `theme.ts` (the app's colors
+  from `Shared/Theme.swift`, light and dark, and the usage levels' tint:
+  terracotta, yellow above 70 %, red above 85 %), `parts.tsx` (the
+  app's pieces: cards, rows whose bars fill and figures count up as they
+  appear, account headers, segmented pills, sparklines, the glyphs),
+  `useTicker` (the slow counter the screens move by; still under reduced
+  motion) and `screens/`: `Dashboard`, `Widgets`, `History`, `Pace`,
+  `Alerts` and `Accounts`, each the app's own screen in demo mode, its
+  names and figures the demo's (the session creeping up while its reset
+  counts down, the history drawing each range, the alerts arriving, the
+  accounts trading places). Their words are the dictionaries' `phone`
+  block, the app's own strings in each language. Drawn, they must stay
+  as true to the app as a capture would: its layout, its colors, its
+  copy; when a screen changes in the app, its drawing changes with it.
 - `src/hooks/` — `useLanguage`, `useLocalStorage`
   (`useSyncExternalStore`, cross-tab), `useMediaQuery`,
   `usePrefersReducedMotion`, `useScrolledPast`, `useScrollProgress`
   (rAF, writes styles, never sets state), `useRevealOnScroll`
   (IntersectionObserver one-shot reveal of `[data-reveal]` children;
-  reduced motion shows everything at once), `useHeroRecede`,
-  `useDocumentMeta` (title + description per route).
+  reduced motion shows everything at once), `useDocumentMeta` (title +
+  description per route).
 - `src/lib/site.ts` — the App Store id and URL, GitHub URLs, the support
   email, `CURRENT_VERSION` (bump with each release), section ids.
 - `src/styles/globals.css` — Tailwind theme. The palette is the app's
   (`Shared/Theme.swift`): terracotta accent on warm ivory, warm charcoal
-  in dark mode via `prefers-color-scheme`. The hero, widgets and closing
-  cards use the store backdrop (`night-gradient`) in both schemes.
+  in dark mode via `prefers-color-scheme`. The hero and the closing
+  section stand on `night-ground` (the night colors from top to bottom,
+  a faint warmth low behind what they show, no glow from above) with
+  the "+" grid over it, in both schemes.
 - `scripts/postbuild.mjs` — after `vite build`: copies `index.html` to
   `privacy/index.html`, `support/index.html` and `404.html` (GitHub
   Pages has no rewrite rules, and App Store Connect and crawlers need a
   real 200 on the privacy and support URLs), writes `sitemap.xml`,
   `robots.txt` and `.nojekyll`.
-- `scripts/images.mjs` — turns a `Scripts/store-frames.sh` work dir
-  (`raw/`, `widget-shots/`) into the WebP files in `src/assets`. The
-  alerts capture is `raw/detail-smart-site.png`, not the store's: the
-  page shows a capture whole, and the store's leaves the footnote that
-  names the provider in view (the store frame cuts it off).
 - `scripts/island.mjs` — turns the notch island captures (two top-edge
   strips and the expanded panel alone, see `Scripts/StoreFrames/CLAUDE.md`
-  → "Not store assets") into `src/assets/island-*.webp`.
+  → "Not store assets") into `island-*.webp` stills, which the page no
+  longer shows (the hero's videos replaced them) and posts still use,
+  through `Scripts/store-frames.sh <work-dir> notch`.
   `scripts/island-strips.mjs` builds those two strips from the desktop
   picture and the panel captured alone, when the real top edge holds
   windows or other apps' status items.
@@ -94,9 +150,11 @@ company; it says "your provider". The privacy policy and the support
 page do name the hosts and tools (api.anthropic.com, Claude Code), since
 a policy that hides where the data goes is not a policy; that is
 nominative, factual use, with the not-affiliated line under it. Every
-image is a demo-mode capture or a widget render from the store pipeline
-(`Scripts/StoreFrames/CLAUDE.md`) — the notch island's three from the
-same demo on a real MacBook — so no account names, no brand marks.
+phone screen is drawn with the demo's own names and figures
+(`components/phone`), and every video is the real app in demo mode, its
+island's sessions the demo's own, over a drawn desktop
+(`Scripts/IslandVideo/CLAUDE.md`), so no account names, no brand marks,
+no real session.
 The support page also carries the Acknowledgments (boring.notch and
 Vibe Island, for the notch island's approach and line format — studied,
 not copied; see "Open source hygiene" in the repo root `CLAUDE.md`),

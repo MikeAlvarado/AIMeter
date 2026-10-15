@@ -3,24 +3,31 @@ import { useRevealOnScroll } from '../../hooks/useRevealOnScroll'
 import { AppStoreBadge } from '../ui/AppStoreBadge'
 import { GitHubLink } from '../ui/GitHubLink'
 import { MacDownloadBadge } from '../ui/MacDownloadBadge'
+import { PlusGrid } from '../ui/PlusGrid'
 import { GrainOverlay } from '../ui/GrainOverlay'
 import { MixedHeading } from '../ui/MixedHeading'
 import { Footer } from '../layout/Footer'
 
+/**
+ * The page's last word and its footer, full bleed like the hero: flush with
+ * the window's sides and bottom, so the page opens and closes on the same
+ * dark ground and the same "+" grid (`PlusGrid`).
+ */
 export function Closing() {
   const { t } = useLanguage()
   const ref = useRevealOnScroll<HTMLDivElement>()
   return (
-    <section className="p-inset-sm nav:p-inset">
-      <div className="rounded-shell night-gradient relative flex min-h-[80svh] flex-col overflow-hidden text-ivory">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_45%_at_50%_30%,rgba(224,139,109,0.35)_0%,transparent_72%)]" />
-        <GrainOverlay className="opacity-[0.08]" />
-        <div ref={ref} className="relative flex flex-1 flex-col items-center justify-center gap-5 px-6 py-24 text-center">
-          <p data-reveal className="text-blush/70 max-w-md text-lg">
+    <section>
+      <div className="night-ground relative flex min-h-[80svh] flex-col overflow-hidden text-ivory">
+        <GrainOverlay className="opacity-[0.06]" />
+        <div ref={ref} className="relative flex flex-1 flex-col items-center justify-center gap-5 px-6 py-28 text-center">
+          {/* The same grid the page opened on, behind the words and not the footer. */}
+          <PlusGrid track={ref} calm="40% 28% at 50% 50%" />
+          <p data-reveal className="text-blush/70 relative max-w-md text-lg">
             {t.closing.eyebrow}
           </p>
-          <MixedHeading data-reveal text={t.closing.heading} className="text-hero text-ivory max-w-3xl leading-[1.02] [text-shadow:0_0_34px_rgba(243,217,204,0.3)]" />
-          <div data-reveal className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <MixedHeading data-reveal text={t.closing.heading} className="text-hero text-ivory relative max-w-3xl leading-[1.02] [text-shadow:0_0_34px_rgba(243,217,204,0.3)]" />
+          <div data-reveal className="relative mt-4 flex flex-wrap items-center justify-center gap-3">
             <AppStoreBadge light />
             <MacDownloadBadge />
             <GitHubLink className="text-ivory border-white/30 hover:bg-white/10">{t.closing.github}</GitHubLink>

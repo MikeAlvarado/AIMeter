@@ -51,9 +51,9 @@ for `-AIMeterDemo` at the end of `UsageModel.init`, never committed,
 instead of tapping through Settings. `detail-smart.png` is scrolled so
 the footnote under the alerts starts about two thirds down: the frame
 shows the top two thirds of the capture, and the footnote's sixth line
-names the provider. The website shows a capture whole, so it gets its
-own, `detail-smart-site.png`, scrolled until the card's bottom meets the
-screen's and the footnote is below the fold (`site/scripts/images.mjs`).
+names the provider. The website takes no capture from here since 3.0:
+its iPhone's screens are drawn in the page (`site/src/components/phone`),
+so they move and follow the language.
 
 ## Rules (store metadata is reviewed like the app)
 
@@ -128,7 +128,11 @@ versions; screenshots are, until replaced. Save after each section.
 ## Not store assets
 
 The notch island (2.0) is Mac-only and the Mac app is not in the store,
-so its captures are never store assets. They are website assets, taken
+so its captures are never store assets. Since 3.0 the website shows it
+in motion instead: videos of the real app in demo mode, recorded by
+`Scripts/island-video.sh` (see `Scripts/IslandVideo/CLAUDE.md`). The
+stills below are what the page showed before, and what posts still use;
+they were website assets, taken
 on a MacBook with a notch in demo mode at 2×: `screencapture -R
 0,0,<screen width>,320` of the screen's top edge with the island
 collapsed (the bare notch) and again during the peek (the wings open),

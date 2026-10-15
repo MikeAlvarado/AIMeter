@@ -22,6 +22,54 @@ export interface DocPage {
   sections: DocSection[]
 }
 
+/** The app's own words for the screens drawn on the page, as its string catalog has them. */
+export interface PhoneCopy {
+  personal: string
+  work: string
+  plan: string
+  session: string
+  weekly: string
+  weeklyTopModel: string
+  credits: string
+  /** `{t}`: a countdown such as "2h 58m". */
+  resetsIn: string
+  updatedNow: string
+  /** `{n}`: minutes. */
+  updatedMinutes: string
+  onPace: string
+  ahead: string
+  behind: string
+  rateLimits: string
+  history: string
+  forecast: string
+  windowPills: [string, string, string]
+  ranges: [string, string, string]
+  /** The history chart's x labels, one list per range. */
+  chartLabels: [string[], string[], string[]]
+  runsOutEarly: string
+  forecastNote: string
+  historyNote: string
+  used: string
+  usedCap: string
+  week: string
+  topModel: string
+  /** `{w}`: the window's name. */
+  nearing: string
+  /** `{n}`: the percentage. */
+  nearingBody: string
+  refilled: string
+  refilledBody: string
+  now: string
+  date: string
+}
+
+export interface DemoScene {
+  /** The scene's tab under the MacBook. */
+  pill: string
+  title: string
+  body: string
+}
+
 export interface Faq {
   q: string
   a: string
@@ -31,7 +79,7 @@ export interface Dictionary {
   meta: { title: string; description: string }
   nav: {
     features: string
-    widgets: string
+    mac: string
     privacy: string
     openSource: string
     support: string
@@ -53,24 +101,18 @@ export interface Dictionary {
     /** The Mac badge: the full label (VoiceOver) and its small first line. */
     macDownload: string
     macDownloadSmall: string
-    scroll: string
     platforms: string
     version: string
     phoneAlt: string
-    widgetAlt: string
+  }
+  /** The notch island at work under the hero (`NotchDemo`): one entry per recorded scene, in its order. */
+  demo: {
+    label: string
+    scenes: [DemoScene, DemoScene, DemoScene]
   }
   statement: string
   features: { heading: string; sub: string; listLabel: string; items: Feature[] }
-  widgets: {
-    heading: string
-    sub: string
-    kinds: { title: string; body: string }[]
-    homeAlt: string
-    lockScreen: string
-    liveActivity: string
-    liveActivityBody: string
-    ipadAlt: string
-  }
+  phone: PhoneCopy
   mac: {
     heading: string
     sub: string
@@ -80,8 +122,6 @@ export interface Dictionary {
     /** The Mac download link: the latest GitHub Release. */
     download: string
     build: string
-    islandAlt: string
-    islandStates: string[]
   }
   privacy: { heading: string; sub: string; points: { title: string; body: string }[]; cta: string }
   openSource: {

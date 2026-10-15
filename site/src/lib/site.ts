@@ -12,7 +12,7 @@ export const AUTHOR_URL = 'https://mikealvaradol.web.app/'
 export const SUPPORT_EMAIL = 'miguel_l06@hotmail.com'
 export const CURRENT_VERSION = '3.0'
 
-export const SECTION_IDS = ['features', 'widgets', 'privacy', 'open-source'] as const
+export const SECTION_IDS = ['features', 'mac', 'privacy', 'open-source'] as const
 export type SectionId = (typeof SECTION_IDS)[number]
 
 export const COPYRIGHT_YEAR = new Date().getFullYear()

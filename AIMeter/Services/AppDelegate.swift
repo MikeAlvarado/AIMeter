@@ -50,6 +50,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         AppUpdater.shared.start(automatic: prefs.checksForUpdates, showsNotes: !tourDue)
         #if DEBUG
+        IslandDirector.startIfRequested()
+        #endif
+        #if DEBUG
         if MacSettingsView.launchTab != nil {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 AppChrome.openSettings()
