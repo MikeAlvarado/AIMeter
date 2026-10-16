@@ -23,42 +23,72 @@ enum LiveActivityManager {
         accountID: String, accountName: String, accountIcon: AccountIcon? = nil, providerID: String,
         snapshot: UsageSnapshot?, enabled: Bool, mayStart: Bool = true
     ) {
-        let running = Activity<SessionActivityAttributes>.activities.first { $0.attributes.accountID == accountID }
+        let mine = running(accountID: accountID)
 
         guard let content = content(for: snapshot, providerID: providerID, enabled: enabled) else {
-            guard let running else { return }
-            Task { await running.end(nil, dismissalPolicy: .immediate) }
+            for activity in mine {
+                Task { await activity.end(nil, dismissalPolicy: .immediate) }
+            }
             return
         }
 
-        if let running {
-            Task { await running.update(content) }
+        let pet = LiveActivityPreferences(accountID: accountID).pet
+        if let current = mine.first(where: { $0.attributes.pet == pet }) {
+            Task { await current.update(content) }
+            // Any other is left over (a restart's old one still ending, or a
+            // duplicate): one activity per account.
+            for extra in mine where extra.id != current.id {
+                Task { await extra.end(nil, dismissalPolicy: .immediate) }
+            }
+        } else if let running = mine.first {
+            if mayStart {
+                // Its pet was switched on or off since it started (or it
+                // predates pets): only a new activity can carry the change.
+                restart(
+                    accountID: accountID, accountName: accountName, accountIcon: accountIcon,
+                    providerID: providerID, snapshot: snapshot, enabled: enabled
+                )
+            } else {
+                Task { await running.update(content) }
+            }
         } else if mayStart {
             start(accountID: accountID, accountName: accountName, accountIcon: accountIcon, content: content)
         }
     }
 
-    /// Restarts a running activity under a new nickname or icon.
-    /// `attributes` (the name and icon among them) are fixed for an
-    /// activity's lifetime, so neither change
-    /// can ride on `update` the way every other change does: the old
-    /// activity ends and a fresh one starts in its place. Nothing to do
-    /// when none is running — the next `sync` picks the new name up on its
-    /// own. Called from the rename action only, so the app is in the
-    /// foreground, which `Activity.request` requires.
-    static func rename(
+    /// This account's activities still on screen (ended and dismissed ones
+    /// linger in `Activity.activities` for a moment).
+    private static func running(accountID: String) -> [Activity<SessionActivityAttributes>] {
+        Activity<SessionActivityAttributes>.activities.filter {
+            $0.attributes.accountID == accountID && $0.activityState != .ended && $0.activityState != .dismissed
+        }
+    }
+
+    /// Restarts a running activity under a new nickname, icon or pet.
+    /// `attributes` (the name, icon and pet among them) are fixed for an
+    /// activity's lifetime, so none of these changes
+    /// can ride on `update` the way every other change does: a fresh
+    /// activity starts and the old one ends. Nothing to do when none is
+    /// running — the next `sync` picks the new name up on its own. Called
+    /// from the rename and icon actions, the pet's switch and a `sync`
+    /// allowed to start one. The new one is requested first, synchronously
+    /// (`Activity.request` is), so a second restart, a `sync` or an `end`
+    /// that runs before the old one is gone already sees it; and when the
+    /// request fails (the app in the background, which `Activity.request`
+    /// refuses, or Live Activities switched off), the old one stays rather
+    /// than none.
+    static func restart(
         accountID: String, accountName: String, accountIcon: AccountIcon? = nil,
         providerID: String, snapshot: UsageSnapshot?, enabled: Bool
     ) {
-        let running = Activity<SessionActivityAttributes>.activities.filter { $0.attributes.accountID == accountID }
-        guard !running.isEmpty else { return }
-        let content = content(for: snapshot, providerID: providerID, enabled: enabled)
-        Task {
-            for activity in running {
-                await activity.end(nil, dismissalPolicy: .immediate)
-            }
-            guard let content else { return }
-            start(accountID: accountID, accountName: accountName, accountIcon: accountIcon, content: content)
+        let old = running(accountID: accountID)
+        guard !old.isEmpty else { return }
+        if let content = content(for: snapshot, providerID: providerID, enabled: enabled),
+           start(accountID: accountID, accountName: accountName, accountIcon: accountIcon, content: content) == nil {
+            return
+        }
+        for activity in old {
+            Task { await activity.end(nil, dismissalPolicy: .immediate) }
         }
     }
 
@@ -98,27 +128,34 @@ enum LiveActivityManager {
         )
     }
 
+    @discardableResult
     private static func start(
         accountID: String, accountName: String, accountIcon: AccountIcon?,
         content: ActivityContent<SessionActivityAttributes.ContentState>
-    ) {
+    ) -> Activity<SessionActivityAttributes>? {
         // The user can switch Live Activities off per app in Settings;
         // `request` would just throw, but checking makes the no-op explicit.
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        let attributes = SessionActivityAttributes(accountID: accountID, accountName: accountName, accountIcon: accountIcon)
-        _ = try? Activity.request(attributes: attributes, content: content, pushType: nil)
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return nil }
+        let attributes = SessionActivityAttributes(
+            accountID: accountID, accountName: accountName, accountIcon: accountIcon,
+            pet: LiveActivityPreferences(accountID: accountID).pet
+        )
+        return try? Activity.request(attributes: attributes, content: content, pushType: nil)
     }
 }
 
-/// The one per-account toggle this feature has — off by default, same
-/// App-Group-backed, accountID-scoped storage `NotificationPreferences`
-/// already uses.
+/// This feature's two per-account toggles, the activity and its pet: off
+/// by default, the same App-Group-backed, accountID-scoped storage
+/// `NotificationPreferences` already uses.
 struct LiveActivityPreferences {
     let accountID: String
-    private let defaults = UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
+    private let defaults: UserDefaults
 
-    init(accountID: String) {
+    /// `defaults` is for the tests (a throwaway suite); the app always uses
+    /// the App Group.
+    init(accountID: String, defaults: UserDefaults? = nil) {
         self.accountID = accountID
+        self.defaults = defaults ?? UserDefaults(suiteName: AppConfig.appGroupID) ?? .standard
     }
 
     var enabled: Bool {
@@ -126,9 +163,24 @@ struct LiveActivityPreferences {
         nonmutating set { defaults.set(newValue, forKey: "liveActivity.enabled.\(accountID)") }
     }
 
-    /// On disconnect, so the key doesn't outlive the account.
+    /// "Show a pet": the account's pet beside its countdown, getting
+    /// nervous as the session nears its limit (`SessionPetMood`).
+    var showsPet: Bool {
+        get { defaults.bool(forKey: "liveActivity.pet.\(accountID)") }
+        nonmutating set { defaults.set(newValue, forKey: "liveActivity.pet.\(accountID)") }
+    }
+
+    /// The pet a new activity carries (`SessionActivityAttributes.pet`).
+    var pet: SessionActivityAttributes.Pet? {
+        guard showsPet else { return nil }
+        let pet = SessionPet(accountID: accountID)
+        return .init(creature: pet.creature.rawValue, palette: pet.palette.rawValue, accessory: pet.accessory.rawValue)
+    }
+
+    /// On disconnect, so the keys don't outlive the account.
     func clear() {
         defaults.removeObject(forKey: "liveActivity.enabled.\(accountID)")
+        defaults.removeObject(forKey: "liveActivity.pet.\(accountID)")
     }
 }
 #endif

@@ -140,7 +140,7 @@ extension UsageModel {
         guard let usage = usage(for: accountID) else { return }
         WidgetCenter.shared.reloadAllTimelines()
         #if os(iOS)
-        LiveActivityManager.rename(
+        LiveActivityManager.restart(
             accountID: accountID, accountName: usage.account.displayName, accountIcon: usage.account.icon,
             providerID: usage.account.providerID, snapshot: usage.snapshot,
             enabled: LiveActivityPreferences(accountID: accountID).enabled

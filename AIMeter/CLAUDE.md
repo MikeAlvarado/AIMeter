@@ -177,9 +177,11 @@
   Screen widget" pill for `glanceMetric`
   (macOS's equivalent lives in Settings now — see "Display prefs" in the
   repo-root CLAUDE.md), options read live from this account's snapshot,
-  and a "Live Activity" toggle (also iOS only — see
-  `AIMeterWidgets/CLAUDE.md`) for this account's Session countdown on the
-  Lock Screen/Dynamic Island, off by default; a "Third usage row" card with the
+  and a "Live Activity" card (also iOS only, `LiveActivityCard` — see
+  `AIMeterWidgets/CLAUDE.md`): a toggle for this account's Session
+  countdown on the Lock Screen/Dynamic Island, off by default, and while
+  it is on, "Show a pet" (the account's pixel pet beside the countdown,
+  drawn next to the words; also off by default); a "Third usage row" card with the
   Auto/Hidden/Credits pill (governs the third-slot fallback above,
   defaults to Auto, shared across accounts) plus a "Show credit amounts"
   toggle (off by default, also shared) for the Credits row's money

@@ -85,7 +85,12 @@ assets and string catalog from there.
   `SessionPet+Sprites.swift` (the hand-drawn pixels, which
   `Scripts/pets-preview.sh` draws into one PNG), all pure and tested,
   and `AIMeter/Views/ClaudeSessionsSettings.swift` (the
-  "Sessions" card of Settings' Claude Code tab).
+  "Sessions" card of Settings' Claude Code tab). The same pets stand in
+  iOS's Session Live Activity, one per account: `Shared/SessionPet+Still.swift`
+  (its mood, an account's pet, a still frame's pixels, pure and tested),
+  `Shared/PetPixelsView.swift` (that frame drawn, and the pets' colors the
+  Mac's `PixelPetView` uses too), `AIMeterWidgets/ActivityPetView.swift`
+  and `AIMeter/Views/LiveActivityCard.swift` (Provider Detail's switches).
 - `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
   `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
   row builders, `ProviderDetailRows`), `HistoryCard.swift` (the Swift
@@ -933,7 +938,10 @@ the account silently freezes at its last snapshot.
   beside a yellow "!" while it waits for permission (beside it, never
   above its head, so it stays inside the bar) and sleeps under a
   blinking "z" for 8 s after the turn ends
-  (`ClaudeSessionMonitor.finishedMarkDuration`). `PixelPetView` paints
+  (`ClaudeSessionMonitor.finishedMarkDuration`). On iOS the same pets
+  stand in the Session Live Activity, one per account, still, their mood
+  from the session's figure (opt-in, "Show a pet"; see "Live Activity" in
+  `AIMeterWidgets/CLAUDE.md`). `PixelPetView` paints
   `SessionPet.pixels` on a shared 8 Hz clock (a `TimelineView`, so it
   runs only while a pet is shown; still under Reduce Motion), its
   canvas in two thirds of the bar on whole device pixels
@@ -1625,16 +1633,22 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   touches `~/.claude`), and the pets: every combination reachable and distinct,
   an id's pet pinned, the deal's uniqueness and order independence,
   every creature, accessory and pose inside its canvas on every tick,
-  the axolotl's pale face asleep and the pixel size
-  (`SessionPetTests`), and how far the wings beside
+  the axolotl's pale face asleep, a still frame painting each spot once
+  with what shows there, and the pixel size (`SessionPetTests`), the
+  Live Activity's pet: an account's pet, its mood at the bars' levels and
+  the flag, the attributes' pet by its parts with an older build's
+  activity decoding without one, and the switch off by default and
+  cleared with the account
+  (`LiveActivityPetTests`), and how far the wings beside
   the notch may reach: the status items found in a window list or
   placed by the Accessibility API (this Mac's, measured on macOS 27), the
   menus' edge, the narrower side for both, and on a screen without a
-  notch the room either side of its centre (`NotchIslandClearanceTests`). Two
+  notch the room either side of its centre (`NotchIslandClearanceTests`). Three
   seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
   with `platformServices: false` (no migration — it probes the real
-  Keychain — no scheduler/observers, no notification sweep) and
-  `NotificationPreferences(accountID:defaults:)`; every test writes only to
+  Keychain — no scheduler/observers, no notification sweep),
+  `NotificationPreferences(accountID:defaults:)` and, on iOS,
+  `LiveActivityPreferences(accountID:defaults:)`; every test writes only to
   a throwaway `UserDefaults` suite (`ScratchDefaults`), never the App
   Group the host app opens. Not covered on purpose: anything that fetches
   (`RefreshService`, `WidgetRefresher`) or touches the Keychain
@@ -1827,7 +1841,9 @@ there is no image to edit.
 4. The pins move: a pet's index is FNV-1a over the session's id modulo
    the count (creatures × 6 × 6), so a new creature changes the pet every
    id gets. Update `SessionPetTests` (the count, the `naturalIndex` pins,
-   the colliding pair `deal` is tested with), then re-pick the demo's
+   the colliding pair `deal` is tested with; every account's Live
+   Activity pet moves too, `LiveActivityPetTests` pins the `"claude"`
+   account's), then re-pick the demo's
    ids so its sessions keep their pets (a fox in sunglasses waiting, a
    cat in headphones and a bunny with a bow at work, a ghost in a beanie
    done, a green frog in the videos): ids whose own `naturalIndex` is

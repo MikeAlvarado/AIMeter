@@ -29,5 +29,30 @@ nonisolated struct SessionActivityAttributes: ActivityAttributes {
     /// The account's chosen glyph; fixed for the activity's lifetime like
     /// the name, so an icon change restarts it the same way a rename does.
     var accountIcon: AccountIcon? = nil
+    /// The account's pet while its "Show a pet" switch is on
+    /// (`LiveActivityPreferences.showsPet`), else nil. Fixed like the name,
+    /// so turning the switch restarts the activity; one an older build
+    /// started decodes with none.
+    var pet: Pet? = nil
+
+    /// A pet by its three parts' raw values, which only ever grow at the
+    /// end, rather than its `SessionPet.index`, which means another pet
+    /// once a creature is added (and an activity can outlive an update).
+    nonisolated struct Pet: Codable, Hashable, Sendable {
+        var creature: Int
+        var palette: Int
+        var accessory: Int
+    }
+
+    /// Main actor, like `SessionPet` itself (the target's default
+    /// isolation): only the views read it.
+    @MainActor var sessionPet: SessionPet? {
+        guard let pet,
+              let creature = SessionPet.Creature(rawValue: pet.creature),
+              let palette = SessionPet.Palette(rawValue: pet.palette),
+              let accessory = SessionPet.Accessory(rawValue: pet.accessory)
+        else { return nil }
+        return SessionPet(creature: creature, palette: palette, accessory: accessory)
+    }
 }
 #endif

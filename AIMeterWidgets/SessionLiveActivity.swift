@@ -18,15 +18,22 @@ struct SessionLiveActivity: Widget {
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 5) {
-                        ProviderIdentityView(
-                            name: context.attributes.accountName,
-                            iconSize: 18,
-                            iconCornerRadius: 4,
-                            font: .system(size: 13, weight: .semibold),
-                            nameColor: Theme.ink,
-                            planName: nil,
-                            icon: context.attributes.accountIcon
-                        )
+                        if let pet = context.attributes.sessionPet {
+                            HStack(spacing: 6) {
+                                ActivityPetView(pet: pet, mood: SessionPetMood(context.state), height: 30)
+                                accountName(context.attributes.accountName, size: 13)
+                            }
+                        } else {
+                            ProviderIdentityView(
+                                name: context.attributes.accountName,
+                                iconSize: 18,
+                                iconCornerRadius: 4,
+                                font: .system(size: 13, weight: .semibold),
+                                nameColor: Theme.ink,
+                                planName: nil,
+                                icon: context.attributes.accountIcon
+                            )
+                        }
                         if context.state.isPeak {
                             PeakBadge(size: 10)
                         }
@@ -45,7 +52,11 @@ struct SessionLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                providerMark(size: 16, icon: context.attributes.accountIcon)
+                if let pet = context.attributes.sessionPet {
+                    ActivityPetView(pet: pet, mood: SessionPetMood(context.state), height: 24)
+                } else {
+                    providerMark(size: 16, icon: context.attributes.accountIcon)
+                }
             } compactTrailing: {
                 HStack(spacing: 4) {
                     percentText(context.state, size: 12)
@@ -54,13 +65,27 @@ struct SessionLiveActivity: Widget {
                     }
                 }
             } minimal: {
-                providerMark(size: 14, icon: context.attributes.accountIcon)
+                if let pet = context.attributes.sessionPet {
+                    ActivityPetView(pet: pet, mood: SessionPetMood(context.state), height: 20, showsMark: false)
+                } else {
+                    providerMark(size: 14, icon: context.attributes.accountIcon)
+                }
             }
         }
     }
 
     private func providerMark(size: CGFloat, icon: AccountIcon?) -> some View {
         ProviderMark(size: size, cornerRadius: size / 4, icon: icon)
+    }
+
+    /// The name beside the pet, styled as `ProviderIdentityView` styles it
+    /// beside the icon.
+    private func accountName(_ name: String, size: CGFloat) -> some View {
+        Text(name)
+            .font(.system(size: size, weight: .semibold))
+            .foregroundStyle(Theme.ink)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
     }
 
     private func percentText(_ state: SessionActivityAttributes.ContentState, size: CGFloat) -> some View {
@@ -88,15 +113,24 @@ private struct LockScreenView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
-                ProviderIdentityView(
-                    name: attributes.accountName,
-                    iconSize: 20,
-                    iconCornerRadius: 4.5,
-                    font: .system(size: 14, weight: .semibold),
-                    nameColor: Theme.ink,
-                    planName: nil,
-                    icon: attributes.accountIcon
-                )
+                if let pet = attributes.sessionPet {
+                    ActivityPetView(pet: pet, mood: SessionPetMood(state), height: 24, onIsland: false)
+                    Text(attributes.accountName)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(Theme.ink)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                } else {
+                    ProviderIdentityView(
+                        name: attributes.accountName,
+                        iconSize: 20,
+                        iconCornerRadius: 4.5,
+                        font: .system(size: 14, weight: .semibold),
+                        nameColor: Theme.ink,
+                        planName: nil,
+                        icon: attributes.accountIcon
+                    )
+                }
                 // Grouped with the account name (leading), not with the
                 // percentage (trailing): it's a property of the account,
                 // not of the number.

@@ -196,10 +196,18 @@ above); no new target, no push entitlement.
   Dynamic Island's own standard behavior (one compact/expanded at a time,
   others collapse to `.minimal`) handles that with no special-casing here.
   A rename can't reach a running activity through `update` — `attributes`
-  (the account name and its icon among them) are fixed for an activity's
-  lifetime — so `LiveActivityManager.rename` ends it and starts a fresh
-  one under the new name or icon; with none running, the next `sync`
-  simply uses the new ones.
+  (the account name, its icon and its pet among them) are fixed for an
+  activity's lifetime — so `LiveActivityManager.restart` starts a fresh
+  one under the new name, icon or pet and then ends the old one: the new
+  one first, synchronously, so a second restart or an `end` arriving
+  before the old one is gone already sees it, and a request that fails
+  (in the background, where `Activity.request` refuses) keeps the old one
+  rather than none. With none running, the next `sync` simply uses the
+  new ones. A `sync` allowed to start one (`mayStart`) that finds a
+  running activity whose pet no longer matches the switch (or one started
+  before pets existed) restarts it the same way, and any second activity
+  for one account (a restart's old one, a duplicate) is ended by the next
+  `sync`, which keeps the one whose pet matches.
 - `Shared/SessionActivityAttributes.swift` (`ActivityAttributes` +
   `ContentState: usedPct, resetsAt, isPeak, severity`) lives in `Shared/`,
   synced into both targets already like `Theme.swift`/`AppConfig.swift` —
@@ -228,6 +236,47 @@ above); no new target, no push entitlement.
   hours" rather than looking like it's modifying the percentage. `.compact`
   is icon + percentage, with the same bolt appended when `isPeak`;
   `.minimal` is icon only (no room for the badge at that size).
+- **The pet** (opt-in per account, off by default; "Show a pet" under the
+  Live Activity switch in Provider Detail, `LiveActivityCard`, shown only
+  while that switch is on, with the account's pet drawn beside the words):
+  the account's own pixel pet, the same creatures as the Mac's session
+  pets, from its accountID through FNV-1a (`SessionPet(accountID:)`, so
+  the legacy `"claude"` account is a pink axolotl), takes the icon's place
+  in `.compactLeading`, `.minimal`, the expanded leading region (beside
+  the name) and the Lock Screen header. It rides in the attributes by
+  its three parts' raw values (`SessionActivityAttributes.Pet`: creature,
+  palette, accessory, which only ever grow at the end; never the index,
+  which a new creature remaps), nil when off and nil for an activity an
+  older build started, which decodes without it, so the switch restarts a
+  running activity (`LiveActivityPreferences.showsPet`,
+  `liveActivity.pet.<accountID>`, cleared on disconnect with the other
+  key). A Live Activity is an archived snapshot drawn at each update,
+  with no clock (`TimelineView` doesn't advance there) and no animation
+  API of its own (WWDC26 223: the system times every change), so the pet
+  holds one still frame (`PetPixelsView`, a path per tone over
+  `SessionPet.paintedPixels`, `Shared/`) and its mood is read at render
+  from what the activity already carries (`SessionPetMood`, from
+  `usedPct` and `severity`), with no new `ContentState` field: standing
+  with room to spare, fidgeting beside a yellow "!" past the bar's yellow
+  line, beside a red one past its red line or a critical flag. The
+  levels are `UsageLevel`'s, so the mood changes where the bar's color
+  does; with usage colors off the mood still changes and the "!" takes
+  the text's color. It never sleeps: a pet asleep at the reset needs an
+  update at the reset, which nothing sends with no server. The system
+  doesn't redraw an activity when its stale date passes (measured on the
+  iOS 27 simulator: still awake a minute after `staleDate`, and an
+  update carrying a past `staleDate` took the activity off screen
+  altogether; Apple documents only the `activityState` change), and the
+  next refresh after the reset ends the activity anyway. A change of mood pushes the new pose up from below
+  (`.id(mood)` + `.transition(.push(from: .bottom))`), the one motion the
+  system plays between two updates. On the island's black the pet glows
+  in its color, as on the Mac; on the Lock Screen's card it sits on a
+  black tile of its own, since its white accessories vanish on a light
+  card (`ActivityPetView`). With two of AIMeter's activities running,
+  the island shows one and the Lock Screen stacks both. Showing the Mac's Claude
+  Code sessions here instead was looked at and left out: with no server,
+  the only path would be CloudKit silent pushes, which Apple throttles to
+  a few an hour and drops once the app is force-quit.
 - `AIMeter/Info.plist` carries `NSSupportsLiveActivities: YES` — the
   physical-file pattern already used for `BGTaskSchedulerPermittedIdentifiers`/
   `UIBackgroundModes` (and `LSApplicationCategoryType`, Utilities, which

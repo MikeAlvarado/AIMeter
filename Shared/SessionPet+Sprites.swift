@@ -16,7 +16,7 @@ extension SessionPet {
     /// hat and the "z" rise into the space above.
     static let bodyLift = originY + 5 - canvasHeight / 2
 
-    enum Tone: Sendable { case body, light, dark, white, gray, lightGray, black }
+    enum Tone: CaseIterable, Sendable { case body, light, dark, white, gray, lightGray, black }
 
     struct Pixel: Equatable, Sendable {
         let x: Int

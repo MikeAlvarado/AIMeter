@@ -64,6 +64,25 @@ final class SessionPetTests: XCTestCase {
         XCTAssertEqual(pet.pixels(pose: .working, tick: 2).filter { $0.y == 12 }.map(\.x), [4, 5, 8, 9], "its feet step")
     }
 
+    /// A still frame (the Live Activity's) paints each spot once, with what
+    /// shows there: the last pixel drawn on it, an accessory over the body.
+    func testAStillPetPaintsEachSpotOnceWithWhatShows() {
+        for creature in SessionPet.Creature.allCases {
+            for accessory in SessionPet.Accessory.allCases {
+                let pet = SessionPet(creature: creature, palette: .purple, accessory: accessory)
+                for pose in [SessionPet.Pose.working, .waiting, .asleep] {
+                    let drawn = pet.pixels(pose: pose, tick: 0), painted = pet.paintedPixels(pose: pose, tick: 0)
+                    let spots = painted.map { [$0.x, $0.y] }
+                    XCTAssertEqual(Set(spots).count, painted.count, "\(pet) \(pose): a spot twice")
+                    XCTAssertEqual(Set(spots), Set(drawn.map { [$0.x, $0.y] }), "\(pet) \(pose): a spot lost")
+                    for pixel in painted {
+                        XCTAssertEqual(drawn.last { $0.x == pixel.x && $0.y == pixel.y }, pixel, "\(pet) \(pose)")
+                    }
+                }
+            }
+        }
+    }
+
     func testThePosesMove() {
         let pet = SessionPet(creature: .cat, palette: .blue, accessory: .none)
         XCTAssertNotEqual(pet.pixels(pose: .working, tick: 0), pet.pixels(pose: .working, tick: 2), "a step")

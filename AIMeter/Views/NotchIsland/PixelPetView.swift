@@ -39,37 +39,10 @@ private struct PetCanvas: View {
 
     var body: some View {
         Canvas { context, _ in
-            let tones = PetTones(pet.palette)
             for dot in pet.pixels(pose: pose, tick: tick) {
                 let square = CGRect(x: CGFloat(dot.x) * pixel, y: CGFloat(dot.y) * pixel, width: pixel, height: pixel)
-                context.fill(Path(square), with: .color(tones.color(dot.tone)))
+                context.fill(Path(square), with: .color(pet.color(dot.tone)))
             }
-        }
-    }
-}
-
-/// The pets' colors: their palette's three stops, and the accessories'
-/// neutrals, which read on any body and on the island's black.
-private struct PetTones {
-    let body: Color
-    let light: Color
-    let dark: Color
-
-    init(_ palette: SessionPet.Palette) {
-        body = Color(hex: palette.hex.body)
-        light = Color(hex: palette.hex.light)
-        dark = Color(hex: palette.hex.dark)
-    }
-
-    func color(_ tone: SessionPet.Tone) -> Color {
-        switch tone {
-        case .body: body
-        case .light: light
-        case .dark: dark
-        case .white: Color(hex: 0xF2F1EC)
-        case .gray: Color(hex: 0x8C8B84)
-        case .lightGray: Color(hex: 0xD3D1C7)
-        case .black: Color(hex: 0x121212)
         }
     }
 }
@@ -98,7 +71,7 @@ struct PixelAlertView: View {
     private func mark(up: Bool) -> some View {
         Canvas { context, _ in
             let top: CGFloat = up ? 0 : 1
-            for row in [0, 1, 2, 3, 5] {
+            for row in SessionPet.alertRows {
                 let square = CGRect(x: 0, y: (top + CGFloat(row)) * pixel, width: 2 * pixel, height: pixel)
                 context.fill(Path(square), with: .color(Theme.islandWarning))
             }

@@ -59,7 +59,10 @@ can be added later.
   while it's running — off by default. The countdown ticks live on-device
   with no network involved; since AIMeter has no server to push updates
   from, the percentage itself refreshes opportunistically whenever the app
-  or a widget happens to fetch next, not instantly.
+  or a widget happens to fetch next, not instantly. "Show a pet" (also off
+  by default) puts the account's own pixel pet beside the countdown: calm
+  with room to spare, a yellow "!" near the limit, a red one when nearly
+  out.
 - Dashboard with one card per connected account (plan badge, per-window
   reset countdowns, a small 24-hour sparkline per window), and a
   fullscreen landscape mode on iPhone. Every bar reads at a glance:

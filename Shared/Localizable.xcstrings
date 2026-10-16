@@ -286,6 +286,100 @@
         }
       }
     },
+    "Show a pet" : {
+      "comment" : "Provider Detail, Live Activity card (iOS): the switch that adds this account's pixel pet beside the session countdown on the Lock Screen and in the Dynamic Island.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pixeltier zeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar una mascota"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher un compagnon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットを表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar um bichinho"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示宠物"
+          }
+        }
+      }
+    },
+    "This account's pixel pet joins the countdown: calm with room to spare, nervous near the limit." : {
+      "comment" : "Caption under the 'Show a pet' switch in the Live Activity card (iOS).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Pixeltier dieses Accounts begleitet den Countdown: ruhig mit Spielraum, nervös nahe am Limit."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La mascota de píxeles de esta cuenta acompaña la cuenta regresiva: tranquila con margen, nerviosa cerca del límite."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le compagnon en pixels de ce compte accompagne le compte à rebours : calme avec de la marge, nerveux près de la limite."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアカウントのピクセルのペットがカウントダウンに付き添います。余裕があれば落ち着いていて、上限が近づくとそわそわします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 계정의 픽셀 펫이 카운트다운과 함께합니다. 여유가 있으면 차분하고, 한도에 가까워지면 초조해합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O bichinho de pixels desta conta acompanha a contagem regressiva: tranquilo com folga, nervoso perto do limite."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这个账户的像素宠物会陪着倒计时：余量充足时很安静，接近上限时会紧张。"
+          }
+        }
+      }
+    },
     "The icon couldn't be changed." : {
       "comment" : "Settings, App icon: iOS refused to switch the icon.",
       "localizations" : {
