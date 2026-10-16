@@ -67,20 +67,26 @@ struct SegmentedPill<Option: Hashable>: View {
     }
 }
 
-/// Card container with the standard surface, radius, and padding.
+/// Card container with the standard surface, radius, and padding. It
+/// stacks what it is given itself, rows apart: modifiers on a bare list
+/// of views reach each view on its own, so a card handed its rows without
+/// a stack drew one card per row (Provider Detail's Account card showed
+/// Name, its divider and Icon as three, from 1.6 to 3.0.1).
 struct Card<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {
-        content
-            .padding(Theme.cardPadding)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                Theme.card,
-                in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous)
-            )
-            .shadow(color: Theme.shadowSoft, radius: 16, x: 0, y: 8)
-            .shadow(color: Theme.shadowTight, radius: 2, x: 0, y: 1)
+        VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+            content
+        }
+        .padding(Theme.cardPadding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            Theme.card,
+            in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous)
+        )
+        .shadow(color: Theme.shadowSoft, radius: 16, x: 0, y: 8)
+        .shadow(color: Theme.shadowTight, radius: 2, x: 0, y: 1)
     }
 }
 
