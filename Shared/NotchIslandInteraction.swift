@@ -3,17 +3,18 @@ import Foundation
 /// The notch island's open level from the cursor and the clicks, as a
 /// pure state machine: the controller feeds it events and arms whatever
 /// timer it asks for, nothing more. Pure so the hover-intent dwell, the
-/// expand dwell, the leave delay, the click toggle and the click-outside
-/// close are unit-tested rather than reproduced by hand under a notch.
+/// leave delay, the click that opens it and the click-outside close are
+/// unit-tested rather than reproduced by hand under a notch.
 ///
 /// Rules: the cursor has to stay on the island for `dwell` before the
 /// wings open (so passing over the notch on the way to a menu does
-/// nothing); staying on the open wings for `expand` more opens everything,
-/// as does a click at any time; leaving collapses after `leave` whatever
-/// opened it; a click anywhere else closes it. Where the collapsed island
-/// already shows the row the wings would (`skipsPeek`), the dwell opens
-/// everything at once. The island never takes keyboard focus, so there is
-/// no Esc.
+/// nothing); only a click opens everything, and a click on the open
+/// island leaves it open, so the rows inside can be clicked (the
+/// controls that open the app or Settings close it, `closed`); leaving
+/// collapses after `leave` whatever opened it; a click anywhere else
+/// closes it. Where the collapsed island already shows the row the wings
+/// would (`skipsPeek`), resting on it adds nothing, so only a click opens
+/// it. The island never takes keyboard focus, so there is no Esc.
 struct NotchIslandInteraction: Equatable {
     enum Level: Int, Comparable {
         /// The bare notch (or the pill with its row).
@@ -29,15 +30,17 @@ struct NotchIslandInteraction: Equatable {
         case entered
         case left
         case dwellElapsed
-        case expandElapsed
         case leaveElapsed
         case tapped
+        /// A control on the open island opened the app, Settings or
+        /// another of its windows, where the user is going next.
+        case closed
         case clickedOutside
     }
 
     /// The one timer the controller should have armed after an event;
     /// arming replaces whatever was pending, `.none` cancels it.
-    enum Timer: Equatable { case none, dwell, expand, leave }
+    enum Timer: Equatable { case none, dwell, leave }
 
     /// The default hover-intent dwell. The user can change it
     /// (`Preferences.notchIslandHoverDelay`, 0–1 s, boring.notch's "hover
@@ -45,7 +48,6 @@ struct NotchIslandInteraction: Equatable {
     static let dwell: Duration = .milliseconds(250)
     static let defaultDwellSeconds: Double = 0.25
     static let dwellRange: ClosedRange<Double> = 0...1
-    static let expand: Duration = .milliseconds(1000)
     /// Short, like boring.notch's: the slab is one contiguous shape, so
     /// moving from a wing into the body never leaves it, and a cursor
     /// that does leave means the user is done.
@@ -70,37 +72,23 @@ struct NotchIslandInteraction: Equatable {
     var peeksOnHover = true
     /// The collapsed island is already showing its row — a drawn notch or
     /// a pill in sight (`NotchIslandVisibility.showsRowWhenCollapsed`) —
-    /// so the peek would add nothing but a second wait: the dwell opens
-    /// everything. A hidden island keeps the peek, which is what brings
-    /// its row back; the first-run reveal still peeks either way.
+    /// so the peek would show nothing new: resting on it does nothing and
+    /// a click opens it. A hidden island keeps the peek, which is what
+    /// brings its row back; the first-run reveal still peeks either way.
     var skipsPeek = false
 
     mutating func handle(_ event: Event) {
         switch event {
         case .entered:
             isInside = true
-            guard peeksOnHover else { timer = .none; return }
-            switch level {
-            case .collapsed: timer = .dwell
-            case .peek: timer = .expand
-            case .expanded: timer = .none
-            }
+            timer = level == .collapsed && peeksOnHover && !skipsPeek ? .dwell : .none
         case .left:
             isInside = false
             timer = level > .collapsed ? .leave : .none
         case .dwellElapsed:
             timer = .none
-            guard isInside, level == .collapsed, peeksOnHover else { return }
-            if skipsPeek {
-                level = .expanded
-            } else {
-                level = .peek
-                timer = .expand
-            }
-        case .expandElapsed:
-            timer = .none
-            guard isInside, level == .peek, peeksOnHover else { return }
-            level = .expanded
+            guard isInside, level == .collapsed, peeksOnHover, !skipsPeek else { return }
+            level = .peek
         case .leaveElapsed:
             timer = .none
             guard !isInside else { return }
@@ -108,7 +96,10 @@ struct NotchIslandInteraction: Equatable {
         case .tapped:
             isInside = true
             timer = .none
-            level = level == .expanded ? .collapsed : .expanded
+            level = .expanded
+        case .closed:
+            timer = .none
+            level = .collapsed
         case .clickedOutside:
             isInside = false
             timer = .none

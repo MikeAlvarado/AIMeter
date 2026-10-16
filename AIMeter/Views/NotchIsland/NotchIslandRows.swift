@@ -50,7 +50,7 @@ struct ExpandedContent: View {
     @ViewBuilder
     private var accountList: some View {
         // Edge to edge: the separators spread the columns over the width.
-        let rows = AccountGrid(accounts: island.accounts).frame(maxWidth: .infinity)
+        let rows = AccountGrid(accounts: island.accounts, primaryID: island.primaryID).frame(maxWidth: .infinity)
         if island.accounts.count > Self.scrollsPast {
             // Measured, not `.frame(maxHeight:)`: a `ScrollView` reports an
             // ideal height of zero for this content (see `MenuBarView`).
@@ -80,9 +80,13 @@ struct ExpandedContent: View {
 /// (`gridCellUnsizedAxes`), so every bar in a column has the same track.
 /// Headers, dividers and status lines span the grid the same way. The
 /// figures are 12 pt; when the grid would not fit the island's width, 11,
-/// then 10.
+/// then 10. With two or more accounts, a click anywhere on one puts its
+/// figures in the sneak (and the menu bar's), and the one there now has
+/// its header marked.
 struct AccountGrid: View {
     let accounts: [NotchIslandModel.Account]
+    /// The account the sneak shows.
+    var primaryID: String?
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
@@ -94,6 +98,7 @@ struct AccountGrid: View {
 
     private func grid(scale: CGFloat) -> some View {
         let columns = accounts.map(\.segments.count).max() ?? 0
+        let picks = accounts.count > 1
         return Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
             ForEach(Array(accounts.enumerated()), id: \.element.id) { index, account in
                 if index > 0 {
@@ -101,7 +106,7 @@ struct AccountGrid: View {
                         .gridCellUnsizedAxes(.horizontal)
                         .padding(.vertical, 12)
                 }
-                AccountHeader(account: account)
+                AccountHeader(account: account, isSelected: picks && account.id == primaryID, isPickable: picks)
                     .gridCellUnsizedAxes(.horizontal)
                     .padding(.bottom, 10)
                 GridRow(alignment: .firstTextBaseline) {
@@ -117,6 +122,7 @@ struct AccountGrid: View {
                                     .font(NotchIslandStyle.font(12 * scale))
                                     .foregroundStyle(NotchIslandStyle.separator)
                                     .frame(maxWidth: .infinity)
+                                    .picksAccount(account.id, if: picks)
                             } else {
                                 Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
                             }
@@ -125,6 +131,7 @@ struct AccountGrid: View {
                             SegmentText(segment: segment, compact: false, scale: scale)
                                 .accessibilityElement(children: .ignore)
                                 .accessibilityLabel(segment.accessibilityLabel)
+                                .picksAccount(account.id, if: picks)
                         } else {
                             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
                         }
@@ -139,6 +146,7 @@ struct AccountGrid: View {
                             SegmentBar(segment: account.segments[column])
                                 .gridCellUnsizedAxes(.horizontal)
                                 .padding(.top, 4)
+                                .picksAccount(account.id, if: picks)
                         } else {
                             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
                         }
@@ -154,11 +162,22 @@ struct AccountGrid: View {
     }
 }
 
-/// The account's identity, and a spinner while it refreshes.
+/// The account's identity, and a spinner while it refreshes; marked
+/// while its figures are the sneak's.
 struct AccountHeader: View {
     let account: NotchIslandModel.Account
+    var isSelected = false
+    var isPickable = false
+    @State private var isHovering = false
 
     var body: some View {
+        identity
+            .background { IslandRowHighlight(isSelected: isSelected, isHovering: isPickable && isHovering) }
+            .onHover { isHovering = $0 }
+            .picksAccount(account.id, if: isPickable)
+    }
+
+    private var identity: some View {
         HStack(spacing: 8) {
             ProviderIdentityView(
                 name: account.name,
@@ -186,6 +205,7 @@ struct AccountHeader: View {
 struct AccountStatusLine: View {
     let account: NotchIslandModel.Account
     @Environment(UsageModel.self) private var model
+    @Environment(\.notchIslandActions) private var actions
 
     var body: some View {
         switch account.status {
@@ -208,6 +228,7 @@ struct AccountStatusLine: View {
                 Button(String(localized: "Sign in again")) {
                     if let connected = model.usage(for: account.id)?.account {
                         AppChrome.connect(.reconnect(connected))
+                        actions?.close()
                     }
                 }
                 .buttonStyle(.plain)
@@ -226,9 +247,11 @@ struct AccountStatusLine: View {
 /// Refresh and Open AIMeter together on the left, Settings alone on the
 /// right — icon-only, labelled for VoiceOver and the tooltip. Refresh is
 /// disabled while a refresh runs and in demo mode (nothing real to
-/// fetch). No keyboard shortcut: the panel is never key.
+/// fetch). The controls that open a window close the island on the way;
+/// Refresh leaves it open. No keyboard shortcut: the panel is never key.
 struct IslandFooter: View {
     @Environment(UsageModel.self) private var model
+    @Environment(\.notchIslandActions) private var actions
 
     var body: some View {
         HStack(spacing: 10) {
@@ -240,16 +263,19 @@ struct IslandFooter: View {
             Rectangle().fill(NotchIslandStyle.separator).frame(width: 1, height: 14)
             control("macwindow", String(localized: "Open AIMeter")) {
                 AppChrome.revealMainWindow()
+                actions?.close()
             }
             Spacer()
             if let ready = AppUpdater.shared.readyUpdate {
                 // An update waits for a restart: its notice, beside Settings.
                 control("arrow.down.circle.fill", String(localized: "AIMeter \(ready.version.description) is ready"), tint: Theme.accent) {
                     AppChrome.openUpdateWindow()
+                    actions?.close()
                 }
             }
             control("gearshape", String(localized: "Settings…"), alignment: .trailing) {
                 AppChrome.openSettings()
+                actions?.close()
             }
         }
     }

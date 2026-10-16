@@ -106,19 +106,32 @@ struct PixelAlertView: View {
     }
 }
 
-/// Pets side by side, a waiting one with its "!" after it.
+/// Pets side by side, a waiting one with its "!" after it. On the live
+/// island a click on any pet but the lead's puts its session in the sneak
+/// (`NotchIslandActions.pickSession`); a click on the lead's opens the
+/// island, like one anywhere else on it.
 struct PetGroup: View {
     let slots: [NotchIslandModel.Sessions.PetSlot]
     let pixel: CGFloat
+    /// The session the sneak shows now.
+    var leadID: String?
+    @Environment(\.notchIslandActions) private var actions
 
     var body: some View {
         HStack(spacing: 4 * pixel) {
             ForEach(slots) { slot in
-                HStack(spacing: pixel) {
+                let pet = HStack(spacing: pixel) {
                     PixelPetView(pet: slot.pet, pose: slot.pose, pixel: pixel)
                     if slot.pose == .waiting {
                         PixelAlertView(pixel: pixel)
                     }
+                }
+                if let actions, slot.id != leadID {
+                    pet
+                        .contentShape(Rectangle())
+                        .onTapGesture { actions.pickSession(slot.id) }
+                } else {
+                    pet
                 }
             }
         }

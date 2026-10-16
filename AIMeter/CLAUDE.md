@@ -544,14 +544,16 @@
     the dwell (`notchIslandHoverDelay`, 250 ms by default) opens the **peek**,
     the wings beside the notch with the chosen windows' figures, on the
     side(s) `notchIslandLayout` says (both, left or right — a one-sided
-    peek is an asymmetric slab); staying on the open wings 1 s more
-    (the expand dwell), or a click at any time, opens **expanded**:
-    every account, the full lines, the footer. A drawn notch or pill in
-    sight skips the peek — it would only show the row already there —
-    and the dwell opens expanded directly (`skipsPeek`, set on every
-    event from `NotchIslandVisibility.showsRowWhenCollapsed`); a
-    concealed one still peeks, which is what brings its row back, and
-    the first-run reveal is a peek everywhere. Leaving collapses after
+    peek is an asymmetric slab); only a click opens **expanded**:
+    every account, the full lines, the footer (staying on the open
+    wings for a second opened it too, until 3.0.1). A drawn notch or
+    pill in sight skips the peek — it would only show the row already
+    there — so resting on it does nothing and a click opens it
+    (`skipsPeek`, set on every event from
+    `NotchIslandVisibility.showsRowWhenCollapsed`); a concealed one still
+    peeks, which is what brings its row back, and the first-run reveal is
+    a peek everywhere. A click on the open island leaves it open, so its
+    rows can be clicked. Leaving collapses after
     150 ms whatever opened it (short, like boring.notch's: the slab is
     one contiguous shape, so moving from a wing into the body never
     leaves it). With a real notch, hover is SwiftUI's own `onHover` on
@@ -724,9 +726,30 @@
     right; it activates the app only for Open AIMeter
     (`AppChrome.revealMainWindow`) and Settings (`AppChrome.openSettings`:
     the dashboard scene's captured `openSettings` action, else the
-    `showSettingsWindow:` selector); Refresh runs `refreshAll()` in
-    place; no keyboard shortcut (the panel is never key). Like the
-    popover it presents no sheets of its own.
+    `showSettingsWindow:` selector), and those two (with the update
+    notice, "Sign in again" and "Connect") close the island on the way,
+    `NotchIslandActions.close`; Refresh runs `refreshAll()` in place
+    and leaves it open; no keyboard shortcut (the panel is never key).
+    Like the popover it presents no sheets of its own.
+  - **Picking the sneak** (`NotchIslandController+Picks.swift`, see
+    "Notch island" in the repo-root CLAUDE.md for the rules): the views
+    report through `NotchIslandActions` (`pickSession`, `pickAccount`,
+    `rotate`, `close`), handed down as the `notchIslandActions`
+    environment value, nil in Settings' preview, where nothing is
+    clickable. `PetGroup` makes every pet but the lead's clickable (a
+    click on the lead's opens the island, like one anywhere else);
+    `SessionRowView` and `AccountGrid` make their rows clickable with two
+    or more to choose from, the one in the sneak marked and the one
+    under the cursor fainter (`IslandRowHighlight`, drawn past the row's
+    frame so nothing moves); a mouse drag is a `DragGesture` on the slab,
+    two fingers a local `scrollWheel` monitor (`NotchIslandSwipe`), and
+    the click that ends a drag which turned the island neither opens it
+    nor picks (`tapsIgnoredUntil`). The session picked lives in
+    `NotchIslandState.sessionPick`; the account, in `primaryAccountID`,
+    or in demo mode `NotchIslandState.demoPrimaryID`, so a demo pick
+    never overwrites the real one. A turn nudges the row 8 pt the
+    swipe's way and springs it back (`NotchIslandState.nudge`), not
+    under Reduce Motion.
   - **Accessibility**: VoiceOver cannot hover, so the island's open
     layers are unreachable to it by design — nothing lives only in the
     island (the popover, the Dashboard and the tooltip carry every

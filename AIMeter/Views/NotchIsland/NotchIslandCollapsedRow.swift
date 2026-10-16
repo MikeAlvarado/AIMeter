@@ -45,6 +45,7 @@ struct CollapsedRow: View {
     var availableWing: CGFloat?
     @Environment(\.notchIslandRowScale) private var scale
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.notchIslandActions) private var actions
 
     /// Inset between a wing's content and the notch.
     static let innerPadding: CGFloat = 12
@@ -120,7 +121,7 @@ struct CollapsedRow: View {
                 HStack(spacing: 6 * scale) {
                     if sessions.showsPets {
                         if !sessions.pets.isEmpty {
-                            PetGroup(slots: sessions.pets, pixel: petPixel)
+                            PetGroup(slots: sessions.pets, pixel: petPixel, leadID: sessions.lead?.id)
                         }
                     } else if let mark = sessions.mark {
                         SessionMark(mark: mark, scale: scale)
@@ -147,7 +148,7 @@ struct CollapsedRow: View {
     private func namedRow(sessions: NotchIslandModel.Sessions, lead: NotchIslandModel.Sessions.Row) -> some View {
         NamedRowLayout(spacing: 6 * scale, limit: availableWing.map { 2 * ($0 - Self.outerPadding * scale) }) {
             if sessions.showsPets {
-                PetGroup(slots: sessions.leftPets(named: true), pixel: petPixel)
+                PetGroup(slots: sessions.leftPets(named: true), pixel: petPixel, leadID: lead.id)
             } else if let mark = sessions.mark {
                 SessionMark(mark: mark, scale: scale)
             }
@@ -157,7 +158,7 @@ struct CollapsedRow: View {
             identity
             SegmentLine(segments: island.collapsed.left + island.collapsed.right, compact: true, scale: scale)
             if sessions.showsPets, !sessions.rightPets(named: true).isEmpty {
-                PetGroup(slots: sessions.rightPets(named: true), pixel: petPixel)
+                PetGroup(slots: sessions.rightPets(named: true), pixel: petPixel, leadID: lead.id)
             }
             SessionCount(count: sessions.count, scale: scale)
         }
@@ -189,6 +190,7 @@ struct CollapsedRow: View {
     private var connectGlyph: some View {
         Button {
             AppChrome.connect(.add)
+            actions?.close()
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: ProviderMark.defaultSymbol)

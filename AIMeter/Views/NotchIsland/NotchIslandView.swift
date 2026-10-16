@@ -25,6 +25,8 @@ struct NotchIslandRoot: View {
 
     var body: some View {
         slab(now: now)
+            // What a click on a pet, an account or a control inside reports.
+            .environment(\.notchIslandActions, actions)
             // Hidden until hovered, or behind a full-screen app, on a
             // screen without a notch: the collapsed slab slides up past
             // the top edge on the same spring it opens with, and comes
@@ -77,11 +79,16 @@ struct NotchIslandRoot: View {
     // MARK: - Slab
 
     private func slab(now: Date) -> some View {
-        let island = NotchIslandModel.current(model: model, prefs: prefs, now: now)
+        let island = NotchIslandModel.current(
+            model: model, prefs: prefs, now: now, sessionPick: state.sessionPick,
+            primaryID: model.isDemoMode ? state.demoPrimaryID : nil
+        )
         let open = state.level > .collapsed
         let expanded = state.level == .expanded
         return VStack(alignment: .notchCenter, spacing: 0) {
             header(island: island)
+                // A swipe's turn: the row slides its way and springs back.
+                .offset(x: state.nudge)
                 .zIndex(2)
             if state.level == .peek, state.isRevealing {
                 revealCaption
@@ -109,9 +116,18 @@ struct NotchIslandRoot: View {
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.mark)
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.count)
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.lead?.id)
+        .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.primaryID)
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: state.availableWing)
         .contentShape(Rectangle())
         .onHover(perform: actions.hover)
+        // A drag across it with the mouse turns it like a swipe; a click
+        // opens it (`NotchIslandController+Picks.swift`).
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 12)
+                .onEnded { value in
+                    if let step = NotchIslandSwipe.step(forDrag: value.translation) { actions.rotate(step) }
+                }
+        )
         .onTapGesture(perform: actions.tap)
         // The slab's frame in the hosting view's coordinates, for hit
         // testing (`NotchIslandHostingView.slab`), the mouse-shape resample
@@ -237,8 +253,17 @@ enum NotchIslandStyle {
 extension NotchIslandModel {
     /// The live island, from the model and the preferences — what the
     /// panel draws and what Settings previews, so the preview is the
-    /// truth (the same rule as `MenuBarLabelModel.current`).
-    static func current(model: UsageModel, prefs: PreferencesModel, now: Date = Date(), layout: NotchIslandLayout? = nil) -> NotchIslandModel {
+    /// truth (the same rule as `MenuBarLabelModel.current`). The panel
+    /// adds what the user picked for its sneak: a session, and in demo
+    /// mode an account (`primaryID`; otherwise the stored one).
+    static func current(
+        model: UsageModel,
+        prefs: PreferencesModel,
+        now: Date = Date(),
+        layout: NotchIslandLayout? = nil,
+        sessionPick: SessionPick? = nil,
+        primaryID: String? = nil
+    ) -> NotchIslandModel {
         // The demo is where the store and site captures come from: it
         // shows its own fabricated sessions (`DemoSessions`), and no real
         // session (or its name) ever shows in it.
@@ -257,7 +282,7 @@ extension NotchIslandModel {
                     isRefreshing: usage.isRefreshing
                 )
             },
-            primaryID: prefs.primaryAccountID,
+            primaryID: primaryID ?? prefs.primaryAccountID,
             displayMode: prefs.displayMode,
             resetStyle: prefs.resetStyle,
             modelSlotFallback: prefs.modelSlotFallback,
@@ -275,6 +300,8 @@ extension NotchIslandModel {
             justFinished: source.justFinished,
             sessionPets: prefs.claudeSessionsPets,
             sessionNames: prefs.claudeSessionsShowsName,
+            sessionPick: sessionPick,
+            askedAt: model.isDemoMode ? [:] : ClaudeSessionMonitor.shared.askedAt,
             now: now
         )
     }

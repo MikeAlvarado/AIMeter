@@ -4275,48 +4275,48 @@
         }
       }
     },
-    "Rest the cursor on the notch and the wings open with your limits; stay a moment longer, or click, and everything opens. Turning the island on hides the menu bar icon; turning it off brings the icon back. Everything it shows is also in the menu bar popover and the Dashboard." : {
+    "Rest the cursor on the notch and the wings open with your limits; click, and everything opens. Swipe across the island, or click a pet or an account, to choose what it shows. Turning the island on hides the menu bar icon; turning it off brings the icon back. Everything it shows is also in the menu bar popover and the Dashboard." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lass den Cursor auf dem Notch ruhen und die Flügel öffnen sich mit deinen Limits; bleibst du einen Moment länger oder klickst, öffnet sich alles. Das Island einzuschalten blendet das Menüleistensymbol aus; ausschalten bringt es zurück. Alles, was es zeigt, steht auch im Menüleisten-Popover und im Dashboard."
+            "value" : "Lass den Cursor auf dem Notch ruhen und die Flügel öffnen sich mit deinen Limits; klickst du, öffnet sich alles. Wische über die Insel oder klicke auf ein Pixeltier oder ein Konto, um zu wählen, was sie zeigt. Die Insel einzuschalten blendet das Menüleistensymbol aus; ausschalten bringt es zurück. Alles, was sie zeigt, steht auch im Menüleisten-Popover und im Dashboard."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deja el cursor sobre el notch y se abren las alas con tus límites; si te quedas un momento más, o haces clic, se abre todo. Activar el island oculta el icono de la barra de menús; desactivarlo lo devuelve. Todo lo que muestra está también en el menú de la barra y en el panel."
+            "value" : "Deja el cursor sobre el notch y se abren las alas con tus límites; haz clic y se abre todo. Desliza sobre la isla, o haz clic en una mascota o en una cuenta, para elegir qué muestra. Activar la isla oculta el icono de la barra de menús; desactivarla lo devuelve. Todo lo que muestra está también en el menú de la barra y en el panel."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Laissez le curseur sur l'encoche et les ailes s'ouvrent avec vos limites ; restez un instant de plus, ou cliquez, et tout s'ouvre. Activer l'île masque l'icône de la barre des menus ; la désactiver la ramène. Tout ce qu'elle affiche se trouve aussi dans le menu de la barre et le tableau de bord."
+            "value" : "Laissez le curseur sur l'encoche et les ailes s'ouvrent avec vos limites ; cliquez, et tout s'ouvre. Balayez l'îlot, ou cliquez sur un compagnon ou un compte, pour choisir ce qu'il affiche. Activer l'îlot masque l'icône de la barre des menus ; le désactiver la ramène. Tout ce qu'il affiche se trouve aussi dans le menu de la barre et le tableau de bord."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ノッチにカーソルを置くと、ウイングが開いて上限が表示されます。もう少し置くかクリックすると、すべてが開きます。アイランドをオンにするとメニューバーのアイコンは隠れ、オフにすると戻ります。表示される内容はメニューバーのポップオーバーとダッシュボードでも確認できます。"
+            "value" : "ノッチにカーソルを置くと、ウイングが開いて上限が表示されます。クリックすると、すべてが開きます。アイランドの上でスワイプするか、ペットやアカウントをクリックすると、表示する内容を選べます。アイランドをオンにするとメニューバーのアイコンは隠れ、オフにすると戻ります。表示される内容はメニューバーのポップオーバーとダッシュボードでも確認できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "노치에 커서를 올려 두면 윙이 열리며 한도가 표시됩니다. 조금 더 머물거나 클릭하면 전체가 열립니다. 아일랜드를 켜면 메뉴 막대 아이콘이 숨겨지고, 끄면 다시 나타납니다. 표시되는 모든 내용은 메뉴 막대 팝오버와 대시보드에서도 볼 수 있습니다."
+            "value" : "노치에 커서를 올려 두면 윙이 열리며 한도가 표시됩니다. 클릭하면 전체가 열립니다. 아일랜드 위에서 스와이프하거나 펫이나 계정을 클릭하면 표시할 내용을 고를 수 있습니다. 아일랜드를 켜면 메뉴 막대 아이콘이 숨겨지고, 끄면 다시 나타납니다. 표시되는 모든 내용은 메뉴 막대 팝오버와 대시보드에서도 볼 수 있습니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deixe o cursor sobre o notch e as asas se abrem com seus limites; fique um instante a mais, ou clique, e tudo se abre. Ativar a ilha oculta o ícone da barra de menus; desativá-la o traz de volta. Tudo o que ela mostra também está no menu da barra e no painel."
+            "value" : "Deixe o cursor sobre o notch e as asas se abrem com seus limites; clique, e tudo se abre. Deslize sobre a ilha, ou clique em um bichinho ou em uma conta, para escolher o que ela mostra. Ativar a ilha oculta o ícone da barra de menus; desativá-la o traz de volta. Tudo o que ela mostra também está no menu da barra e no painel."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将光标停在刘海上，两翼会展开并显示你的额度；再停留片刻或点击，即可完全展开。开启岛屿会隐藏菜单栏图标，关闭则恢复。它显示的一切也都在菜单栏弹出窗口和仪表盘中。"
+            "value" : "将光标停在刘海上，两翼会展开并显示你的额度；点击即可完全展开。在岛屿上滑动，或点击宠物或账户，即可选择它显示的内容。开启岛屿会隐藏菜单栏图标，关闭则恢复。它显示的一切也都在菜单栏弹出窗口和仪表盘中。"
           }
         }
       }

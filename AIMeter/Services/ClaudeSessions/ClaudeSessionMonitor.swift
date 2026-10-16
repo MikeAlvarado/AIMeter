@@ -25,6 +25,10 @@ final class ClaudeSessionMonitor {
     /// A session finished a moment ago: the collapsed island marks it for
     /// `finishedMarkDuration`.
     private(set) var justFinished: ClaudeCodeSessionActivity?
+    /// When each session waiting for permission asked: one that asks after
+    /// the user put another session in the island's sneak still takes it
+    /// (`NotchIslandModel.Sessions.ordered`). Gone once it is answered.
+    private(set) var askedAt: [String: Date] = [:]
     private(set) var isRunning = false
     /// Whether AIMeter's hooks are in Claude Code's settings, read when the
     /// monitor starts and after every install or removal.
@@ -93,6 +97,7 @@ final class ClaudeSessionMonitor {
         tracker = ClaudeCodeSessionTracker()
         sessions = []
         justFinished = nil
+        askedAt = [:]
     }
 
     // MARK: Hooks
@@ -152,10 +157,18 @@ final class ClaudeSessionMonitor {
                   let previous = before[id], previous.isActive else { continue }
             markFinished(session)
         }
-        if notifiesWhenAsked {
-            Self.newlyAsking(before: before, after: tracker.sessions).forEach(announce)
+        let asking = Self.newlyAsking(before: before, after: tracker.sessions)
+        let noLonger = Self.noLongerAsking(before: before, after: tracker.sessions)
+        if !asking.isEmpty || !noLonger.isEmpty {
+            var times = askedAt
+            asking.forEach { times[$0.id] = now }
+            noLonger.forEach { times[$0] = nil }
+            askedAt = times
         }
-        let answered = Set(Self.noLongerAsking(before: before, after: tracker.sessions).map { Self.notificationPrefix + $0 })
+        if notifiesWhenAsked {
+            asking.forEach(announce)
+        }
+        let answered = Set(noLonger.map { Self.notificationPrefix + $0 })
         if !answered.isEmpty {
             Task { await Self.withdrawDelivered { answered.contains($0) } }
         }

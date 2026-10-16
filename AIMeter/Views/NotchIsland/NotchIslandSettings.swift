@@ -80,7 +80,7 @@ struct NotchIslandSettings: View {
             }
         }
         .onAppear { screen = Self.islandScreen }
-        SectionFootnote(text: String(localized: "Rest the cursor on the notch and the wings open with your limits; stay a moment longer, or click, and everything opens. Turning the island on hides the menu bar icon; turning it off brings the icon back. Everything it shows is also in the menu bar popover and the Dashboard."))
+        SectionFootnote(text: String(localized: "Rest the cursor on the notch and the wings open with your limits; click, and everything opens. Swipe across the island, or click a pet or an account, to choose what it shows. Turning the island on hides the menu bar icon; turning it off brings the icon back. Everything it shows is also in the menu bar popover and the Dashboard."))
 
         SectionHeader(title: String(localized: "Screens without a notch"))
         Card {

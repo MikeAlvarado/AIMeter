@@ -69,12 +69,26 @@ extension NotchIslandModel {
         /// The lead session, the first pet's: its row (name, folder,
         /// "Working for 3m"), which the peek shows in full.
         let lead: Row?
+        /// The sessions working or waiting, in the island's own order: what
+        /// a swipe goes through (`NotchIslandModel.rotation(by:)`).
+        let rotation: [String]
 
         static let maxRows = 5
         static let maxPets = 3
         static let none = Sessions(sessions: [], justFinished: nil, now: .distantPast)
 
-        init(sessions: [ClaudeCodeSessionActivity], justFinished: ClaudeCodeSessionActivity?, showsPets: Bool = true, showsName: Bool = false, now: Date) {
+        /// `pick` is the session the user put in the sneak; `askedAt`, when
+        /// each session waiting for permission asked
+        /// (`ClaudeSessionMonitor.askedAt`).
+        init(
+            sessions: [ClaudeCodeSessionActivity],
+            justFinished: ClaudeCodeSessionActivity?,
+            showsPets: Bool = true,
+            showsName: Bool = false,
+            pick: SessionPick? = nil,
+            askedAt: [String: Date] = [:],
+            now: Date
+        ) {
             activeCount = sessions.filter(\.isActive).count
             let waiting = sessions.contains { session in
                 if case .needsPermission = session.state { return true }
@@ -104,10 +118,8 @@ extension NotchIslandModel {
                 case .finished: nil
                 }
             }
-            // A session waiting for permission leads, whatever its place:
-            // it is the one that needs the user, so it is never left in
-            // the count past `maxPets`.
-            slots = slots.filter { $0.pose == .waiting } + slots.filter { $0.pose != .waiting }
+            slots = Self.ordered(slots, pick: pick, askedAt: askedAt)
+            rotation = sessions.filter(\.isActive).map(\.id)
             if let justFinished, !slots.contains(where: { $0.id == justFinished.id }) {
                 slots.append(PetSlot(id: justFinished.id, pet: pet(justFinished.id), pose: .asleep))
             }
@@ -131,6 +143,27 @@ extension NotchIslandModel {
         func leftPets(named: Bool) -> [PetSlot] { Array(pets.prefix(leftPetCount(named: named))) }
         func rightPets(named: Bool) -> [PetSlot] { Array(pets.dropFirst(leftPetCount(named: named))) }
         private func leftPetCount(named: Bool) -> Int { named || pets.count <= 2 ? 1 : 2 }
+        /// Who leads beside the notch: a session that asked for permission
+        /// after the user's last pick (every waiting one, with no pick),
+        /// since it is the one that needs the user; then the session the
+        /// user picked, while it works or waits; then the rest, those
+        /// waiting first, so a waiting session is never left in the count
+        /// past `maxPets`. Once the newer request is answered, the pick
+        /// leads again.
+        static func ordered(_ slots: [PetSlot], pick: SessionPick?, askedAt: [String: Date]) -> [PetSlot] {
+            let waiting = slots.filter { $0.pose == .waiting }
+            var ordered = waiting.filter { slot in
+                guard let pick else { return true }
+                return (askedAt[slot.id] ?? .distantPast) > pick.at
+            }
+            if let pick, let picked = slots.first(where: { $0.id == pick.id }), !ordered.contains(picked) {
+                ordered.append(picked)
+            }
+            ordered += waiting.filter { !ordered.contains($0) }
+            ordered += slots.filter { !ordered.contains($0) }
+            return ordered
+        }
+
         /// Every session a pet stands for, shown or past `maxPets`: the
         /// count on the notch's right.
         var count: Int { pets.count + morePets }
@@ -174,5 +207,43 @@ extension NotchIslandModel {
                 pet: pet
             )
         }
+    }
+}
+
+extension NotchIslandModel {
+    /// The session the user put in the sneak (a click on its pet or row,
+    /// or a swipe), and when: a session that asks for permission after
+    /// that still takes the sneak (`Sessions.ordered`).
+    struct SessionPick: Equatable {
+        let id: String
+        let at: Date
+    }
+
+    /// What a swipe across the island brings into the sneak.
+    enum Rotation: Equatable {
+        case session(String)
+        case account(String)
+    }
+
+    /// The next (`step` 1) or previous (-1) of what the sneak shows: while
+    /// a session works, waits or just finished, only the sessions turn;
+    /// otherwise the accounts, in the registry's order. Nil with fewer
+    /// than two to turn through.
+    func rotation(by step: Int) -> Rotation? {
+        if sessions.mark != nil {
+            return Self.rotated(sessions.rotation, from: sessions.lead?.id, by: step).map(Rotation.session)
+        }
+        return Self.rotated(accounts.map(\.id), from: primaryID, by: step).map(Rotation.account)
+    }
+
+    /// `step` places on from `current` in `ids`, coming round at either
+    /// end; from nothing listed, the first (forward) or the last.
+    static func rotated(_ ids: [String], from current: String?, by step: Int) -> String? {
+        guard ids.count > 1, step != 0 else { return nil }
+        guard let current, let index = ids.firstIndex(of: current) else {
+            return step > 0 ? ids.first : ids.last
+        }
+        let count = ids.count
+        return ids[((index + step) % count + count) % count]
     }
 }

@@ -71,13 +71,16 @@ can be added later.
   notch fused to the edge, or a pill floating in the menu bar like the
   iPhone's island, at the menu bar's height or your own, shown always,
   only when the cursor comes to it, and out of the way of full-screen
-  apps. Shown, it already carries your figures, so resting the cursor
-  on it opens every account straight away.
+  apps. Shown, it already carries your figures, so a click on it opens
+  every account straight away.
   Invisible until the cursor rests on the notch; then the figures you
   chose peek out beside it (`5h 42% | 7d 61%`, on either side or both),
-  and staying a moment longer or clicking opens every account in full —
+  and a click opens every account in full —
   `5h 42% ↻2h 58m | 7d 61% ↻3d 3h` with bars, status and Refresh / Open
-  / Settings — never taking focus or the keyboard. On by default on a
+  / Settings — never taking focus or the keyboard. A click inside keeps
+  it open; click an account, a pet or a session there and the peek shows
+  it, or swipe across the island (two fingers, or a drag) to turn
+  through your sessions while one works, else your accounts. On by default on a
   MacBook with a notch, where the menu bar icon stays until you open the
   island the first time and then gives way to it; opt-in elsewhere.
   Settings previews the peek and picks which account and windows the
@@ -138,8 +141,9 @@ can be added later.
   shakes beside a yellow "!" when it waits for your permission, and
   falls asleep when it finishes. The one that needs you leads, and a
   count sits on the other side of the notch (Settings can add the
-  session's name); hover to see its name and what it is doing, or open
-  the island for every session and your usage. Settings can
+  session's name); hover to see its name and what it is doing, swipe to
+  the next one or click another to put it in front, or open the island
+  for every session and your usage. Settings can
   swap the pets for a plain spinner. Any number of
   sessions, from the desktop app or the CLI. It reads only the shape of
   the session logs in `~/.claude/projects`; one click (in Settings or in

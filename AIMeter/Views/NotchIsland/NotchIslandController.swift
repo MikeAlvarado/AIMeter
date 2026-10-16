@@ -34,6 +34,16 @@ final class NotchIslandState {
     /// without one half the drawn row, from the screen's centre; nil when
     /// nothing limits it. Only the collapsed island's session name reads it.
     var availableWing: CGFloat?
+    /// The session the user put in the sneak; nil while the island picks
+    /// (`NotchIslandModel.Sessions.ordered`).
+    var sessionPick: NotchIslandModel.SessionPick?
+    /// In demo mode, the account the sneak shows: a pick there stays in
+    /// memory, like the rest of the demo, rather than overwriting the real
+    /// `primaryAccountID`.
+    var demoPrimaryID: String?
+    /// The row beside the notch, nudged the way a swipe went and sprung
+    /// back (`NotchIslandController+Picks.swift`); 0 at rest.
+    var nudge: CGFloat = 0
 }
 
 /// What the island's tree reports back to the controller.
@@ -47,6 +57,28 @@ struct NotchIslandActions {
     /// The slab's current frame in the hosting view's coordinates, so hit
     /// testing stays confined to it.
     var slabChanged: (CGRect) -> Void
+    /// A click on a session's pet or row: that session in the sneak.
+    var pickSession: (String) -> Void
+    /// A click on an account: its figures in the sneak, and the menu bar's.
+    var pickAccount: (String) -> Void
+    /// A swipe or a drag across the island: 1 the next, -1 the previous.
+    var rotate: (Int) -> Void
+    /// A control on the open island opened the app or Settings.
+    var close: () -> Void
+}
+
+private struct NotchIslandActionsKey: EnvironmentKey {
+    static var defaultValue: NotchIslandActions? { nil }
+}
+
+extension EnvironmentValues {
+    /// The live island's actions, for the views inside it that pick what
+    /// the sneak shows or close it. Nil in Settings' preview, where nothing
+    /// is clickable.
+    var notchIslandActions: NotchIslandActions? {
+        get { self[NotchIslandActionsKey.self] }
+        set { self[NotchIslandActionsKey.self] = newValue }
+    }
 }
 
 /// Lifecycle of the island: which screen it sits on, the fixed panel
@@ -69,16 +101,22 @@ final class NotchIslandController {
     static let settleDelay: Duration = .milliseconds(700)
 
     // Members below are internal rather than private so
-    // `NotchIslandController+Screen.swift`, `+Pointer.swift` and
-    // `+Clearance.swift` can reach them; nothing outside this type's four
-    // files should touch them.
+    // `NotchIslandController+Screen.swift`, `+Pointer.swift`,
+    // `+Clearance.swift` and `+Picks.swift` can reach them; nothing
+    // outside this type's files should touch them.
     private(set) var isRunning = false
     let state = NotchIslandState()
     var interaction = NotchIslandInteraction()
     var panel: NotchIslandPanel?
     var hosting: NotchIslandHostingView<AnyView>?
-    private weak var model: UsageModel?
+    weak var model: UsageModel?
     weak var prefs: PreferencesModel?
+    /// Two-finger swipes over the island (`+Picks.swift`).
+    var scrollMonitor: Any?
+    var swipe = NotchIslandSwipe()
+    /// A drag that turned the island also ends in a click; that click is
+    /// not one to open it with.
+    var tapsIgnoredUntil: Date?
     var screen: NotchIslandGeometry.Screen?
     /// The island's display, for the full-screen check (`CGDisplayBounds`).
     var displayID: CGDirectDisplayID?
@@ -119,14 +157,18 @@ final class NotchIslandController {
         isRunning = true
 
         let actions = NotchIslandActions(
-            tap: { [weak self] in self?.handle(.tapped) },
+            tap: { [weak self] in self?.tapped() },
             hover: { [weak self] inside in
                 // A screen without a notch tracks the pointer itself; two
                 // hover sources would race each other's enter and leave.
                 guard let self, !self.tracksPointer else { return }
                 self.handle(inside ? .entered : .left)
             },
-            slabChanged: { [weak self] frame in self?.slabChanged(frame) }
+            slabChanged: { [weak self] frame in self?.slabChanged(frame) },
+            pickSession: { [weak self] id in self?.clicked(session: id) },
+            pickAccount: { [weak self] id in self?.clicked(account: id) },
+            rotate: { [weak self] step in self?.rotate(by: step) },
+            close: { [weak self] in self?.handle(.closed) }
         )
         let root = NotchIslandRoot(state: state, actions: actions)
             .environment(model)
@@ -157,6 +199,7 @@ final class NotchIslandController {
         relocate()
         applyCapturePolicy()
         observePreferences()
+        installScrollMonitor()
         scheduleRevealIfNeeded()
     }
 
@@ -172,6 +215,7 @@ final class NotchIslandController {
         activePollTask = nil
         stopClearanceWatch()
         removeClickMonitors()
+        removeScrollMonitor()
         // Dropped without a leave: nothing may arm a timer once stopped.
         pointerInside = false
         removePointerMonitors()
@@ -186,6 +230,11 @@ final class NotchIslandController {
         state.isRevealing = false
         state.isHovering = false
         state.isConcealed = false
+        state.sessionPick = nil
+        state.demoPrimaryID = nil
+        state.nudge = 0
+        swipe = NotchIslandSwipe()
+        tapsIgnoredUntil = nil
         isFullScreen = false
         pointerInside = false
     }
@@ -236,9 +285,6 @@ final class NotchIslandController {
         case .dwell:
             delay = NotchIslandInteraction.dwell(seconds: prefs?.notchIslandHoverDelay ?? NotchIslandInteraction.defaultDwellSeconds)
             elapsed = .dwellElapsed
-        case .expand:
-            delay = NotchIslandInteraction.expand
-            elapsed = .expandElapsed
         case .leave:
             delay = NotchIslandInteraction.leave
             elapsed = .leaveElapsed

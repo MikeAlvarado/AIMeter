@@ -1,6 +1,83 @@
 {
   "releases": [
     {
+      "version": "3.0.1",
+      "items": [
+        {
+          "symbol": "cursorarrow.click",
+          "title": {
+            "en": "A click opens the island",
+            "es": "Un clic abre la isla",
+            "de": "Ein Klick öffnet die Insel",
+            "fr": "Un clic ouvre l'îlot",
+            "ja": "クリックでアイランドを開く",
+            "ko": "클릭으로 아일랜드 열기",
+            "pt-BR": "Um clique abre a ilha",
+            "zh-Hans": "点击打开刘海岛"
+          },
+          "detail": {
+            "en": "Resting the cursor on the notch still shows the peek; the island opens when you click it, and a click inside keeps it open.",
+            "es": "Dejar el cursor sobre el notch sigue mostrando el vistazo; la isla se abre cuando haces clic, y un clic adentro la mantiene abierta.",
+            "de": "Ruht der Cursor auf dem Notch, erscheint weiterhin die Vorschau; die Insel öffnet sich per Klick, und ein Klick darin lässt sie offen.",
+            "fr": "Laisser le curseur sur l'encoche affiche toujours l'aperçu ; l'îlot s'ouvre d'un clic, et un clic à l'intérieur le garde ouvert.",
+            "ja": "ノッチにカーソルを置くと引き続きプレビューが表示され、アイランドはクリックで開きます。中をクリックしても閉じません。",
+            "ko": "노치에 커서를 올리면 계속 미리 보기가 표시되고, 아일랜드는 클릭하면 열립니다. 안쪽을 클릭해도 닫히지 않습니다.",
+            "pt-BR": "Deixar o cursor sobre o notch continua mostrando a espiada; a ilha abre quando você clica, e um clique dentro dela a mantém aberta.",
+            "zh-Hans": "将光标停在刘海上仍会显示预览；点击即可打开刘海岛，在其中点击也不会关闭。"
+          },
+          "platforms": ["macOS"]
+        },
+        {
+          "symbol": "arrow.left.arrow.right",
+          "title": {
+            "en": "Swipe through sessions and accounts",
+            "es": "Desliza entre sesiones y cuentas",
+            "de": "Zwischen Sitzungen und Konten wischen",
+            "fr": "Balayez entre sessions et comptes",
+            "ja": "スワイプでセッションとアカウントを切り替え",
+            "ko": "스와이프로 세션과 계정 전환",
+            "pt-BR": "Deslize entre sessões e contas",
+            "zh-Hans": "滑动切换会话和账户"
+          },
+          "detail": {
+            "en": "Swipe across the island with two fingers, or drag it, to show the next session while one works, or your next account.",
+            "es": "Desliza dos dedos sobre la isla, o arrástrala, para ver la siguiente sesión mientras alguna trabaja, o tu siguiente cuenta.",
+            "de": "Wische mit zwei Fingern über die Insel oder ziehe sie, um die nächste Sitzung zu zeigen, solange eine arbeitet, oder dein nächstes Konto.",
+            "fr": "Balayez l'îlot à deux doigts, ou faites-le glisser, pour afficher la session suivante pendant qu'une travaille, ou votre compte suivant.",
+            "ja": "アイランドの上を2本指でスワイプするかドラッグすると、作業中のセッションがあれば次のセッションを、なければ次のアカウントを表示します。",
+            "ko": "아일랜드 위에서 두 손가락으로 스와이프하거나 드래그하면, 작업 중인 세션이 있을 때는 다음 세션을, 없을 때는 다음 계정을 보여 줍니다.",
+            "pt-BR": "Deslize dois dedos sobre a ilha, ou arraste-a, para ver a próxima sessão enquanto alguma trabalha, ou sua próxima conta.",
+            "zh-Hans": "在刘海岛上用双指滑动或拖动，有会话在工作时显示下一个会话，否则显示下一个账户。"
+          },
+          "platforms": ["macOS"]
+        },
+        {
+          "symbol": "hand.tap",
+          "title": {
+            "en": "Pick what the notch shows",
+            "es": "Elige qué muestra el notch",
+            "de": "Wähle, was der Notch zeigt",
+            "fr": "Choisissez ce qu'affiche l'encoche",
+            "ja": "ノッチに表示する内容を選択",
+            "ko": "노치에 표시할 내용 선택",
+            "pt-BR": "Escolha o que o notch mostra",
+            "zh-Hans": "选择刘海显示的内容"
+          },
+          "detail": {
+            "en": "Click a pet, a session or an account in the open island and the notch shows it. A session asking for your permission still comes first.",
+            "es": "Haz clic en una mascota, una sesión o una cuenta en la isla abierta y el notch la muestra. Una sesión que pide tu permiso sigue yendo primero.",
+            "de": "Klicke in der geöffneten Insel auf ein Pixeltier, eine Sitzung oder ein Konto, und der Notch zeigt es. Eine Sitzung, die deine Erlaubnis braucht, kommt weiterhin zuerst.",
+            "fr": "Cliquez sur un compagnon, une session ou un compte dans l'îlot ouvert, et l'encoche l'affiche. Une session qui demande votre autorisation passe toujours en premier.",
+            "ja": "開いたアイランドでペット、セッション、アカウントをクリックすると、ノッチにそれが表示されます。許可を求めているセッションは引き続き最優先です。",
+            "ko": "열린 아일랜드에서 펫, 세션 또는 계정을 클릭하면 노치에 표시됩니다. 권한을 요청하는 세션은 여전히 가장 먼저 표시됩니다.",
+            "pt-BR": "Clique em um bichinho, uma sessão ou uma conta na ilha aberta, e o notch mostra. Uma sessão que pede sua permissão continua vindo primeiro.",
+            "zh-Hans": "在展开的刘海岛中点击宠物、会话或账户，刘海就会显示它。请求你授权的会话仍会优先显示。"
+          },
+          "platforms": ["macOS"]
+        }
+      ]
+    },
+    {
       "version": "3.0.0",
       "items": [
         {

@@ -18,8 +18,16 @@ struct SessionsSection: View {
             Text(model.isDemoMode ? String(localized: "Coding sessions on this Mac") : "Claude Code")
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(NotchIslandStyle.reset)
+            // With two or more at work, a click on one puts it in the sneak,
+            // and the one there is marked.
+            let picks = sessions.rotation.count > 1
             ForEach(sessions.rows) { row in
-                SessionRowView(row: row, showsPet: sessions.showsPets)
+                SessionRowView(
+                    row: row,
+                    showsPet: sessions.showsPets,
+                    isSelected: picks && row.id == sessions.lead?.id,
+                    isPickable: picks && row.status != .finished
+                )
             }
             if sessions.moreCount > 0 {
                 Text("\(sessions.moreCount) more")
@@ -37,11 +45,31 @@ struct SessionsSection: View {
 struct SessionRowView: View {
     let row: NotchIslandModel.Sessions.Row
     var showsPet = true
+    /// The session the sneak shows.
+    var isSelected = false
+    /// A click puts it in the sneak (`NotchIslandActions.pickSession`).
+    var isPickable = false
+    @Environment(\.notchIslandActions) private var actions
+    @State private var isHovering = false
 
     /// The row's pet: a size that sits beside 12 pt text.
     static let petPixel: CGFloat = 1.5
 
     var body: some View {
+        if isPickable, let actions {
+            content
+                .background { IslandRowHighlight(isSelected: isSelected, isHovering: isHovering) }
+                .contentShape(Rectangle())
+                .onHover { isHovering = $0 }
+                .onTapGesture { actions.pickSession(row.id) }
+                .accessibilityAddTraits(.isButton)
+        } else {
+            content
+                .background { IslandRowHighlight(isSelected: isSelected, isHovering: false) }
+        }
+    }
+
+    private var content: some View {
         HStack(spacing: 8) {
             if showsPet {
                 // The "!" keeps its place on every row, so the names line up.

@@ -137,6 +137,8 @@ struct NotchIslandModel: Equatable {
         justFinished: ClaudeCodeSessionActivity? = nil,
         sessionPets: Bool = true,
         sessionNames: Bool = false,
+        sessionPick: SessionPick? = nil,
+        askedAt: [String: Date] = [:],
         now: Date = Date()
     ) {
         let several = inputs.count > 1
@@ -173,7 +175,10 @@ struct NotchIslandModel: Equatable {
             layout: layout, now: now
         )
         self.incident = incident
-        sessions = Sessions(sessions: activity, justFinished: justFinished, showsPets: sessionPets, showsName: sessionNames, now: now)
+        sessions = Sessions(
+            sessions: activity, justFinished: justFinished, showsPets: sessionPets, showsName: sessionNames,
+            pick: sessionPick, askedAt: askedAt, now: now
+        )
         accessibilityLabel = accounts.isEmpty
             ? String(localized: "AIMeter: no usage data yet")
             : accounts.map(\.accessibilityLabel).joined(separator: "; ")

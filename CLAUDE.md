@@ -104,11 +104,16 @@ assets and string catalog from there.
   macOS notch island is `AIMeter/Views/NotchIsland/`:
   `NotchIslandController.swift` (lifecycle, the interaction's timers
   and monitors, the reveal), `NotchIslandController+Screen.swift`
-  (which display, the fixed panel frame, the observers) and
+  (which display, the fixed panel frame, the observers),
   `NotchIslandController+Pointer.swift` (a screen without a notch:
   pointer tracking, concealment, the full-screen check, capture
-  exclusion, the preferences observation; the controller's members
-  these two reach are internal, not private, by necessity),
+  exclusion, the preferences observation) and
+  `NotchIslandController+Picks.swift` (what the sneak shows when the
+  user picks it: a click on a pet, a session's row or an account, a
+  swipe or a drag, the scroll monitor; the controller's members these
+  reach are internal, not private, by necessity), with
+  `NotchIslandPickViews.swift` (the rows' highlight and an account's
+  click),
   `NotchIslandPanel.swift` (the `NSPanel` and the hosting view that
   confines hit-testing to the slab), `NotchShape.swift` (the eared
   silhouette with animatable radii and `NotchIslandSurface`, the black
@@ -122,11 +127,12 @@ assets and string catalog from there.
   `NotchIslandSessions.swift`, `NotchIslandSessionRows.swift` and
   `NotchIslandController+Clearance.swift` (Claude Code's sessions, see
   below) and
-  `NotchIslandSettings.swift` (its two Settings cards) — over the four
+  `NotchIslandSettings.swift` (its two Settings cards) — over the five
   pure files in `Shared/`
   (`NotchIslandModel.swift`, `NotchIslandGeometry.swift`,
-  `NotchIslandInteraction.swift`, `NotchIslandVisibility.swift`, all
-  unit-tested), see "Notch island" under "Presentation rules".
+  `NotchIslandInteraction.swift`, `NotchIslandVisibility.swift`,
+  `NotchIslandSwipe.swift`, all unit-tested), see "Notch island" under
+  "Presentation rules".
   `AIMeter/Views/PrimaryAccountPicker.swift` is the "Account" menu both
   the Menu bar and the Notch island cards show with two or more
   accounts.
@@ -857,9 +863,14 @@ the account silently freezes at its last snapshot.
     without a restart (Claude Code watches its settings); with AIMeter
     gone the entries do nothing.
   What shows: collapsed on a real notch, the island reads the way Vibe
-  Island's compact island does (`SessionWings`): the lead session (the
-  one waiting for a permission prompt if any, so it is never left in the
-  count, else the newest at work) on the notch's left, with the second
+  Island's compact island does (`SessionWings`): the lead session (one
+  waiting for a permission prompt, so it is never left in the count;
+  else the one the user picked, with a click on its pet or its row or a
+  swipe across the island, see "Notch island"; else the newest at work.
+  A pick holds over a prompt that came before it: `Sessions.ordered`
+  compares when each one asked, `ClaudeSessionMonitor.askedAt`, with the
+  pick's time, and once a newer prompt is answered the pick leads
+  again) on the notch's left, with the second
   of three beside it, and on its right the other pets (three in all at
   most, `PetGroup`) and a small badge counting every session they stand
   for: a short island. "Show the session's name"
@@ -1051,7 +1062,8 @@ the account silently freezes at its last snapshot.
   has no per-instance mechanism (`MenuBarExtra` is a single scene), so a
   new paired preference, `primaryAccountID` (`Shared/PreferencesStore.swift`,
   Settings → the "Account" menu, `PrimaryAccountPicker`, in both the Menu
-  bar and the Notch island cards), picks which account the one status
+  bar and the Notch island cards, or a click or a swipe on the island
+  itself, see "Notch island"), picks which account the one status
   item — and the notch island's wings — represent
   (`UsageModel.primaryAccountUsage(preferredID:)`, falling back
   to the first connected account when unset or stale). It is a labeled
@@ -1280,15 +1292,31 @@ the account silently freezes at its last snapshot.
   two wings as wide as each other so the slab stays centered;
   `leftOnly`; `rightOnly`), no resets; with nothing connected the wing
   carries a "Connect" affordance routed through `AppChrome.connect(.add)`.
-  Staying on the open wings 1 s more, or a **click** at any time, opens
-  the expanded island. On a screen without a notch, a drawn notch or
-  pill in sight already shows its row, so there the dwell opens the
-  expanded island at once (`NotchIslandInteraction.skipsPeek`, from
-  `NotchIslandVisibility.showsRowWhenCollapsed`); a hidden one still
-  peeks first, since the peek is what brings its row back. In every
-  case, a click on an expanded island, leaving it (after
-  150 ms, whatever opened it) or a click anywhere else closes it (mouse
-  monitors, which need no permission). The motion is boring.notch's
+  Only a **click** opens the expanded island (resting on the open wings
+  opened it too, until 3.0.1). On a screen without a notch, a drawn
+  notch or pill in sight already shows its row, so there resting on it
+  does nothing and a click opens it (`NotchIslandInteraction.skipsPeek`,
+  from `NotchIslandVisibility.showsRowWhenCollapsed`); a hidden one
+  still peeks first, since the peek is what brings its row back. A
+  click on the open island leaves it open, so its rows can be clicked;
+  the controls that open a window (Open AIMeter, Settings, the update
+  notice, "Sign in again", "Connect") close it on the way
+  (`NotchIslandInteraction.Event.closed`), and in every case leaving
+  it (after 150 ms, whatever opened it) or a click anywhere else closes
+  it (mouse monitors, which need no permission). What the sneak shows
+  is the user's to pick (`NotchIslandController+Picks.swift`): a click
+  on a session's pet beside the notch, or its row in the open island,
+  puts that session there; a click on an account in the open island
+  puts its figures there, writing `primaryAccountID` (the menu bar's
+  too; in demo mode it stays in memory); and a swipe across the island
+  (two fingers on a trackpad or a Magic Mouse, a mouse wheel turned
+  sideways, or a drag with the button down: `NotchIslandSwipe`, one
+  step a gesture, the inertia never counting, the way the user's own
+  scrolling goes) turns to the next or the previous, the sessions while
+  one works, waits or just finished and otherwise the accounts
+  (`NotchIslandModel.rotation(by:)`), with a small nudge the swipe's
+  way. A local scroll monitor takes the swipes over the island while it
+  is not open; open, the accounts list may need them to scroll. The motion is boring.notch's
   system, rebuilt (it is GPL, read for the recipe, nothing copied): a
   fixed window, the slab as the natural size of its content, one spring
   — see "macOS notch island" in `AIMeter/CLAUDE.md`. Nothing is pinned and the island
@@ -1533,6 +1561,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   frames from this Mac's measured screen rects
   (`NotchIslandGeometryTests`), its hover/dwell/leave/click state machine
   (`NotchIslandInteractionTests`, the hover delay's clamping included),
+  what the user picks for its sneak, a newer permission prompt taking
+  over, what a swipe turns through and how one counts
+  (`NotchIslandPicksTests`),
   the drawn notch and the pill on a screen without one — heights, the
   pill's gap, radii, row scale, hover region, and their invariants swept
   over every menu bar height, custom height and form
@@ -1641,6 +1672,12 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   see `Scripts/IslandVideo/CLAUDE.md`).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
+- The nested `CLAUDE.md` files are docs, never resources: the two
+  synchronized folders that hold one (`AIMeter/`, `AIMeterWidgets/`)
+  list it in their target's `membershipExceptions` in
+  `project.pbxproj`, so no bundle ships it. 3.0.0's app and widget did,
+  on both platforms (58 KB and 16 KB); `find <built .app> -name '*.md'`
+  is the check, and should print nothing.
 - Credit where it is due, and only that. The notch island's motion
   system follows boring.notch (GPL-3.0), its line format and the way it
   shows a Claude Code session while collapsed (its pets at one end, the

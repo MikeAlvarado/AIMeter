@@ -39,7 +39,7 @@ struct SessionWings: View {
         NotchWings {
             HStack(spacing: 8) {
                 if sessions.showsPets {
-                    PetGroup(slots: sessions.leftPets(named: named != nil), pixel: pixel)
+                    PetGroup(slots: sessions.leftPets(named: named != nil), pixel: pixel, leadID: sessions.lead?.id)
                 } else if let mark = sessions.mark {
                     SessionMark(mark: mark)
                 }
@@ -56,7 +56,7 @@ struct SessionWings: View {
                     SessionDetail(row: lead)
                         .transition(.notchSwap)
                 } else if sessions.showsPets, !sessions.rightPets(named: named != nil).isEmpty {
-                    PetGroup(slots: sessions.rightPets(named: named != nil), pixel: pixel)
+                    PetGroup(slots: sessions.rightPets(named: named != nil), pixel: pixel, leadID: sessions.lead?.id)
                         .transition(.notchSwap)
                 }
                 SessionCount(count: sessions.count)

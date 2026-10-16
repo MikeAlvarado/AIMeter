@@ -20,23 +20,18 @@ final class NotchIslandInteractionTests: XCTestCase {
         XCTAssertEqual(island.level, .collapsed)
         island.handle(.dwellElapsed)
         XCTAssertEqual(island.level, .peek)
-        XCTAssertEqual(island.timer, .expand, "staying on the wings is the next step")
+        XCTAssertEqual(island.timer, .none, "past the peek, only a click opens more")
     }
 
-    func testStayingOnTheWingsOpensEverything() {
-        island.handle(.entered)
-        island.handle(.dwellElapsed)
-        island.handle(.expandElapsed)
-        XCTAssertEqual(island.level, .expanded)
-        XCTAssertEqual(island.timer, .none)
-
-        island.handle(.left)
-        island.handle(.leaveElapsed)
+    func testRestingOnTheWingsNeverOpensEverything() {
         island.handle(.entered)
         island.handle(.dwellElapsed)
         island.handle(.left)
-        island.handle(.expandElapsed)
-        XCTAssertEqual(island.level, .peek, "a stale expand after leaving is ignored")
+        island.handle(.entered)
+        XCTAssertEqual(island.timer, .none, "back on the open wings, nothing is armed")
+        XCTAssertEqual(island.level, .peek)
+        island.handle(.tapped)
+        XCTAssertEqual(island.level, .expanded, "a click opens everything")
     }
 
     func testPassingOverDoesNotOpen() {
@@ -70,22 +65,35 @@ final class NotchIslandInteractionTests: XCTestCase {
         island.handle(.dwellElapsed)
         island.handle(.left)
         island.handle(.entered)
-        XCTAssertEqual(island.timer, .expand, "re-entering the open wings arms the expand, not the leave")
+        XCTAssertEqual(island.timer, .none, "re-entering the open wings cancels the leave")
         island.handle(.leaveElapsed)
         XCTAssertEqual(island.level, .peek, "a stale leave is ignored while inside")
     }
 
-    func testClickTogglesTheFullIsland() {
+    func testAClickOpensItAndAClickInsideKeepsItOpen() {
         island.handle(.entered)
         island.handle(.tapped)
         XCTAssertEqual(island.level, .expanded, "from collapsed")
         island.handle(.tapped)
-        XCTAssertEqual(island.level, .collapsed, "a second click closes")
+        XCTAssertEqual(island.level, .expanded, "a click inside never closes: its rows can be clicked")
+        island.collapse()
         island.handle(.entered)
         island.handle(.dwellElapsed)
         island.handle(.tapped)
         XCTAssertEqual(island.level, .expanded, "from the peek")
-        XCTAssertEqual(island.timer, .none, "a click cancels the expand dwell")
+        XCTAssertEqual(island.timer, .none)
+    }
+
+    func testAControlThatOpensAWindowClosesIt() {
+        island.handle(.entered)
+        island.handle(.tapped)
+        island.handle(.closed)
+        XCTAssertEqual(island.level, .collapsed)
+        XCTAssertEqual(island.timer, .none)
+        XCTAssertTrue(island.isInside, "the cursor has not left yet")
+        island.handle(.left)
+        XCTAssertEqual(island.timer, .none, "closed: nothing left to close on the way out")
+        XCTAssertEqual(island.level, .collapsed)
     }
 
     func testClickOutsideCloses() {
@@ -107,18 +115,15 @@ final class NotchIslandInteractionTests: XCTestCase {
         XCTAssertEqual(island.level, .expanded)
     }
 
-    func testAnIslandAlreadyShowingItsRowOpensEverythingAfterTheDwell() {
+    func testAnIslandAlreadyShowingItsRowOpensOnlyOnAClick() {
         island.skipsPeek = true
         island.handle(.entered)
-        XCTAssertEqual(island.timer, .dwell, "passing over still does nothing")
-        island.handle(.left)
+        XCTAssertEqual(island.timer, .none, "resting on a row already in sight adds nothing")
         island.handle(.dwellElapsed)
-        XCTAssertEqual(island.level, .collapsed)
+        XCTAssertEqual(island.level, .collapsed, "a stale dwell does not open it either")
 
-        island.handle(.entered)
-        island.handle(.dwellElapsed)
-        XCTAssertEqual(island.level, .expanded, "no peek: it would show the row that is already there")
-        XCTAssertEqual(island.timer, .none)
+        island.handle(.tapped)
+        XCTAssertEqual(island.level, .expanded)
         island.handle(.left)
         XCTAssertEqual(island.timer, .leave)
         island.handle(.leaveElapsed)
