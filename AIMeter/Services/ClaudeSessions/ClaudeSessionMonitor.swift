@@ -212,6 +212,9 @@ final class ClaudeSessionMonitor {
     private func tick() {
         tracker.prune(now: Date())
         refreshVisible()
+        // Claude Code installed after AIMeter started: its logs folder
+        // appears later, and the watcher, which found none, starts now.
+        watcher?.start()
     }
 
     private func refreshVisible() {

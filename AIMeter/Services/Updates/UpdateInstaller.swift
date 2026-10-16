@@ -24,6 +24,10 @@ nonisolated enum UpdateInstaller {
     // MARK: Prepare
 
     /// Downloads, checks and unpacks `offer`: the new app, ready to swap in.
+    /// Off the main actor (a nonisolated `async` function runs on its
+    /// caller's): hashing the zip and checking every nested signature
+    /// take long enough to stall the island and the menu bar.
+    @concurrent
     static func prepare(_ offer: UpdateFeed.Offer, session: URLSession = .shared) async throws -> URL {
         let folder = updatesFolder.appendingPathComponent(offer.version.description, isDirectory: true)
         let fileManager = FileManager.default
@@ -115,8 +119,10 @@ nonisolated enum UpdateInstaller {
 
     /// The script that does the swap once this process is gone: wait for
     /// it to exit, set the running copy aside, move the new one into its
-    /// place (putting the old one back if that fails), delete the
-    /// previous version and the download, and open the result.
+    /// place (putting the old one back if that fails, over whatever part
+    /// of the new one a move across volumes left: `mv` onto a folder that
+    /// exists would put the old copy inside it), delete the previous
+    /// version and the download, and open the result.
     static func installScript(processID: Int32, app: URL, update: URL, downloads: URL) -> String {
         let quoted = { (url: URL) in "'" + url.path.replacingOccurrences(of: "'", with: "'\\''") + "'" }
         return """
@@ -129,6 +135,7 @@ nonisolated enum UpdateInstaller {
           if mv \(quoted(update)) "$app"; then
             rm -rf "$previous"
           else
+            rm -rf "$app"
             mv "$previous" "$app"
           fi
         fi

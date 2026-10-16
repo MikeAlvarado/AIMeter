@@ -86,6 +86,7 @@ extension NotchIslandController {
             )
         }
         Self.clearanceQueue.async {
+            Self.limitAccessibilityWaits()
             let menus = frontmost.map(Self.menuFrames(of:)) ?? []
             let items = apps.map { (pid: $0, frames: Self.statusItemFrames(of: $0)) }
             Task { @MainActor in deliver(menus, items) }
@@ -149,6 +150,14 @@ extension NotchIslandController {
     /// The frames of an app's status items (its "extras" menu bar).
     nonisolated private static func statusItemFrames(of pid: pid_t) -> [CGRect] {
         items(of: kAXExtrasMenuBarAttribute, pid: pid)
+    }
+
+    /// A quarter of a second for every Accessibility read this app makes,
+    /// the menu bar's items included: a timeout set on an app's element
+    /// alone left the reads of its children to the default of several
+    /// seconds, and one app that doesn't answer held the queue that long.
+    nonisolated private static func limitAccessibilityWaits() {
+        AXUIElementSetMessagingTimeout(AXUIElementCreateSystemWide(), 0.25)
     }
 
     nonisolated private static func items(of bar: String, pid: pid_t) -> [CGRect] {

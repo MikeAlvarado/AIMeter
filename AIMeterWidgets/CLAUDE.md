@@ -18,7 +18,13 @@ every placed instance — Home Screen or Lock Screen — has its own
 independent account selection; an empty `AccountRegistryStore` (nothing
 connected yet, or the app hasn't run its one-time migration since the
 last update) falls back to a single synthetic "claude" option in both
-pickers rather than showing an empty list. `AIMeterAllAccounts` (see
+pickers rather than showing an empty list. That option is never the
+*default*, though (`defaultResult()` is nil while nothing is
+connected): a first connection on a clean install gets a UUID, so a
+widget placed before it that kept "claude" would stay empty until
+edited. A widget whose selection is that sentinel with no account of
+that id (one placed before this rule) shows the first connected account
+instead (`WidgetAccountFallback.resolve(configured:name:)`). `AIMeterAllAccounts` (see
 below) has no picker at all. Both configured widgets share the same
 nil-configuration fallback (the timing edge case right after a widget is
 first placed, before the intent's default has resolved) through
@@ -185,7 +191,9 @@ above); no new target, no push entitlement.
   that account has a session window with a future `resetsAt` and none is
   already running, and ends it (`dismissalPolicy: .immediate`) on
   toggle-off, on disconnect, or once a fresh fetch shows no active session
-  (usage back at 0, or no `resetsAt`) — the actual reset-hour transition
+  (usage back at 0, or no `resetsAt`), and a demo account's when the demo
+  ends (or at the next launch, if the app was quit in it), its switches
+  with it (`UsageModel.endDemoLiveActivities`) — the actual reset-hour transition
   itself is left to `ActivityContent(staleDate: resetsAt)`, ActivityKit's
   own built-in staleness presentation, rather than a hand-rolled grace
   timer: simpler, and the next `sync` call (triggered by the very next

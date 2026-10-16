@@ -34,7 +34,12 @@ struct ClaudeOAuthClient: Sendable {
                 )
             }
             // A rejected refresh token means the login is gone for good.
-            if (400...499).contains(response.statusCode) {
+            // OAuth says so with a 400 (`invalid_grant`) or a 401
+            // (`invalid_client`) and nothing else: any other 4xx (a
+            // firewall's 403, a moved endpoint's 404) says nothing about
+            // the login, so it shows what the server said instead of
+            // asking for a sign-in that wouldn't help.
+            if Self.rejectsLogin(response.statusCode) {
                 throw UsageError.notAuthenticated
             }
             throw UsageError.httpError(statusCode: response.statusCode, body: Self.body(data))
@@ -52,6 +57,11 @@ struct ClaudeOAuthClient: Sendable {
         updated.refreshToken = refreshed.refreshToken ?? credentials.refreshToken
         updated.expiresAt = refreshed.expiresIn.map { Date(timeIntervalSinceNow: $0) }
         return updated
+    }
+
+    /// Whether the token endpoint's status rejects the login itself.
+    static func rejectsLogin(_ statusCode: Int) -> Bool {
+        statusCode == 400 || statusCode == 401
     }
 
     /// Raw response text for error reporting, nil when there was none.

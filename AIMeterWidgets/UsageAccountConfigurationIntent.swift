@@ -33,8 +33,13 @@ struct UsageAccountOptionQuery: EntityQuery {
         currentOptions()
     }
 
+    /// Nothing connected yet: no default, rather than the legacy option,
+    /// which would stay this widget's selection after the first connection
+    /// (a UUID, on a clean install). Unset, the widget follows the first
+    /// connected account (`WidgetAccountFallback`).
     func defaultResult() async -> UsageAccountOption? {
-        currentOptions().first
+        guard AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().isEmpty == false else { return nil }
+        return currentOptions().first
     }
 
     /// Falls back to the single legacy "claude" identity when nothing is

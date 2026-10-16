@@ -410,7 +410,11 @@
   `RefreshService`, never touches the App Group `SnapshotStore` or
   `WidgetCenter`, so it can't leak into widgets or a real connection, and
   `paceReady` short-circuits true so pace/forecast don't show the
-  "learning" state on fabricated data with no history. Scheduling a
+  "learning" state on fabricated data with no history. The one way out
+  of memory is iOS's Live Activity card, on purpose (a reviewer can see
+  one): its switches start a real activity on the demo's figures, which
+  `UsageModel.endDemoLiveActivities` ends, with the switches, when the
+  demo ends, or at the next launch if the app was quit in it. Scheduling a
   `reset.`/`runout.` notification while in demo mode is a deliberate no-op
   (`UsageModel` passes `nil` in place of the demo snapshot) so a fake
   reset date can never produce a real notification. Entry and exit both
@@ -769,8 +773,10 @@
     island (the popover, the Dashboard and the tooltip carry every
     figure), and the collapsed element still speaks the primary
     account's figures.
-  - More than four accounts scroll inside a height-capped list measured
-    the same way `MenuBarView` measures its own. Under them, while any
+  - More than four accounts scroll inside a height-capped list, its
+    height measured with `onGeometryChange` (a preference read with
+    `onPreferenceChange`, the way `MenuBarView` measures its own, got
+    only its default in this panel on macOS 27). Under them, while any
     Claude Code session is shown, `SessionsSection`: up to five rows
     (`SessionRowView`: the pet at 1.5 pt a pixel, with its "!" while it
     waits, or the mark with pets off; the name with the folder dimmed

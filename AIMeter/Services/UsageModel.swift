@@ -131,6 +131,9 @@ final class UsageModel {
         loadStoredServiceStatus()
         guard platformServices else { return }
         AppEnvironment.shared = self
+        #if os(iOS)
+        endDemoLiveActivities()
+        #endif
         #if os(macOS)
         claudeCode = ClaudeCodeUsageModel(enabled: Preferences.load().claudeCodeUsageEnabled)
         rebuildRefreshSchedule(interval: Preferences.load().refreshCadence.interval)
@@ -252,7 +255,16 @@ final class UsageModel {
         }
         do {
             let snapshot = try await service.refresh(accountLabel: accountLabel(for: accountID))
-            guard let i = index(for: accountID) else { return true }
+            guard let i = index(for: accountID) else {
+                guard services[accountID] == nil else { return true }
+                // Disconnected while this fetch was in flight, which has
+                // just written back what the disconnect cleared: the
+                // snapshot, the history, the notifications, a rotated
+                // token. Clear them again. (Demo mode also empties this
+                // account's row, but keeps its service.)
+                try? service.disconnect()
+                return false
+            }
             accounts[i].snapshot = snapshot
             accounts[i].lastError = nil
             accounts[i].needsReauthentication = false

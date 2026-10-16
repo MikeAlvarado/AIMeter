@@ -71,10 +71,19 @@ repo-root CLAUDE.md):
   refresh as "someone else may have rotated this first" — it re-reads the
   source and, if the stored refresh token differs from the one it sent,
   uses the stored pair (refreshing it in turn if already expired) instead
-  of throwing `notAuthenticated`; an unchanged pair is a real rejection.
-  The token endpoint's 429 maps to `rateLimited` (refresh and exchange
-  alike), never to `notAuthenticated`, which would otherwise trip the
-  sign-in-expired alert on a throttle.
+  of throwing `notAuthenticated`. An unchanged pair gets one more look
+  after `rejectionRecheckDelay` (1.5 s; the winner's request reached the
+  endpoint first, but its save can land after the loser's rejection), and
+  only then is a real rejection. The exchange and its save run in an
+  unstructured `Task`, so a cancelled caller (a view's task, an expired
+  background task) never drops a pair Anthropic has already rotated: the
+  old refresh token is spent the moment the endpoint accepts it.
+- Token endpoint statuses: only 400 (`invalid_grant`) and 401
+  (`invalid_client`) mean `notAuthenticated` (`ClaudeOAuthClient.rejectsLogin`,
+  refresh and exchange alike); a 429 maps to `rateLimited`, which would
+  otherwise trip the sign-in-expired alert on a throttle, and any other
+  status to `httpError` with its body (a firewall's 403 says nothing about
+  the login).
 - `CredentialStore.invalidateCache()` (UsageKit core, default no-op;
   `ClaudeCredentialSource` refines `CredentialStore`) is called by
   the provider on a 401 from a source that can't refresh — i.e. the

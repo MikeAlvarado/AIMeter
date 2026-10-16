@@ -140,24 +140,27 @@ nonisolated enum ClaudeCodeHooks {
     /// environment variables with secrets), and a plain atomic write would
     /// recreate it readable by every user of the Mac. The new contents go
     /// to a file beside it, created with those permissions, which then
-    /// takes its name.
+    /// takes its name. A `settings.json` that is a symbolic link (a dotfiles
+    /// folder) is written where it points, so the link stays a link, and
+    /// its permissions and the backup are the real file's, not the link's.
     private static func write(_ data: Data) throws {
         let fileManager = FileManager.default
-        let folder = settingsURL.deletingLastPathComponent()
+        let target = settingsURL.resolvingSymlinksInPath()
+        let folder = target.deletingLastPathComponent()
         try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
         var permissions = 0o600
-        if fileManager.fileExists(atPath: settingsURL.path) {
-            if let existing = try? fileManager.attributesOfItem(atPath: settingsURL.path)[.posixPermissions] as? Int {
+        if fileManager.fileExists(atPath: target.path) {
+            if let existing = try? fileManager.attributesOfItem(atPath: target.path)[.posixPermissions] as? Int {
                 permissions = existing
             }
             try? fileManager.removeItem(at: backupURL)
-            try fileManager.copyItem(at: settingsURL, to: backupURL)
+            try fileManager.copyItem(at: target, to: backupURL)
         }
         let staged = folder.appendingPathComponent(".settings.json.aimeter-\(UUID().uuidString)")
         guard fileManager.createFile(atPath: staged.path, contents: data, attributes: [.posixPermissions: permissions]) else {
             throw CocoaError(.fileWriteUnknown)
         }
-        guard rename(staged.path, settingsURL.path) == 0 else {
+        guard rename(staged.path, target.path) == 0 else {
             try? fileManager.removeItem(at: staged)
             throw CocoaError(.fileWriteUnknown)
         }

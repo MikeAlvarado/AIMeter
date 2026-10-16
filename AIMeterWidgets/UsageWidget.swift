@@ -65,13 +65,15 @@ struct UsageTimelineProvider: AppIntentTimelineProvider {
 
     private func entry(for configuration: UsageAccountConfigurationIntent) -> UsageEntry {
         // configuration.account is nil right after a widget is first placed,
-        // before WidgetKit has applied the intent's own default selection —
-        // fall back to the first real connected account (matching
+        // before WidgetKit has applied the intent's own default selection,
+        // and for one placed while nothing was connected — fall back to the
+        // first real connected account (matching
         // `UsageAccountOptionQuery.defaultResult()`) rather than assuming
         // the legacy sentinel, which a fresh multi-account install never uses.
-        let fallback = WidgetAccountFallback.resolve()
-        let accountID = configuration.account?.accountID ?? fallback.accountID
-        let accountName = configuration.account?.accountName ?? fallback.accountName
+        let (accountID, accountName) = WidgetAccountFallback.resolve(
+            configured: configuration.account?.accountID,
+            name: configuration.account?.accountName
+        )
         return UsageEntry(
             date: .now,
             snapshot: SnapshotStore(suiteName: AppConfig.appGroupID)?.snapshot(for: accountID),

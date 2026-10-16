@@ -68,8 +68,16 @@ struct RefreshService {
         let key = ClaudeKeychainCredentialSource.defaultKey
         guard (try? keychainStore.data(for: key)) == nil,
               let data = try? legacy.data(for: key), !data.isEmpty else { return }
+        // Delete first: the legacy store names no access group, so its
+        // delete matches the key in every group the app can reach and
+        // would take the new shared copy with it. A write that fails puts
+        // the login back where it was instead of losing it.
         try? legacy.delete(key)
-        try? keychainStore.set(data, for: key)
+        do {
+            try keychainStore.set(data, for: key)
+        } catch {
+            try? legacy.set(data, for: key)
+        }
     }
 
     func lastSnapshot() -> UsageSnapshot? {

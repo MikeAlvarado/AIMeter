@@ -2,11 +2,6 @@
 import SwiftUI
 import UsageKit
 
-private struct AccountListHeightKey: PreferenceKey {
-    static let defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
-}
-
 /// The expanded layer: an incident notice while there is one, every
 /// account in one grid (`AccountGrid`; more than four scroll), Claude
 /// Code's sessions while there are any (`SessionsSection`), and the
@@ -54,14 +49,12 @@ struct ExpandedContent: View {
         if island.accounts.count > Self.scrollsPast {
             // Measured, not `.frame(maxHeight:)`: a `ScrollView` reports an
             // ideal height of zero for this content (see `MenuBarView`).
+            // With `onGeometryChange`, not a preference: in this panel on
+            // macOS 27 `onPreferenceChange` delivered only its default (the
+            // slab hit it first), which would leave the list 0 pt tall.
             ScrollView {
-                rows.background {
-                    GeometryReader { proxy in
-                        Color.clear.preference(key: AccountListHeightKey.self, value: proxy.size.height)
-                    }
-                }
+                rows.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { listHeight = $0 }
             }
-            .onPreferenceChange(AccountListHeightKey.self) { listHeight = $0 }
             .frame(height: min(listHeight, Self.maxListHeight))
         } else {
             rows

@@ -73,10 +73,19 @@ struct ContentView: View {
                 showsTour = true
             }
         }
-        #endif
         .task {
             await model.refreshAll()
         }
+        #else
+        // The launch refresh is the AppDelegate's: this window may never
+        // open (a restored Settings window) or close at once (a hidden
+        // Dock icon), and a view's `.task` is cancelled with it. Here only
+        // what went stale while it was closed, in a task its closing
+        // doesn't cancel.
+        .onAppear {
+            Task { await model.refreshAllIfStale() }
+        }
+        #endif
     }
 
     private var dashboard: some View {

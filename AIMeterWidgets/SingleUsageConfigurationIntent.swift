@@ -58,8 +58,10 @@ struct UsageWindowOptionQuery: EntityQuery {
         currentOptions()
     }
 
+    /// Nothing connected yet: no default (see `UsageAccountOptionQuery`).
     func defaultResult() async -> UsageWindowOption? {
-        currentOptions().first
+        guard AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().isEmpty == false else { return nil }
+        return currentOptions().first
     }
 
     /// Enumerates every connected account's live windows — an account with

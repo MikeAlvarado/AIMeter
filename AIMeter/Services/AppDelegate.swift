@@ -24,6 +24,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let prefs = Preferences.load()
+        // The launch refresh starts here, not from the Dashboard's view:
+        // that window may not open at all, or close just below, and the
+        // schedule's first run is a whole cadence away.
+        Task { await AppEnvironment.shared?.refreshAll() }
         // A menu-bar-only app shouldn't greet every launch with a window.
         // `.accessory` alone doesn't suppress the `WindowGroup` (measured —
         // the window is up by the time this runs), so close it deliberately.

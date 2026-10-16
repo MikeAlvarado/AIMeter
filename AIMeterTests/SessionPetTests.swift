@@ -36,6 +36,15 @@ final class SessionPetTests: XCTestCase {
         XCTAssertEqual(pair["s5"]?.index, 162)
     }
 
+    /// More sessions than pets: every pet goes out once, the rest repeat,
+    /// and the deal ends (it used to look for a free pet forever).
+    func testMoreSessionsThanPetsStillDeal() {
+        let ids = (0..<(SessionPet.count + 48)).map { "batch-\($0)" }
+        let dealt = SessionPet.deal(ids)
+        XCTAssertEqual(dealt.count, ids.count)
+        XCTAssertEqual(Set(dealt.values).count, SessionPet.count)
+    }
+
     func testEveryPetStaysInsideItsCanvas() {
         for index in 0..<SessionPet.count {
             let pet = SessionPet(index: index)

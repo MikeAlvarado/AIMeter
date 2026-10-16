@@ -155,9 +155,23 @@ extension UsageModel {
         connectionError = nil
         #if os(macOS)
         claudeCode?.exitDemo()
+        #else
+        endDemoLiveActivities()
         #endif
         loadAccounts()
     }
+
+    #if os(iOS)
+    /// A Live Activity turned on in the demo counts down fabricated
+    /// figures, so it ends with the demo and its switches go with it; one
+    /// a demo left running when the app was quit ends at the next launch.
+    func endDemoLiveActivities() {
+        for (account, _) in DemoUsageData.accounts() {
+            LiveActivityManager.end(accountID: account.accountID)
+            LiveActivityPreferences(accountID: account.accountID).clear()
+        }
+    }
+    #endif
 
     #if os(macOS)
     /// The disconnected Dashboard card's way back to the zero-setup path:

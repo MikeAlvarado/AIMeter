@@ -75,7 +75,7 @@ final class ClaudeProviderTests: XCTestCase {
         // The widget rotated the same login while this fetch was in
         // flight: the store now holds a different, still-valid pair.
         let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
-        source.rotateAfterFirstLoad = .rotatedElsewhere
+        source.rotatesTo = .rotatedElsewhere
         let provider = ClaudeProvider(credentialSource: source, transport: transport)
 
         let snapshot = try await provider.fetchUsage()
@@ -94,12 +94,79 @@ final class ClaudeProviderTests: XCTestCase {
             (400, "{}"),
         ])
         let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
-        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+        var provider = ClaudeProvider(credentialSource: source, transport: transport)
+        provider.rejectionRecheckDelay = .zero
 
         await assertThrows(UsageError.notAuthenticated) {
             _ = try await provider.fetchUsage()
         }
         XCTAssertTrue(transport.requests.allSatisfy { $0.url == ClaudeOAuthClient.tokenEndpoint })
+    }
+
+    /// The winner of a rotation race may save its new pair a moment after
+    /// the loser's rejection; the loser's second look finds it.
+    func testRejectedRefreshWaitsForARotationStillBeingSaved() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeOAuthClient.tokenEndpoint, responses: [
+            (400, "{}"),
+        ])
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
+        // Still the rejected pair right after the rejection (the fetch's
+        // own load, then the first re-read); the winner's after that.
+        source.rotatesTo = .rotatedElsewhere
+        source.rotatesAfterLoad = 2
+        var provider = ClaudeProvider(credentialSource: source, transport: transport)
+        provider.rejectionRecheckDelay = .zero
+
+        _ = try await provider.fetchUsage()
+
+        let usageRequest = try XCTUnwrap(transport.requests.first { $0.url == ClaudeProvider.usageEndpoint })
+        XCTAssertEqual(usageRequest.value(forHTTPHeaderField: "Authorization"), "Bearer rotated-token")
+        XCTAssertTrue(source.saved.isEmpty)
+    }
+
+    /// Only a 400 or a 401 says the login is dead; a firewall's 403 says
+    /// nothing about it and keeps its body for the UI.
+    func testOtherTokenEndpointErrorsAreNotARejectedLogin() async {
+        let transport = StubTransport()
+        transport.route(url: ClaudeOAuthClient.tokenEndpoint, responses: [
+            (403, "blocked"),
+        ])
+        let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        await assertThrows(UsageError.httpError(statusCode: 403, body: "blocked")) {
+            _ = try await provider.fetchUsage()
+        }
+    }
+
+    /// Anthropic spends the refresh token as soon as it accepts it, so a
+    /// sweep cancelled mid-refresh must still store the new pair.
+    func testCancelledFetchStillSavesTheRotatedPair() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeOAuthClient.tokenEndpoint, responses: [
+            (200, #"{"access_token": "new-token", "refresh_token": "new-refresh", "expires_in": 3600}"#),
+        ])
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        transport.delays[ClaudeOAuthClient.tokenEndpoint] = .milliseconds(200)
+        let (started, startedContinuation) = AsyncStream<Void>.makeStream()
+        transport.onSend = { request in
+            if request.url == ClaudeOAuthClient.tokenEndpoint { startedContinuation.yield() }
+        }
+        let source = StubCredentialSource(credentials: .expired, allowsRefresh: true)
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let fetch = Task { try await provider.fetchUsage() }
+        for await _ in started { break }
+        fetch.cancel()
+        _ = try? await fetch.value
+
+        XCTAssertEqual(source.saved.first?.refreshToken, "new-refresh")
     }
 
     func testThrottledRefreshThrowsRateLimitedNotNotAuthenticated() async {
@@ -236,7 +303,7 @@ final class ClaudeProviderTests: XCTestCase {
         let source = StubCredentialSource(credentials: .withoutSubscription, allowsRefresh: true)
         // Another process (the iOS widget's own fetch) rotates the stored
         // token while this fetch is in flight.
-        source.rotateAfterFirstLoad = ClaudeCredentials(
+        source.rotatesTo = ClaudeCredentials(
             accessToken: "rotated-token",
             refreshToken: "rotated-refresh",
             expiresAt: Date(timeIntervalSinceNow: 3600)
@@ -249,6 +316,26 @@ final class ClaudeProviderTests: XCTestCase {
         XCTAssertEqual(saved.subscriptionType, "max")
         XCTAssertEqual(saved.accessToken, "rotated-token")
         XCTAssertEqual(saved.refreshToken, "rotated-refresh")
+    }
+
+    /// A re-read that fails leaves nothing safe to write the plan over:
+    /// the pair this fetch loaded may have been rotated since.
+    func testProfileWriteBackSkippedWhenTheStoreCantBeRead() async throws {
+        let transport = StubTransport()
+        transport.route(url: ClaudeProvider.usageEndpoint, responses: [
+            (200, Self.usageBody),
+        ])
+        transport.route(url: ClaudeProvider.profileEndpoint, responses: [
+            (200, #"{"account": {"has_claude_pro": false, "has_claude_max": true}}"#),
+        ])
+        let source = StubCredentialSource(credentials: .withoutSubscription, allowsRefresh: true)
+        source.failsLoadsAfter = 1
+        let provider = ClaudeProvider(credentialSource: source, transport: transport)
+
+        let snapshot = try await provider.fetchUsage()
+
+        XCTAssertEqual(snapshot.planName, "max")
+        XCTAssertTrue(source.saved.isEmpty)
     }
 
     func testRecentlyCheckedSubscriptionSkipsProfileCall() async throws {
@@ -395,9 +482,14 @@ private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sen
     private(set) var saved: [ClaudeCredentials] = []
     private(set) var invalidations = 0
     private var credentials: ClaudeCredentials
-    /// Replaces the stored credentials right after the first `load()`,
-    /// standing in for another process rotating the token mid-fetch.
-    var rotateAfterFirstLoad: ClaudeCredentials?
+    /// Replaces the stored credentials right after the first `load()`
+    /// (or the `rotatesAfterLoad`th), standing in for another process
+    /// rotating the token mid-fetch.
+    var rotatesTo: ClaudeCredentials?
+    var rotatesAfterLoad = 1
+    /// Every `load()` past this many throws, like a Keychain that can't be
+    /// read at that moment.
+    var failsLoadsAfter: Int?
     private var loads = 0
 
     init(credentials: ClaudeCredentials, allowsRefresh: Bool) {
@@ -407,8 +499,11 @@ private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sen
 
     func load() async throws -> ClaudeCredentials {
         loads += 1
+        if let failsLoadsAfter, loads > failsLoadsAfter {
+            throw UsageError.credentialsNotFound("stub")
+        }
         defer {
-            if loads == 1, let rotated = rotateAfterFirstLoad {
+            if loads == rotatesAfterLoad, let rotated = rotatesTo {
                 credentials = rotated
             }
         }
@@ -430,6 +525,10 @@ private final class StubCredentialSource: ClaudeCredentialSource, @unchecked Sen
 private final class StubTransport: HTTPTransport, @unchecked Sendable {
     private(set) var requests: [URLRequest] = []
     private var routes: [URL: [(status: Int, body: String, headers: [String: String])]] = [:]
+    /// How long a request to the URL takes; a cancelled caller's request
+    /// throws, the way URLSession's does.
+    var delays: [URL: Duration] = [:]
+    var onSend: (@Sendable (URLRequest) -> Void)?
 
     func route(url: URL, responses: [(Int, String)]) {
         routes[url] = responses.map { ($0.0, $0.1, [:]) }
@@ -441,6 +540,10 @@ private final class StubTransport: HTTPTransport, @unchecked Sendable {
 
     func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         requests.append(request)
+        onSend?(request)
+        if let url = request.url, let delay = delays[url] {
+            try await Task.sleep(for: delay)
+        }
         guard let url = request.url, let queue = routes[url], !queue.isEmpty else {
             throw UsageError.invalidResponse("no stubbed response for \(request.url?.absoluteString ?? "nil")")
         }

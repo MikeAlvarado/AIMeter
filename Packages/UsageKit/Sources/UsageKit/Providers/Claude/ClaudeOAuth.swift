@@ -83,7 +83,7 @@ public struct ClaudeOAuth: Sendable {
                     body: ClaudeOAuthClient.body(data)
                 )
             }
-            if (400...499).contains(response.statusCode) {
+            if ClaudeOAuthClient.rejectsLogin(response.statusCode) {
                 throw UsageError.notAuthenticated
             }
             throw UsageError.httpError(statusCode: response.statusCode, body: ClaudeOAuthClient.body(data))

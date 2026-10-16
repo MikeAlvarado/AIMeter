@@ -52,24 +52,30 @@ nonisolated final class ClaudeHookListener: @unchecked Sendable {
 
     private func serve(_ connection: NWConnection) {
         connection.start(queue: queue)
-        receive(on: connection, buffer: Data())
+        receive(on: connection, buffer: Request())
+    }
+
+    /// One connection's bytes so far, appended in place: a value captured
+    /// from one read to the next was copied whole on every chunk, and a
+    /// permission request carrying a big file took seconds.
+    private final class Request: @unchecked Sendable {
+        var data = Data()
     }
 
     /// Reads one HTTP request (headers, then `Content-Length` bytes of
     /// body), answers 204 and closes.
-    private func receive(on connection: NWConnection, buffer: Data) {
+    private func receive(on connection: NWConnection, buffer: Request) {
         connection.receive(minimumIncompleteLength: 1, maximumLength: 65_536) { [weak self] data, _, complete, error in
             guard let self else { return }
-            var buffer = buffer
-            if let data { buffer.append(data) }
-            if let body = Self.body(of: buffer) {
+            if let data { buffer.data.append(data) }
+            if let body = Self.body(of: buffer.data) {
                 if let event = try? JSONDecoder().decode(ClaudeCodeHookEvent.self, from: body) {
                     let deliver = self.deliver
                     Task { @MainActor in deliver(event) }
                 }
                 let reply = Data("HTTP/1.1 204 No Content\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".utf8)
                 connection.send(content: reply, completion: .contentProcessed { _ in connection.cancel() })
-            } else if complete || error != nil || buffer.count > Self.maximumRequest {
+            } else if complete || error != nil || buffer.data.count > Self.maximumRequest {
                 connection.cancel()
             } else {
                 self.receive(on: connection, buffer: buffer)
@@ -81,15 +87,18 @@ nonisolated final class ClaudeHookListener: @unchecked Sendable {
     /// write: room for that, and a bound on anything else.
     static let maximumRequest = 32 * 1_048_576
 
-    /// The request's body once all of it has arrived, else nil.
+    /// The request's body once all of it has arrived, else nil. A length
+    /// that isn't a count of bytes (negative) reads as none, rather than
+    /// trapping in `prefix`.
     static func body(of request: Data) -> Data? {
         let separator = Data("\r\n\r\n".utf8)
         guard let range = request.range(of: separator) else { return nil }
         let head = String(decoding: request[..<range.lowerBound], as: UTF8.self)
-        let length = head
+        let declared = head
             .components(separatedBy: "\r\n")
             .first { $0.lowercased().hasPrefix("content-length:") }
             .flatMap { Int($0.split(separator: ":", maxSplits: 1).last?.trimmingCharacters(in: .whitespaces) ?? "") } ?? 0
+        let length = max(0, declared)
         let body = request[range.upperBound...]
         return body.count >= length ? Data(body.prefix(length)) : nil
     }

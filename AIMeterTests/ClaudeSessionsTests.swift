@@ -217,6 +217,8 @@ final class ClaudeSessionsTests: XCTestCase {
         XCTAssertEqual(ClaudeHookListener.body(of: request), body)
         XCTAssertNil(ClaudeHookListener.body(of: request.dropLast(3)), "not all of it yet")
         XCTAssertNil(ClaudeHookListener.body(of: Data("POST / HTTP/1.1\r\nContent-Le".utf8)))
+        XCTAssertEqual(ClaudeHookListener.body(of: Data("POST / HTTP/1.1\r\nContent-Length: -1\r\n\r\n{}".utf8)), Data(),
+                       "a negative length reads as none instead of trapping")
     }
 
     /// The demo's sessions, and the ids the website's videos use

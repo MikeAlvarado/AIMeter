@@ -57,15 +57,19 @@ struct SessionPet: Hashable, Sendable {
         return Int(hash % UInt64(count))
     }
 
-    /// One pet per id, no two alike. The ids are dealt in sorted order, so
-    /// the deal doesn't depend on the order they are shown in: each takes
-    /// the combination it points at, or the next one free.
+    /// One pet per id, no two alike while there are pets to go round. The
+    /// ids are dealt in sorted order, so the deal doesn't depend on the
+    /// order they are shown in: each takes the combination it points at, or
+    /// the next one free. Past `count` ids (a batch of headless runs can
+    /// leave hundreds of sessions in view) every pet is out, and the rest
+    /// keep the one they point at rather than looking for a free one
+    /// forever.
     static func deal(_ ids: [String]) -> [String: SessionPet] {
         var taken = Set<Int>()
         var pets: [String: SessionPet] = [:]
         for id in Set(ids).sorted() {
             var index = naturalIndex(for: id)
-            while taken.contains(index) {
+            while taken.contains(index), taken.count < count {
                 index = (index + 1) % count
             }
             taken.insert(index)

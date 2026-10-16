@@ -30,6 +30,10 @@ public struct ClaudeProvider: UsageProvider {
     private let userAgent: String
     private let planCache = PlanCache()
 
+    /// How long a rejected refresh waits before its last look at the
+    /// store (see `rotate`). Tests set it to zero.
+    var rejectionRecheckDelay: Duration = .milliseconds(1500)
+
     /// - Parameter userAgent: sent as `User-Agent`. Must look like a Claude
     ///   Code client (`claude-code/<version>`); other agents hit an
     ///   aggressively rate-limited bucket and get persistent 429s.
@@ -131,8 +135,9 @@ public struct ClaudeProvider: UsageProvider {
             return planCache.lastKnown ?? credentials.subscriptionType
         }
         planCache.record(plan)
-        if credentialSource.allowsRefresh {
-            var latest = (try? await credentialSource.load()) ?? credentials
+        // No re-read, no write: falling back to `credentials` would save
+        // exactly the stale pair this re-read exists to avoid.
+        if credentialSource.allowsRefresh, var latest = try? await credentialSource.load() {
             latest.subscriptionType = plan
             latest.planCheckedAt = Date()
             try? await credentialSource.save(latest)
@@ -176,6 +181,19 @@ public struct ClaudeProvider: UsageProvider {
             // the next load may pick up a token Claude Code refreshed itself.
             throw UsageError.tokenExpired
         }
+        // Anthropic rotates the refresh token the moment it accepts it, so
+        // a refresh abandoned halfway (the view that started the sweep went
+        // away, a background task ran out of time) has already spent the
+        // stored token and throws its replacement away: the login is gone
+        // for good. The exchange and the save run in a task of their own,
+        // which the caller's cancellation never reaches.
+        let provider = self
+        return try await Task {
+            try await provider.rotate(credentials)
+        }.value
+    }
+
+    private func rotate(_ credentials: ClaudeCredentials) async throws -> ClaudeCredentials {
         let client = ClaudeOAuthClient(transport: transport)
         do {
             let updated = try await client.refresh(credentials)
@@ -190,9 +208,16 @@ public struct ClaudeProvider: UsageProvider {
             // when the snapshot is stale. If the store now holds a
             // different pair than the one that was just rejected, the
             // loser of that race uses the winner's instead of declaring
-            // the account broken. Same token as before means the rejection
-            // is real.
-            let latest = try await credentialSource.load()
+            // the account broken. The winner may not have saved yet (its
+            // request reached the endpoint first, but its answer and its
+            // write can land after this rejection), so an unchanged store
+            // gets one more look a moment later. Same token then means the
+            // rejection is real.
+            var latest = try await credentialSource.load()
+            if latest.refreshToken == credentials.refreshToken {
+                try await Task.sleep(for: rejectionRecheckDelay)
+                latest = try await credentialSource.load()
+            }
             guard latest.refreshToken != credentials.refreshToken else {
                 throw UsageError.notAuthenticated
             }

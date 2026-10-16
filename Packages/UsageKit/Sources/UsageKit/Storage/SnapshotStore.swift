@@ -2,7 +2,8 @@ import Foundation
 
 /// Persists the latest `UsageSnapshot` per connected account in the App
 /// Group, the only channel between app and widget extension. Widgets read
-/// the last snapshot here; only the app (and its background task) writes.
+/// the last snapshot here; the app (and its background task) writes it,
+/// and so, on iOS, does a widget's own fetch when what it found was stale.
 ///
 /// Keyed by `accountID`, not `UsageSnapshot.providerID` — a snapshot's
 /// `providerID` identifies the provider *family* ("claude") and stays the

@@ -52,10 +52,11 @@ assets and string catalog from there.
   website's video recorder tells the island, see "Claude Code sessions"
   below); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
-  three files: `NotificationPreferences.swift` (the toggles, plus
+  four files: `NotificationPreferences.swift` (the toggles, plus
   `SmartAlert` — the five per-account families addressed as one enum, so
   the model and the toggles card have one getter/setter pair instead of
-  five), `NotificationScheduler.swift` (the fetch-driven families) and
+  five), `NotificationScheduler.swift` (the fetch-driven families),
+  `NotificationScheduler+RunOut.swift` (the run-out warnings) and
   `NotificationScheduler+Peak.swift`.
 - `AIMeter/Services/ClaudeCodeUsageModel.swift` (macOS) — Claude Code's
   local token usage on this Mac, see "Claude Code local usage" below;
@@ -342,9 +343,13 @@ the account silently freezes at its last snapshot.
   Keychain item on iOS (app and widget) both refresh on foreground when
   the snapshot is stale, and Anthropic rotates on every use, so the loser
   of that race would otherwise announce a broken login that the winner
-  just rotated fine. Only a rejection of the pair the store still holds
-  is a real `notAuthenticated`; a 429 from the token endpoint is
-  `rateLimited`, never a dead login.
+  just rotated fine. Only a rejection of the pair the store still holds,
+  looked at twice 1.5 s apart (the winner may still be saving), is a real
+  `notAuthenticated`, and only a 400 or a 401 from the token endpoint
+  rejects at all: a 429 is `rateLimited`, any other status an
+  `httpError`, never a dead login. The refresh and its save run in a task
+  of their own, so a cancelled sweep can't throw away a pair Anthropic
+  has already rotated.
 - Recovery is **reconnect in place** (`UsageModel.reconnect(accountID:credentials:)`),
   never disconnect-then-add: the accountID is the key for the stored
   snapshot, usage history (and its pace warm-up anchor), notification
@@ -362,7 +367,7 @@ the account silently freezes at its last snapshot.
   `credentialsNotFound` card.
 - The `planName` write-back in `ClaudeProvider` re-reads the credential
   source before saving instead of persisting the value the fetch started
-  with. It only owns `subscriptionType` and `planCheckedAt`; saving the
+  with, and skips the save when that re-read fails. It only owns `subscriptionType` and `planCheckedAt`; saving the
   whole stale value could put an already-consumed refresh token back over a
   freshly rotated one — one of the ways an account breaks like this in the
   first place, since the iOS widget refreshes against the same shared
@@ -440,7 +445,11 @@ the account silently freezes at its last snapshot.
   would speculatively re-mirror it on the next launch — the account the
   user just removed would quietly come back. The disconnected Dashboard
   card offers "Use Claude Code's login instead"
-  (`UsageModel.redetectClaudeCodeLogin`) to clear it.
+  (`UsageModel.redetectClaudeCodeLogin`) to clear it. A fetch still in
+  flight when its account is disconnected lands after the cascade and
+  writes back what it cleared (the snapshot, the history, the
+  notifications, a rotated token), so `UsageModel.fetch` runs the
+  cascade again when it finds the account's service gone.
 - Migration: `AccountMigration.run(registry:)`, called once from
   `UsageModel.init` before accounts are loaded. Each step gates itself
   independently (not one shared "migrated" flag), so a crash between steps
@@ -468,7 +477,13 @@ the account silently freezes at its last snapshot.
   target, and Nap throttles timers unpredictably. Nothing fires while the
   Mac sleeps, so `NSWorkspace.didWakeNotification` nudges
   `refreshAllIfStale(maxAge: cadence)` on wake — a no-op for any account
-  whose snapshot is still fresh, a catch-up fetch for the rest.
+  whose snapshot is still fresh, a catch-up fetch for the rest. The
+  launch refresh starts from `applicationDidFinishLaunching`
+  (`AppDelegate`), not from the Dashboard's view: that window may never
+  open (a restored Settings window) or is closed at launch with the Dock
+  icon hidden, which cancels its `.task`, and the schedule's first run is
+  a whole cadence away. The Dashboard appearing refreshes only what went
+  stale (`refreshAllIfStale`), in a task its closing doesn't cancel.
 - Widget timeline: single entry, `.after(interval)` where `interval =
   max(displayCadence, AppConfig.widgetRefreshFloor)` (30 min). The widget's
   reload interval is deliberately floored *independent of* the user's
@@ -538,7 +553,12 @@ the account silently freezes at its last snapshot.
   `resetsAt`, the free baseline, per-window opt-in toggles) and `runout.`
   (per-window run-out warnings fired a lead time before a projected early
   exhaustion — recent-rate projection when history exists, else
-  average-rate). Three are *immediate, detection-based* (nil trigger,
+  average-rate — once per window: inside the lead time every fetch would
+  schedule another a minute out, so one already in Notification Center
+  for the same reset stands, `NotificationScheduler.warnedAlready`). Both
+  triggers carry their time zone (`NotificationScheduler.triggerComponents(at:)`):
+  a date with no zone floats, firing at that clock time wherever the
+  device is by then, and a reset is one instant. Three are *immediate, detection-based* (nil trigger,
   fired when comparing the previous stored snapshot to the new one, so
   they can't be scheduled — the trigger level/time isn't known ahead):
   `earlyreset.` (`ResetDetector` — a window refilled before its scheduled
@@ -689,7 +709,8 @@ the account silently freezes at its last snapshot.
   window (the new version's notes, from the downloaded app's own
   `WhatsNew.json`): a shell script that outlives the app waits for it to
   quit, sets the running copy aside, moves the new one into its place
-  (putting the old one back if that fails), deletes the previous
+  (putting the old one back if that fails, over whatever part of the
+  new one got there), deletes the previous
   version and the download, and opens the new one; the notes are marked
   seen first, so they don't show again after the restart. "Later"
   closes the window; the notices stay, and the notification comes back a
@@ -843,7 +864,9 @@ the account silently freezes at its last snapshot.
     began (measured: "Working for 3m" on a 189 MB log whose turn had
     started 15 minutes before). A session's own `<id>.jsonl` is read before its
     subagents' (`<id>/subagents/agent-<agent>.jsonl`, workflow agents a
-    level deeper; a workflow's `journal.jsonl` is nobody's). Only the
+    level deeper; a workflow's `journal.jsonl` is nobody's). A logs
+    folder that doesn't exist yet (Claude Code installed after AIMeter
+    started) is looked for again on the monitor's tick. Only the
     record's shape is decoded (`ClaudeCodeSessionRecord`: type,
     subtype, time, ids, stop reason, the *types* of the content items,
     whether it has a prompt source, and the title records), so no
@@ -876,7 +899,9 @@ the account silently freezes at its last snapshot.
     JSON, replaces an older AIMeter entry instead of doubling it, and
     writes through a file created with the original's permissions that
     then takes its name (Claude Code keeps it `600`, and it may hold
-    secrets; a plain atomic write recreated it world-readable). Remove,
+    secrets; a plain atomic write recreated it world-readable), at the
+    file a symlinked `settings.json` points to, so the link stays a link
+    and the backup and the permissions are the real file's. Remove,
     when nothing else changed since the install, puts the backed-up
     file back byte for byte and deletes the backup; otherwise it takes
     out just AIMeter's entries. Running sessions pick either change up
@@ -935,7 +960,10 @@ the account silently freezes at its last snapshot.
   status items lived before, still count with no permission. Only those
   frames are ever read, on a queue of their own (the first read of an
   app takes tens of milliseconds, 1.5 s for every app running here,
-  later ones a few for all of them), on every relocation, after an app
+  later ones a few for all of them; each read waits at most 0.25 s for
+  an app that doesn't answer, the timeout set on the system-wide
+  element, since one set on an app's element left its children's reads
+  to the default of seconds), on every relocation, after an app
   switch, launch or quit, and every 20 s while the permission path runs,
   then asking only the apps found with status items, since an item that
   changes width (a temperature, a battery's percentage) moves every item
@@ -956,7 +984,8 @@ the account silently freezes at its last snapshot.
   (none, sunglasses, top hat, beanie, bow, headphones): 252
   combinations, the one a session's id points at through FNV-1a (the
   same on every launch, unlike `hashValue`), dealt so no two sessions on
-  screen share one. It walks in place while its session works, shakes
+  screen share one (past 252 at once, the rest keep the one they point
+  at). It walks in place while its session works, shakes
   beside a yellow "!" while it waits for permission (beside it, never
   above its head, so it stays inside the bar) and sleeps under a
   blinking "z" for 8 s after the turn ends
@@ -1612,6 +1641,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
   grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
+  the scheduled notifications' triggers pinned to an instant and one
+  run-out warning per window (`NotificationSchedulerTests`),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes
@@ -1651,13 +1682,14 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   index) plus the token/USD formatters, and Claude Code's sessions: the
   preferences, when the Accessibility prompt may show and what a copy
   that lost the permission is told, the mark, count and rows, the hooks' edits to Claude
-  Code's settings, whose log a path is, and a hook request's body
-  (`ClaudeSessionsTests`, with the demo's sessions and the pets their ids
+  Code's settings, whose log a path is, and a hook request's body, a
+  negative length included (`ClaudeSessionsTests`, with the demo's sessions and the pets their ids
   deal, which the website's videos show, the room a drawn row's name
   gets, and which changes the "needs you" notification announces or
   takes back; nothing there opens the socket or
   touches `~/.claude`), and the pets: every combination reachable and distinct,
-  an id's pet pinned, the deal's uniqueness and order independence,
+  an id's pet pinned, the deal's uniqueness and order independence (and
+  that more sessions than pets still deal),
   every creature, accessory and pose inside its canvas on every tick,
   the axolotl's pale face asleep, a still frame painting each spot once
   with what shows there, and the pixel size (`SessionPetTests`), the

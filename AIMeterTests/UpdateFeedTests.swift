@@ -61,6 +61,10 @@ final class UpdateFeedTests: XCTestCase {
         XCTAssertTrue(script.contains("kill -0 42"))
         XCTAssertTrue(script.contains("app='/Applications/Mike'\\''s AIMeter.app'"), script)
         XCTAssertTrue(script.contains("mv \"$previous\" \"$app\""), "a failed move restores the running copy")
+        XCTAssertTrue(
+            script.contains("rm -rf \"$app\"\n    mv \"$previous\" \"$app\""),
+            "over whatever a failed move left, never inside it"
+        )
         XCTAssertTrue(script.contains("rm -rf \"$previous\""), "the previous version is cleaned up")
         XCTAssertTrue(script.hasSuffix("open \"$app\""))
     }

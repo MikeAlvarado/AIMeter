@@ -18,15 +18,12 @@ import UsageKit
 /// (`NotificationPreferences.swift`).
 enum NotificationScheduler {
     private static let identifierPrefix = "reset."
-    private static let runOutPrefix = "runout."
+    static let runOutPrefix = "runout."
     private static let earlyResetPrefix = "earlyreset."
     private static let nearLimitPrefix = "nearlimit."
     private static let limitReachedPrefix = "limitreached."
     static let peakPrefix = "peak."
     private static let reauthPrefix = "reauth."
-    /// How long before the projected exhaustion to fire the warning, so
-    /// it's actionable rather than after the fact.
-    private static let runOutLead: TimeInterval = 20 * 60
 
     static func requestAuthorization() async -> Bool {
         let center = UNUserNotificationCenter.current()
@@ -59,6 +56,13 @@ enum NotificationScheduler {
         }
     }
 
+    /// A trigger's date as one instant: components with no time zone
+    /// float, firing at that clock time in whatever zone the device is in
+    /// by then, and a reset doesn't move when the user travels.
+    static func triggerComponents(at date: Date) -> DateComponents {
+        Calendar.current.dateComponents([.timeZone, .year, .month, .day, .hour, .minute, .second], from: date)
+    }
+
     // MARK: - Reset notifications (per-window, at resetsAt)
 
     static func rescheduleResets(
@@ -82,58 +86,9 @@ enum NotificationScheduler {
             content.body = String(localized: "Your \(window.kind.displayName) usage window has reset. Full capacity available.")
             content.sound = .default
 
-            let components = Calendar.current.dateComponents(
-                [.year, .month, .day, .hour, .minute, .second],
-                from: resetsAt
-            )
+            let components = triggerComponents(at: resetsAt)
             let request = UNNotificationRequest(
                 identifier: identifierPrefix + accountID + "." + window.kind.storageKey,
-                content: content,
-                trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-            )
-            try? await center.add(request)
-        }
-    }
-
-    // MARK: - Run-out warnings (per-window, ahead of a projected early exhaustion)
-
-    /// Schedules one warning per window projected to run out early. The
-    /// caller supplies projections (recent-rate when history exists, else
-    /// average-rate). Rescheduled every fetch, so a later fetch showing
-    /// deceleration removes a warning that no longer applies.
-    static func rescheduleRunOuts(
-        _ projections: [UsageWindow.Kind: RunOutProjection],
-        accountID: String,
-        accountLabel: String? = nil,
-        preferences: NotificationPreferences,
-        now: Date = Date()
-    ) async {
-        let center = UNUserNotificationCenter.current()
-        await removePending(withPrefix: runOutPrefix + accountID + ".", from: center)
-
-        guard preferences.runOutWarningsEnabled, await canDeliver() else { return }
-
-        for (kind, projection) in projections {
-            guard projection.runsOutEarly else { continue }
-
-            // Fire a lead time before the projected exhaustion, but never in
-            // the past and never after the window has already reset.
-            var fireDate = projection.projectedExhaustion.addingTimeInterval(-runOutLead)
-            if fireDate <= now { fireDate = now.addingTimeInterval(60) }
-            guard fireDate < projection.resetsAt else { continue }
-
-            let earlyBy = UsageFormatting.relativeString(from: projection.projectedExhaustion, to: projection.resetsAt)
-            let content = UNMutableNotificationContent()
-            content.title = labeled(String(localized: "\(kind.displayName) running low"), accountLabel)
-            content.body = String(localized: "At this rate it runs out about \(earlyBy) before it resets.")
-            content.sound = .default
-
-            let components = Calendar.current.dateComponents(
-                [.year, .month, .day, .hour, .minute, .second],
-                from: fireDate
-            )
-            let request = UNNotificationRequest(
-                identifier: runOutPrefix + accountID + "." + kind.storageKey,
                 content: content,
                 trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             )
@@ -226,7 +181,7 @@ enum NotificationScheduler {
     /// when the caller supplied one, which `RefreshService` only does once
     /// more than one account is connected, so a single-account install's
     /// notifications read exactly as they always have.
-    private static func labeled(_ title: String, _ accountLabel: String?) -> String {
+    static func labeled(_ title: String, _ accountLabel: String?) -> String {
         guard let accountLabel else { return title }
         return "\(accountLabel): \(title)"
     }
