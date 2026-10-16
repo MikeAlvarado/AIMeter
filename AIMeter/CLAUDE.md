@@ -189,7 +189,9 @@
   cards (label/value rows, currency formatted) for this account; an **Account** card — a
   Name row showing the current nickname, and tapping it opens the same
   rename alert the Dashboard header's context menu uses (see "Renaming"
-  above), hidden in demo mode; a disconnect button, on both
+  above), and an Icon row opening the icon picker, one card between
+  them (`Card` stacks its rows itself: handed them loose, it drew three
+  cards from 1.6 to 3.0.1), hidden in demo mode; a disconnect button, on both
   platforms (macOS previously had none — a gap multi-account made
   untenable, since it's now the only way to remove a non-primary account).
   The order runs from what the account shows to what it does: its data

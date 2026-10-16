@@ -1,6 +1,129 @@
 {
   "releases": [
     {
+      "version": "3.1.0",
+      "items": [
+        {
+          "symbol": "app.fill",
+          "title": {
+            "en": "Choose your icon",
+            "es": "Elige tu icono",
+            "de": "Wähle dein App-Symbol",
+            "fr": "Une icône au choix",
+            "ja": "アイコンを選べるように",
+            "ko": "아이콘 고르기",
+            "pt-BR": "Escolha seu ícone",
+            "zh-Hans": "选择你的图标"
+          },
+          "detail": {
+            "en": "AIMeter's new icon is the notch island on a sunset sky. Settings, App icon, has three more looks: Ivory, Night and Pet.",
+            "es": "El nuevo icono de AIMeter es la isla del notch en un cielo de atardecer. En Ajustes, Icono de la app, hay tres estilos más: Marfil, Noche y Mascota.",
+            "de": "Das neue Symbol von AIMeter ist die Notch-Insel vor einem Abendhimmel. Unter Einstellungen, App-Symbol, gibt es drei weitere Varianten: Elfenbein, Nacht und Pixeltier.",
+            "fr": "La nouvelle icône d'AIMeter est l'îlot de l'encoche sur un ciel de crépuscule. Dans Réglages, Icône de l'app, trois autres styles : Ivoire, Nuit et Compagnon.",
+            "ja": "AIMeterの新しいアイコンは、夕暮れの空に浮かぶノッチアイランドです。設定の「Appアイコン」では、アイボリー、夜、ペットの3つのスタイルも選べます。",
+            "ko": "AIMeter의 새 아이콘은 노을 하늘 위의 노치 아일랜드입니다. 설정의 앱 아이콘에서 아이보리, 밤, 펫 세 가지 스타일도 고를 수 있습니다.",
+            "pt-BR": "O novo ícone do AIMeter é a ilha do notch num céu de entardecer. Em Ajustes, Ícone do app, há mais três estilos: Marfim, Noite e Bichinho.",
+            "zh-Hans": "AIMeter 的新图标是晚霞天空中的刘海岛。在设置的\"App 图标\"中，还有象牙白、夜晚和宠物三种样式。"
+          }
+        },
+        {
+          "symbol": "pawprint.fill",
+          "title": {
+            "en": "A pet beside your countdown",
+            "es": "Una mascota junto a tu cuenta regresiva",
+            "de": "Ein Pixeltier neben dem Countdown",
+            "fr": "Un compagnon près du compte à rebours",
+            "ja": "カウントダウンのそばにペット",
+            "ko": "카운트다운 옆의 펫",
+            "pt-BR": "Um bichinho ao lado da contagem",
+            "zh-Hans": "倒计时旁的宠物"
+          },
+          "detail": {
+            "en": "In an account's Live Activity, turn on Show a pet: its pixel pet joins the session countdown in the Dynamic Island and on the Lock Screen, and gets nervous as the session nears its limit.",
+            "es": "En la Actividad en vivo de una cuenta, activa Mostrar una mascota: su mascota de píxeles acompaña la cuenta regresiva de la sesión en la Dynamic Island y en la pantalla bloqueada, y se pone nerviosa cuando la sesión se acerca a su límite.",
+            "de": "Schalte in der Live-Aktivität eines Accounts Pixeltier zeigen ein: Sein Pixeltier begleitet den Countdown der Sitzung in der Dynamic Island und auf dem Sperrbildschirm und wird nervös, wenn sich die Sitzung ihrem Limit nähert.",
+            "fr": "Dans l'Activité en direct d'un compte, activez Afficher un compagnon : son compagnon en pixels accompagne le compte à rebours de la session dans la Dynamic Island et sur l'écran verrouillé, et devient nerveux à l'approche de la limite.",
+            "ja": "アカウントのライブアクティビティで「ペットを表示」をオンにすると、ピクセルのペットがDynamic Islandとロック画面でセッションのカウントダウンに付き添い、上限が近づくとそわそわします。",
+            "ko": "계정의 실시간 현황에서 펫 표시를 켜면 픽셀 펫이 Dynamic Island와 잠금 화면에서 세션 카운트다운과 함께하고, 한도에 가까워지면 초조해합니다.",
+            "pt-BR": "Na Atividade ao Vivo de uma conta, ative Mostrar um bichinho: o bichinho de pixels acompanha a contagem regressiva da sessão na Dynamic Island e na Tela Bloqueada, e fica nervoso quando a sessão se aproxima do limite.",
+            "zh-Hans": "在账户的\"实时活动\"中打开\"显示宠物\"，它的像素宠物会在灵动岛和锁定屏幕上陪着会话倒计时，接近上限时会紧张起来。"
+          },
+          "platforms": ["iOS"]
+        },
+        {
+          "symbol": "lizard.fill",
+          "title": {
+            "en": "Meet the axolotl",
+            "es": "Llegó el ajolote",
+            "de": "Neu dabei: der Axolotl",
+            "fr": "Voici l'axolotl",
+            "ja": "ウーパールーパーが仲間入り",
+            "ko": "아홀로틀이 왔어요",
+            "pt-BR": "Chegou o axolote",
+            "zh-Hans": "六角恐龙来了"
+          },
+          "detail": {
+            "en": "Your sessions' pets have a seventh creature: the axolotl, with a pale face, gills in its color and every accessory.",
+            "es": "Las mascotas de tus sesiones tienen una séptima criatura: el ajolote, de cara pálida, con branquias de su color y todos los accesorios.",
+            "de": "Die Pixeltiere deiner Sitzungen haben ein siebtes Wesen: den Axolotl, mit hellem Gesicht, Kiemen in seiner Farbe und allen Accessoires.",
+            "fr": "Les compagnons de vos sessions ont une septième créature : l'axolotl, au visage pâle, aux branchies de sa couleur et avec tous les accessoires.",
+            "ja": "セッションのペットに7番目の生き物が加わりました。顔が白く、エラは体の色で、どのアクセサリーも似合うウーパールーパーです。",
+            "ko": "세션 펫에 일곱 번째 생물이 생겼습니다. 하얀 얼굴에 몸 색깔의 아가미를 가진 아홀로틀로, 모든 액세서리를 쓸 수 있습니다.",
+            "pt-BR": "Os bichinhos das suas sessões ganharam uma sétima criatura: o axolote, de rosto claro, guelras da sua cor e todos os acessórios.",
+            "zh-Hans": "会话宠物新增第七种生物：六角恐龙，脸色浅白，鳃是它自己的颜色，所有配饰都能戴。"
+          },
+          "platforms": ["macOS"]
+        },
+        {
+          "symbol": "accessibility",
+          "title": {
+            "en": "Accessibility, asked only once",
+            "es": "Accesibilidad, solo una vez",
+            "de": "Bedienungshilfen nur einmal erfragt",
+            "fr": "L'Accessibilité, demandée une seule fois",
+            "ja": "アクセシビリティの確認は一度だけ",
+            "ko": "손쉬운 사용은 한 번만 요청",
+            "pt-BR": "Acessibilidade, pedida só uma vez",
+            "zh-Hans": "辅助功能只请求一次"
+          },
+          "detail": {
+            "en": "AIMeter asks macOS for Accessibility only when it never had it. If System Settings shows it on but this copy isn't trusted, as after installing a different build, Settings says how to fix it instead of asking again.",
+            "es": "AIMeter le pide Accesibilidad a macOS solo si nunca la tuvo. Si Ajustes del Sistema la muestra activada pero no confía en esta copia, como después de instalar otra versión, Ajustes te dice cómo arreglarlo en vez de volver a pedirla.",
+            "de": "AIMeter fragt macOS nur dann nach den Bedienungshilfen, wenn es sie nie hatte. Zeigen die Systemeinstellungen sie als aktiv, vertrauen dieser Kopie aber nicht, etwa nach der Installation eines anderen Builds, erklären die Einstellungen die Lösung, statt erneut zu fragen.",
+            "fr": "AIMeter ne demande l'Accessibilité à macOS que s'il ne l'a jamais eue. Si Réglages Système l'affiche activée sans faire confiance à cette copie, par exemple après l'installation d'une autre version, les Réglages expliquent comment corriger au lieu de redemander.",
+            "ja": "AIMeterは、アクセシビリティの許可が一度もない場合にだけmacOSに求めます。システム設定でオンと表示されているのにこのコピーが信頼されていない場合（別のビルドをインストールした後など）は、もう一度求める代わりに設定で直し方を案内します。",
+            "ko": "AIMeter는 손쉬운 사용 권한이 한 번도 없었을 때만 macOS에 요청합니다. 다른 빌드를 설치한 뒤처럼 시스템 설정에는 켜져 있지만 이 사본을 신뢰하지 않으면, 다시 요청하는 대신 설정에서 해결 방법을 알려 줍니다.",
+            "pt-BR": "O AIMeter só pede Acessibilidade ao macOS quando nunca a teve. Se os Ajustes do Sistema mostram o acesso ativado mas não confiam nesta cópia, como depois de instalar outra versão, os Ajustes explicam como resolver em vez de pedir de novo.",
+            "zh-Hans": "AIMeter 仅在从未获得辅助功能权限时才向 macOS 请求。如果系统设置显示已开启但不信任这份副本（例如安装了另一个版本之后），设置会说明如何解决，而不是再次请求。"
+          },
+          "platforms": ["macOS"]
+        },
+        {
+          "symbol": "checkmark.seal",
+          "title": {
+            "en": "One Account card again",
+            "es": "La tarjeta Cuenta, entera otra vez",
+            "de": "Die Account-Karte ist wieder eine",
+            "fr": "La carte Compte, d'un seul tenant",
+            "ja": "アカウントカードを修正",
+            "ko": "계정 카드 수정",
+            "pt-BR": "O cartão Conta inteiro de novo",
+            "zh-Hans": "账户卡片已修复"
+          },
+          "detail": {
+            "en": "In an account's details, Name and Icon share one card again, without an empty card between them.",
+            "es": "En los detalles de una cuenta, Nombre e Icono vuelven a compartir una sola tarjeta, sin una tarjeta vacía entre ellos.",
+            "de": "In den Details eines Accounts teilen sich Name und Symbol wieder eine Karte, ohne leere Karte dazwischen.",
+            "fr": "Dans les détails d'un compte, Nom et Icône partagent de nouveau une seule carte, sans carte vide entre les deux.",
+            "ja": "アカウントの詳細で、名前とアイコンが空のカードを挟まずに再び1枚のカードにまとまりました。",
+            "ko": "계정 세부 정보에서 이름과 아이콘이 빈 카드 없이 다시 한 카드에 함께 표시됩니다.",
+            "pt-BR": "Nos detalhes de uma conta, Nome e Ícone voltam a dividir um só cartão, sem um cartão vazio entre eles.",
+            "zh-Hans": "在账户详情中，名称和图标重新位于同一张卡片里，中间不再有空白卡片。"
+          }
+        }
+      ]
+    },
+    {
       "version": "3.0.1",
       "items": [
         {

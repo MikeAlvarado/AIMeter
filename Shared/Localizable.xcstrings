@@ -4867,7 +4867,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대시보드, 메뉴 막대, 위젯, 라이브 활동 등 계정이 표시되는 모든 곳에 나타납니다."
+            "value" : "대시보드, 메뉴 막대, 위젯, 실시간 현황 등 계정이 표시되는 모든 곳에 나타납니다."
           }
         },
         "pt-BR" : {
@@ -10527,7 +10527,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "라이브 활동"
+            "value" : "실시간 현황"
           }
         },
         "pt-BR" : {

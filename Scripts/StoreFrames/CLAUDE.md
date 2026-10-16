@@ -48,7 +48,11 @@ charged --batteryLevel 100 …`; 2.0's showed the real time) and the
 simulator's own appearance for the dark captures (`xcrun simctl ui
 <udid> appearance dark`); demo mode came from a temporary DEBUG check
 for `-AIMeterDemo` at the end of `UsageModel.init`, never committed,
-instead of tapping through Settings. `detail-smart.png` is scrolled so
+instead of tapping through Settings. 3.1 (2026-10-16) took no new
+capture: the app icon changed to the notch island (Sunset), so only
+the closing frame changed, rendered from the 3.0 captures with the new
+`appicon.png`; every other frame, the header and the search card came
+out pixel for pixel as 3.0's. `detail-smart.png` is scrolled so
 the footnote under the alerts starts about two thirds down: the frame
 shows the top two thirds of the capture, and the footnote's sixth line
 names the provider. The website takes no capture from here since 3.0:
