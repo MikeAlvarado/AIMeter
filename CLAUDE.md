@@ -85,7 +85,10 @@ assets and string catalog from there.
   `SessionPet+Sprites.swift` (the hand-drawn pixels, which
   `Scripts/pets-preview.sh` draws into one PNG), all pure and tested,
   and `AIMeter/Views/ClaudeSessionsSettings.swift` (the
-  "Sessions" card of Settings' Claude Code tab). The same pets stand in
+  "Sessions" card of Settings' Claude Code tab), with
+  `Shared/AccessibilityState.swift` (pure, tested) and
+  `AIMeter/Services/AccessibilityAccess.swift`, the one place the
+  Accessibility permission is read and asked for. The same pets stand in
   iOS's Session Live Activity, one per account: `Shared/SessionPet+Still.swift`
   (its mood, an account's pet, a still frame's pixels, pure and tested),
   `Shared/PetPixelsView.swift` (that frame drawn, and the pets' colors the
@@ -629,7 +632,9 @@ the account silently freezes at its last snapshot.
   button that turns it on the way its Settings switch does (asking for
   the permission where one is needed, never anything a switch couldn't
   undo) with "Not now" beside it, or "On" (a login item still waiting
-  for approval says so, with the way to the pane) and "Continue"; "Skip
+  for approval says so, with the way to the pane, and so does the
+  session's name while macOS doesn't trust this copy for the menu bar
+  clearance) and "Continue"; "Skip
   tour" leaves at any step, and dots count the steps. The Mac's steps
   are the welcome, the notch island, Claude Code's sessions (the
   hooks), the session's name with the menu bar clearance (the
@@ -909,7 +914,24 @@ the account silently freezes at its last snapshot.
   bar), since macOS shows another app's menus to nothing else and, on
   macOS 27, `MenuBarAgent` draws every status item, so the public window
   list carries none of them (measured: only the agent's bar at level 24
-  and a zero-size window per app). Level-25 windows in that list, where
+  and a zero-size window per app). It asks (the system's prompt) only
+  from that switch or the tour's button, and only while the permission
+  never worked for AIMeter (`AccessibilityState`,
+  `AccessibilityAccess`; `claudeSessionsAccessibilityConfirmed` is set
+  the first time it does): macOS keeps the permission with the
+  signature of the copy it was given to, so a copy signed another way
+  (a development build replaced by a release, or the source built under
+  another team) isn't trusted while System Settings still shows AIMeter
+  on, and switching it off and on there doesn't carry it over (measured
+  on macOS 27, 2026-10-15). That copy is told to remove AIMeter with −
+  if it's in the list and add it with +, under the switch and on the
+  tour's card, instead of being asked again for a permission that looks
+  given. The island measures again whenever the Accessibility list
+  changes (macOS posts `com.apple.accessibility.api`, a distributed
+  notification) and at every app switch, so a permission given in
+  System Settings takes effect at once, with no relaunch and no polling;
+  nothing is measured at all while no session's name is shown.
+  Level-25 windows in that list, where
   status items lived before, still count with no permission. Only those
   frames are ever read, on a queue of their own (the first read of an
   app takes tens of milliseconds, 1.5 s for every app running here,
@@ -1115,6 +1137,8 @@ the account silently freezes at its last snapshot.
   presence-checked), `claudeSessionsPets` (default **true**,
   presence-checked), `claudeSessionsShowsName` (default false),
   `claudeSessionsAvoidsMenus` (default false),
+  `claudeSessionsAccessibilityConfirmed` (default false, set the first
+  time the Accessibility permission works),
   `claudeSessionsNotify` (default false) and
   `claudeSessionsHooksDismissed` (default false), whose keys and loading
   live in `Shared/PreferencesStore+ClaudeSessions.swift` — see "Claude
@@ -1593,7 +1617,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   default (`UsageLevelTests`), versions and the bundled What's New notes
   (every language, no em dash, every named feature one the tour knows)
   with the rules for which are due (`WhatsNewTests`), the tour's
-  audience, steps and the offers after an update (`TourTests`), on macOS the update feed against a captured GitHub
+  audience, steps and the offers after an update, and the session's
+  name counting as on with both its switches (`TourTests`), on macOS the update feed against a captured GitHub
   response (`AIMeterTests/Fixtures/github-release-latest.json`), the
   offer rules and the install script (`UpdateFeedTests`), the
   service-status throttle, aging, banner and footer-line rules
@@ -1624,7 +1649,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   on the demo snapshot), and on macOS `ClaudeCodeUsageModel` over a
   scratch logs folder (scan, buckets, the popover line, off deletes the
   index) plus the token/USD formatters, and Claude Code's sessions: the
-  preferences, the mark, count and rows, the hooks' edits to Claude
+  preferences, when the Accessibility prompt may show and what a copy
+  that lost the permission is told, the mark, count and rows, the hooks' edits to Claude
   Code's settings, whose log a path is, and a hook request's body
   (`ClaudeSessionsTests`, with the demo's sessions and the pets their ids
   deal, which the website's videos show, the room a drawn row's name
@@ -1754,10 +1780,20 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   rejected precisely because it would add an Accessibility/Input Monitoring
   permission and the review scrutiny that comes with it. The one
   Accessibility use there is, since 3.0, is opt-in and narrow: "Avoid
-  covering the menu bar" asks for it only when switched on and reads only
+  covering the menu bar" asks for it only when switched on, only while
+  it never worked, and reads only
   where the open app's menu titles and the menu bar's status items are
   (see "Claude Code sessions"), disclosed
-  in `PrivacyView` and the website's privacy page. Separately,
+  in `PrivacyView` and the website's privacy page. Two log lines that
+  look like permissions and aren't: each launch logs tccd's
+  "kTCCServiceAppleEvents requires entitlement
+  com.apple.security.automation.apple-events but it is missing", which
+  is the Apple Events service checking a hardened-runtime app as it
+  connects (Chrome logs the same); AIMeter sends no Apple Event and
+  nothing is prompted. And a copy signed another way gets macOS's own
+  keychain prompt once for Claude Code's login (the `.autoDetected`
+  account), which "Always Allow" settles; that dialog is macOS's, with
+  nothing for AIMeter to check first. Separately,
   `ENABLE_APP_SANDBOX = NO` is pre-existing and would have to change for
   Mac App Store distribution regardless of any of this, and so would the
   updater: a Mac App Store build must not update itself.

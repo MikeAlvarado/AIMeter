@@ -198,6 +198,10 @@ final class PreferencesModel {
         get { stored.claudeSessionsAvoidsMenus }
         set { guard stored.claudeSessionsAvoidsMenus != newValue else { return }; stored.claudeSessionsAvoidsMenus = newValue; persist(newValue, Preferences.Keys.claudeSessionsAvoidsMenus, reloadsWidgets: false) }
     }
+    var claudeSessionsAccessibilityConfirmed: Bool {
+        get { stored.claudeSessionsAccessibilityConfirmed }
+        set { guard stored.claudeSessionsAccessibilityConfirmed != newValue else { return }; stored.claudeSessionsAccessibilityConfirmed = newValue; persist(newValue, Preferences.Keys.claudeSessionsAccessibilityConfirmed, reloadsWidgets: false) }
+    }
     var claudeSessionsNotify: Bool {
         get { stored.claudeSessionsNotify }
         set { guard stored.claudeSessionsNotify != newValue else { return }; stored.claudeSessionsNotify = newValue; persist(newValue, Preferences.Keys.claudeSessionsNotify, reloadsWidgets: false) }

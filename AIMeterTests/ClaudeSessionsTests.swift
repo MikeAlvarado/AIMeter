@@ -37,6 +37,30 @@ final class ClaudeSessionsTests: XCTestCase {
         XCTAssertTrue(reloaded.claudeSessionsShowsName)
     }
 
+    /// "Avoid covering the menu bar": macOS's prompt only while the
+    /// permission never worked, and a copy that lost it to another
+    /// signature told how to mend it rather than asked again.
+    func testAccessibilityAsksOnlyWhenItNeverWorked() {
+        XCTAssertEqual(AccessibilityState(trusted: true, confirmedBefore: false), .granted)
+        XCTAssertEqual(AccessibilityState(trusted: true, confirmedBefore: true), .granted)
+        XCTAssertEqual(AccessibilityState(trusted: false, confirmedBefore: false), .notGranted)
+        XCTAssertEqual(AccessibilityState(trusted: false, confirmedBefore: true), .lostForThisCopy)
+        XCTAssertTrue(AccessibilityState.notGranted.mayPrompt)
+        XCTAssertFalse(AccessibilityState.lostForThisCopy.mayPrompt, "System Settings may show it on: no prompt")
+        XCTAssertFalse(AccessibilityState.granted.mayPrompt)
+        #if os(macOS)
+        XCTAssertNil(AccessibilityState.granted.remedy)
+        XCTAssertEqual(AccessibilityState.notGranted.remedy, "Allow AIMeter in Privacy & Security, Accessibility.")
+        XCTAssertTrue(AccessibilityState.lostForThisCopy.remedy?.contains("remove AIMeter") == true)
+        #endif
+
+        let scratch = ScratchDefaults()
+        defer { scratch.wipe() }
+        XCTAssertFalse(Preferences.load(from: scratch.defaults).claudeSessionsAccessibilityConfirmed)
+        PreferencesModel(defaults: scratch.defaults).claudeSessionsAccessibilityConfirmed = true
+        XCTAssertTrue(Preferences.load(from: scratch.defaults).claudeSessionsAccessibilityConfirmed)
+    }
+
     func testTheMarkGoesByUrgency() {
         typealias Sessions = NotchIslandModel.Sessions
         XCTAssertNil(Sessions(sessions: [], justFinished: nil, now: now).mark, "nothing at work: the bare notch")

@@ -1,5 +1,4 @@
 #if os(macOS)
-import ApplicationServices
 import SwiftUI
 import UsageKit
 
@@ -14,7 +13,10 @@ struct ClaudeSessionsSettings: View {
     @Environment(\.openURL) private var openURL
     /// Whether macOS lets AIMeter read where the menu bar's items are, checked again
     /// whenever the app comes forward (after a trip to System Settings).
-    @State private var accessibilityTrusted = AXIsProcessTrusted()
+    @State private var accessibilityTrusted = AccessibilityAccess.isTrusted
+    private var accessibility: AccessibilityState {
+        AccessibilityState(trusted: accessibilityTrusted, confirmedBefore: prefs.claudeSessionsAccessibilityConfirmed)
+    }
     private var monitor: ClaudeSessionMonitor { .shared }
 
     var body: some View {
@@ -74,8 +76,8 @@ struct ClaudeSessionsSettings: View {
                             }
                         }
                         .tint(Theme.accent)
-                        if prefs.claudeSessionsAvoidsMenus, !accessibilityTrusted {
-                            accessibilityRow
+                        if prefs.claudeSessionsAvoidsMenus, let remedy = accessibility.remedy {
+                            accessibilityRow(remedy)
                         }
                     }
                 }
@@ -105,40 +107,45 @@ struct ClaudeSessionsSettings: View {
         .onChange(of: prefs.claudeSessionsNotify) { _, _ in AppChrome.updateClaudeSessions() }
         .task {
             monitor.refreshHooksState()
+            accessibilityTrusted = AccessibilityAccess.check(prefs: prefs) == .granted
             await model.refreshNotificationAuthorization()
         }
         .task {
             for await _ in NotificationCenter.default.notifications(named: NSApplication.didBecomeActiveNotification) {
-                accessibilityTrusted = AXIsProcessTrusted()
+                accessibilityTrusted = AccessibilityAccess.check(prefs: prefs) == .granted
             }
         }
         SectionFootnote(text: String(localized: "AIMeter reads only whether each session is working, waiting or done, and its title and folder, from the logs in ~/.claude/projects. It never reads your prompts or Claude's replies, and nothing leaves this Mac. Installing the hooks adds AIMeter to ~/.claude/settings.json and backs the file up first; everything else in it stays as it is."))
     }
 
-    /// Turning it on asks macOS for the Accessibility permission, once:
-    /// the system's own prompt, which leads to System Settings.
+    /// Turning it on asks macOS for the Accessibility permission with the
+    /// system's own prompt, which leads to System Settings, but only while
+    /// the permission never worked (`AccessibilityState.mayPrompt`): one a
+    /// differently signed copy holds is mended in System Settings, as the
+    /// row under the switch says.
     private var avoidsMenusBinding: Binding<Bool> {
         Binding(
             get: { prefs.claudeSessionsAvoidsMenus },
             set: { enabled in
                 prefs.claudeSessionsAvoidsMenus = enabled
                 guard enabled else { return }
-                accessibilityTrusted = AXIsProcessTrustedWithOptions(["AXTrustedCheckOptionPrompt": true] as CFDictionary)
+                accessibilityTrusted = AccessibilityAccess.request(prefs: prefs) == .granted
             }
         )
     }
 
-    /// Where to allow it, while the switch is on and the permission isn't.
-    private var accessibilityRow: some View {
+    /// What to do, while the switch is on and the permission isn't.
+    private func accessibilityRow(_ remedy: String) -> some View {
         HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(Theme.warning)
-            Text("Allow AIMeter in Privacy & Security, Accessibility.")
+            Text(remedy)
                 .font(Theme.caption)
                 .foregroundStyle(Theme.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
             Button(String(localized: "Open Settings")) {
-                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                if let url = AccessibilityAccess.settingsURL {
                     openURL(url)
                 }
             }

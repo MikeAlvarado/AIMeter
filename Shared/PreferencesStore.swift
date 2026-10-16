@@ -277,6 +277,10 @@ struct Preferences: Sendable {
     /// takes the Accessibility permission (the status items on the right
     /// are always spared). Off by default.
     var claudeSessionsAvoidsMenus: Bool = false
+    /// The Accessibility permission has worked for AIMeter at least once,
+    /// so a copy macOS doesn't trust can tell a permission held by a copy
+    /// signed another way from one never given (`AccessibilityState`).
+    var claudeSessionsAccessibilityConfirmed: Bool = false
     /// A notification when a session needs the user: it asked for
     /// permission, which only the hooks tell. A turn ending is not
     /// announced. Off by default.

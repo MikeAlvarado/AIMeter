@@ -1,4 +1,5 @@
 import XCTest
+import UsageKit
 @testable import AIMeter
 
 /// The tour (see `Tour`): who gets it, its steps, and which new features a
@@ -44,6 +45,23 @@ final class TourTests: XCTestCase {
                      "on already, or not for this Mac")
         XCTAssertNil(Tour.pendingOffers(in: nil, offered: [], canOffer: { _ in true }))
     }
+
+    #if os(macOS)
+    /// The session's name with the menu bar clearance is on once both
+    /// switches are, the way a login item waiting for approval is: what may
+    /// be left is macOS's permission, which the label says how to give,
+    /// never a button that would prompt again.
+    func testTheSessionNamesAreOnWithBothSwitches() {
+        let scratch = ScratchDefaults()
+        defer { scratch.wipe() }
+        let prefs = PreferencesModel(defaults: scratch.defaults)
+        let model = UsageModel(registry: AccountRegistryStore(userDefaults: scratch.defaults), platformServices: false)
+        prefs.claudeSessionsShowsName = true
+        XCTAssertFalse(TourActions.isActive(.sessionNames, model: model, prefs: prefs, notificationsAllowed: false))
+        prefs.claudeSessionsAvoidsMenus = true
+        XCTAssertTrue(TourActions.isActive(.sessionNames, model: model, prefs: prefs, notificationsAllowed: false))
+    }
+    #endif
 
     func testANoteNamesItsFeatureByRawValue() throws {
         let json = #"""

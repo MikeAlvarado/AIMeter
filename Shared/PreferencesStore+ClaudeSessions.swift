@@ -8,6 +8,7 @@ extension Preferences.Keys {
     static let claudeSessionsPets = "pref.claudeSessionsPets"
     static let claudeSessionsShowsName = "pref.claudeSessionsShowsName"
     static let claudeSessionsAvoidsMenus = "pref.claudeSessionsAvoidsMenus"
+    static let claudeSessionsAccessibilityConfirmed = "pref.claudeSessionsAccessibilityConfirmed"
     static let claudeSessionsNotify = "pref.claudeSessionsNotify"
     static let claudeSessionsHooksDismissed = "pref.claudeSessionsHooksDismissed"
 }
@@ -18,6 +19,7 @@ extension Preferences {
         claudeSessionsPets = Self.bool(defaults, Keys.claudeSessionsPets, default: true)
         claudeSessionsShowsName = defaults.bool(forKey: Keys.claudeSessionsShowsName)
         claudeSessionsAvoidsMenus = defaults.bool(forKey: Keys.claudeSessionsAvoidsMenus)
+        claudeSessionsAccessibilityConfirmed = defaults.bool(forKey: Keys.claudeSessionsAccessibilityConfirmed)
         claudeSessionsNotify = defaults.bool(forKey: Keys.claudeSessionsNotify)
         claudeSessionsHooksDismissed = defaults.bool(forKey: Keys.claudeSessionsHooksDismissed)
     }

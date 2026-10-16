@@ -104,7 +104,7 @@ struct TourView: View {
                 }
             } else {
                 if active {
-                    TourActiveLabel(feature: feature)
+                    TourActiveLabel(feature: feature, accessibility: TourActions.accessibility(for: feature, prefs: prefs))
                 }
                 CapsuleActionButton(title: last ? String(localized: "Done") : String(localized: "Continue")) {
                     advance()
@@ -147,9 +147,14 @@ struct TourView: View {
 }
 
 /// "On" once a step's feature is, or "Connected"; a login item macOS
-/// still has to approve says so, with the way to the pane.
+/// still has to approve, or the menu bar clearance while macOS doesn't
+/// trust this copy, says so, with the way to the pane.
 struct TourActiveLabel: View {
     let feature: TourFeature
+    /// Read by the caller, whose body runs again on its `revision` (an app
+    /// switch back from System Settings): this view's own inputs wouldn't
+    /// change when the permission comes back.
+    var accessibility: AccessibilityState? = nil
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -165,6 +170,21 @@ struct TourActiveLabel: View {
                         .foregroundStyle(Theme.inkSecondary)
                     Button(String(localized: "Open Settings")) {
                         if let url = LoginItemManager.settingsURL { openURL(url) }
+                    }
+                    .buttonStyle(.plain)
+                    .font(Theme.caption.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+                }
+            }
+            if let remedy = accessibility?.remedy {
+                VStack(spacing: 4) {
+                    Text(remedy)
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button(String(localized: "Open Settings")) {
+                        if let url = AccessibilityAccess.settingsURL { openURL(url) }
                     }
                     .buttonStyle(.plain)
                     .font(Theme.caption.weight(.semibold))
@@ -212,7 +232,7 @@ struct TourFeatureCard: View {
             let _ = revision
             if let action = TourActions.title(for: feature), TourActions.applies(feature, prefs: prefs) {
                 if TourActions.isActive(feature, model: model, prefs: prefs, notificationsAllowed: notificationsAllowed) {
-                    TourActiveLabel(feature: feature)
+                    TourActiveLabel(feature: feature, accessibility: TourActions.accessibility(for: feature, prefs: prefs))
                 } else {
                     CapsuleActionButton(title: action) {
                         Task {

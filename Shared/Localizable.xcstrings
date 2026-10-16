@@ -380,6 +380,53 @@
         }
       }
     },
+    "This copy of AIMeter needs Accessibility again. In System Settings, remove AIMeter with − if it's in the list, then add it with +." : {
+      "comment" : "Shown (macOS) while Avoid covering the menu bar is on and the Accessibility permission worked before but not for this copy, e.g. a development build replaced by a release: macOS keeps the permission with the old signature, and the list may or may not still show AIMeter. − and + are the buttons under the list in System Settings; next to an Open Settings button.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Kopie von AIMeter braucht die Bedienungshilfen erneut. Entferne AIMeter in den Systemeinstellungen mit −, falls es in der Liste steht, und füge es dann mit + hinzu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta copia de AIMeter necesita Accesibilidad otra vez. En Ajustes del Sistema, quita AIMeter con − si está en la lista y luego agrégalo con +."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette copie d’AIMeter a de nouveau besoin d’Accessibilité. Dans Réglages Système, retirez AIMeter avec − s’il figure dans la liste, puis ajoutez-le avec +."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このAIMeterには、もう一度アクセシビリティの許可が必要です。システム設定で、リストにAIMeterがあれば−で削除してから、+で追加してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 AIMeter에 손쉬운 사용 권한이 다시 필요합니다. 시스템 설정에서 목록에 AIMeter가 있으면 −로 제거한 뒤 +로 추가하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cópia do AIMeter precisa de Acessibilidade de novo. Nos Ajustes do Sistema, remova o AIMeter com − se ele estiver na lista e depois adicione-o com +."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这份 AIMeter 需要重新获得辅助功能权限。请在系统设置中，如果列表里有 AIMeter，先用 − 移除，再用 + 添加。"
+          }
+        }
+      }
+    },
     "The icon couldn't be changed." : {
       "comment" : "Settings, App icon: iOS refused to switch the icon.",
       "localizations" : {

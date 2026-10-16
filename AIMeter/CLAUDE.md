@@ -305,10 +305,16 @@
   "Beside the notch while the island is closed. Hovering shows it either
   way.", and under that, while it is on, "Avoid covering the menu bar", which
   asks macOS for the Accessibility permission when switched on (the
-  system's own prompt) and, while the permission is missing, shows
-  "Allow AIMeter in Privacy & Security, Accessibility." with an Open
-  Settings button to that pane; the permission is re-checked whenever
-  the app comes forward) and "Usage"
+  system's own prompt), but only while it never worked for AIMeter
+  (`AccessibilityState.mayPrompt`), and, while the permission is
+  missing, shows what to do with an Open Settings button to that pane:
+  "Allow AIMeter in Privacy & Security, Accessibility." for a permission
+  never given, or, for one a copy signed another way holds (System
+  Settings shows AIMeter on and macOS still doesn't trust this copy),
+  "This copy of AIMeter needs Accessibility again. In System Settings,
+  remove AIMeter with − if it's in the list, then add it with +." (the
+  list may not show it at all once the permission was reset);
+  the permission is re-checked whenever the app comes forward) and "Usage"
   (`ClaudeCodeSettings`: "Read Claude Code's local usage logs", off by
   default, whose `onChange` drives `UsageModel.claudeCode?.setEnabled`,
   and, once on, "Show today's total in the menu bar"); and **Privacy &
@@ -717,7 +723,10 @@
     views in the window", a crash on the first peek — so the hosting
     view sits inside `NotchIslandContainerView`, a plain autoresizing
     container that forwards `hitTest` to it, with `sizingOptions` empty.
-  - **No timers while collapsed**, but for a Claude Code session's:
+  - **No timers while collapsed**, but for a Claude Code session's (and
+    the menu bar clearance's 20 s re-read, which runs only while a
+    session's name shows beside the notch with "Avoid covering the menu
+    bar" on and the Accessibility permission given):
     its pets step on a shared 8 Hz `TimelineView` inside each
     `PixelPetView` (a leaf, so the slab's identity never changes), only
     while one is shown; with pets off the spinner is the `rays` symbol

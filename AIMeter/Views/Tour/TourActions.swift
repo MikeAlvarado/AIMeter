@@ -1,9 +1,6 @@
 import SwiftUI
 import UserNotifications
 import UsageKit
-#if os(macOS)
-import ApplicationServices
-#endif
 
 extension Notification.Name {
     /// The tour's last step asked to connect an account: the iOS Dashboard
@@ -65,7 +62,11 @@ enum TourActions {
         #if os(macOS)
         case .notchIsland: prefs.notchIslandEnabled
         case .sessions: ClaudeSessionMonitor.shared.hooksInstalled
-        case .sessionNames: prefs.claudeSessionsShowsName && prefs.claudeSessionsAvoidsMenus && AXIsProcessTrusted()
+        // The switches count, as for the login item: what may be left is
+        // macOS's permission, which the label says how to give
+        // (`TourActiveLabel`), rather than a button that would prompt
+        // again for a permission System Settings may show as on.
+        case .sessionNames: prefs.claudeSessionsShowsName && prefs.claudeSessionsAvoidsMenus
         // Registered counts, as in Settings' switch: the app did its part,
         // and what is left is the user's approval (`TourActiveLabel`).
         case .openAtLogin: LoginItemManager().isEnabled || LoginItemManager().needsApproval
@@ -102,7 +103,7 @@ enum TourActions {
         case .sessionNames:
             prefs.claudeSessionsShowsName = true
             prefs.claudeSessionsAvoidsMenus = true
-            _ = AXIsProcessTrustedWithOptions(["AXTrustedCheckOptionPrompt": true] as CFDictionary)
+            AccessibilityAccess.request(prefs: prefs)
         case .openAtLogin:
             LoginItemManager().setEnabled(true)
         #else
@@ -110,6 +111,17 @@ enum TourActions {
             break
         #endif
         }
+    }
+
+    /// Where the menu bar clearance stands with the Accessibility
+    /// permission, for `.sessionNames`'s "On" label; nil for every other
+    /// feature and on iOS.
+    static func accessibility(for feature: TourFeature, prefs: PreferencesModel) -> AccessibilityState? {
+        #if os(macOS)
+        feature == .sessionNames ? AccessibilityAccess.state(prefs: prefs) : nil
+        #else
+        nil
+        #endif
     }
 
     /// Whether notifications are allowed, for `.alerts`.

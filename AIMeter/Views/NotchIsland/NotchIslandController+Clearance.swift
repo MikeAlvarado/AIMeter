@@ -32,7 +32,10 @@ extension NotchIslandController {
     /// `everyApp` asks every app that can have a status item; the watch's
     /// ticks only ask the ones found with one last time.
     func refreshClearance(everyApp: Bool = true) {
-        guard let screen else {
+        // Only a session's name beside the notch reads the clearance: with
+        // no name to show (or the island stopped, and a delayed check from
+        // before still landing), nothing is measured.
+        guard isRunning, let screen, let prefs, prefs.claudeSessionsEnabled, prefs.claudeSessionsShowsName else {
             stopClearanceWatch()
             if state.availableWing != nil { state.availableWing = nil }
             return
@@ -46,7 +49,11 @@ extension NotchIslandController {
         let fromWindows = NotchIslandClearance.statusItemsMinX(
             Self.onScreenWindows(), notch: notch, menuBarTop: menuBarTop, menuBarHeight: menuBarHeight
         )
-        guard prefs?.claudeSessionsAvoidsMenus ?? false, AXIsProcessTrusted() else {
+        // Without the permission there is nothing to watch: an app switch
+        // measures again, and so does a change to the Accessibility list
+        // (`com.apple.accessibility.api`, observed in `observe()`), so the
+        // island notices a permission given in System Settings at once.
+        guard prefs.claudeSessionsAvoidsMenus, AccessibilityAccess.check(prefs: prefs) == .granted else {
             stopClearanceWatch()
             publishClearance(notch: notch, ear: ear, menusMaxX: nil, statusItemsMinX: fromWindows)
             return

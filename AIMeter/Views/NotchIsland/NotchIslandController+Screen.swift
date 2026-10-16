@@ -111,6 +111,14 @@ extension NotchIslandController {
         }
         observers.append((workspace, workspace.addObserver(forName: NSWorkspace.didLaunchApplicationNotification, object: nil, queue: .main, using: launched)))
         observers.append((workspace, workspace.addObserver(forName: NSWorkspace.didTerminateApplicationNotification, object: nil, queue: .main, using: quit)))
+        // macOS posts this whenever the Accessibility list changes: a
+        // permission given (or taken) in System Settings reaches the island
+        // a moment later, once the system has applied it, with no polling.
+        let distributed = DistributedNotificationCenter.default()
+        let accessibility: @Sendable (Notification) -> Void = { [weak self] _ in
+            Task { @MainActor [weak self] in self?.scheduleClearanceChecks(after: [.milliseconds(500), .seconds(2)]) }
+        }
+        observers.append((distributed, distributed.addObserver(forName: Notification.Name("com.apple.accessibility.api"), object: nil, queue: .main, using: accessibility)))
         // While AIMeter itself is frontmost the global pointer monitor
         // hears nothing, so the pointer is polled for that stretch.
         let activity: @Sendable (Notification) -> Void = { [weak self] _ in
