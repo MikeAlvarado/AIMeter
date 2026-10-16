@@ -34,9 +34,15 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
 - `src/components/sections/` — in page order: `Hero` (full bleed,
   flush with the window's sides and top, and since 3.0 centred on the
   notch: the pills, the headline, the line and the downloads in one
-  centred column, and under them `NotchDemo`; it scrolls away with the
-  page, no longer pinned, since the demo makes it taller than a
-  viewport; behind all of it, the "+" grid, `PlusGrid`), `Statement` (word-by-word brighten driven
+  centred column, and under them `NotchDemo`. All of it fits the first
+  screen (Mike's call, 2026-10-16): the opening is `100svh` tall (a
+  height of its own, not a minimum, so the demo's room is known; never
+  under 36rem), the words above take what they need, their size and
+  gaps following the screen's height (`svh` in their clamps), and the
+  demo takes the rest. On a phone the GitHub link is left to the end of
+  the page, so the two downloads fit on one row. Measured to fit at
+  1512×862, 1440×900, 1280×720, 1920×1080, 768×1024 and 390×844. It
+  scrolls away with the page; behind all of it, the "+" grid, `PlusGrid`), `Statement` (word-by-word brighten driven
   by `useScrollProgress`), `Features` (what the app does, in one place:
   the six features and one iPhone whose screen is drawn live, the chosen
   feature's, see `components/phone` below. From the `tab` breakpoint up
@@ -78,8 +84,10 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   screens, and the page is about a third shorter), `Mac` ("Any Mac, any screen": what the island
   does on a screen without a notch and the status item, `MenuBarStrip`,
   a CSS illustration of the six status-item styles (one line, as in a
-  menu bar, wrapping onto two on a phone so none is cut off), the extras list,
-  plus the "Download for Mac" link and the "build from source" link;
+  menu bar, wrapping onto two on a phone so none is cut off), four
+  extras as short chips and a one-line note (not on the Mac App Store,
+  a notarized zip, macOS 14 or later), plus the "Download for Mac" link
+  and the "build from source" link;
   the island's three stills it used to show gave way to the hero's
   videos), `Privacy`
   (four cards + link to `/privacy`), `OpenSource`, `Closing` (full
@@ -111,8 +119,13 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   its groove) playing one scene's recording at a time, the iPhone app
   (`Device` around the live Dashboard) over its lower right from the
   `nav` breakpoint up, and under it the scenes as tabs (Limits, Sessions,
-  Needs you, each with a progress underline) with the scene's title and
-  line. Each video plays to its end and hands over to the next; off
+  Needs you, each with a progress underline), nothing more: a scene's
+  title is its video's label for assistive tech. It fills the room the
+  hero leaves it, a size container (`container-type: size`): the
+  MacBook is as wide as the column, or as wide as that room's height
+  allows once the hinge, the tabs and the gap are out
+  (`--frame`, its height over its width: 16:9 or the phone's 4:3 plus
+  the bezel), and the two sit centred in the room. Each video plays to its end and hands over to the next; off
   screen it pauses (an `IntersectionObserver`); with reduced motion
   nothing plays by itself (the poster shows, with the controls). The
   videos are `src/assets/videos/island-<scene>-<lang>.mp4` with a `.webp`
@@ -176,6 +189,11 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   centre crop of the store header asset).
 
 ## Content rules
+
+Short copy (Mike, 2026-10-16): one line for an idea, a sentence or two
+at most for a section's lead, two short points under a feature, chips
+rather than a list for the Mac's extras. The detail lives on the privacy
+and support pages, which keep it whole.
 
 Same posture as the store metadata (see the repo root `CLAUDE.md`, "App
 Review posture"): the landing page names no third-party product or

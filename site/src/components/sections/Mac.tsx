@@ -37,10 +37,9 @@ export function Mac() {
           <div data-reveal>
             <MenuBarStrip labels={t.mac.styles} />
           </div>
-          <ul data-reveal className="text-ink/80 flex flex-col gap-2 text-sm">
+          <ul data-reveal className="flex flex-wrap gap-2">
             {t.mac.extras.map((extra) => (
-              <li key={extra} className="flex gap-2.5">
-                <span aria-hidden className="bg-accent mt-[0.55em] size-1.5 shrink-0 rounded-full" />
+              <li key={extra} className="border-hairline text-ink/80 rounded-full border px-3.5 py-1.5 text-sm">
                 {extra}
               </li>
             ))}

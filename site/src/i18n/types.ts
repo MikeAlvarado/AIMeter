@@ -66,8 +66,8 @@ export interface PhoneCopy {
 export interface DemoScene {
   /** The scene's tab under the MacBook. */
   pill: string
+  /** What the recording shows, its label for assistive tech. */
   title: string
-  body: string
 }
 
 export interface Faq {
