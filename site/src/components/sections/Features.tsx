@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { useLanguage } from '../../hooks/useLanguage'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import type { PhoneCopy } from '../../i18n/types'
@@ -13,6 +13,7 @@ import { PaceScreen } from '../phone/screens/Pace'
 import { WidgetsScreen } from '../phone/screens/Widgets'
 import { APP } from '../phone/theme'
 import { MixedHeading } from '../ui/MixedHeading'
+import { FeatureCarousel, FeaturePoints } from './FeatureCarousel'
 
 /** How long each feature holds the phone before the next. */
 const DWELL_MS = 7000
@@ -30,16 +31,19 @@ const SCREENS: Record<string, { background: string; dark: boolean; render: (copy
 }
 
 /**
- * What the app does, in one place: the six features as a list, and one
- * iPhone beside it whose screen is drawn live (`components/phone`), the
- * chosen feature's: the Dashboard's bars filling, the widgets, the history
- * drawing itself, the alerts arriving, the pace, the accounts trading
- * places. The phone stays put; only its screen changes, the new one fading
- * in over the old. It moves on by itself every few seconds, the active
- * item's line filling meanwhile (written straight to the line, so the phone
- * is not drawn again every frame); pointing at it, focusing it or scrolling
- * it away pauses it, a click picks a feature, and with reduced motion only
- * a click does.
+ * What the app does, in one place: the six features, and one iPhone whose
+ * screen is drawn live (`components/phone`), the chosen feature's: the
+ * Dashboard's bars filling, the widgets, the history drawing itself, the
+ * alerts arriving, the pace, the accounts trading places. The phone stays
+ * put; only its screen changes, the new one fading in over the old.
+ *
+ * From the `tab` breakpoint up the features are a list beside the phone;
+ * below it, cards swiped under the phone (`FeatureCarousel`). It moves on by
+ * itself every few seconds, the active row's line (or dot) filling
+ * meanwhile, written straight to the element so the phone is not drawn
+ * again every frame. Pointing at it or focusing it pauses it, a touch
+ * pauses it until it has left the screen, scrolling it away pauses it, and
+ * with reduced motion only a click or a swipe changes it.
  */
 export function Features() {
   const { t } = useLanguage()
@@ -48,7 +52,9 @@ export function Features() {
   const [active, setActive] = useState(0)
   const progressRef = useRef(0)
   const lineRef = useRef<HTMLSpanElement | null>(null)
+  const dotRef = useRef<HTMLSpanElement | null>(null)
   const [held, setHeld] = useState(false)
+  const [touched, setTouched] = useState(false)
   const [inView, setInView] = useState(false)
   const sectionRef = useRef<HTMLElement | null>(null)
   const panelId = useId()
@@ -58,13 +64,21 @@ export function Features() {
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
-    const observer = new IntersectionObserver(([entry]) => setInView(entry?.isIntersecting ?? false), { threshold: 0.35 })
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry?.isIntersecting ?? false
+        setInView(visible)
+        // A finger has no hover to leave: a touch holds the features until they have left the screen.
+        if (!visible) setTouched(false)
+      },
+      { threshold: 0.35 },
+    )
     observer.observe(section)
     return () => observer.disconnect()
   }, [])
 
   useEffect(() => {
-    if (reduced || held || !inView) return
+    if (reduced || held || touched || !inView) return
     let frame = 0
     let last = performance.now()
     const step = (now: number) => {
@@ -74,17 +88,25 @@ export function Features() {
         progressRef.current = 0
         setActive((index) => (index + 1) % items.length)
       }
-      if (lineRef.current) lineRef.current.style.transform = `scaleX(${progressRef.current})`
+      const scale = `scaleX(${progressRef.current})`
+      if (lineRef.current) lineRef.current.style.transform = scale
+      if (dotRef.current) dotRef.current.style.transform = scale
       frame = requestAnimationFrame(step)
     }
     frame = requestAnimationFrame(step)
     return () => cancelAnimationFrame(frame)
-  }, [reduced, held, inView, items.length])
+  }, [reduced, held, touched, inView, items.length])
 
   const choose = (index: number) => {
     progressRef.current = 0
     if (lineRef.current) lineRef.current.style.transform = 'scaleX(0)'
+    if (dotRef.current && !reduced) dotRef.current.style.transform = 'scaleX(0)'
     setActive(index)
+  }
+
+  /** A mouse or a pen holds the features while over them; a finger has no hover to leave, so a touch is `touched` instead. */
+  const hover = (event: PointerEvent<HTMLDivElement>, over: boolean) => {
+    if (event.pointerType !== 'touch') setHeld(over)
   }
 
   return (
@@ -94,15 +116,16 @@ export function Features() {
         <p className="text-ink-2 max-w-md text-lg">{t.features.sub}</p>
       </div>
       <div
-        className="tab:flex-row tab:items-center tab:gap-16 mx-auto flex max-w-6xl flex-col gap-10"
-        onMouseEnter={() => setHeld(true)}
-        onMouseLeave={() => setHeld(false)}
+        className="tab:flex-row tab:items-center tab:gap-16 mx-auto flex max-w-6xl flex-col gap-4"
+        onPointerEnter={(event) => hover(event, true)}
+        onPointerLeave={(event) => hover(event, false)}
+        onTouchStart={() => setTouched(true)}
         onFocus={() => setHeld(true)}
         onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget)) setHeld(false)
         }}
       >
-        <ul role="tablist" aria-orientation="vertical" aria-label={t.features.listLabel} className="flex flex-1 flex-col">
+        <ul role="tablist" aria-orientation="vertical" aria-label={t.features.listLabel} className="tab:flex hidden flex-1 flex-col">
           {items.map((item, index) => {
             const selected = index === active
             return (
@@ -134,14 +157,7 @@ export function Features() {
                     >
                       <div className="flex flex-col gap-4 pb-6 pl-12">
                         <p className="text-ink/80 max-w-xl text-base leading-relaxed">{item.body}</p>
-                        <ul className="text-ink-2 flex flex-col gap-2 text-sm">
-                          {item.points.map((point) => (
-                            <li key={point} className="flex gap-2.5">
-                              <span aria-hidden className="bg-accent mt-[0.55em] size-1.5 shrink-0 rounded-full" />
-                              {point}
-                            </li>
-                          ))}
-                        </ul>
+                        <FeaturePoints points={item.points} />
                       </div>
                     </motion.div>
                   )}
@@ -150,7 +166,13 @@ export function Features() {
             )
           })}
         </ul>
-        <div id={panelId} role="tabpanel" className="tab:order-none tab:w-[19rem] order-first mx-auto w-[15.5rem] shrink-0">
+        {/* On a phone it also yields to a short screen (a width 390/844 of
+            its height, 0.462), so the dots and a card's title fit under it. */}
+        <div
+          id={panelId}
+          role="tabpanel"
+          className="tab:order-none tab:w-[19rem] tab:max-w-none order-first mx-auto w-[clamp(13.5rem,56vw,15.5rem)] max-w-[max(10rem,calc((100svh-16rem)*0.462))] shrink-0"
+        >
           <Device background={screen.background} dark={screen.dark} label={feature?.imageAlt ?? ''}>
             {/* The leaving screen stays whole under the arriving one until
                 it is covered, so nothing else shows through the fade. */}
@@ -167,6 +189,9 @@ export function Features() {
               </motion.div>
             </AnimatePresence>
           </Device>
+        </div>
+        <div className="tab:hidden">
+          <FeatureCarousel items={items} active={active} reduced={reduced} panelId={panelId} fillRef={dotRef} onSelect={choose} />
         </div>
       </div>
     </section>

@@ -59,6 +59,7 @@ export const es = {
     heading: 'Lo que *hace*',
     sub: 'Todo lo que muestra la app viene directo de los números de tu proveedor.',
     listLabel: 'Funciones',
+    carousel: { role: 'carrusel', slide: 'diapositiva', position: '{n} de {total}', dots: 'Elige una función' },
     items: [
       {
         id: 'limits',

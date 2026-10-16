@@ -59,9 +59,10 @@ export function MenuBarStrip({ labels }: { labels: string[] }) {
         { tone: 'bg-[#e9e6e0] text-[#1f1e1d]', key: 'light' },
         { tone: 'bg-[#1e1d1b] text-[#f2f0ea]', key: 'dark' },
       ].map((row) => (
+        // On a phone the styles wrap: in one line they would run past the tile's edge, the last ones out of sight.
         <div
           key={row.key}
-          className={cn('flex items-center gap-5 overflow-x-auto rounded-tile px-5 py-2.5 text-[13px] font-medium tabular whitespace-nowrap', row.tone)}
+          className={cn('max-tab:flex-wrap max-tab:gap-y-2 flex items-center gap-5 overflow-x-auto rounded-tile px-5 py-2.5 text-[13px] font-medium tabular whitespace-nowrap', row.tone)}
         >
           {ITEMS.map((item) => (
             <span key={item.key} className="inline-flex items-center gap-1.5">

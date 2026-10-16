@@ -38,20 +38,33 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   page, no longer pinned, since the demo makes it taller than a
   viewport; behind all of it, the "+" grid, `PlusGrid`), `Statement` (word-by-word brighten driven
   by `useScrollProgress`), `Features` (what the app does, in one place:
-  the six features as a vertical tab list, hairline rows with the number
-  and the title, the chosen one opening to its body and points, and one
-  iPhone beside them whose screen is drawn live, the chosen feature's,
-  see `components/phone` below. The phone stays put and only its screen
-  changes, the new one fading in over the old while the status bar turns
-  light or dark with it. It moves on by itself every 7 s, a line filling
-  over the active row, written straight to the line's style rather than
-  through state, so the phone isn't drawn again every frame; pointing at
-  it, focusing it or scrolling it away pauses it, and with reduced motion
-  only a click changes it. On a phone the iPhone comes first. Since 3.0
+  the six features and one iPhone whose screen is drawn live, the chosen
+  feature's, see `components/phone` below. From the `tab` breakpoint up
+  the features are a vertical tab list beside the phone, hairline rows
+  with the number and the title, the chosen one opening to its body and
+  points. Below it they are `FeatureCarousel`: the iPhone first (narrower
+  on a short screen, so what follows fits under it), then dots, a
+  tablist whose active dot is a pill that fills with the dwell and
+  where a tap jumps, then the features as cards swiped sideways (CSS
+  scroll-snap, edge to edge, one card in the middle with the next
+  peeking; every card as tall as the tallest, its points kept to the
+  bottom under a hairline). The card in the middle is the chosen
+  feature; whatever else chooses one (the dwell, a dot) scrolls its card
+  to the middle, and the cards it passes on the way don't change the
+  phone. The phone stays put and only its screen changes, the new one
+  fading in over the old while the status bar turns light or dark with
+  it. It moves on by itself every 7 s, a line filling over the active
+  row (the dot on a phone), written straight to the element's style
+  rather than through state, so the phone isn't drawn again every frame;
+  pointing at it, focusing it or scrolling it away pauses it, a touch
+  pauses it until it has left the screen (a finger has no hover to
+  leave), and with reduced motion only a click, a tap or a swipe changes
+  it and the cards jump rather than glide. Since 3.0
   the widgets have no section of their own: they are one of the phone's
   screens, and the page is about a third shorter), `Mac` ("Any Mac, any screen": what the island
   does on a screen without a notch and the status item, `MenuBarStrip`,
-  a CSS illustration of the six status-item styles, the extras list,
+  a CSS illustration of the six status-item styles (one line, as in a
+  menu bar, wrapping onto two on a phone so none is cut off), the extras list,
   plus the "Download for Mac" link and the "build from source" link;
   the island's three stills it used to show gave way to the hero's
   videos), `Privacy`

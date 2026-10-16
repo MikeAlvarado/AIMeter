@@ -111,7 +111,23 @@ export interface Dictionary {
     scenes: [DemoScene, DemoScene, DemoScene]
   }
   statement: string
-  features: { heading: string; sub: string; listLabel: string; items: Feature[] }
+  features: {
+    heading: string
+    sub: string
+    listLabel: string
+    /** On a phone the features are cards swiped under the iPhone, with dots to jump between them (`FeatureCarousel`). */
+    carousel: {
+      /** What assistive tech calls the cards' region (`aria-roledescription`). */
+      role: string
+      /** What it calls one card. */
+      slide: string
+      /** A card's place: `{n}` of `{total}`. */
+      position: string
+      /** The dots' label. */
+      dots: string
+    }
+    items: Feature[]
+  }
   phone: PhoneCopy
   mac: {
     heading: string

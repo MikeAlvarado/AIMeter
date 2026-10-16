@@ -59,6 +59,7 @@ export const en = {
     heading: 'What it *does*',
     sub: 'Everything the app shows comes straight from your provider’s own numbers.',
     listLabel: 'Features',
+    carousel: { role: 'carousel', slide: 'slide', position: '{n} of {total}', dots: 'Choose a feature' },
     items: [
       {
         id: 'limits',
