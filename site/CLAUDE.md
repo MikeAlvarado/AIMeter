@@ -48,18 +48,32 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   where a tap jumps, then the features as cards swiped sideways (CSS
   scroll-snap, edge to edge, one card in the middle with the next
   peeking; every card as tall as the tallest, its points kept to the
-  bottom under a hairline). The card in the middle is the chosen
-  feature; whatever else chooses one (the dwell, a dot) scrolls its card
-  to the middle, and the cards it passes on the way don't change the
-  phone. The phone stays put and only its screen changes, the new one
-  fading in over the old while the status bar turns light or dark with
-  it. It moves on by itself every 7 s, a line filling over the active
-  row (the dot on a phone), written straight to the element's style
-  rather than through state, so the phone isn't drawn again every frame;
-  pointing at it, focusing it or scrolling it away pauses it, a touch
-  pauses it until it has left the screen (a finger has no hover to
-  leave), and with reduced motion only a click, a tap or a swipe changes
-  it and the cards jump rather than glide. Since 3.0
+  bottom under a hairline). On a phone (below the `pad` breakpoint,
+  600 px) only the iPhone's top shows, drawn larger (78 % of the width,
+  up to 22rem, still yielding to a short screen so the dots and a
+  card's title fit under it) and cut 650 pt down its 844 pt screen,
+  fading into the page from 545 pt (`edge-fade-b`), below every
+  screen's point: the Dashboard's first account, the widgets, History's
+  chart and its labels, both alerts, Pace's Forecast card (the lowest,
+  ending at 560 pt) and both accounts. Cut, it has no shadow and its
+  hairline is drawn inside; a tablet shows it whole. With a mouse or on
+  a tablet (the `arrows` variant: `(hover: hover) and (pointer: fine)`,
+  or `pad` wide and as tall, so never a phone held either way), arrows
+  sit at the middle card's edges with the dots between them; they step
+  one card along, round from the last to the first and back, as the
+  dwell does. The card in the middle is the chosen feature; whatever
+  else chooses one (the dwell, a dot, an arrow, a tap or a click on
+  another card) scrolls its card to the middle, and the cards it passes
+  on the way don't change the phone. The phone stays put and only its
+  screen changes, the new one fading in over the old while the status
+  bar turns light or dark with it. It moves on by itself every 7 s, a
+  line filling over the active row (the dot on a phone), written
+  straight to the element's style rather than through state, so the
+  phone isn't drawn again every frame; pointing at it, focusing it or
+  scrolling it away pauses it, a touch pauses it until it has left the
+  screen (a finger has no hover to leave), and with reduced motion only
+  a click, a tap or a swipe changes it and the cards jump rather than
+  glide. Since 3.0
   the widgets have no section of their own: they are one of the phone's
   screens, and the page is about a third shorter), `Mac` ("Any Mac, any screen": what the island
   does on a screen without a notch and the status item, `MenuBarStrip`,
@@ -137,7 +151,13 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   in dark mode via `prefers-color-scheme`. The hero and the closing
   section stand on `night-ground` (the night colors from top to bottom,
   a faint warmth low behind what they show, no glow from above) with
-  the "+" grid over it, in both schemes.
+  the "+" grid over it, in both schemes. Breakpoints: `pad` (37.5rem, a
+  tablet held upright; below it, a phone), `tab` and `nav`; the
+  `arrows` variant (a mouse, or a tablet) shows the features carousel's
+  arrows, and `edge-fade-b` fades an element's bottom edge on an eased
+  curve from `--fade-from`. The focus ring (`:focus-visible`) sits in
+  the base layer, so an element's own utilities win over it: a round
+  button keeps its circle, the features track its inset ring.
 - `scripts/postbuild.mjs` — after `vite build`: copies `index.html` to
   `privacy/index.html`, `support/index.html` and `404.html` (GitHub
   Pages has no rewrite rules, and App Store Connect and crawlers need a

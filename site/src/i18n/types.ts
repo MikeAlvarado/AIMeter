@@ -125,6 +125,9 @@ export interface Dictionary {
       position: string
       /** The dots' label. */
       dots: string
+      /** The arrows' labels, either side of the dots with a mouse or on a tablet (never on a phone). */
+      previous: string
+      next: string
     }
     items: Feature[]
   }

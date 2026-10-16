@@ -1,4 +1,5 @@
-import { useEffect, useRef, type RefObject } from 'react'
+import { ChevronLeft, ChevronRight, type LucideIcon } from 'lucide-react'
+import { useEffect, useId, useRef, type RefObject } from 'react'
 import { useLanguage } from '../../hooks/useLanguage'
 import type { Feature } from '../../i18n/types'
 import { cn } from '../../lib/cn'
@@ -39,7 +40,7 @@ interface FeatureCarouselProps {
   panelId: string
   /** The active dot's fill, which `Features` writes the dwell's progress to. */
   fillRef: RefObject<HTMLSpanElement | null>
-  /** A dot was tapped, or a card was swiped to the middle. */
+  /** A dot, an arrow or a card was tapped, or a card was swiped to the middle. */
   onSelect: (index: number) => void
 }
 
@@ -47,11 +48,14 @@ interface FeatureCarouselProps {
  * The features on a phone, under the iPhone (`Features`): dots that say
  * which screen it shows and jump to another, then the cards, swiped
  * sideways with the next one peeking. The card in the middle is the chosen
- * feature; whatever else chooses one (the dwell, a dot) brings its card to
- * the middle, and the cards it passes on the way choose nothing.
+ * feature; whatever else chooses one (the dwell, a dot, an arrow, a tap on
+ * another card) brings its card to the middle, and the cards it passes on
+ * the way choose nothing. With a mouse, or on a tablet, arrows either side
+ * of the dots step one card along, round from the last to the first.
  */
 export function FeatureCarousel({ items, active, reduced, panelId, fillRef, onSelect }: FeatureCarouselProps) {
   const { t } = useLanguage()
+  const trackId = useId()
   const trackRef = useRef<HTMLDivElement | null>(null)
   const activeRef = useRef(active)
   /** The card the page is scrolling the track to. */
@@ -111,60 +115,74 @@ export function FeatureCarousel({ items, active, reduced, panelId, fillRef, onSe
     steeringRef.current = null
   }
 
+  /** An arrow, like a dot: one card along, round from the last to the first and back, as the dwell goes. */
+  const step = (by: 1 | -1) => onSelect((active + by + items.length) % items.length)
+
   return (
-    <div className="flex flex-col gap-2">
-      <div role="tablist" aria-label={t.features.carousel.dots} className="flex justify-center">
-        {items.map((item, index) => {
-          const selected = index === active
-          return (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              aria-controls={panelId}
-              aria-label={item.title}
-              onClick={() => onSelect(index)}
-              className="group flex h-10 items-center px-2.5"
-            >
-              <span
-                className={cn(
-                  'relative h-1.5 overflow-hidden rounded-full transition-[width,background-color] duration-300 motion-reduce:transition-none',
-                  selected ? 'bg-accent/30 w-7' : 'bg-ink/20 group-hover:bg-ink/35 w-1.5',
-                )}
+    // Edge to edge, so the cards slide in from the screen's sides. `--slide`
+    // is a card's width, which the row of dots and arrows shares.
+    <div className="-mx-inset-sm @container flex flex-col gap-2 [--slide:min(23rem,calc(100cqw-4.5rem))]">
+      {/* The arrows keep to the middle card's edges and the dots to the
+          middle, with arrows or without them (a phone has none). */}
+      <div className="mx-auto grid w-(--slide) grid-cols-[1fr_auto_1fr] items-center">
+        <Arrow icon={ChevronLeft} label={t.features.carousel.previous} controls={trackId} onClick={() => step(-1)} className="col-start-1 justify-self-start" />
+        <div role="tablist" aria-label={t.features.carousel.dots} className="col-start-2 row-start-1 flex justify-center">
+          {items.map((item, index) => {
+            const selected = index === active
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                aria-controls={panelId}
+                aria-label={item.title}
+                onClick={() => onSelect(index)}
+                className="group flex h-10 items-center px-2.5"
               >
-                {selected && (
-                  <span ref={fillRef} aria-hidden className="bg-accent absolute inset-0 origin-left" style={{ transform: reduced ? 'none' : 'scaleX(0)' }} />
-                )}
-              </span>
-            </button>
-          )
-        })}
+                <span
+                  className={cn(
+                    'relative h-1.5 overflow-hidden rounded-full transition-[width,background-color] duration-300 motion-reduce:transition-none',
+                    selected ? 'bg-accent/30 w-7' : 'bg-ink/20 group-hover:bg-ink/35 w-1.5',
+                  )}
+                >
+                  {selected && (
+                    <span ref={fillRef} aria-hidden className="bg-accent absolute inset-0 origin-left" style={{ transform: reduced ? 'none' : 'scaleX(0)' }} />
+                  )}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+        <Arrow icon={ChevronRight} label={t.features.carousel.next} controls={trackId} onClick={() => step(1)} className="col-start-3 justify-self-end" />
       </div>
-      {/* Edge to edge, so the cards slide in from the screen's sides; the
-          spacers before and after let the first and last cards center. */}
-      <div className="-mx-inset-sm @container">
-        <div
-          ref={trackRef}
-          role="region"
-          aria-roledescription={t.features.carousel.role}
-          aria-label={t.features.listLabel}
-          tabIndex={0}
-          onScroll={onScroll}
-          onTouchStart={takeOver}
-          onWheel={takeOver}
-          onKeyDown={takeOver}
-          className="relative flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pt-1 pb-6 [scrollbar-width:none] [--slide:min(23rem,calc(100cqw-4.5rem))] before:w-[calc((100cqw-var(--slide))/2-0.75rem)] before:shrink-0 after:w-[calc((100cqw-var(--slide))/2-0.75rem)] after:shrink-0 focus-visible:outline-offset-[-3px] [&::-webkit-scrollbar]:hidden"
-        >
-          {items.map((item, index) => (
+      {/* The spacers before and after let the first and last cards center. */}
+      <div
+        ref={trackRef}
+        id={trackId}
+        role="region"
+        aria-roledescription={t.features.carousel.role}
+        aria-label={t.features.listLabel}
+        tabIndex={0}
+        onScroll={onScroll}
+        onTouchStart={takeOver}
+        onWheel={takeOver}
+        onKeyDown={takeOver}
+        className="relative flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pt-1 pb-6 [scrollbar-width:none] before:w-[calc((100cqw-var(--slide))/2-0.75rem)] before:shrink-0 after:w-[calc((100cqw-var(--slide))/2-0.75rem)] after:shrink-0 focus-visible:outline-offset-[-3px] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((item, index) => {
+          const current = index === active
+          return (
+            // A tap or a click on another card brings it to the middle, as its dot does.
             <div
               key={item.id}
               role="group"
               aria-roledescription={t.features.carousel.slide}
               aria-label={fill(t.features.carousel.position, { n: String(index + 1), total: String(items.length) })}
+              onClick={current ? undefined : () => onSelect(index)}
               className={cn(
                 'bg-card rounded-tile border-hairline flex w-(--slide) shrink-0 snap-center snap-always flex-col gap-3 border p-5 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-opacity duration-300',
-                index === active ? 'opacity-100' : 'opacity-50',
+                current ? 'opacity-100' : 'cursor-pointer opacity-50 hover:opacity-70',
               )}
             >
               <span className="text-ink-2 text-sm tabular">({String(index + 1).padStart(2, '0')})</span>
@@ -175,10 +193,31 @@ export function FeatureCarousel({ items, active, reduced, panelId, fillRef, onSe
                 <FeaturePoints points={item.points} />
               </div>
             </div>
-          ))}
-        </div>
+          )
+        })}
       </div>
     </div>
+  )
+}
+
+/**
+ * One of the carousel's arrows: shown only where the `arrows` variant holds
+ * (a mouse, or a tablet), a round button in the cards' own colors.
+ */
+function Arrow({ icon: Icon, label, controls, onClick, className }: { icon: LucideIcon; label: string; controls: string; onClick: () => void; className: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      aria-controls={controls}
+      onClick={onClick}
+      className={cn(
+        'arrows:grid bg-card border-hairline text-ink hover:bg-track row-start-1 hidden size-10 place-items-center rounded-full border shadow-[0_4px_14px_rgba(0,0,0,0.06)] transition-[background-color,scale] duration-200 active:scale-95 motion-reduce:transition-none',
+        className,
+      )}
+    >
+      <Icon aria-hidden className="size-4.5" />
+    </button>
   )
 }
 

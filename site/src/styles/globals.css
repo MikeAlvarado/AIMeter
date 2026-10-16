@@ -33,6 +33,8 @@
   --spacing-inset: 36px;
   --spacing-inset-sm: 16px;
 
+  /* From here a tablet held upright; below it, a phone. */
+  --breakpoint-pad: 37.5rem;
   --breakpoint-tab: 50.625rem;
   --breakpoint-nav: 56.25rem;
 
@@ -107,10 +109,22 @@ body {
   color: var(--color-ivory);
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 4px;
+/* In the base layer, so an element's own utilities win over it: a round
+   button keeps its circle, and the features track its inset ring. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+/* Where the features carousel shows its arrows: wherever a mouse points, or
+   on a tablet (`pad` and as tall), never on a phone held either way. */
+@custom-variant arrows {
+  @media (hover: hover) and (pointer: fine), (min-width: 37.5rem) and (min-height: 37.5rem) {
+    @slot;
+  }
 }
 
 @utility font-display {
@@ -165,4 +179,19 @@ body {
 @utility edge-fade-x {
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* The bottom edge fading into whatever is behind, on an eased curve (a
+   smoothstep) from `--fade-from`, so it starts and ends without a line. */
+@utility edge-fade-b {
+  --edge-fade-b: linear-gradient(
+    to bottom,
+    black var(--fade-from, 80%),
+    rgb(0 0 0 / 0.9) calc(var(--fade-from, 80%) + (100% - var(--fade-from, 80%)) * 0.2),
+    rgb(0 0 0 / 0.65) calc(var(--fade-from, 80%) + (100% - var(--fade-from, 80%)) * 0.4),
+    rgb(0 0 0 / 0.35) calc(var(--fade-from, 80%) + (100% - var(--fade-from, 80%)) * 0.6),
+    rgb(0 0 0 / 0.1) calc(var(--fade-from, 80%) + (100% - var(--fade-from, 80%)) * 0.8),
+    transparent
+  );
+  mask-image: var(--edge-fade-b);
 }

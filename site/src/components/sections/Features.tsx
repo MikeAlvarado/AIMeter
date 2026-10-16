@@ -38,12 +38,13 @@ const SCREENS: Record<string, { background: string; dark: boolean; render: (copy
  * put; only its screen changes, the new one fading in over the old.
  *
  * From the `tab` breakpoint up the features are a list beside the phone;
- * below it, cards swiped under the phone (`FeatureCarousel`). It moves on by
- * itself every few seconds, the active row's line (or dot) filling
- * meanwhile, written straight to the element so the phone is not drawn
- * again every frame. Pointing at it or focusing it pauses it, a touch
- * pauses it until it has left the screen, scrolling it away pauses it, and
- * with reduced motion only a click or a swipe changes it.
+ * below it, cards swiped under the phone (`FeatureCarousel`), and on a
+ * phone only the phone's top shows, drawn larger. It moves on by itself
+ * every few seconds, the active row's line (or dot) filling meanwhile,
+ * written straight to the element so the phone is not drawn again every
+ * frame. Pointing at it or focusing it pauses it, a touch pauses it until
+ * it has left the screen, scrolling it away pauses it, and with reduced
+ * motion only a click, a tap or a swipe changes it.
  */
 export function Features() {
   const { t } = useLanguage()
@@ -116,7 +117,7 @@ export function Features() {
         <p className="text-ink-2 max-w-md text-lg">{t.features.sub}</p>
       </div>
       <div
-        className="tab:flex-row tab:items-center tab:gap-16 mx-auto flex max-w-6xl flex-col gap-4"
+        className="tab:flex-row tab:items-center tab:gap-16 max-pad:gap-1 mx-auto flex max-w-6xl flex-col gap-4"
         onPointerEnter={(event) => hover(event, true)}
         onPointerLeave={(event) => hover(event, false)}
         onTouchStart={() => setTouched(true)}
@@ -166,14 +167,20 @@ export function Features() {
             )
           })}
         </ul>
-        {/* On a phone it also yields to a short screen (a width 390/844 of
-            its height, 0.462), so the dots and a card's title fit under it. */}
+        {/* Under the `tab` breakpoint it also yields to a short screen (a
+            width 390/844 of its height, 0.462), so the dots and a card's
+            title fit under it. On a phone only its top shows, drawn larger:
+            the bezel is cut 650 pt down its 844 pt screen (an aspect of
+            390/621, so it yields at 0.628 of the room left) and fades out
+            from 545 pt (84 % of the way down), below every screen's point;
+            the lowest, Pace's Forecast card, ends at 560 pt. */}
         <div
           id={panelId}
           role="tabpanel"
-          className="tab:order-none tab:w-[19rem] tab:max-w-none order-first mx-auto w-[clamp(13.5rem,56vw,15.5rem)] max-w-[max(10rem,calc((100svh-16rem)*0.462))] shrink-0"
+          className="tab:order-none tab:w-[19rem] tab:max-w-none max-pad:w-[min(78vw,22rem)] max-pad:max-w-[max(13.5rem,calc((100svh-17rem)*0.628))] max-pad:aspect-[390/621] max-pad:overflow-hidden max-pad:edge-fade-b max-pad:[--fade-from:84%] order-first mx-auto w-[clamp(13.5rem,56vw,15.5rem)] max-w-[max(10rem,calc((100svh-16rem)*0.462))] shrink-0"
         >
-          <Device background={screen.background} dark={screen.dark} label={feature?.imageAlt ?? ''}>
+          {/* Cut, it keeps no shadow (the cut would show) and draws its hairline inside. */}
+          <Device background={screen.background} dark={screen.dark} label={feature?.imageAlt ?? ''} className="max-pad:shadow-none max-pad:ring-inset">
             {/* The leaving screen stays whole under the arriving one until
                 it is covered, so nothing else shows through the fade. */}
             <AnimatePresence initial={false}>
