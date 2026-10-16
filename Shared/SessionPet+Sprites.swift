@@ -47,8 +47,11 @@ extension SessionPet {
                 case "D": put(x, y, .dark)
                 case "W": put(x, y, asleep ? .body : .light)
                 case "E": put(x, y, asleep ? .body : .dark)
+                case "e": put(x, y, asleep ? .light : .dark)
                 case "a" where !step: put(x, y, .body)
                 case "b" where step: put(x, y, .body)
+                case "p" where !step: put(x, y, .light)
+                case "q" where step: put(x, y, .light)
                 default: break
                 }
             }
@@ -130,8 +133,9 @@ extension SessionPet.Palette {
 }
 
 /// One creature: its rows (X body, L light, W an eye's light and E a pupil,
-/// both gone when asleep, D dark, a and b the feet's two steps) and where
-/// each accessory sits on it.
+/// both gone when asleep, e a pupil on a pale face, gone to the light, D
+/// dark, a and b the feet's two steps, p and q the same feet in the light)
+/// and where each accessory sits on it.
 struct PetSprite: Sendable {
     struct Span: Sendable { let y: Int; let from: Int; let to: Int }
     struct Spot: Sendable { let x: Int; let y: Int }
@@ -216,6 +220,21 @@ extension SessionPet.Creature {
                    cuff: .init(y: 2, from: 3, to: 8), pompom: .init(y: -1, from: 5, to: 6), bow: .init(x: 7, y: 0),
                    band: [.init(y: -1, from: 1, to: 10)],
                    bandDots: [.init(x: 0, y: 0), .init(x: 11, y: 0), .init(x: 0, y: 1), .init(x: 11, y: 1), .init(x: 0, y: 2), .init(x: 11, y: 2)],
+                   cups: [.init(x: 0, y: 3), .init(x: 10, y: 3)])
+        case .axolotl:
+            // A pale face and the gills in the body's color, three fronds a
+            // side, the way an axolotl is drawn (Mike's pick, 2026-10-16):
+            // small eyes far apart and a wide smile.
+            PetSprite(rows: ["X..........X", ".X..LLLL..X.", "XX.LLLLLL.XX", "..LeLLLLeL..", "XXLeLLLLeLXX",
+                          ".LLLLLLLLLL.", ".LLDLLLLDLL.", "..LLDDDDLL..", "..LLLLLLLL..", "..pLq..qLp.."],
+                   closedEyes: [.init(y: 4, from: 3, to: 4), .init(y: 4, from: 7, to: 8)],
+                   eyes: [.init(x: 3, y: 3, width: 1, height: 2), .init(x: 8, y: 3, width: 1, height: 2)],
+                   // The beanie sits a row higher than on a body-colored head,
+                   // as the ghost's does: its crown is the face's own tone.
+                   hat: .init(y: 1, from: 4, to: 7), beanie: [.init(y: -1, from: 4, to: 7), .init(y: 0, from: 3, to: 8)],
+                   cuff: .init(y: 1, from: 3, to: 8), pompom: .init(y: -2, from: 5, to: 6), bow: .init(x: 4, y: -1),
+                   band: [.init(y: 0, from: 3, to: 8)],
+                   bandDots: [.init(x: 2, y: 1), .init(x: 9, y: 1), .init(x: 1, y: 2), .init(x: 10, y: 2)],
                    cups: [.init(x: 0, y: 3), .init(x: 10, y: 3)])
         }
     }

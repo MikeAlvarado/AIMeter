@@ -7,7 +7,7 @@ import XCTest
 /// is drawn beside the pet, so nothing leaves the island's bar).
 final class SessionPetTests: XCTestCase {
     func testEveryCombinationIsReachableAndDistinct() {
-        XCTAssertEqual(SessionPet.count, 216)
+        XCTAssertEqual(SessionPet.count, 252)
         let pets = (0..<SessionPet.count).map { SessionPet(index: $0) }
         XCTAssertEqual(Set(pets).count, SessionPet.count)
         for index in 0..<SessionPet.count {
@@ -18,7 +18,7 @@ final class SessionPetTests: XCTestCase {
 
     func testAnIdAlwaysPointsAtTheSamePet() {
         // FNV-1a, so the same on every launch (Swift's hashValue isn't).
-        XCTAssertEqual(SessionPet.naturalIndex(for: "6b1f-session"), 159)
+        XCTAssertEqual(SessionPet.naturalIndex(for: "6b1f-session"), 123)
         XCTAssertEqual(SessionPet.naturalIndex(for: "4ecb0e0b-fc32-41ac-9678-01cf9aa00413"), 58)
         XCTAssertEqual(SessionPet.naturalIndex(for: "a"), 124)
     }
@@ -29,11 +29,11 @@ final class SessionPetTests: XCTestCase {
         XCTAssertEqual(dealt.count, ids.count)
         XCTAssertEqual(Set(dealt.values).count, ids.count)
         XCTAssertEqual(SessionPet.deal(ids.reversed()), dealt, "the deal doesn't depend on the order shown")
-        // "s51" and "s60" point at the same pet: the one sorted second takes the next.
-        XCTAssertEqual(SessionPet.naturalIndex(for: "s51"), SessionPet.naturalIndex(for: "s60"))
-        let pair = SessionPet.deal(["s60", "s51"])
-        XCTAssertEqual(pair["s51"]?.index, 156)
-        XCTAssertEqual(pair["s60"]?.index, 157)
+        // "s30" and "s5" point at the same pet: the one sorted second takes the next.
+        XCTAssertEqual(SessionPet.naturalIndex(for: "s30"), SessionPet.naturalIndex(for: "s5"))
+        let pair = SessionPet.deal(["s5", "s30"])
+        XCTAssertEqual(pair["s30"]?.index, 161)
+        XCTAssertEqual(pair["s5"]?.index, 162)
     }
 
     func testEveryPetStaysInsideItsCanvas() {
@@ -48,6 +48,20 @@ final class SessionPetTests: XCTestCase {
                 }
             }
         }
+    }
+
+    /// The axolotl's face is pale, so its pupils close into the face's own
+    /// tone (`e`), and its feet step in that tone too (`p`, `q`).
+    func testTheAxolotlSleepsWithAPaleFace() {
+        let pet = SessionPet(creature: .axolotl, palette: .pink, accessory: .none)
+        let awake = pet.pixels(pose: .working, tick: 0), asleep = pet.pixels(pose: .asleep, tick: 0)
+        // The left eye's upper pupil: sprite (3, 3), canvas (4, 7).
+        XCTAssertTrue(awake.contains(.init(x: 4, y: 7, tone: .dark)))
+        XCTAssertTrue(asleep.contains(.init(x: 4, y: 7, tone: .light)))
+        XCTAssertFalse(asleep.contains(.init(x: 4, y: 7, tone: .dark)))
+        // The feet's columns, standing and mid-step (one row up): `p` and `q`.
+        XCTAssertEqual(awake.filter { $0.y == 13 }.map(\.x), [3, 4, 9, 10])
+        XCTAssertEqual(pet.pixels(pose: .working, tick: 2).filter { $0.y == 12 }.map(\.x), [4, 5, 8, 9], "its feet step")
     }
 
     func testThePosesMove() {

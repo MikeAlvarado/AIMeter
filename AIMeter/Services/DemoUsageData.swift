@@ -200,10 +200,10 @@ enum DemoUsageData {
             ClaudeCodeSessionActivity(id: id, customTitle: title, project: project, state: state, lastActivity: now)
         }
         return [
-            session("demo-35", "Refactor the API client", "backend", .needsPermission(since: now.addingTimeInterval(-6 * 60))),
-            session("demo-663", "Ship the onboarding", "my-app", .working(since: now.addingTimeInterval(-3 * 60))),
-            session("demo-48", nil, "website", .working(since: now.addingTimeInterval(-60))),
-            session("demo-264", "Write the release notes", "docs", .finished(at: now.addingTimeInterval(-2 * 60))),
+            session("demo-170", "Refactor the API client", "backend", .needsPermission(since: now.addingTimeInterval(-6 * 60))),
+            session("demo-54", "Ship the onboarding", "my-app", .working(since: now.addingTimeInterval(-3 * 60))),
+            session("demo-203", nil, "website", .working(since: now.addingTimeInterval(-60))),
+            session("demo-70", "Write the release notes", "docs", .finished(at: now.addingTimeInterval(-2 * 60))),
         ]
     }
     #endif

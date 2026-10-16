@@ -1,15 +1,17 @@
 import Foundation
 
 /// A Claude Code session's pixel pet in the notch island (see "Claude Code
-/// sessions" in the repo-root CLAUDE.md): one of six creatures, in one of
-/// six colors, with one of six accessories (none among them), 216
+/// sessions" in the repo-root CLAUDE.md): one of seven creatures, in one of
+/// six colors, with one of six accessories (none among them), 252
 /// combinations in all. A session's pet comes from its id, so it keeps it
 /// as long as it is shown, and no two sessions on screen share one
 /// (`deal`). Pure: the pixels are computed here (`SessionPet+Sprites.swift`)
 /// and only painted by `PixelPetView`, which is what lets the tests check
 /// every creature, accessory and pose against the canvas.
 struct SessionPet: Hashable, Sendable {
-    enum Creature: Int, CaseIterable, Sendable { case drop, ghost, cat, bunny, frog, fox }
+    /// A new one changes the count, and with it the pet every id gets (see
+    /// "A new pet" under "Recipes" in the repo-root CLAUDE.md).
+    enum Creature: Int, CaseIterable, Sendable { case drop, ghost, cat, bunny, frog, fox, axolotl }
     /// No yellow and no red: in the island those mean a permission prompt
     /// and a limit.
     enum Palette: Int, CaseIterable, Sendable { case blue, purple, green, pink, orange, lime }

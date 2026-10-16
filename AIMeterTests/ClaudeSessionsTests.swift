@@ -199,15 +199,15 @@ final class ClaudeSessionsTests: XCTestCase {
     /// (`Scripts/IslandVideo`), deal the pets their docs and captions name.
     func testTheDemosSessionsDealThePetsTheVideosShow() {
         let sessions = DemoUsageData.claudeSessions(now: now)
-        XCTAssertEqual(sessions.map(\.id), ["demo-35", "demo-663", "demo-48", "demo-264"])
-        let pets = SessionPet.deal(sessions.map(\.id) + ["demo-29"])
-        XCTAssertEqual(pets["demo-35"], SessionPet(creature: .fox, palette: .orange, accessory: .sunglasses))
-        XCTAssertEqual(pets["demo-663"], SessionPet(creature: .cat, palette: .blue, accessory: .headphones))
-        XCTAssertEqual(pets["demo-48"], SessionPet(creature: .bunny, palette: .pink, accessory: .bow))
-        XCTAssertEqual(pets["demo-264"], SessionPet(creature: .ghost, palette: .purple, accessory: .beanie))
-        XCTAssertEqual(pets["demo-29"], SessionPet(creature: .frog, palette: .green, accessory: .none))
+        XCTAssertEqual(sessions.map(\.id), ["demo-170", "demo-54", "demo-203", "demo-70"])
+        let pets = SessionPet.deal(sessions.map(\.id) + ["demo-425"])
+        XCTAssertEqual(pets["demo-170"], SessionPet(creature: .fox, palette: .orange, accessory: .sunglasses))
+        XCTAssertEqual(pets["demo-54"], SessionPet(creature: .cat, palette: .blue, accessory: .headphones))
+        XCTAssertEqual(pets["demo-203"], SessionPet(creature: .bunny, palette: .pink, accessory: .bow))
+        XCTAssertEqual(pets["demo-70"], SessionPet(creature: .ghost, palette: .purple, accessory: .beanie))
+        XCTAssertEqual(pets["demo-425"], SessionPet(creature: .frog, palette: .green, accessory: .none))
         let island = NotchIslandModel.Sessions(sessions: sessions, justFinished: nil, now: now)
-        XCTAssertEqual(island.pets.map(\.id), ["demo-35", "demo-663", "demo-48"], "the one waiting leads; the finished one has no pet beside the notch")
+        XCTAssertEqual(island.pets.map(\.id), ["demo-170", "demo-54", "demo-203"], "the one waiting leads; the finished one has no pet beside the notch")
         XCTAssertEqual(island.rows.map(\.detail), ["Needs permission", "Working for 3m", "Working for 1m", "Done 2m ago"])
     }
 

@@ -59,7 +59,7 @@ that is fine for trying the pipeline, not for the site.
   the language; folder names do not. The ids are the demo's
   (`DemoUsageData.claudeSessions`), picked for their pets (a fox in
   sunglasses, a cat in headphones, a bunny with a bow, a ghost in a
-  beanie, and `demo-29`, a green frog), which `ClaudeSessionsTests`
+  beanie, and `demo-425`, a green frog), which `ClaudeSessionsTests`
   pins.
 
 The Screen Recording permission the recorder needs is the terminal's

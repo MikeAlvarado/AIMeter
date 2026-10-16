@@ -64,10 +64,10 @@ struct Scene {
             // Three sessions at work walk beside the notch; resting on it
             // shows the newest in full, a click every session.
             let sessions = [
-                Session(id: "demo-663", title: onboarding, project: "my-app", state: "working", ago: 65),
-                Session(id: "demo-48", title: nil, project: "website", state: "working", ago: 185),
-                Session(id: "demo-29", title: apiClient, project: "backend", state: "working", ago: 305),
-                Session(id: "demo-264", title: notes, project: "docs", state: "finished", ago: 125),
+                Session(id: "demo-54", title: onboarding, project: "my-app", state: "working", ago: 65),
+                Session(id: "demo-203", title: nil, project: "website", state: "working", ago: 185),
+                Session(id: "demo-425", title: apiClient, project: "backend", state: "working", ago: 305),
+                Session(id: "demo-70", title: notes, project: "docs", state: "finished", ago: 125),
             ]
             return Scene(
                 name: name, duration: 12,
@@ -86,9 +86,9 @@ struct Scene {
             // finishes and falls asleep.
             func three(fox: String, foxAgo: Double, bunny: String = "working") -> [Session] {
                 [
-                    Session(id: "demo-35", title: apiClient, project: "backend", state: fox, ago: foxAgo),
-                    Session(id: "demo-663", title: onboarding, project: "my-app", state: "working", ago: 95),
-                    Session(id: "demo-48", title: nil, project: "website", state: bunny, ago: bunny == "working" ? 215 : 0),
+                    Session(id: "demo-170", title: apiClient, project: "backend", state: fox, ago: foxAgo),
+                    Session(id: "demo-54", title: onboarding, project: "my-app", state: "working", ago: 95),
+                    Session(id: "demo-203", title: nil, project: "website", state: bunny, ago: bunny == "working" ? 215 : 0),
                 ]
             }
             return Scene(
@@ -100,7 +100,7 @@ struct Scene {
                     (6.0, .level("expanded")),
                     (8.6, .sessions(three(fox: "working", foxAgo: 0))),
                     (10.0, .level("collapsed")),
-                    (11.2, .sessions(three(fox: "working", foxAgo: 3, bunny: "finished"), justFinished: "demo-48")),
+                    (11.2, .sessions(three(fox: "working", foxAgo: 3, bunny: "finished"), justFinished: "demo-203")),
                 ],
                 cursor: [
                     Key(time: 0, point: rest), Key(time: 2.8, point: rest), Key(time: 3.7, point: notch),

@@ -140,7 +140,7 @@ can be added later.
   leaves the Mac. Not a bill: your subscription already covers it.
 - **Claude Code sessions in the notch** (macOS, on with the island):
   each Claude Code session at work gets a little pixel pet beside the
-  notch (one of six creatures, six colors and six accessories, its own
+  notch (one of seven creatures, six colors and six accessories, its own
   for as long as the session lasts) that walks while the session works,
   shakes beside a yellow "!" when it waits for your permission, and
   falls asleep when it finishes. The one that needs you leads, and a
@@ -418,6 +418,8 @@ Scripts/AppIcon/        draws the app icons (Sunset, Ivory, Night, Pet),
                         code (`node Scripts/AppIcon/render.mjs`)
 Scripts/IslandVideo/    records the website's notch island videos from the
                         running app in demo mode (`Scripts/island-video.sh`)
+Scripts/PetsPreview/    draws every session pet into one PNG from the
+                        app's sprite code (`Scripts/pets-preview.sh`)
 Scripts/StoreFrames/    renders the App Store screenshots, header and
                         search-results card from the app's own views
                         (`Scripts/store-frames.sh`; see its CLAUDE.md)

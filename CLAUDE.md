@@ -82,8 +82,9 @@ assets and string catalog from there.
   `Shared/NotchIslandModel+Sessions.swift`,
   `Shared/NotchIslandClearance.swift` and the pets themselves,
   `Shared/SessionPet.swift` (identity, the deal, the clock) and
-  `SessionPet+Sprites.swift` (the hand-drawn pixels), all pure and
-  tested, and `AIMeter/Views/ClaudeSessionsSettings.swift` (the
+  `SessionPet+Sprites.swift` (the hand-drawn pixels, which
+  `Scripts/pets-preview.sh` draws into one PNG), all pure and tested,
+  and `AIMeter/Views/ClaudeSessionsSettings.swift` (the
   "Sessions" card of Settings' Claude Code tab).
 - `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
   `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
@@ -920,11 +921,12 @@ the account silently freezes at its last snapshot.
   pointer is on it. Both sides are as wide as each other, each
   one's content at its outer end (`NotchWings`), so the island stays
   centered on the notch. Nothing at all shows when no session is
-  active. A pet (`SessionPet`) is one of six creatures drawn by hand on
-  a 12 × 10 grid (drop, ghost, cat, bunny, frog, fox), in one of six
+  active. A pet (`SessionPet`) is one of seven creatures drawn by hand
+  on a 12 × 10 grid (drop, ghost, cat, bunny, frog, fox, axolotl; see
+  "A new pet" under "Recipes"), in one of six
   colors (no yellow and no red, which already mean a permission prompt
   and a limit in the island), with one of six accessories fitted to it
-  (none, sunglasses, top hat, beanie, bow, headphones): 216
+  (none, sunglasses, top hat, beanie, bow, headphones): 252
   combinations, the one a session's id points at through FNV-1a (the
   same on every launch, unlike `hashValue`), dealt so no two sessions on
   screen share one. It walks in place while its session works, shakes
@@ -1623,7 +1625,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   touches `~/.claude`), and the pets: every combination reachable and distinct,
   an id's pet pinned, the deal's uniqueness and order independence,
   every creature, accessory and pose inside its canvas on every tick,
-  and the pixel size (`SessionPetTests`), and how far the wings beside
+  the axolotl's pale face asleep and the pixel size
+  (`SessionPetTests`), and how far the wings beside
   the notch may reach: the status items found in a window list or
   placed by the Accessibility API (this Mac's, measured on macOS 27), the
   menus' edge, the narrower side for both, and on a screen without a
@@ -1794,6 +1797,49 @@ The icons are drawn in code; the PNGs are output, never edited by hand.
    flattens it); the Mac shape is the mask's, never a drawn
    approximation; and the Mac's footnote in Settings keeps saying only
    the Dock changes.
+
+### A new pet
+
+The session pets are drawn in code too (`Shared/SessionPet+Sprites.swift`);
+there is no image to edit.
+
+1. Draw it: a case in `SessionPet.Creature` and its `PetSprite` in
+   `Creature.sprite`, ten rows of twelve characters: `X` the body, `L`
+   its light, `D` its dark, `W` and `E` an eye's light and pupil (the
+   body's color asleep), `e` a pupil on a light face (the light asleep),
+   `a` and `b` the feet on each step (`p` and `q` for light feet), `.`
+   nothing. Then where each accessory sits on it: `closedEyes` (the dark
+   lines asleep), `eyes` (the sunglasses), `hat` (a top hat's brim),
+   `beanie` with its `cuff` and `pompom`, `bow`, `band`, `bandDots` and
+   `cups` (the headphones), and `mouth` (the dark pair shown while
+   waiting, or nil). A new letter goes in the switch in
+   `pixels(pose:tick:)` and in `PetSprite`'s comment.
+2. Look at it: `Scripts/pets-preview.sh <dir>` writes `<dir>/pets.png`
+   from the real sprite code, every creature standing, mid-step, waiting
+   and asleep, with each accessory and in each color, each on its
+   14 × 14 canvas. Show it before going on (the axolotl was picked from
+   two drawings this way).
+3. It has to read in every combination: each creature comes in all six
+   colors (the ramps in `SessionPet.Palette.hex`, never yellow or red,
+   which mean a permission prompt and a limit in the island) and with
+   all six accessories. One that lands badly is fixed with its anchors,
+   never by leaving it out.
+4. The pins move: a pet's index is FNV-1a over the session's id modulo
+   the count (creatures × 6 × 6), so a new creature changes the pet every
+   id gets. Update `SessionPetTests` (the count, the `naturalIndex` pins,
+   the colliding pair `deal` is tested with), then re-pick the demo's
+   ids so its sessions keep their pets (a fox in sunglasses waiting, a
+   cat in headphones and a bunny with a bow at work, a ghost in a beanie
+   done, a green frog in the videos): ids whose own `naturalIndex` is
+   that pet, so any of them dealt together get the same, in
+   `DemoUsageData.claudeSessions`, `Scripts/IslandVideo/Sources/Scenes.swift`,
+   `Scripts/IslandVideo/CLAUDE.md` and `ClaudeSessionsTests`. The
+   website's videos then need no new take.
+5. Tests: `testEveryPetStaysInsideItsCanvas` already checks the new
+   creature in every pose, accessory and tick; a new letter gets a test
+   of its own (the axolotl's pale face asleep).
+6. Docs: the count and the creatures in "Claude Code sessions" here,
+   `SessionPet`'s comment and the README's feature list.
 
 ## Workflow
 
