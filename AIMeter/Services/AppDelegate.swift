@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // and no window opens in the wrong appearance first.
         AppChrome.applyActivationPolicy(hidingDockIcon: prefs.hideDockIcon)
         AppChrome.applyAppearance(prefs.appearance)
+        AppChrome.applyAppIcon(prefs.appIcon)
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -123,6 +124,16 @@ enum AppChrome {
         case .light: NSApp.appearance = NSAppearance(named: .aqua)
         case .dark: NSApp.appearance = NSAppearance(named: .darkAqua)
         }
+    }
+
+    /// The icon picked in Settings, as far as macOS lets an app change its
+    /// own: the Dock's and ⌘Tab's picture while AIMeter runs. Finder keeps
+    /// the bundle's (Sunset), since rewriting the bundle's icon would break
+    /// its code signature. Nil puts the bundle's own back. Applied at
+    /// launch, before the Dock shows the app, and whenever the setting
+    /// changes (`AppIconSettings`).
+    static func applyAppIcon(_ choice: AppIconChoice) {
+        NSApp.applicationIconImage = choice.dockImageName.flatMap { NSImage(named: $0) }
     }
 
     /// Reopens the dashboard scene. Set by that scene the first time it

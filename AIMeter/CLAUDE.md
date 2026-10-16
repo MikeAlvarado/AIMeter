@@ -214,7 +214,10 @@
   one list: while `isDemoMode` is true, or while nothing is connected, the
   "Demo mode" section (Exit Demo with its footnote, or View Demo) leads
   it, above everything else; then appearance / display mode / usage colors / reset
-  style, a "Notifications" card with the one Peak-hours alerts toggle
+  style, the "App icon" card (`AppIconSettings`: the four looks as
+  pictures with their names, the one in use ringed in the accent; on the
+  Mac a footnote says only the Dock changes, see "App icon" in the
+  repo-root CLAUDE.md), a "Notifications" card with the one Peak-hours alerts toggle
   (the single exception to "no notification toggles here" — every other
   toggle moved fully into each account's own Provider Detail once there
   could be more than one "the" account to apply them to, but peak-hours
@@ -323,7 +326,7 @@
   trademark footer. Every claim must stay true to the code — the scope chip
   in particular must match `ClaudeOAuth.scope`.
 - The GitHub mark is a bundled PNG (`Shared/Media.xcassets/GitHubIcon`,
-  light/dark appearance variants — same mechanism as the app icon) —
+  light/dark appearance variants in its imageset) —
   SF Symbols has no third-party brand glyphs. It is pre-colored per
   appearance (light accent `#D97757` / dark accent `#E08B6D`) rather than
   tinted via `.renderingMode(.template)` at runtime: a solid-black source

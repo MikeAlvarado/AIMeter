@@ -23,7 +23,7 @@ cp "$ROOT/Scripts/StoreFrames/Sources/"*.swift "$BUILD/Sources/"
 # behind a symlink), and the widget views minus their timeline plumbing.
 for f in Theme ThemeComponents ProviderIdentityView ProviderMark PeakBadge ClaudePeakStatus \
          UsageFormatting WindowDisplay PreferencesStore PreferencesStore+NotchIsland PreferencesStore+ClaudeSessions PreferencesModel \
-         NotchIslandModel NotchIslandModel+Sessions SessionPet SessionPet+Sprites NotchIslandGeometry NotchIslandInteraction AppConfig ProviderCatalog MenuBarLabelModel; do
+         NotchIslandModel NotchIslandModel+Sessions SessionPet SessionPet+Sprites NotchIslandGeometry NotchIslandInteraction AppConfig ProviderCatalog MenuBarLabelModel AppIconChoice; do
   cp "$ROOT/Shared/$f.swift" "$BUILD/Sources/"
 done
 cp "$ROOT/AIMeterWidgets/MediumUsageView.swift" "$ROOT/AIMeterWidgets/SingleUsageWidgetView.swift" \

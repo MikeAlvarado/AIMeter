@@ -162,6 +162,10 @@ final class PreferencesModel {
         get { stored.checksForUpdates }
         set { guard stored.checksForUpdates != newValue else { return }; stored.checksForUpdates = newValue; persist(newValue, Preferences.Keys.checksForUpdates, reloadsWidgets: false) }
     }
+    var appIcon: AppIconChoice {
+        get { stored.appIcon }
+        set { guard stored.appIcon != newValue else { return }; stored.appIcon = newValue; persist(newValue.rawValue, Preferences.Keys.appIcon, reloadsWidgets: false) }
+    }
     var checksServiceStatus: Bool {
         get { stored.checksServiceStatus }
         set { guard stored.checksServiceStatus != newValue else { return }; stored.checksServiceStatus = newValue; persist(newValue, Preferences.Keys.checksServiceStatus, reloadsWidgets: false) }

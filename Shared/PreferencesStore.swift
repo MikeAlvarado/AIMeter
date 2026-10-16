@@ -170,6 +170,11 @@ struct Preferences: Sendable {
     /// The daily check for a newer Mac release (`AppUpdater`). On by
     /// default, so it loads through the presence check.
     var checksForUpdates: Bool = true
+    /// The icon picked in Settings, which on the Mac only the Dock can
+    /// show (`AppIconChoice`), so it is put back at every launch. iOS
+    /// keeps no key: the system's `alternateIconName` is the state there,
+    /// the way Open at Login has none on the Mac.
+    var appIcon: AppIconChoice = .sunset
 
     // MARK: Notch island (macOS)
     //
@@ -300,6 +305,7 @@ struct Preferences: Sendable {
         static let statusItemVisible = "pref.statusItemVisible"
         static let hideDockIcon = "pref.hideDockIcon"
         static let checksForUpdates = "pref.checksForUpdates"
+        static let appIcon = "pref.appIcon"
         static let checksServiceStatus = "pref.checksServiceStatus"
         static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
         static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
@@ -352,6 +358,9 @@ struct Preferences: Sendable {
         prefs.statusItemVisible = bool(defaults, Keys.statusItemVisible, default: true)
         prefs.hideDockIcon = bool(defaults, Keys.hideDockIcon, default: false)
         prefs.checksForUpdates = bool(defaults, Keys.checksForUpdates, default: true)
+        if let raw = defaults.string(forKey: Keys.appIcon), let value = AppIconChoice(rawValue: raw) {
+            prefs.appIcon = value
+        }
         prefs.loadNotchIsland(from: defaults)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)

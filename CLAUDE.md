@@ -151,6 +151,15 @@ assets and string catalog from there.
   accessors, so the field list exists once; `MetricChips.swift` is the
   1–3 window chip row the menu bar's
   `multi` style and the notch island's wings both configure with.
+- The app icon (see "App icon" under "Design system"):
+  `Shared/AppIconChoice.swift` (the four looks and their asset names),
+  `AIMeter/Views/AppIconSettings.swift` (Settings' "App icon") and
+  `Scripts/AppIcon/render.mjs`, which draws every icon picture from
+  code: the asset catalog's `AppIcon` (Sunset, with its tinted version,
+  and the Mac's sizes cut to `Scripts/AppIcon/mac-mask.png`, the shape
+  the Mac icon has always had), the iOS alternates
+  `AppIcon-Ivory/-Night/-Pet`, Settings' pictures (`AppIconPreview-*`),
+  the Mac's Dock images (`AppIconDock-*`) and the website's favicons.
 - Updates and What's new (see "Updates (macOS) and What's new" below):
   `AIMeter/WhatsNew.json` (each release's notes, eight languages) read
   by `AIMeter/Services/WhatsNew.swift`, drawn by
@@ -1183,8 +1192,11 @@ the account silently freezes at its last snapshot.
   `TimelineView` in the `MenuBarExtra` label: on macOS 27 that re-renders
   the status item from inside its own render and the app never finishes
   launching, 100 % CPU; 1.6.0 shipped with that bug, fixed in 2.0) and `menuBarShowsAccountName` (default off, offered only with 2+
-  accounts), and `checksForUpdates` (the daily update check, default
-  **on**, presence-checked; see "Updates (macOS) and What's new"). All default to the behavior that shipped before they
+  accounts), `checksForUpdates` (the daily update check, default
+  **on**, presence-checked; see "Updates (macOS) and What's new"), and
+  `appIcon` (the icon the Dock shows, `AppIconChoice`, default Sunset,
+  the bundle's own; an unknown value reads as Sunset; see "App icon"
+  under "Design system"). All default to the behavior that shipped before they
   existed, so an upgrade never changes an existing install — including
   the one migration: `menuBarShowsPercentage`, the pre-style bool, is
   only read at load now, to derive `menuBarStyle` for an install that
@@ -1414,6 +1426,28 @@ Review (4.1(c)/5.2.1) treats a third party's icon the same way, and the
 app was rejected once over brand use. The provider is still identified
 by its *name* in every header the user hasn't customized; the GitHub
 mark in Settings is a link glyph to the app's own repository.
+**App icon** (Mike's pick, 2026-10-16, from the third round of
+proposals): the notch island itself, a black pill with the sparkle and
+two bars, in four looks the user picks in Settings → "App icon"
+(`AppIconSettings`, both platforms, right after Appearance): **Sunset**
+(on a dusk sky; the bundle's own icon, so a new install, the App Store
+and Finder show it), **Ivory**, **Night** and **Pet** (the island lower,
+one bar, the purple cat in sunglasses standing on it as toy blocks; a
+purple pet, never an orange one, which would read as Claude Code's
+mascot). iOS switches through `setAlternateIconName` to the alternates
+the asset catalog declares (`ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES`,
+iOS SDKs only) and shows its own notice of the change, which no app can
+skip; `UIApplication.alternateIconName` is the state, so iOS keeps no
+preference. Each look has a grayscale tinted version for a tinted Home
+Screen and no dark one (the user picks the look; Night is the dark
+one). macOS gives an app no way to change its own icon short of
+rewriting the bundle, which breaks its code signature (Apple DTS), so
+there the pick is `Preferences.appIcon` and `AppChrome.applyAppIcon`
+sets `NSApp.applicationIconImage` from the Dock image at every launch
+and on every change: the Dock and ⌘Tab show it while AIMeter runs,
+Finder keeps Sunset, and the footnote says so. Every picture comes from
+`Scripts/AppIcon/render.mjs` (node, the website's `sharp`): run it after
+changing a look, never edit the PNGs by hand.
 Two more `Shared/ThemeComponents.swift` views follow the same rule for
 other repeated pieces: `UsageStatusFooter` (the error label + "Updated X
 ago" caption under the rate-limit rows — dashboard, provider detail, menu
@@ -1556,7 +1590,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   (`ServiceStatusTests`, with a stub `ServiceStatusSource` injected
   through `UsageModel.serviceStatusSources`), the menu bar label's
   text/fill/tint rules plus the style migration
-  (`MenuBarLabelModelTests`), the notch island's label/figure/tint/reset,
+  (`MenuBarLabelModelTests`), the app icon's looks, their pictures in
+  the bundle, iOS's declared alternates and the Mac's preference
+  (`AppIconChoiceTests`), the notch island's label/figure/tint/reset,
   third-slot, wing-split and status rules (`NotchIslandModelTests`), its
   frames from this Mac's measured screen rects
   (`NotchIslandGeometryTests`), its hover/dwell/leave/click state machine
@@ -1708,6 +1744,56 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   `ENABLE_APP_SANDBOX = NO` is pre-existing and would have to change for
   Mac App Store distribution regardless of any of this, and so would the
   updater: a Mac App Store build must not update itself.
+
+## Recipes
+
+The changes that come back, written down so each is done the same way
+every time.
+
+### The app icon: changing a look, or adding one
+
+The icons are drawn in code; the PNGs are output, never edited by hand.
+
+1. Each look is a function in `Scripts/AppIcon/render.mjs` returning a
+   1024-point square SVG, full bleed: `island('dusk' | 'ivory' | 'night',
+   tones)` for Sunset, Ivory and Night, `pet(tones)` for Pet. `tones` is
+   `COLOR` for the icon and `GRAY` for its tinted version (grayscale on
+   black, which iOS tints with the user's color). The pill, the sparkle
+   and the bars are shared, so a change to the island reaches every look.
+2. Review first: `node Scripts/AppIcon/render.mjs <dir>` writes
+   `sheet.png` there (every look in color, tinted, in the Mac's shape,
+   at 120, 87, 60, 40 and 29 px, and at the Mac's 64, 32 and 16).
+3. Write: `node Scripts/AppIcon/render.mjs` (after `npm --prefix site ci`
+   once, for `sharp`). It replaces in place `AppIcon.appiconset` (Sunset:
+   the opaque iOS 1024, its tinted version, and the ten Mac sizes cut to
+   `Scripts/AppIcon/mac-mask.png`), each `AppIcon-<Look>.appiconset` (the
+   iOS alternates, tinted versions included), `AppIconPreview-<Look>`
+   (Settings' pictures), `AppIconDock-<Look>` (the Mac's Dock images, Mac
+   idiom only, so iOS doesn't carry them), and the website's
+   `favicon-32.png`, `apple-touch-icon.png`, `icon-192/512.png` and
+   `src/assets/app-icon.png`.
+4. A new look: an entry in `LOOKS` (its key, its drawing,
+   `alternate: 'AppIcon-<Key>'`), a case in `AppIconChoice` (the
+   alternate's name, the asset suffix, and a label with its comment and
+   its translations in all eight languages), the name added to both
+   `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=…]` lines in both of
+   the app target's configurations, then step 3. `AppIconChoiceTests`
+   fails until the bundle has the look's picture, its Dock image and, on
+   iOS, its declared alternate.
+5. Another default: Sunset is the bundle's own icon by name in four
+   places, which all change together: `render.mjs` (the look with
+   `alternate: null`, and `rendered.Sunset` in `writeAll` for
+   `AppIcon.appiconset` and the website), `AppIconChoice` (the case with
+   no `alternateIconName` or Dock image, and the fallback for an unknown
+   one), the Mac footnote ("Finder keeps Sunset", in eight languages) and
+   the What's New note that introduced the icons. The App Store's icon
+   and the store frames' closing card (`appicon.png`, copied from
+   `ios-light.png`) follow `AppIcon.appiconset`.
+6. Rules: no orange pixel pet (it reads as Claude Code's mascot) and no
+   third-party mark in any look; the iOS 1024 stays opaque (the script
+   flattens it); the Mac shape is the mask's, never a drawn
+   approximation; and the Mac's footnote in Settings keeps saying only
+   the Dock changes.
 
 ## Workflow
 

@@ -184,7 +184,9 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   `scripts/island-strips.mjs` builds those two strips from the desktop
   picture and the panel captured alone, when the real top edge holds
   windows or other apps' status items.
-- `public/` — favicons and `apple-touch-icon.png` from the app icon,
+- `public/` — favicons and `apple-touch-icon.png` from the app icon
+  (Sunset, written by the repo's `Scripts/AppIcon/render.mjs`, which
+  also writes `src/assets/app-icon.png`, the icon on the drawn alerts),
   `icon-192/512.png` + `site.webmanifest`, `og.png` (1200×630, the
   centre crop of the store header asset).
 

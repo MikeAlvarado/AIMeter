@@ -95,6 +95,8 @@ private struct GeneralSettingsPage: View {
             SettingsGap()
         }
         AppearanceSettings()
+        SettingsGap()
+        AppIconSettings()
         if PeakNotificationsSettings.isOffered {
             SettingsGap()
             PeakNotificationsSettings()

@@ -46,6 +46,10 @@ can be added later.
 - Each account gets a name and an icon of your choosing: any SF Symbol,
   or the Claude / Claude Code mark, drawn in the same style, shown on the
   dashboard, in the menu bar, in every widget and in the Live Activity.
+- Four app icons to pick from in Settings, all of them the notch island:
+  Sunset (the default), Ivory, Night, and one with a pet standing on it.
+  On the Mac, macOS only lets an app change its Dock icon while it runs,
+  so Finder keeps Sunset.
 - A second, single-window widget ("Single Limit") for when you only care
   about one number — pick the account and window (session, weekly, a
   per-model limit, or usage credits) from the widget's own Edit Widget
@@ -409,6 +413,9 @@ AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage 
                         once), and a Live Activity (iOS) — all render App
                         Group snapshots and, on iOS, refresh themselves
                         when stale
+Scripts/AppIcon/        draws the app icons (Sunset, Ivory, Night, Pet),
+                        their Mac sizes and the website's favicons from
+                        code (`node Scripts/AppIcon/render.mjs`)
 Scripts/IslandVideo/    records the website's notch island videos from the
                         running app in demo mode (`Scripts/island-video.sh`)
 Scripts/StoreFrames/    renders the App Store screenshots, header and

@@ -49,6 +49,13 @@ struct HidingSettings: View {
             // Switching policy drops the app out of the foreground; the user
             // is mid-settings, so put it back.
             NSApp.activate(ignoringOtherApps: true)
+            // The Dock tile that comes back draws the bundle's icon: the
+            // look picked in Settings goes on it again, next turn, once the
+            // tile exists.
+            if !hidden {
+                let icon = prefs.appIcon
+                DispatchQueue.main.async { AppChrome.applyAppIcon(icon) }
+            }
         }
         SectionFootnote(text: String(localized: "AIMeter keeps running and refreshing your usage either way. Hiding only changes what you see. Quit still quits."))
     }
