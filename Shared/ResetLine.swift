@@ -31,19 +31,27 @@ enum ResetLine: Equatable {
 
 /// The reset line's text: the live countdown or the label, in the
 /// caller's font. `now` is the entry's date, never `Date()`: an entry is
-/// drawn ahead of its time, and the range is the entry's to keep.
+/// drawn ahead of its time, and the range is the entry's to keep. `bare`
+/// drops the sentence for a line with no room for it: "2:23:05", "2d
+/// 22h", "7:59 PM" (`UsageFormatting.resetValue`).
 struct ResetLineText: View {
     let resetsAt: Date
     let style: ResetStyle
     let now: Date
+    var bare = false
 
     var body: some View {
         switch ResetLine.line(for: resetsAt, style: style, now: now) {
         case .countdown(let range):
-            Text("Resets in \(Text(timerInterval: range, countsDown: true))")
-                .monospacedDigit()
+            if bare {
+                Text(timerInterval: range, countsDown: true)
+                    .monospacedDigit()
+            } else {
+                Text("Resets in \(Text(timerInterval: range, countsDown: true))")
+                    .monospacedDigit()
+            }
         case .label(let text):
-            Text(text)
+            Text(bare ? UsageFormatting.resetValue(for: resetsAt, style: style, now: now) : text)
         }
     }
 }

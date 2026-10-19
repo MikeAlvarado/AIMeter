@@ -167,6 +167,25 @@ enum UsageFormatting {
         }
     }
 
+    /// The bare value of `resetLabel`, for a line that has no room for the
+    /// sentence (the notch island's segments, the ring widget's centre):
+    /// the countdown for the relative style; the clock time, with the
+    /// weekday when not today and the date from a week on, for the
+    /// absolute one.
+    static func resetValue(for date: Date, style: ResetStyle, now: Date) -> String {
+        switch style {
+        case .relative:
+            return relativeString(from: now, to: date)
+        case .absolute:
+            let time = date.formatted(date: .omitted, time: .shortened)
+            if Calendar.current.isDate(date, inSameDayAs: now) { return time }
+            if date.timeIntervalSince(now) >= dateInsteadOfWeekdayFrom {
+                return date.formatted(.dateTime.month(.abbreviated).day().hour().minute())
+            }
+            return "\(date.formatted(.dateTime.weekday(.abbreviated))) \(time)"
+        }
+    }
+
     /// Compact two-unit countdown: "4h 12m", "2d 22h", "38m", "now".
     static func relativeString(from now: Date, to date: Date) -> String {
         let seconds = max(0, date.timeIntervalSince(now))

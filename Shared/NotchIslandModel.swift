@@ -276,17 +276,7 @@ struct NotchIslandModel: Equatable {
     /// for the absolute one. The full "Resets in …" sentence stays in the
     /// accessibility label.
     static func resetValue(for date: Date, style: ResetStyle, now: Date) -> String {
-        switch style {
-        case .relative:
-            return UsageFormatting.relativeString(from: now, to: date)
-        case .absolute:
-            let time = date.formatted(date: .omitted, time: .shortened)
-            if Calendar.current.isDate(date, inSameDayAs: now) { return time }
-            if date.timeIntervalSince(now) >= UsageFormatting.dateInsteadOfWeekdayFrom {
-                return date.formatted(.dateTime.month(.abbreviated).day().hour().minute())
-            }
-            return "\(date.formatted(.dateTime.weekday(.abbreviated))) \(time)"
-        }
+        UsageFormatting.resetValue(for: date, style: style, now: now)
     }
 
     private static func status(of input: AccountInput, now: Date) -> Status {

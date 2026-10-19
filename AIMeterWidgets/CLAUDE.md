@@ -142,7 +142,17 @@ legacy sentinel if none — rather than each re-deriving it.
   distinguishable in the picker. Its header shows the same peak-hours
   badge (hidden while the policy is retired), but only when the picked
   window is `.session` — the only window the documented policy actually
-  affects.
+  affects. A second Edit Widget choice, Style (`SingleUsageStyle`: Bar,
+  the default, or Ring), draws the window as a ring instead
+  (`RingUsageView`): the same header with the display mode on its
+  trailing edge (the bar style names the window there), a 9 pt ring in
+  the window's level color on the bars' track, the figure in its centre
+  over the window's name and its reset as a bare value, the live
+  countdown under a day ("Session · 2:23:05", `ResetLineText(bare:)`
+  over `UsageFormatting.resetValue`, the value the notch island's
+  segments show too). Of the mockup's three ring widgets only this one
+  was kept (a small one with a ring per account and a medium one with
+  three rings were not; Mike's call, 2026-10-19).
 - A pre-multi-account widget instance's persisted selection
   (`"claude|kind"`) keeps resolving unchanged after an upgrade — the
   migrated legacy account's literal accountID is `"claude"`, so the

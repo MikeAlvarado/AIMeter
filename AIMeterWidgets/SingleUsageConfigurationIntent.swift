@@ -91,10 +91,26 @@ struct UsageWindowOptionQuery: EntityQuery {
     }
 }
 
+/// How the single-limit widget draws its window: the bar it always had,
+/// or a ring with the figure in its centre (`RingUsageView`).
+enum SingleUsageStyle: String, AppEnum {
+    case bar
+    case ring
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Style"
+    static var caseDisplayRepresentations: [SingleUsageStyle: DisplayRepresentation] = [
+        .bar: "Bar",
+        .ring: "Ring",
+    ]
+}
+
 struct SingleUsageConfigurationIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Usage Window"
     static var description = IntentDescription("Choose which account and limit this widget shows.")
 
     @Parameter(title: "Limit")
     var window: UsageWindowOption?
+
+    @Parameter(title: "Style", default: .bar)
+    var style: SingleUsageStyle
 }

@@ -35,7 +35,8 @@ system, and behaviors. It should be enough to rebuild the app from zero.
 - Widget kinds: `AIMeterUsage` ("Usage Limits": the account's windows,
   rows in the small family, columns with a big figure each in the medium),
   `AIMeterSingleUsage` (single-window widget, user-configurable via
-  WidgetKit's `AppIntentConfiguration`), and `AIMeterAllAccounts`
+  WidgetKit's `AppIntentConfiguration`: the window, and a bar or a
+  ring), and `AIMeterAllAccounts`
   (`.systemLarge`-only, every connected account at once, no per-instance
   configuration — see `AIMeterWidgets/CLAUDE.md`); on the Watch,
   `AIMeterWatchUsage` (the complications, every accessory family).
