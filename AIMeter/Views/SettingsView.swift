@@ -28,6 +28,8 @@ struct SettingsView: View {
                 BackgroundRefreshSettings()
                 SettingsGap()
                 ServiceStatusSettings()
+                SettingsGap()
+                CloudSyncSettings()
                 if ExportSettings.isOffered(model) {
                     SettingsGap()
                     ExportSettings()

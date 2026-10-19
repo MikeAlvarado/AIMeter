@@ -87,6 +87,9 @@ final class UsageModel {
     /// `UsageModel+History.swift`. nil store in unit tests.
     var timelines: [String: [String: [TimelineSample]]] = [:]
     let timelineStore: UsageTimelineStore?
+    /// iCloud sync while `Preferences.cloudSync` is on (`CloudSync`, see
+    /// `UsageModel+CloudSync.swift`); nil otherwise and in unit tests.
+    @ObservationIgnored var cloud: CloudSync?
     /// `peakEnabled` is the one field on `NotificationPreferences` that
     /// ignores `accountID` (peak hours is a Claude-wide policy, not tied to
     /// any one account) — "global" is a documented placeholder, never used
@@ -140,9 +143,14 @@ final class UsageModel {
         endDemoLiveActivities()
         watch = WatchBridge.makeIfSupported()
         watch?.model = self
-        // The Watch draws with the display preferences too.
-        PreferencesModel.onWidgetVisibleChange = { [weak self] in self?.notifyWatch() }
         #endif
+        // The Watch and the other devices draw with the display
+        // preferences too.
+        PreferencesModel.onWidgetVisibleChange = { [weak self] in
+            self?.notifyWatch()
+            self?.cloud?.pushPreferences(Preferences.load())
+        }
+        if Preferences.load().cloudSync { startCloudSync() }
         #if os(macOS)
         claudeCode = ClaudeCodeUsageModel(enabled: Preferences.load().claudeCodeUsageEnabled)
         rebuildRefreshSchedule(interval: Preferences.load().refreshCadence.interval)
@@ -297,6 +305,9 @@ final class UsageModel {
             accounts[i].needsReauthentication = false
             accounts[i].isOffline = false
             reloadTimeline(for: accountID)
+            // Before the registry write below, so a first registration
+            // already carries the login's id.
+            syncToCloud(accountID: accountID, identity: snapshot.accountIdentity)
             if registry?.account(for: accountID) == nil {
                 // The in-memory account rather than `service.account`: a
                 // rename during this fetch has already landed there.

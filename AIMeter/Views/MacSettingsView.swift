@@ -105,6 +105,8 @@ private struct GeneralSettingsPage: View {
         BackgroundRefreshSettings()
         SettingsGap()
         ServiceStatusSettings()
+        SettingsGap()
+        CloudSyncSettings()
         if ExportSettings.isOffered(model) {
             SettingsGap()
             ExportSettings()

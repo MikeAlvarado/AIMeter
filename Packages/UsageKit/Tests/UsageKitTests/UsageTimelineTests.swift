@@ -142,3 +142,42 @@ final class UsageTimelineTests: XCTestCase {
         XCTAssertEqual(store.samples(for: "acc", kind: .session).count, 1)
     }
 }
+
+extension UsageTimelineTests {
+    /// iCloud sync merges the iPhone's and the Mac's series of one window.
+    func testStoreMergeReportsAChangeOnlyForNewSamples() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = UsageTimelineStore(directory: directory)
+        let now = Date(timeIntervalSince1970: 1_793_000_000)
+        let snapshot = UsageSnapshot(providerID: "p", planName: nil, fetchedAt: now, windows: [
+            UsageWindow(kind: .session, usedPct: 40, resetsAt: nil),
+        ])
+        store.record(snapshot, for: "a", at: now)
+        let mine = store.allSamples(for: "a")
+
+        XCTAssertFalse(store.merge(mine, for: "a", now: now), "the same series changes nothing")
+        XCTAssertFalse(store.merge([:], for: "a", now: now))
+        let theirs = ["session": [TimelineSample(timestamp: now.addingTimeInterval(1800), usedPct: 55, resetsAt: nil)],
+                      "weekly": [TimelineSample(timestamp: now, usedPct: 10, resetsAt: nil)]]
+        XCTAssertTrue(store.merge(theirs, for: "a", now: now.addingTimeInterval(1800)))
+        XCTAssertEqual(store.samples(for: "a", kind: .session).map(\.usedPct), [40, 55])
+        XCTAssertEqual(store.samples(for: "a", kind: .weekly).map(\.usedPct), [10])
+        XCTAssertFalse(store.merge(theirs, for: "a", now: now.addingTimeInterval(1800)), "already held")
+    }
+
+    func testMergingTwoDevicesSeriesKeepsEveryRefreshOnce() {
+        let base = Date(timeIntervalSince1970: 1_793_000_000)
+        let at: (TimeInterval, Double) -> TimelineSample = { TimelineSample(timestamp: base.addingTimeInterval($0), usedPct: $1, resetsAt: nil) }
+        let phone = [at(0, 10), at(1800, 20), at(3600, 30)]
+        let mac = [at(5, 11), at(900, 15), at(7200, 40)]
+
+        let merged = UsageTimeline.merged(phone, mac)
+
+        // The refresh both recorded (0 and 5 s) once, the later standing.
+        XCTAssertEqual(merged.map(\.usedPct), [11, 15, 20, 30, 40])
+        XCTAssertEqual(UsageTimeline.merged(mac, phone), merged, "the same from either side")
+        XCTAssertEqual(UsageTimeline.merged(phone, phone), phone, "a series merged with itself")
+        XCTAssertEqual(UsageTimeline.merged([], mac), mac)
+    }
+}

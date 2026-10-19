@@ -178,7 +178,7 @@ export const en = {
     description: 'What AIMeter reads, what it stores on your device, and what never leaves it.',
     intro:
       'AIMeter has no server and no account of its own. It reads your usage from your AI provider with the login you grant it, keeps a copy on your device so widgets can render, and sends nothing anywhere else. This page lists every data flow so you can check each one against the source.',
-    updated: 'Last updated: 15 October 2026',
+    updated: 'Last updated: 19 October 2026',
     sections: [
       {
         heading: 'What leaves your device',
@@ -188,6 +188,7 @@ export const en = {
           'claude.ai and console.anthropic.com: the standard OAuth sign-in exchange when you connect an account through the app. You sign in on the provider’s own page in your browser, never in an embedded web view, and paste back the code it shows.',
           'status.claude.com: one anonymous request to the public status page on each refresh, to tell a service incident apart from a problem with your account. It carries nothing about you and can be turned off in Settings.',
           'api.github.com and github.com (Mac only): once a day, a request asking whether a newer version of AIMeter exists, and its download from the project’s release page when there is one. It carries nothing about you and can be turned off in Settings.',
+          'iCloud (optional, off by default): with “Sync preferences and history” on in Settings, your display preferences and each account’s usage history (the percentages and their dates, nothing else) go to your own iCloud key-value store, under your Apple Account, to reach your other devices with AIMeter. Sign-in tokens never do, and there is no server of ours in between. Turning it off removes what AIMeter kept there.',
           'This website is static: no analytics, no cookies, fonts are self-hosted and no third-party request is made. It is served by GitHub Pages, whose ordinary server logs are GitHub’s.',
         ],
       },

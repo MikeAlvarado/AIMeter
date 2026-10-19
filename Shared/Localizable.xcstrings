@@ -4,6 +4,241 @@
     "" : {
 
     },
+    "iCloud" : {
+      "comment" : "Settings: the header of the iCloud sync card. Apple's own name, never translated.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        }
+      }
+    },
+    "Sync preferences and history" : {
+      "comment" : "Settings: the iCloud sync switch.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen und Verlauf synchronisieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronizar preferencias e historial"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchroniser les préférences et l'historique"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定と履歴を同期"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "환경설정과 기록 동기화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronizar preferências e histórico"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同步偏好设置和历史记录"
+          }
+        }
+      }
+    },
+    "Your display preferences and each account's usage history reach your other devices with AIMeter through your iCloud. Logins never do: each device signs in on its own, and the same account is matched by the id your provider reports. Turning it off removes what AIMeter keeps in iCloud." : {
+      "comment" : "Settings: the footnote under the iCloud sync switch.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Anzeigeeinstellungen und der Nutzungsverlauf jedes Accounts erreichen deine anderen Geräte mit AIMeter über deine iCloud. Anmeldungen nie: Jedes Gerät meldet sich selbst an, und derselbe Account wird an der ID erkannt, die dein Anbieter meldet. Beim Ausschalten wird entfernt, was AIMeter in iCloud ablegt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus preferencias de visualización y el historial de uso de cada cuenta llegan a tus otros dispositivos con AIMeter a través de tu iCloud. Los inicios de sesión nunca: cada dispositivo inicia sesión por su cuenta, y la misma cuenta se reconoce por el identificador que informa tu proveedor. Al apagarlo se elimina lo que AIMeter guarda en iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos préférences d'affichage et l'historique d'utilisation de chaque compte rejoignent vos autres appareils avec AIMeter via votre iCloud. Jamais les connexions : chaque appareil se connecte de son côté, et le même compte est reconnu par l'identifiant que votre fournisseur indique. Le désactiver supprime ce qu'AIMeter garde dans iCloud."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示の設定と各アカウントの使用履歴は、iCloud を通じて AIMeter を使うほかのデバイスにも届きます。ログイン情報は決して送られません。デバイスごとにサインインし、同じアカウントはプロバイダが報告する ID で照合します。オフにすると、AIMeter が iCloud に保存した内容は削除されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "표시 환경설정과 각 계정의 사용 기록이 iCloud를 통해 AIMeter를 쓰는 다른 기기에도 전달됩니다. 로그인 정보는 절대 전달되지 않습니다. 기기마다 따로 로그인하며, 같은 계정은 제공업체가 알려주는 ID로 맞춥니다. 끄면 AIMeter가 iCloud에 보관한 내용이 삭제됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas preferências de exibição e o histórico de uso de cada conta chegam aos seus outros dispositivos com o AIMeter pelo seu iCloud. Os logins nunca: cada dispositivo entra por conta própria, e a mesma conta é reconhecida pelo identificador que o seu provedor informa. Desligar remove o que o AIMeter guarda no iCloud."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的显示偏好设置和每个账户的用量历史记录会通过你的 iCloud 同步到你其他装有 AIMeter 的设备。登录信息绝不会同步：每台设备各自登录，同一账户按提供商报告的 ID 匹配。关闭后会删除 AIMeter 保存在 iCloud 中的内容。"
+          }
+        }
+      }
+    },
+    "iCloud sync is opt-in" : {
+      "comment" : "Privacy & data: the row about iCloud sync.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Synchronisierung nur auf Wunsch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La sincronización con iCloud es opcional"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La synchronisation iCloud est facultative"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 同期は任意です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 동기화는 선택 사항입니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A sincronização com o iCloud é opcional"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 同步需要手动开启"
+          }
+        }
+      }
+    },
+    "If you turn it on in Settings, your display preferences and each account's usage history (the percentages and their dates, nothing else) go through your iCloud, under your Apple Account, to your other devices with AIMeter. Logins never do. There is no server of AIMeter's in between, and turning it off removes what it kept there." : {
+      "comment" : "Privacy & data: the text of the iCloud sync row.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn du sie in den Einstellungen einschaltest, gehen deine Anzeigeeinstellungen und der Nutzungsverlauf jedes Accounts (die Prozentwerte und ihre Daten, sonst nichts) über deine iCloud, unter deinem Apple-Account, an deine anderen Geräte mit AIMeter. Anmeldungen nie. Dazwischen steht kein Server von AIMeter, und beim Ausschalten wird entfernt, was dort abgelegt wurde."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si la activas en Ajustes, tus preferencias de visualización y el historial de uso de cada cuenta (los porcentajes y sus fechas, nada más) pasan por tu iCloud, con tu Cuenta de Apple, a tus otros dispositivos con AIMeter. Los inicios de sesión nunca. No hay ningún servidor de AIMeter de por medio, y al apagarla se elimina lo que guardó allí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si vous l'activez dans Réglages, vos préférences d'affichage et l'historique d'utilisation de chaque compte (les pourcentages et leurs dates, rien d'autre) passent par votre iCloud, sous votre compte Apple, vers vos autres appareils avec AIMeter. Jamais les connexions. Aucun serveur d'AIMeter n'est sur le chemin, et le désactiver supprime ce qui y était gardé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定でオンにすると、表示の設定と各アカウントの使用履歴（パーセントとその日時だけ）が、あなたの Apple アカウントの iCloud を通じて、AIMeter を使うほかのデバイスに届きます。ログイン情報は決して送られません。途中に AIMeter のサーバーはなく、オフにすると保存した内容は削除されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 켜면 표시 환경설정과 각 계정의 사용 기록(퍼센트와 그 날짜뿐, 그 외에는 없음)이 Apple 계정의 iCloud를 통해 AIMeter를 쓰는 다른 기기로 전달됩니다. 로그인 정보는 절대 전달되지 않습니다. 중간에 AIMeter의 서버는 없으며, 끄면 거기에 보관한 내용이 삭제됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se você ligar nos Ajustes, suas preferências de exibição e o histórico de uso de cada conta (as porcentagens e suas datas, nada mais) passam pelo seu iCloud, com a sua Conta Apple, até os seus outros dispositivos com o AIMeter. Os logins nunca. Não há nenhum servidor do AIMeter no meio, e desligar remove o que ficou guardado lá."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果你在设置中开启，你的显示偏好设置和每个账户的用量历史记录（只有百分比及其日期）会通过你 Apple 账户的 iCloud 同步到你其他装有 AIMeter 的设备。登录信息绝不会同步。中间没有 AIMeter 的服务器，关闭后会删除保存在那里的内容。"
+          }
+        }
+      }
+    },
     "The Watch shows what your iPhone fetched" : {
       "comment" : "Privacy & data (iOS): the row about the Watch app.",
       "localizations" : {

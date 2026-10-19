@@ -64,6 +64,26 @@ public enum UsageTimeline {
         abs(b.timeIntervalSince(a)) < sameRefreshWindow
     }
 
+    /// Two devices' series of one window as one, for iCloud sync: every
+    /// sample of both in time order, a refresh both recorded (within
+    /// `sameRefreshWindow`) once, the later one standing. The result is
+    /// the same whichever side is `a`, so two devices merging each
+    /// other's series converge; the caller compacts it.
+    public static func merged(_ a: [TimelineSample], _ b: [TimelineSample]) -> [TimelineSample] {
+        let all = (a + b).sorted { lhs, rhs in
+            lhs.timestamp != rhs.timestamp ? lhs.timestamp < rhs.timestamp : lhs.usedPct < rhs.usedPct
+        }
+        var result: [TimelineSample] = []
+        for sample in all {
+            if let last = result.last, isSameRefresh(last.timestamp, sample.timestamp) {
+                result[result.count - 1] = sample
+            } else {
+                result.append(sample)
+            }
+        }
+        return result
+    }
+
     /// True when `current` belongs to a later window than `previous`:
     /// either its reset date moved on (weekly boundaries are fixed
     /// anchors, so this is truth, not a guess) or the figure fell by more

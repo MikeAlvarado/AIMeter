@@ -17,13 +17,13 @@ struct AIMeterApp: App {
     init() {
         let prefs = PreferencesModel()
         _prefs = State(initialValue: prefs)
-        #if os(macOS)
         // The notch island lives outside the scene graph, and gets the app's
         // one `PreferencesModel` here, before any window: a launch that
         // restores some other window instead of the Dashboard (whose
         // `onAppear` hands it over as well) must still start the island.
+        // iCloud sync applies another device's preferences through it, on
+        // both platforms.
         AppEnvironment.prefs = prefs
-        #endif
     }
 
     var body: some Scene {

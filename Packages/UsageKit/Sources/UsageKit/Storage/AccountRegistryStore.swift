@@ -26,6 +26,12 @@ public struct ConnectedAccount: Codable, Hashable, Sendable, Identifiable {
     /// default mark. Optional and absent from any registry written before
     /// it existed, so an upgrade decodes unchanged.
     public var icon: AccountIcon?
+    /// The login this account is, the same on every device it is signed
+    /// in on (`UsageSnapshot.accountIdentity`, "claude:<account uuid>");
+    /// nil until a fetch has read the provider's profile. What iCloud sync
+    /// matches an account across the iPhone and the Mac by: `accountID`
+    /// is this device's name for it, minted here.
+    public var syncIdentity: String?
 
     public init(
         accountID: String,
@@ -33,7 +39,8 @@ public struct ConnectedAccount: Codable, Hashable, Sendable, Identifiable {
         displayName: String,
         credentialStrategy: CredentialStrategy,
         connectedAt: Date = Date(),
-        icon: AccountIcon? = nil
+        icon: AccountIcon? = nil,
+        syncIdentity: String? = nil
     ) {
         self.accountID = accountID
         self.providerID = providerID
@@ -41,6 +48,7 @@ public struct ConnectedAccount: Codable, Hashable, Sendable, Identifiable {
         self.credentialStrategy = credentialStrategy
         self.connectedAt = connectedAt
         self.icon = icon
+        self.syncIdentity = syncIdentity
     }
 }
 
@@ -168,6 +176,16 @@ public struct AccountRegistryStore: @unchecked Sendable {
         var current = accounts()
         guard let index = current.firstIndex(where: { $0.accountID == accountID }) else { return }
         current[index].icon = icon
+        save(current)
+    }
+
+    /// Records the login's cross-device identity once a fetch has read
+    /// it; a no-op for one already recorded.
+    public func setSyncIdentity(_ identity: String?, for accountID: String) {
+        var current = accounts()
+        guard let index = current.firstIndex(where: { $0.accountID == accountID }),
+              current[index].syncIdentity != identity else { return }
+        current[index].syncIdentity = identity
         save(current)
     }
 

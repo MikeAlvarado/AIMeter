@@ -60,6 +60,28 @@ public struct UsageTimelineStore: Sendable {
         save(file, for: accountID)
     }
 
+    /// Another device's series of this account, merged into this one's
+    /// (`UsageTimeline.merged`) and compacted: iCloud sync's way in.
+    /// Returns whether anything changed, so a series that already held
+    /// every sample is not pushed back out.
+    @discardableResult
+    public func merge(_ remote: [String: [TimelineSample]], for accountID: String, now: Date = Date()) -> Bool {
+        var file = load(accountID)
+        var changed = false
+        for (key, samples) in remote {
+            let merged = UsageTimeline.compacted(
+                UsageTimeline.merged(file.kinds[key] ?? [], samples),
+                now: now, rawWindow: Self.rawWindow, retention: Self.retention
+            )
+            if merged != file.kinds[key] {
+                file.kinds[key] = merged
+                changed = true
+            }
+        }
+        if changed { save(file, for: accountID) }
+        return changed
+    }
+
     public func clear(for accountID: String) {
         try? FileManager.default.removeItem(at: fileURL(for: accountID))
     }

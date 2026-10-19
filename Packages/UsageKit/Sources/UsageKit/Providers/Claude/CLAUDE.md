@@ -14,7 +14,19 @@ captured response) before changing the model.
   is **null for windows with no usage yet**.
 - `GET https://api.anthropic.com/api/oauth/profile` — the only source of
   the plan name (the usage response carries no subscription field):
-  `account.has_claude_pro` / `has_claude_max` → "pro"/"max" (max wins).
+  `account.has_claude_pro` / `has_claude_max` → "pro"/"max" (max wins),
+  and of the account's identity: `account.uuid` (36 characters, stable
+  for a login whatever device it is on), which iCloud sync keys the
+  history by. Shape measured 2026-10-19 with
+  `Scripts/probe-status-endpoint.sh`'s sibling,
+  `Scripts/probe-profile-endpoint.sh` (it prints every key with its
+  value's type and a string's length, never a value, since the response
+  carries the user's name, email and ids): `account` (`uuid`, `email`,
+  `full_name`, `display_name`, `created_at`, the two plan flags),
+  `organization` (`uuid`, `name`, `organization_type`,
+  `rate_limit_tier`, `billing_type`, `subscription_status`, …),
+  `application` (`uuid`, `name`, `slug`) and `enabled_plugins`. Only
+  `account.uuid` and the two flags are decoded.
   The result is cached in the stored credentials (`subscriptionType`) with
   the date it was confirmed (`planCheckedAt`), and re-confirmed once the
   cache is older than `ClaudeProvider.planRecheckInterval` (6 h) — a
@@ -41,6 +53,13 @@ captured response) before changing the model.
   (an empty or malformed paste, e.g. just `"#"`, throws a typed error
   instead of indexing a possibly-empty split result); exchange/refresh at
   `https://console.anthropic.com/v1/oauth/token`.
+
+Both probes take the token from Claude Code's Keychain item, then
+`~/.claude/.credentials.json`, then AIMeter's own item (a login signed in
+through the app, `claude.credentials.<accountID>` under the bundle ID):
+Claude Code leaves its item behind with empty tokens after a logout
+(measured 2026-10-19: `accessToken` "", `expiresAt` 0, the plan still
+there), which is not a login.
 
 Credential sources (per account — see "Accounts vs. providers" in the
 repo-root CLAUDE.md):

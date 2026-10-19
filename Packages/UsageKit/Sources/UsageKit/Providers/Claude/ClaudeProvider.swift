@@ -28,7 +28,7 @@ public struct ClaudeProvider: UsageProvider {
     private let credentialSource: any ClaudeCredentialSource
     private let transport: any HTTPTransport
     private let userAgent: String
-    private let planCache = PlanCache()
+    private let profileCache = ProfileCache()
 
     /// How long a rejected refresh waits before its last look at the
     /// store (see `rotate`). Tests set it to zero.
@@ -94,63 +94,76 @@ public struct ClaudeProvider: UsageProvider {
             throw UsageError.invalidResponse("no usage windows in response")
         }
 
+        let profile = await profile(for: credentials)
         return UsageSnapshot(
             providerID: id,
-            planName: await planName(for: credentials),
+            planName: profile.plan,
             fetchedAt: Date(),
             windows: windows,
             spend: decoded.spendStatus(),
-            extraUsage: decoded.extraUsageStatus()
+            extraUsage: decoded.extraUsageStatus(),
+            accountIdentity: profile.uuid.map { Self.identity(for: $0) }
         )
     }
 
-    /// The stored subscription while it's still within
+    /// The cross-device identity of a login, from the profile's account id.
+    static func identity(for accountUUID: String) -> String {
+        "\(providerID):\(accountUUID)"
+    }
+
+    /// The stored plan and account id while the plan is still within
     /// `planRecheckInterval`; otherwise re-resolved from the profile
     /// endpoint and persisted, so later fetches skip the extra call until
-    /// it goes stale again. Best-effort: a profile failure keeps the last
-    /// plan we knew rather than blanking it.
+    /// it goes stale again. An account whose id was never read is due for
+    /// the call whatever its plan's age: the id is what iCloud sync keys
+    /// its history by. Best-effort: a profile failure keeps the last plan
+    /// and id we knew rather than blanking them.
     ///
     /// The write-back re-reads the source instead of saving the
     /// `credentials` value this fetch started with, and that matters: only
-    /// `subscriptionType`/`planCheckedAt` are ours to persist here, while
-    /// the token fields may have been rotated in the meantime by a
-    /// concurrent fetch (on iOS the widget refreshes itself alongside the
-    /// app, against the same shared Keychain item). Saving the whole stale
-    /// value would put a consumed refresh token back over the fresh one —
-    /// and Anthropic rejects a consumed refresh token permanently, which
-    /// bricks the account until the user signs in again.
-    private func planName(for credentials: ClaudeCredentials) async -> String? {
-        if let cached = planCache.plan(checkedWithin: Self.planRecheckInterval) {
+    /// `subscriptionType`, `planCheckedAt` and `accountUUID` are ours to
+    /// persist here, while the token fields may have been rotated in the
+    /// meantime by a concurrent fetch (on iOS the widget refreshes itself
+    /// alongside the app, against the same shared Keychain item). Saving
+    /// the whole stale value would put a consumed refresh token back over
+    /// the fresh one — and Anthropic rejects a consumed refresh token
+    /// permanently, which bricks the account until the user signs in again.
+    private func profile(for credentials: ClaudeCredentials) async -> (plan: String?, uuid: String?) {
+        if let cached = profileCache.profile(checkedWithin: Self.planRecheckInterval) {
             return cached
         }
         if let subscription = credentials.subscriptionType,
            let checkedAt = credentials.planCheckedAt,
+           let uuid = credentials.accountUUID,
            Date().timeIntervalSince(checkedAt) < Self.planRecheckInterval {
-            return subscription
+            return (subscription, uuid)
         }
-        guard let plan = try? await fetchProfilePlan(with: credentials) else {
+        guard let fetched = try? await fetchProfile(with: credentials), let plan = fetched.subscriptionType else {
             // Unreachable profile — or one that reports no subscription at
             // all, which is also what a shape change would look like. Keep
             // the last plan we knew instead of dropping the pill over it.
-            return planCache.lastKnown ?? credentials.subscriptionType
+            let known = profileCache.lastKnown
+            return (known?.plan ?? credentials.subscriptionType, known?.uuid ?? credentials.accountUUID)
         }
-        planCache.record(plan)
+        let uuid = fetched.accountUUID ?? credentials.accountUUID
+        profileCache.record(plan: plan, uuid: uuid)
         // No re-read, no write: falling back to `credentials` would save
         // exactly the stale pair this re-read exists to avoid.
         if credentialSource.allowsRefresh, var latest = try? await credentialSource.load() {
             latest.subscriptionType = plan
             latest.planCheckedAt = Date()
+            latest.accountUUID = uuid
             try? await credentialSource.save(latest)
         }
-        return plan
+        return (plan, uuid)
     }
 
-    private func fetchProfilePlan(with credentials: ClaudeCredentials) async throws -> String? {
+    private func fetchProfile(with credentials: ClaudeCredentials) async throws -> ClaudeProfileResponse? {
         let (data, response) = try await transport.send(
             request(for: Self.profileEndpoint, credentials: credentials)
         )
         guard response.statusCode == 200 else { return nil }
-        return try JSONDecoder().decode(ClaudeProfileResponse.self, from: data).subscriptionType
+        return try JSONDecoder().decode(ClaudeProfileResponse.self, from: data)
     }
 
     /// Raw response body attached to HTTP errors so the UI can show what
@@ -231,8 +244,8 @@ public struct ClaudeProvider: UsageProvider {
     }
 }
 
-/// The plan last resolved from the profile endpoint, remembered for the
-/// lifetime of one provider instance.
+/// The plan and account id last resolved from the profile endpoint,
+/// remembered for the lifetime of one provider instance.
 ///
 /// Sources the app owns persist the same thing in the credentials
 /// (`planCheckedAt`), which survives relaunches. The macOS mirror of Claude
@@ -240,28 +253,30 @@ public struct ClaudeProvider: UsageProvider {
 /// so without this in-memory copy that account would re-fetch the profile on
 /// every single refresh, and would keep reporting the CLI item's own stale
 /// `subscriptionType` in between.
-private final class PlanCache: @unchecked Sendable {
+private final class ProfileCache: @unchecked Sendable {
     private let lock = NSLock()
-    private var resolved: String?
+    private var plan: String?
+    private var uuid: String?
     private var checkedAt: Date?
 
-    /// The last resolved plan, if it was checked within `interval`.
-    func plan(checkedWithin interval: TimeInterval) -> String? {
+    /// The last resolved plan and id, if checked within `interval`.
+    func profile(checkedWithin interval: TimeInterval) -> (plan: String?, uuid: String?)? {
         lock.withLock {
             guard let checkedAt, Date().timeIntervalSince(checkedAt) < interval else { return nil }
-            return resolved
+            return (plan, uuid)
         }
     }
 
-    /// The last resolved plan whatever its age — the fallback when a
-    /// re-check can't be completed.
-    var lastKnown: String? {
-        lock.withLock { resolved }
+    /// The last resolved values whatever their age — the fallback when a
+    /// re-check can't be completed; nil before the first.
+    var lastKnown: (plan: String?, uuid: String?)? {
+        lock.withLock { checkedAt == nil ? nil : (plan, uuid) }
     }
 
-    func record(_ plan: String) {
+    func record(plan: String, uuid: String?) {
         lock.withLock {
-            resolved = plan
+            self.plan = plan
+            self.uuid = uuid
             checkedAt = Date()
         }
     }

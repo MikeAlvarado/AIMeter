@@ -81,6 +81,11 @@ can be added later.
   the device for 30 days. **Export** them from Settings as a CSV (for
   Numbers or Excel) or a JSON (for a script): every account, every
   window, the share sheet on iOS and a save panel on the Mac.
+- **iCloud sync** (opt-in, off by default): your display preferences and
+  each account's history follow you between iPhone and Mac through your
+  own iCloud. Logins never do: each device signs in on its own, and the
+  same account is matched by the id your provider reports, so both
+  devices keep recording and converge on one history.
 - A **notch island** on the Mac: a black panel fused to the MacBook's
   notch. On a screen without one — an external display, an iMac, a
   closed MacBook on a monitor — it draws its own at the top edge: a
@@ -245,6 +250,12 @@ status" toggle in Settings). On the Mac only, once a day, a request to
 `api.github.com` asking whether a newer release exists, and the
 download of `AIMeter-macOS.zip` from the project's GitHub release when
 there is one (off with "Check for updates automatically" in Settings).
+With "Sync preferences and history" on in Settings (off by default), your
+display preferences and each account's usage history (the percentages
+and their dates, nothing else) go to your own iCloud key-value store,
+under your Apple Account, to reach your other devices with AIMeter:
+Apple's servers, never ours, and never the tokens; turning it off
+removes what AIMeter kept there.
 Nothing else:
 no analytics, no crash reporting, no third-party SDKs, no server of ours.
 
@@ -266,7 +277,10 @@ It reads nothing else and changes nothing.
   dates, and the reset dates), as a small JSON file per account in the
   same container, for the history chart. Deleted when you disconnect.
   "Export" in Settings writes that same history to a CSV or JSON file
-  you choose where to send; nothing is uploaded by the app.
+  you choose where to send; nothing is uploaded by the app unless you
+  turn on iCloud sync, which keeps a merged copy of each account's
+  history in your iCloud and removes it when you disconnect the account
+  or turn the sync off.
 - Nothing is ever written to UserDefaults outside the App Group, to disk
   unencrypted, or to the repo.
 

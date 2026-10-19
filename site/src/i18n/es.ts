@@ -178,7 +178,7 @@ export const es = {
     description: 'Qué lee AIMeter, qué guarda en tu dispositivo y qué nunca sale de él.',
     intro:
       'AIMeter no tiene servidor ni cuenta propia. Lee tu uso de tu proveedor de IA con el inicio de sesión que le concedes, guarda una copia en tu dispositivo para que los widgets puedan dibujarla y no envía nada a ningún otro lado. Esta página enumera cada flujo de datos para que puedas cotejarlo con el código fuente.',
-    updated: 'Última actualización: 15 de octubre de 2026',
+    updated: 'Última actualización: 19 de octubre de 2026',
     sections: [
       {
         heading: 'Qué sale de tu dispositivo',
@@ -188,6 +188,7 @@ export const es = {
           'claude.ai y console.anthropic.com: el intercambio OAuth estándar al conectar una cuenta desde la app. Inicias sesión en la página del propio proveedor en tu navegador, nunca en una vista web incrustada, y pegas de vuelta el código que te muestra.',
           'status.claude.com: una petición anónima a la página pública de estado en cada actualización, para distinguir un incidente del servicio de un problema con tu cuenta. No lleva nada sobre ti y se puede apagar en Ajustes.',
           'api.github.com y github.com (solo en Mac): una vez al día, una consulta para saber si hay una versión más nueva de AIMeter y, si la hay, su descarga desde la página de versiones del proyecto. No lleva nada sobre ti y se puede apagar en Ajustes.',
+          'iCloud (opcional, apagado por defecto): con «Sincronizar preferencias e historial» activado en Ajustes, tus preferencias de visualización y el historial de uso de cada cuenta (los porcentajes y sus fechas, nada más) van a tu propio almacén de valores de iCloud, con tu Cuenta de Apple, para llegar a tus otros dispositivos con AIMeter. Los tokens de inicio de sesión nunca, y no hay ningún servidor nuestro de por medio. Al apagarlo se elimina lo que AIMeter guardó allí.',
           'Este sitio es estático: sin analíticas, sin cookies, con tipografías alojadas aquí mismo y sin peticiones a terceros. Lo sirve GitHub Pages, cuyos registros ordinarios de servidor son de GitHub.',
         ],
       },

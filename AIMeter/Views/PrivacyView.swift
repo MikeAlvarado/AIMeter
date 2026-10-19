@@ -34,6 +34,12 @@ struct PrivacyView: View {
                             title: String(localized: "No tracking, no analytics"),
                             text: String(localized: "No analytics SDKs, no ad networks, no crash reporting. The app collects no data at all.")
                         )
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
+                            systemName: "icloud",
+                            title: String(localized: "iCloud sync is opt-in"),
+                            text: String(localized: "If you turn it on in Settings, your display preferences and each account's usage history (the percentages and their dates, nothing else) go through your iCloud, under your Apple Account, to your other devices with AIMeter. Logins never do. There is no server of AIMeter's in between, and turning it off removes what it kept there.")
+                        )
                         #if os(iOS)
                         Divider().overlay(Theme.track)
                         PrivacyRow(

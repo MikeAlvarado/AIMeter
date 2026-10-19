@@ -96,7 +96,8 @@ enum AppEnvironment {
     static weak var shared: UsageModel?
     /// The app's one `PreferencesModel`, published by the dashboard scene
     /// on appear (`AIMeterApp`) for the notch island, which lives outside
-    /// the scene graph and has no environment to read it from. macOS only
-    /// in use; declared for both platforms so the type stays one.
+    /// the scene graph and has no environment to read it from, and for
+    /// iCloud sync, which applies another device's preferences through it
+    /// on both platforms.
     static weak var prefs: PreferencesModel?
 }

@@ -104,6 +104,9 @@ extension UsageModel {
                 // CLI login comes right back on the next launch.
                 Preferences.autoDetectDeclined = true
             }
+            if let identity = service.account.syncIdentity ?? registry?.account(for: accountID)?.syncIdentity {
+                cloud?.removeHistory(identity: identity)
+            }
             registry?.remove(accountID)
             removeAccount(accountID: accountID)
             notifyWatch()

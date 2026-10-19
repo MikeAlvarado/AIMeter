@@ -14,6 +14,10 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
     public var spend: SpendStatus?
     /// Extra-usage credit pool state, when the provider reports one.
     public var extraUsage: ExtraUsageStatus?
+    /// The login this is the usage of, the same on every device it is
+    /// signed in on ("claude:<account uuid>"); nil until the provider has
+    /// read its profile, and for snapshots saved before the field existed.
+    public var accountIdentity: String?
 
     public init(
         providerID: String,
@@ -21,7 +25,8 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
         fetchedAt: Date = Date(),
         windows: [UsageWindow],
         spend: SpendStatus? = nil,
-        extraUsage: ExtraUsageStatus? = nil
+        extraUsage: ExtraUsageStatus? = nil,
+        accountIdentity: String? = nil
     ) {
         self.providerID = providerID
         self.planName = planName
@@ -29,6 +34,7 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
         self.windows = windows
         self.spend = spend
         self.extraUsage = extraUsage
+        self.accountIdentity = accountIdentity
     }
 
     public var sessionWindow: UsageWindow? {

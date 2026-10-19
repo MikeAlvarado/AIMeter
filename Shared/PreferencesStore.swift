@@ -248,6 +248,12 @@ struct Preferences: Sendable {
     /// Privacy & data — which means it must load through the presence
     /// check like the macOS chrome bools above.
     var checksServiceStatus: Bool = true
+    /// Whether the display preferences and every account's history go
+    /// through the user's iCloud to their other devices (`CloudSync`).
+    /// Off by default and opt-in: it is the one thing that leaves the
+    /// device beyond the provider's own endpoints, disclosed in Privacy
+    /// & data.
+    var cloudSync: Bool = false
     // MARK: Claude Code usage (macOS)
     //
     // Off by default and opt-in: the CLI's logs are another app's files.
@@ -311,6 +317,7 @@ struct Preferences: Sendable {
         static let checksForUpdates = "pref.checksForUpdates"
         static let appIcon = "pref.appIcon"
         static let checksServiceStatus = "pref.checksServiceStatus"
+        static let cloudSync = "pref.cloudSync"
         static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
         static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
         static let menuBarShowsClaudeCodeLine = "pref.menuBarShowsClaudeCodeLine"
@@ -367,6 +374,7 @@ struct Preferences: Sendable {
         }
         prefs.loadNotchIsland(from: defaults)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
+        prefs.cloudSync = defaults.bool(forKey: Keys.cloudSync)
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
         prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
         prefs.menuBarShowsClaudeCodeLine = defaults.bool(forKey: Keys.menuBarShowsClaudeCodeLine)

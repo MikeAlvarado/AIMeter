@@ -17,6 +17,11 @@ public struct ClaudeCredentials: Codable, Equatable, Sendable {
     /// in the usage response reports it, so the cached value needs an
     /// expiry date of its own; see `ClaudeProvider.planRecheckInterval`.
     public var planCheckedAt: Date?
+    /// The account's id from the profile (`account.uuid`), cached beside
+    /// the plan it was confirmed with; nil until the profile has been
+    /// read once, which an account without one is due for whatever its
+    /// plan's age. What iCloud sync keys an account by across devices.
+    public var accountUUID: String?
 
     public init(
         accessToken: String,
@@ -24,7 +29,8 @@ public struct ClaudeCredentials: Codable, Equatable, Sendable {
         expiresAt: Date? = nil,
         scopes: [String] = [],
         subscriptionType: String? = nil,
-        planCheckedAt: Date? = nil
+        planCheckedAt: Date? = nil,
+        accountUUID: String? = nil
     ) {
         self.accessToken = accessToken
         self.refreshToken = refreshToken
@@ -32,6 +38,7 @@ public struct ClaudeCredentials: Codable, Equatable, Sendable {
         self.scopes = scopes
         self.subscriptionType = subscriptionType
         self.planCheckedAt = planCheckedAt
+        self.accountUUID = accountUUID
     }
 
     public var isExpired: Bool {

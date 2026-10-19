@@ -212,7 +212,8 @@
   colors" switch —,
   `PeakNotificationsSettings`, `ServiceStatusSettings`,
   `BackgroundRefreshSettings`, `PrivacyLinkSettings`,
-  `OpenSourceSettings`, and `ExportSettings` in its own file; each draws
+  `OpenSourceSettings`, and `CloudSyncSettings` and `ExportSettings`
+  in files of their own; each draws
   its header, card and footnote and never the gap around itself), which the two platforms arrange
   differently. **iOS** (`SettingsView`, a sheet with Done) stacks them in
   one list: while `isDemoMode` is true, or while nothing is connected, the
@@ -234,7 +235,11 @@
   default on; its `onChange` mirrors the value into the model through
   `setChecksServiceStatus`, same shape as the refresh-cadence handler) —
   how often a refresh runs before what else it checks, all app-wide, not
-  per account — an "Export" card (`ExportSettings`, only with an
+  per account — an "iCloud" card
+  (`CloudSyncSettings`: the one "Sync preferences and history" switch,
+  `Preferences.cloudSync`, off by default, mirrored into the model
+  through `setCloudSync(enabled:)` the way the status check is; see
+  "iCloud sync" in the repo-root CLAUDE.md), an "Export" card (`ExportSettings`, only with an
   account connected and never in demo mode: "Export as CSV" and "Export
   as JSON", every account's history and last snapshot as one file,
   `UsageExport` over `UsageModel.usageExport`; on iOS each row is a
@@ -252,8 +257,8 @@
   (`SettingsSwitchToggleStyle`, `.settingsSwitch`, defined there; the
   Dashboard's navigation stack sets it too, so Provider Detail's toggles
   match — the Mac default was a checkbox before the title). The tabs:
-  **General** — the iOS list's sections except the Privacy link (Export
-  included, after Service status), plus the
+  **General** — the iOS list's sections except the Privacy link (iCloud and
+  Export included, after Service status), plus the
   Mac's own chrome from `MacChromeSettings.swift`: "Hiding AIMeter"
   (`HidingSettings`: Hide Dock icon / Hide menu bar icon, with a warning
   row once both are hidden and the island is off) and "Startup"
@@ -333,7 +338,8 @@
   `privacy`) opens Settings on that tab a second after launch, so each
   tab can be checked or captured without a click.
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
-  Keychain, no tracking, and on macOS the opt-in Claude Code log reading,
+  Keychain, no tracking, the opt-in iCloud sync and what it carries, on
+  iOS the Watch, and on macOS the opt-in Claude Code log reading,
   the Claude Code sessions with their optional hooks, the optional
   Accessibility permission and what it reads, the opt-in login item and
   the daily update check against GitHub), how connecting

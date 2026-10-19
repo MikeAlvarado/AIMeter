@@ -60,7 +60,10 @@ below and `AIMeterWatch/CLAUDE.md`.
   "Service status" below), `UsageModel+History.swift` (the chart's
   in-memory timeline cache), `UsageExport.swift` (the history as a CSV
   or JSON file, pure; its Settings card is
-  `AIMeter/Views/ExportSettings.swift`),
+  `AIMeter/Views/ExportSettings.swift`), `CloudSync.swift` (iCloud
+  sync, see "iCloud sync" below; the model's side is
+  `UsageModel+CloudSync.swift`, its Settings card
+  `AIMeter/Views/CloudSyncSettings.swift`),
   `UsageModel+macOS.swift` (refresh schedule, wake/activation observers,
   `AppEnvironment`) and, iOS only, `WatchBridge.swift` (the Watch's
   feed, see "Apple Watch" below), plus, `DEBUG` only, `IslandDirector.swift` (what the
@@ -601,6 +604,65 @@ the account silently freezes at its last snapshot.
   `UsageModel.timelines` and `accounts`; never from the predictor's ring,
   never fetched; the file goes only where the share sheet (iOS) or the
   save panel (macOS) sends it.
+- **iCloud sync** (3.2, opt-in: `Preferences.cloudSync`, key
+  `pref.cloudSync`, default **false**; Settings → "iCloud" on both
+  platforms, `CloudSyncSettings`, mirrored into the model through
+  `UsageModel.setCloudSync(enabled:)` the way the status check is;
+  `CloudSync`, `AIMeter/Services/`, driven from
+  `UsageModel+CloudSync.swift`): the display preferences and every
+  account's timeline, through the user's own iCloud key-value store
+  (`NSUbiquitousKeyValueStore`, behind the `CloudKeyValueStore`
+  protocol the tests drive with a dictionary; entitlement
+  `com.apple.developer.ubiquity-kvstore-identifier` =
+  `$(TeamIdentifierPrefix)$(CFBundleIdentifier)` in the app's
+  entitlements, both platforms; the widgets and the Watch have none),
+  never the logins. An account is matched across devices by
+  `ConnectedAccount.syncIdentity`: the login's id from the provider's
+  profile (`UsageSnapshot.accountIdentity`, `"claude:<account.uuid>"`,
+  see the Claude provider's CLAUDE.md), written to the registry by
+  `UsageModel.syncToCloud` after each successful fetch
+  (`AccountRegistryStore.setSyncIdentity`; a profile without an id
+  keeps the known one), so the same login connected on an iPhone and a
+  Mac under two different `accountID`s shares one history. Two kinds of
+  key. `v1.prefs` is one JSON `SyncedPreferences` (display mode, reset
+  style, glance metric, third-row fallback, credit amounts, usage
+  colors; never appearance, the cadence or the Mac's chrome, which are
+  the device's) with an `updatedAt`, newest wins: sent after every
+  widget-visible preference change (`PreferencesModel.onWidgetVisibleChange`)
+  when the choices differ from the last sent or taken, and taken when
+  newer than this device's stamp (`cloud.prefsUpdatedAt`, App Group:
+  when its synced preferences last changed or last took another
+  device's), applied through the app's `PreferencesModel`
+  (`AppEnvironment.prefs`, published on both platforms since 3.2) so
+  every screen and the widgets follow, the write that echoes back not
+  sent again, and a raw value this build doesn't know left alone.
+  `v1.history.<sha256(identity), 32 hex>` is one zlib-compressed JSON
+  `HistoryEnvelope` per login (the identity, `updatedAt`, every
+  window's compacted samples), sent 20 s after a fetch landed
+  (`historyDebounce`, one per account per burst) when the series
+  changed since the last send, at most `maxValueBytes` (200 KB; the
+  store holds 1 MB in all, a month of one account is tens of KB), and
+  taken by `UsageTimelineStore.merge`: `UsageTimeline.merged` (the
+  sorted union, one sample per refresh as `appending` keeps it, the
+  later standing) then compacted, saved only when it added a sample,
+  the in-memory `timelines` reloaded (`onRemoteHistory`) and the union
+  sent back, so both devices converge on it. The other devices' writes
+  arrive through `didChangeExternallyNotification` (an account change,
+  or no key list, pulls everything); `start` pulls everything, sends
+  this device's preferences only when the store held nothing as new,
+  and each matched account's history when it differs from the store's.
+  Turning the switch off removes AIMeter's keys from the store
+  (`removeAll`; another device still syncing sends its own again on its
+  next change), and disconnecting an account removes its history key
+  with its file (`removeHistory`), so "disconnecting deletes its
+  history" stays true of this device's copy and the cloud's. A key
+  whose digest doesn't match its envelope's identity, an envelope for a
+  login this device doesn't have, or a value that doesn't decode is
+  ignored. Demo mode syncs nothing of its own: the demo accounts are
+  not in the registry, and the preferences are the real ones either
+  way. The Developer ID build needs the iCloud capability on the App ID
+  and a provisioning profile that carries it, which the release
+  script's automatic signing provides.
 - Notifications are local only, keyed by identifier prefix + `accountID`
   (`NotificationScheduler`, e.g. `reset.<accountID>.<kind>`) so two
   accounts sharing a window kind never clobber each other's pending
@@ -1712,7 +1774,12 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   counts as stale (`WidgetScheduleTests`), the export's CSV rows, JSON
   document and file name (`UsageExportTests`), the Watch payload's round
   trip through the session dictionary and what applying one leaves in
-  the Watch's stores (`WatchPayloadTests`),
+  the Watch's stores (`WatchPayloadTests`), iCloud sync over a
+  dictionary in place of the store: what a device sends, what another
+  takes and merges, the newest preferences without an echo, a device's
+  own newer change kept at launch, a value this build doesn't know
+  left alone, foreign and misfiled envelopes ignored, and what leaves
+  the store with the switch or with an account (`CloudSyncTests`),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes
@@ -2001,7 +2068,9 @@ there is no image to edit.
 ## Workflow
 
 - Data model follows reality: before changing endpoint-related code, run
-  `Scripts/probe-usage-endpoint.sh` (usage) or
+  `Scripts/probe-usage-endpoint.sh` (usage),
+  `Scripts/probe-profile-endpoint.sh` (the profile's shape, never its
+  values) or
   `Scripts/probe-status-endpoint.sh` (the status page) and check the
   captured fixtures; before touching the Claude Code log reader, run
   `Scripts/probe-claude-code-logs.sh` (shape only). Never guess wire
