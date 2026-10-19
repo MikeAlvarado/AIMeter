@@ -39,6 +39,8 @@ struct SettingsView: View {
                 SettingsGap()
                 TourSettings()
                 SettingsGap()
+                FeedbackSettings()
+                SettingsGap()
                 OpenSourceSettings()
                 if !DemoModeSettings.leads(model) {
                     SettingsGap()

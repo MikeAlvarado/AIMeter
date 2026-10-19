@@ -1772,7 +1772,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   `AIMeterTests` target (`xcodebuild test -scheme AIMeter`, hosted in
   `AIMeter.app` on either platform, `@testable import AIMeter`), which
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
-  grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
+  grouped reset line, `UsageFormatting` (the date a far reset shows included), the
+  feedback row's issue link (`FeedbackSettingsTests`),
+  `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
   the scheduled notifications' triggers pinned to an instant and one
   run-out warning per window (`NotificationSchedulerTests`), the widgets'

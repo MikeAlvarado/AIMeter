@@ -246,8 +246,12 @@
   `ShareLink` whose `Transferable` writes the file only once a
   destination is picked, on the Mac a `fileExporter` save panel; see
   "Usage history" in the repo-root CLAUDE.md for the file), a "Privacy &
-  data" link, "Show the tour" (`TourSettings`, see "Tour" below), an
-  "Open Source" row (GitHub mark, opens the repo URL), and
+  data" link, "Show the tour" (`TourSettings`, see "Tour" below), "Send
+  feedback" (`FeedbackSettings`, its own file: a new issue in the
+  project's GitHub repository with the running version and system
+  already in its text, `issueURL`; GitHub rather than mail, so no
+  address lives in the app and nothing is sent until the user posts
+  it), an "Open Source" row (GitHub mark, opens the repo URL), and
   — for a connected install — the "Demo mode" card last. **macOS**
   (`MacSettingsView`, the Settings scene) spreads the same sections over
   toolbar tabs, the way a Mac app's settings are, at a fixed 540 pt
@@ -267,7 +271,7 @@
   "Updates" (`UpdatesSettings`, `UpdateViews.swift`: "Check for updates
   automatically", the updater's state with "Check Now" or, once one is
   ready, "Restart to Update", and a footnote saying when it installs),
-  then "Show the tour";
+  then "Show the tour" and "Send feedback";
   **Notch island** (`NotchIslandSettings`,
   two cards. The first: a live preview of the **peek** — what hovering
   shows — as this screen draws it (the real notch's silhouette, or the

@@ -4,6 +4,100 @@
     "" : {
 
     },
+    "Send feedback" : {
+      "comment" : "Settings: the row that opens a new GitHub issue with the version and system filled in.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback senden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar comentarios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer des commentaires"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィードバックを送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "피드백 보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar feedback"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送反馈"
+          }
+        }
+      }
+    },
+    "Opens a new issue in the project's GitHub repository with your AIMeter version and system already filled in. Nothing is sent until you post it there." : {
+      "comment" : "Settings: the footnote under the Send feedback row.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet ein neues Issue im GitHub-Repository des Projekts, mit deiner AIMeter-Version und deinem System bereits eingetragen. Nichts wird gesendet, bis du es dort veröffentlichst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre un issue nuevo en el repositorio del proyecto en GitHub, con tu versión de AIMeter y tu sistema ya puestos. No se envía nada hasta que lo publiques allí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre un nouveau ticket dans le dépôt GitHub du projet, avec votre version d'AIMeter et votre système déjà renseignés. Rien n'est envoyé tant que vous ne le publiez pas là-bas."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロジェクトの GitHub リポジトリに新しい Issue を開きます。AIMeter のバージョンとシステムはあらかじめ入力されています。そこで投稿するまで何も送信されません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로젝트의 GitHub 저장소에 새 이슈를 엽니다. AIMeter 버전과 시스템은 미리 채워져 있습니다. 거기서 게시하기 전까지는 아무것도 전송되지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre uma nova issue no repositório do projeto no GitHub, com a sua versão do AIMeter e o seu sistema já preenchidos. Nada é enviado até você publicar lá."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在项目的 GitHub 仓库中新建一个 issue，并已填好你的 AIMeter 版本和系统。在你那里发布之前不会发送任何内容。"
+          }
+        }
+      }
+    },
     "Resets %@" : {
       "comment" : "Reset line, absolute style, a week or more away: the date and time in one placeholder, e.g. \"Oct 31, 7:59 PM\". Same shape as \"Resets %@ %@\" (weekday, time).",
       "localizations" : {
