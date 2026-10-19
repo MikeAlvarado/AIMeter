@@ -26,7 +26,11 @@ this file current: it is the only record of how the assets were made.
   rectangle of backdrop along).
 - `shots`: loose renders for review and tweets — the medium widget in
   its variants, the icon tiles, the home-screen composite of all three
-  widget kinds (`main.swift`).
+  widget kinds, and since 3.2 the two Edit Widget layouts, the single
+  limit as a ring and the all-accounts widget condensed to six
+  (`ring-widget.png`, `condensed-widget.png`, each with a `-dark`
+  twin), all in `main.swift`. `EntryStubs.swift` stands in for the
+  widgets' entries and their two Edit Widget enums without AppIntents.
 
 ## Inputs: the raw captures
 
@@ -116,7 +120,8 @@ add three pills (Free · Open source · No account).
 The script copies sources rather than symlinking them: SwiftPM did not
 notice edits behind a symlink and rendered stale views once. Its list of
 `Shared/` files is explicit, so a new file a copied one depends on has
-to join it (3.0 added the sessions' model, preferences and pets). Run it from
+to join it (3.0 added the sessions' model, preferences and pets; 3.2
+`ResetLine`, the widgets' countdown). Run it from
 a checkout whose `Shared/` matches the build you are shipping, since the
 widget views come from the working tree.
 

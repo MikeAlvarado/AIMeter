@@ -187,6 +187,32 @@ Task { @MainActor in
             print("wrote home-widgets.png")
         }
     }
+    // Review renders of the two Edit Widget layouts added in 3.2: the single
+    // limit as a ring, and the all-accounts widget condensed to six.
+    do {
+        let names = ["Personal", "Work", "Team", "Client", "Tests", "School"]
+        let figures: [[Double?]] = [[42, 61, 18], [73, 28, nil], [90, 44, 9], [12, 30, nil], [5, 8, 2], [66, 77, nil]]
+        let rows = zip(names, figures).enumerated().map { index, pair -> AllAccountsEntry.Row in
+            let (name, used) = pair
+            var windows = [
+                UsageWindow(kind: .session, usedPct: used[0]!, resetsAt: now.addingTimeInterval(Double(index + 1) * 2900)),
+                UsageWindow(kind: .weekly, usedPct: used[1]!, resetsAt: now.addingTimeInterval(3 * 86400)),
+            ]
+            if let model = used[2] { windows.append(UsageWindow(kind: .modelSpecific("Top model"), usedPct: model, resetsAt: now.addingTimeInterval(3 * 86400))) }
+            let account = ConnectedAccount(accountID: "demo-\(index)", providerID: "claude", displayName: name, credentialStrategy: .managed)
+            return .init(account: account, snapshot: snap(windows, plan: "Demo"))
+        }
+        var p = Preferences(); p.displayMode = .used
+        let ring = SingleUsageWidgetView(entry: SingleUsageEntry(date: now, snapshot: rows[0].snapshot, accountID: "demo-0", kind: .session, accountName: "Personal", prefs: p, style: .ring))
+        let condensed = AllAccountsWidgetView(entry: AllAccountsEntry(date: now, rows: rows, prefs: p, layout: .condensed))
+        func tile<V: View>(_ v: V, w: CGFloat, h: CGFloat) -> some View {
+            ZStack { RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Theme.card); v.padding(16) }.frame(width: w, height: h).padding(20)
+        }
+        for dark in [false, true] {
+            render(tile(ring, w: 158, h: 158), size: CGSize(width: 198, height: 198), dark: dark, name: "ring-widget\(dark ? "-dark" : "")")
+            render(tile(condensed, w: 338, h: 354), size: CGSize(width: 378, height: 394), dark: dark, name: "condensed-widget\(dark ? "-dark" : "")")
+        }
+    }
     exit(0)
 }
 RunLoop.main.run()
