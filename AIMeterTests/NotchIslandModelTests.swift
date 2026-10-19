@@ -118,6 +118,16 @@ final class NotchIslandModelTests: XCTestCase {
 
     // MARK: Resets
 
+    /// From a week on the bare absolute value is the date, as the full
+    /// reset line's is (`UsageFormatting.resetLabel`).
+    func testAbsoluteResetValueShowsTheDateFromAWeekOn() {
+        // 2026-10-19 12:00 UTC, a Monday.
+        let monday = Date(timeIntervalSince1970: 1_792_411_200)
+        let day: TimeInterval = 86_400
+        XCTAssertFalse(NotchIslandModel.resetValue(for: monday.addingTimeInterval(6 * day), style: .absolute, now: monday).contains("25"))
+        XCTAssertTrue(NotchIslandModel.resetValue(for: monday.addingTimeInterval(7 * day), style: .absolute, now: monday).contains("26"))
+    }
+
     func testResetValuesFollowTheResetStyle() {
         XCTAssertEqual(segments(make())[0].reset, "1h 20m")
         XCTAssertEqual(segments(make())[1].reset, "3d")

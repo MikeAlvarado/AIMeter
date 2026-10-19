@@ -870,7 +870,13 @@ the account silently freezes at its last snapshot.
   (see `AIMeterWidgets/CLAUDE.md`). Credits has
   no reset date, so `showCreditsAmount` (off by default, Provider Detail)
   optionally fills that same line with `SpendStatus.amountLabel`
-  ("$14.27 of $25.00") instead of leaving it blank.
+  ("$14.27 of $25.00") instead of leaving it blank. In the absolute style a reset today reads
+  "Resets at 7:59 PM", one later this week "Resets Sun 7:59 PM", and one
+  a week or more away "Resets Oct 31, 7:59 PM"
+  (`UsageFormatting.dateInsteadOfWeekdayFrom`): from a week on the
+  weekday alone no longer says which one, which matters the day a
+  provider's window is a month. The island's bare value
+  (`NotchIslandModel.resetValue`) follows the same rule.
 - Pace: `PaceCalculator.pace(for:now:)` (UsageKit core, pure, no history)
   compares a window's used% against where a steady burn to `resetsAt`
   would put it — `expectedPct` (0–100) plus on/ahead/behind `status`

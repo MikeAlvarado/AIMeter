@@ -74,7 +74,8 @@ legacy sentinel if none — rather than each re-deriving it.
   the medium columns, the single widget) is a `ResetLineText` (Shared):
   a live `Text(timerInterval:)` countdown, "Resets in 2:23:05", while
   the reset is under a day away in the relative style, else the fixed
-  "Resets in 2d 22h" / "Resets at 7:59 PM" label, decided by the pure
+  "Resets in 2d 22h" / "Resets at 7:59 PM" / "Resets Oct 31, 7:59 PM"
+  label (see "Reset lines" in the repo-root CLAUDE.md), decided by the pure
   `ResetLine.line(for:style:now:)` from the *entry's* date, never
   `Date()` (an entry is drawn ahead of its time). The timer ticks on
   WidgetKit's side with no entry of its own; what the reset itself

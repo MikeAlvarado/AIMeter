@@ -272,8 +272,9 @@ struct NotchIslandModel: Equatable {
 
     /// The bare value the line shows after the percentage: the countdown
     /// for the relative style, the clock time (with the weekday when not
-    /// today) for the absolute one. The full "Resets in …" sentence stays
-    /// in the accessibility label.
+    /// today, the date from a week on, as `UsageFormatting.resetLabel`)
+    /// for the absolute one. The full "Resets in …" sentence stays in the
+    /// accessibility label.
     static func resetValue(for date: Date, style: ResetStyle, now: Date) -> String {
         switch style {
         case .relative:
@@ -281,6 +282,9 @@ struct NotchIslandModel: Equatable {
         case .absolute:
             let time = date.formatted(date: .omitted, time: .shortened)
             if Calendar.current.isDate(date, inSameDayAs: now) { return time }
+            if date.timeIntervalSince(now) >= UsageFormatting.dateInsteadOfWeekdayFrom {
+                return date.formatted(.dateTime.month(.abbreviated).day().hour().minute())
+            }
             return "\(date.formatted(.dateTime.weekday(.abbreviated))) \(time)"
         }
     }

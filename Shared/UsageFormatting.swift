@@ -141,8 +141,14 @@ extension UsageWindow {
 }
 
 enum UsageFormatting {
+    /// A reset this far off shows its date instead of its weekday in the
+    /// absolute style: from a week on, "Wed" alone no longer says which
+    /// Wednesday (a provider whose window is a month).
+    static let dateInsteadOfWeekdayFrom: TimeInterval = 7 * 24 * 3600
+
     /// "Resets in 4h 12m" / "Resets in 2d 22h" — or absolute local time:
-    /// "Resets at 7:59 PM" (same day) / "Resets Sun 7:59 PM".
+    /// "Resets at 7:59 PM" (same day) / "Resets Sun 7:59 PM" (this week) /
+    /// "Resets Oct 31, 7:59 PM" (a week or more away).
     static func resetLabel(for date: Date, style: ResetStyle, now: Date = Date()) -> String {
         switch style {
         case .relative:
@@ -151,6 +157,10 @@ enum UsageFormatting {
             let time = date.formatted(date: .omitted, time: .shortened)
             if Calendar.current.isDate(date, inSameDayAs: now) {
                 return String(localized: "Resets at \(time)")
+            }
+            if date.timeIntervalSince(now) >= Self.dateInsteadOfWeekdayFrom {
+                let dateAndTime = date.formatted(.dateTime.month(.abbreviated).day().hour().minute())
+                return String(localized: "Resets \(dateAndTime)")
             }
             let day = date.formatted(.dateTime.weekday(.abbreviated))
             return String(localized: "Resets \(day) \(time)")
