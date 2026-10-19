@@ -73,7 +73,9 @@ can be added later.
 - A **History** chart on each account's detail screen: the percent of
   each limit used over the last day, week, or month, with every reset
   marked — drawn from samples the app and widgets already record, kept on
-  the device for 30 days.
+  the device for 30 days. **Export** them from Settings as a CSV (for
+  Numbers or Excel) or a JSON (for a script): every account, every
+  window, the share sheet on iOS and a save panel on the Mac.
 - A **notch island** on the Mac: a black panel fused to the MacBook's
   notch. On a screen without one — an external display, an iMac, a
   closed MacBook on a monitor — it draws its own at the top edge: a
@@ -256,6 +258,8 @@ It reads nothing else and changes nothing.
 - Up to 30 days of usage percentages per window (just the numbers, their
   dates, and the reset dates), as a small JSON file per account in the
   same container, for the history chart. Deleted when you disconnect.
+  "Export" in Settings writes that same history to a CSV or JSON file
+  you choose where to send; nothing is uploaded by the app.
 - Nothing is ever written to UserDefaults outside the App Group, to disk
   unencrypted, or to the repo.
 

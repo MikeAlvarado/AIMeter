@@ -4,6 +4,241 @@
     "" : {
 
     },
+    "Export" : {
+      "comment" : "Settings: the section that saves the usage history as a file.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "書き出し"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出"
+          }
+        }
+      }
+    },
+    "Export as CSV" : {
+      "comment" : "Settings, Export: the row that saves the history as a CSV file.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als CSV exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar como CSV"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter en CSV"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CSVで書き出す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CSV로 내보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar como CSV"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出为 CSV"
+          }
+        }
+      }
+    },
+    "Export as JSON" : {
+      "comment" : "Settings, Export: the row that saves the history as a JSON file.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als JSON exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar como JSON"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter en JSON"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSONで書き出す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON으로 내보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar como JSON"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出为 JSON"
+          }
+        }
+      }
+    },
+    "Usage history" : {
+      "comment" : "The share sheet's title for the exported file (iOS).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzungsverlauf"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial de uso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique d'utilisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用履歴"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 기록"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Histórico de uso"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用量历史"
+          }
+        }
+      }
+    },
+    "Up to 30 days of usage per window for every account, as a file you can open in Numbers or Excel (CSV) or feed to a script (JSON). Nothing is uploaded: the file goes only where you send it." : {
+      "comment" : "Settings, Export: the footnote under the two export rows.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis zu 30 Tage Nutzung pro Fenster für jeden Account, als Datei für Numbers oder Excel (CSV) oder für ein Skript (JSON). Nichts wird hochgeladen: Die Datei geht nur dorthin, wo du sie hinschickst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta 30 días de uso por ventana de todas las cuentas, en un archivo que puedes abrir en Numbers o Excel (CSV) o pasar a un script (JSON). No se sube nada: el archivo va solo a donde tú lo mandes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jusqu'à 30 jours d'utilisation par fenêtre pour chaque compte, dans un fichier à ouvrir dans Numbers ou Excel (CSV) ou à traiter par un script (JSON). Rien n'est envoyé : le fichier ne va que là où vous l'envoyez."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのアカウントのウインドウごとの使用量（最大30日分）を、NumbersやExcelで開けるファイル（CSV）またはスクリプト向けのファイル（JSON）として書き出します。アップロードはされません。ファイルはあなたが送った先にだけ届きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 계정의 기간별 사용량(최대 30일)을 Numbers나 Excel에서 열 수 있는 파일(CSV)이나 스크립트용 파일(JSON)로 내보냅니다. 업로드되지 않습니다. 파일은 직접 보내는 곳으로만 갑니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até 30 dias de uso por janela de todas as contas, num arquivo para abrir no Numbers ou Excel (CSV) ou passar a um script (JSON). Nada é enviado: o arquivo vai só para onde você o mandar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个账户各周期最多 30 天的用量，导出为可在 Numbers 或 Excel 中打开的文件（CSV）或供脚本处理的文件（JSON）。不会上传任何内容：文件只会去你发送它的地方。"
+          }
+        }
+      }
+    },
     "App icon" : {
       "comment" : "Settings: the section where you pick the app's icon.",
       "localizations" : {

@@ -46,7 +46,9 @@ assets and string catalog from there.
   `UsageModel+Notifications.swift` (the per-account toggles),
   `UsageModel+ServiceStatus.swift` (the provider's status page check, see
   "Service status" below), `UsageModel+History.swift` (the chart's
-  in-memory timeline cache) and
+  in-memory timeline cache), `UsageExport.swift` (the history as a CSV
+  or JSON file, pure; its Settings card is
+  `AIMeter/Views/ExportSettings.swift`) and
   `UsageModel+macOS.swift` (refresh schedule, wake/activation observers,
   `AppEnvironment`), plus, `DEBUG` only, `IslandDirector.swift` (what the
   website's video recorder tells the island, see "Claude Code sessions"
@@ -550,7 +552,19 @@ the account silently freezes at its last snapshot.
   Dashboard's sparklines never read a file inside a body evaluation. Each
   account's `observingSince` (the pace warm-up anchor) is independent, so
   an account added later starts its own warm-up clock rather than
-  inheriting an existing account's history.
+  inheriting an existing account's history. The timeline is also what
+  **Export** (Settings → "Export", `UsageExport`,
+  `AIMeter/Services/`) writes out: every account in Dashboard order
+  with its `displayName`, `providerID`, every window's samples
+  (`storageKey`, ISO 8601 UTC timestamps, used %, reset) and its last
+  snapshot (JSON only: plan, windows with severity, spend), as a CSV
+  (`account,provider,window,timestamp,used_pct,resets_at`, RFC 4180
+  quoting, numbers with a point whatever the locale) or a JSON
+  (`format` 1, `app`, `exportedAt`, `accounts[]`), named
+  "AIMeter usage <yyyy-MM-dd>.<ext>". Built in memory from
+  `UsageModel.timelines` and `accounts`; never from the predictor's ring,
+  never fetched; the file goes only where the share sheet (iOS) or the
+  save panel (macOS) sends it.
 - Notifications are local only, keyed by identifier prefix + `accountID`
   (`NotificationScheduler`, e.g. `reset.<accountID>.<kind>`) so two
   accounts sharing a window kind never clobber each other's pending
@@ -1659,7 +1673,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   the scheduled notifications' triggers pinned to an instant and one
   run-out warning per window (`NotificationSchedulerTests`), the widgets'
   reset line (countdown or label), their reload after a reset and what
-  counts as stale (`WidgetScheduleTests`),
+  counts as stale (`WidgetScheduleTests`), the export's CSV rows, JSON
+  document and file name (`UsageExportTests`),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes

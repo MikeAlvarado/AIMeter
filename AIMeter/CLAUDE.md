@@ -212,8 +212,8 @@
   colors" switch —,
   `PeakNotificationsSettings`, `ServiceStatusSettings`,
   `BackgroundRefreshSettings`, `PrivacyLinkSettings`,
-  `OpenSourceSettings`; each draws its header, card and footnote and
-  never the gap around itself), which the two platforms arrange
+  `OpenSourceSettings`, and `ExportSettings` in its own file; each draws
+  its header, card and footnote and never the gap around itself), which the two platforms arrange
   differently. **iOS** (`SettingsView`, a sheet with Done) stacks them in
   one list: while `isDemoMode` is true, or while nothing is connected, the
   "Demo mode" section (Exit Demo with its footnote, or View Demo) leads
@@ -234,7 +234,13 @@
   default on; its `onChange` mirrors the value into the model through
   `setChecksServiceStatus`, same shape as the refresh-cadence handler) —
   how often a refresh runs before what else it checks, all app-wide, not
-  per account — a "Privacy &
+  per account — an "Export" card (`ExportSettings`, only with an
+  account connected and never in demo mode: "Export as CSV" and "Export
+  as JSON", every account's history and last snapshot as one file,
+  `UsageExport` over `UsageModel.usageExport`; on iOS each row is a
+  `ShareLink` whose `Transferable` writes the file only once a
+  destination is picked, on the Mac a `fileExporter` save panel; see
+  "Usage history" in the repo-root CLAUDE.md for the file), a "Privacy &
   data" link, "Show the tour" (`TourSettings`, see "Tour" below), an
   "Open Source" row (GitHub mark, opens the repo URL), and
   — for a connected install — the "Demo mode" card last. **macOS**
@@ -246,7 +252,8 @@
   (`SettingsSwitchToggleStyle`, `.settingsSwitch`, defined there; the
   Dashboard's navigation stack sets it too, so Provider Detail's toggles
   match — the Mac default was a checkbox before the title). The tabs:
-  **General** — the iOS list's sections except the Privacy link, plus the
+  **General** — the iOS list's sections except the Privacy link (Export
+  included, after Service status), plus the
   Mac's own chrome from `MacChromeSettings.swift`: "Hiding AIMeter"
   (`HidingSettings`: Hide Dock icon / Hide menu bar icon, with a warning
   row once both are hidden and the island is off) and "Startup"
