@@ -12,6 +12,9 @@
 #   1. macOS Keychain item "Claude Code-credentials" (what Claude Code
 #      uses on macOS; may prompt for permission the first time)
 #   2. ~/.claude/.credentials.json (Linux / older setups)
+#   3. AIMeter's own Keychain item (a login signed in through the app),
+#      when Claude Code's item holds no token (it stays behind, empty,
+#      after a logout)
 #
 # The token is never printed and never written to disk by this script.
 #
@@ -50,7 +53,24 @@ SUBSCRIPTION="$(jq -r '.claudeAiOauth.subscriptionType // "unknown"' <<<"$CREDS_
 SCOPES="$(jq -r '(.claudeAiOauth.scopes // []) | join(" ")' <<<"$CREDS_JSON")"
 unset CREDS_JSON
 
-[[ -n "$ACCESS_TOKEN" ]] || err "credentials found but no claudeAiOauth.accessToken field"
+
+# --- 1b. AIMeter's own login, when Claude Code's item is a logged-out stub --
+# Claude Code leaves its Keychain item behind with empty tokens on logout
+# (measured 2026-10-19: accessToken "", expiresAt 0). The app's own copy of
+# a login signed in through AIMeter lives under its bundle ID, one item per
+# account (`claude.credentials.<accountID>`), as a bare credentials JSON.
+if [[ -z "$ACCESS_TOKEN" && "$(uname)" == "Darwin" ]]; then
+  OWN_JSON="$(security find-generic-password -s "com.mikealvarado.aimeter" -w 2>/dev/null || true)"
+  if [[ -n "$OWN_JSON" ]]; then
+    ACCESS_TOKEN="$(jq -r '.accessToken // empty' <<<"$OWN_JSON")"
+    EXPIRES_AT_MS="$(jq -r '((.expiresAt // 0) * 1000 | floor)' <<<"$OWN_JSON")"
+    SUBSCRIPTION="$(jq -r '.subscriptionType // "unknown"' <<<"$OWN_JSON")"
+    SCOPES="$(jq -r '(.scopes // []) | join(" ")' <<<"$OWN_JSON")"
+    [[ -n "$ACCESS_TOKEN" ]] && echo "token source: AIMeter's own login (the Claude Code item holds no token)" >&2
+  fi
+  unset OWN_JSON
+fi
+[[ -n "$ACCESS_TOKEN" ]] || err "credentials found but no access token in them (Claude Code logged out, and no login signed in through AIMeter)"
 
 NOW_MS=$(( $(date +%s) * 1000 ))
 if (( EXPIRES_AT_MS > 0 && EXPIRES_AT_MS < NOW_MS )); then
