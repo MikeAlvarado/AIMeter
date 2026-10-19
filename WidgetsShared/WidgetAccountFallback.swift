@@ -6,8 +6,10 @@ import UsageKit
 /// selection has been applied. The first connected account (registry
 /// order), or the legacy sentinel if none are connected yet. Shared by
 /// `UsageWidget` and `SingleUsageWidget`'s `entry(for:)` — previously
-/// duplicated identically in both.
-enum WidgetAccountFallback {
+/// duplicated identically in both. `nonisolated`: timeline providers and
+/// entity queries run off the main actor, and the stores it reads are
+/// `Sendable`.
+nonisolated enum WidgetAccountFallback {
     static func resolve() -> (accountID: String, accountName: String) {
         if let first = AccountRegistryStore(suiteName: AppConfig.appGroupID)?.accounts().first {
             return (first.accountID, first.displayName)
@@ -29,6 +31,14 @@ enum WidgetAccountFallback {
             return (accountID, name)
         }
         return resolve()
+    }
+
+    /// The account's nickname from the shared registry; "Claude" for the
+    /// legacy sentinel, and the id itself for one the registry can't
+    /// place (a previously picked account since removed).
+    static func name(for accountID: String) -> String {
+        AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)?.displayName
+            ?? (accountID == ProviderCatalog.legacyAccount.accountID ? ProviderCatalog.legacyAccount.displayName : accountID)
     }
 
     /// The glyph the user picked for this account, from the same registry

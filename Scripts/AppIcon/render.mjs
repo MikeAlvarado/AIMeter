@@ -176,6 +176,11 @@ async function writeAll() {
     macImages.push({ filename: name, idiom: 'mac', scale: `${scale}x`, size: `${pt}x${pt}` })
   }
   writeFileSync(join(primary, 'Contents.json'), contents([...iosEntries('ios-light.png', 'ios-tinted.png'), ...macImages]))
+  // The Watch app's icon: the same picture, which watchOS masks round itself.
+  const watch = join(ROOT, 'AIMeterWatch', 'Assets.xcassets', 'AppIcon.appiconset')
+  rmSync(watch, { recursive: true, force: true }); mkdirSync(watch, { recursive: true })
+  await sharp(await opaque(rendered.Sunset.color)).toFile(join(watch, 'icon.png'))
+  writeFileSync(join(watch, 'Contents.json'), contents([{ filename: 'icon.png', idiom: 'universal', platform: 'watchos', size: '1024x1024' }]))
 
   for (const look of LOOKS) {
     // The alternates iOS switches to.

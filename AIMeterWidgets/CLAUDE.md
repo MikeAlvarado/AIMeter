@@ -13,6 +13,15 @@ read it into their entries (`accountIcon`) through
 `WidgetAccountFallback.icon(for:)` — the registry lookup next to the name
 — so a change in the app shows on the next reload the app triggers.
 
+What this extension shares with the Watch's complications lives in
+`WidgetsShared/`, synced into both: `UsageAccountConfigurationIntent`
+(the account picker and its `UsageAccountOption` entity),
+`WidgetAccountFallback` (the registry lookups: the first account, the
+configured one, a name, an icon), `AccessoryUsageViews.swift` (the
+circular, rectangular and inline accessory views, `#if !os(macOS)`, and
+the Watch's corner one) and `WidgetPlaceholders.swift`
+(`UsageSnapshot.sample`). See `AIMeterWatch/CLAUDE.md`.
+
 `AIMeterUsage` and `AIMeterSingleUsage` are `AppIntentConfiguration`, so
 every placed instance — Home Screen or Lock Screen — has its own
 independent account selection; an empty `AccountRegistryStore` (nothing
@@ -47,7 +56,9 @@ legacy sentinel if none — rather than each re-deriving it.
   value row has a fixed height so the bars align across columns whatever
   the glyphs above them. The medium header also carries the plan pill
   (`WidgetHeader(planName:)`); the small one leaves it out for room.
-  Lock Screen accessories (circular gauge, rectangular list, inline)
+  Lock Screen accessories (circular gauge, rectangular list, inline;
+  the views in `WidgetsShared/AccessoryUsageViews.swift`, which the
+  Watch's complications draw too)
   belong to this same widget kind, so they inherit the same per-instance
   account picker. Rectangular and inline show all
   three `WindowSlots` for that account, credits included under the

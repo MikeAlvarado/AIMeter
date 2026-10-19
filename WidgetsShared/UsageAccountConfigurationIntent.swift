@@ -21,11 +21,11 @@ struct UsageAccountOption: AppEntity {
 
 struct UsageAccountOptionQuery: EntityQuery {
     /// Every id resolves (falling back to "Claude" for the legacy id via
-    /// `accountName(for:)`), matching `UsageWindowOption`'s tolerance for a
-    /// previously-picked account that's since been removed.
+    /// `WidgetAccountFallback.name(for:)`), matching `UsageWindowOption`'s
+    /// tolerance for a previously-picked account that's since been removed.
     func entities(for identifiers: [String]) async throws -> [UsageAccountOption] {
         identifiers.map { accountID in
-            UsageAccountOption(accountID: accountID, accountName: UsageWindowOption.accountName(for: accountID))
+            UsageAccountOption(accountID: accountID, accountName: WidgetAccountFallback.name(for: accountID))
         }
     }
 

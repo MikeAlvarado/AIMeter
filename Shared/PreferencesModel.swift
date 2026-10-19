@@ -20,6 +20,9 @@ final class PreferencesModel {
     private var stored: Preferences
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private var widgetReload: Task<Void, Never>?
+    /// Called with the widgets' reload, once per burst: the app's model
+    /// hands it to the Watch bridge; the widgets and the Watch never set it.
+    static var onWidgetVisibleChange: (() -> Void)?
 
     init(defaults: UserDefaults = Preferences.groupDefaults) {
         self.defaults = defaults
@@ -265,6 +268,7 @@ final class PreferencesModel {
             try? await Task.sleep(for: .milliseconds(500))
             guard !Task.isCancelled else { return }
             WidgetCenter.shared.reloadAllTimelines()
+            Self.onWidgetVisibleChange?()
         }
     }
 }

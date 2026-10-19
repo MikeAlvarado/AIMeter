@@ -15,6 +15,11 @@ system, and behaviors. It should be enough to rebuild the app from zero.
 
 - Bundle ID: `com.mikealvarado.aimeter`
 - Widget extension: `com.mikealvarado.aimeter.widgets`
+- Watch app: `com.mikealvarado.aimeter.watchkitapp`, with its
+  complications in `com.mikealvarado.aimeter.watchkitapp.widgets` (see
+  "Apple Watch" below and `AIMeterWatch/CLAUDE.md`); both carry the App
+  Group too (on watchOS a container of its own, shared by the Watch app
+  and its extension).
 - App Group: `group.com.mikealvarado.aimeter` — must match exactly in both
   targets' entitlements and `Shared/AppConfig.swift`. On iOS it doubles as
   the **keychain access group** so the widget can read credentials — this
@@ -32,12 +37,19 @@ system, and behaviors. It should be enough to rebuild the app from zero.
   `AIMeterSingleUsage` (single-window widget, user-configurable via
   WidgetKit's `AppIntentConfiguration`), and `AIMeterAllAccounts`
   (`.systemLarge`-only, every connected account at once, no per-instance
-  configuration — see `AIMeterWidgets/CLAUDE.md`).
+  configuration — see `AIMeterWidgets/CLAUDE.md`); on the Watch,
+  `AIMeterWatchUsage` (the complications, every accessory family).
 
 ## Layout of the repo
 
-Both app targets sync the `Shared/` folder; the widget target also gets its
-assets and string catalog from there.
+Every target syncs the `Shared/` folder (the app, both widget extensions,
+the Watch app), and the two widget extensions also share `WidgetsShared/`
+(the account picker intent `UsageAccountConfigurationIntent`,
+`WidgetAccountFallback`, the accessory-family views and the placeholder
+snapshot: what iOS's Lock Screen and the Watch's complications draw
+alike, which the Mac's families never do). `AIMeterWatch/` is the Watch
+app and `AIMeterWatchWidgets/` its complications, see "Apple Watch"
+below and `AIMeterWatch/CLAUDE.md`.
 
 - `AIMeter/Services/` — `UsageModel` is split by feature into
   `UsageModel.swift` (state, loading, the refresh path),
@@ -48,9 +60,10 @@ assets and string catalog from there.
   "Service status" below), `UsageModel+History.swift` (the chart's
   in-memory timeline cache), `UsageExport.swift` (the history as a CSV
   or JSON file, pure; its Settings card is
-  `AIMeter/Views/ExportSettings.swift`) and
+  `AIMeter/Views/ExportSettings.swift`),
   `UsageModel+macOS.swift` (refresh schedule, wake/activation observers,
-  `AppEnvironment`), plus, `DEBUG` only, `IslandDirector.swift` (what the
+  `AppEnvironment`) and, iOS only, `WatchBridge.swift` (the Watch's
+  feed, see "Apple Watch" below), plus, `DEBUG` only, `IslandDirector.swift` (what the
   website's video recorder tells the island, see "Claude Code sessions"
   below); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
@@ -306,7 +319,28 @@ assets and string catalog from there.
   hidden: a quit app doesn't break the widget visibly, it just quietly
   freezes it.
 - OAuth tokens live in the Keychain only (shared access group on iOS,
-  `kSecAttrAccessibleAfterFirstUnlock`). Never UserDefaults, never in git.
+  `kSecAttrAccessibleAfterFirstUnlock`). Never UserDefaults, never in git,
+  and never on the Watch.
+- **Apple Watch** (3.2): the Watch app and its complications show what
+  the iPhone last fetched and nothing else. The iPhone sends a
+  `WatchPayload` (Shared: the accounts in order with their snapshots,
+  and the display preferences by raw value, versioned) over
+  WatchConnectivity (`WatchBridge`, iOS: `updateApplicationContext`
+  after every sweep and every change to the accounts or a
+  widget-visible preference, coalesced; the complication transfer only
+  for a changed snapshot, within watchOS's budget), and the Watch
+  writes it into its own App Group through the same stores the phone's
+  widgets read (`AccountRegistryStore`, `SnapshotStore`, the
+  `Preferences` keys), so the Watch draws with the phone's code. The
+  Watch's Refresh (and its half-hourly background refresh, while what it
+  holds is older than `AppConfig.staleAfter`) sends one message, which
+  wakes the iOS app in the background and is answered with a payload
+  after `refreshAllIfStale()`. The Watch never holds credentials and
+  never fetches: a third process rotating the same refresh token would
+  make the app-widget race above worse, and one copy of the login fewer
+  is one less thing App Review and the privacy page have to explain.
+  Its freshness is the iPhone's, said as "Updated X ago" and "iPhone not
+  reachable". Details in `AIMeterWatch/CLAUDE.md`.
 - Typed errors (`UsageError`) carry the raw HTTP body so the UI can show
   exactly what the endpoint said; UI decides presentation.
 
@@ -483,7 +517,9 @@ the account silently freezes at its last snapshot.
   target, and Nap throttles timers unpredictably. Nothing fires while the
   Mac sleeps, so `NSWorkspace.didWakeNotification` nudges
   `refreshAllIfStale(maxAge: cadence)` on wake — a no-op for any account
-  whose snapshot is still fresh, a catch-up fetch for the rest. The
+  whose snapshot is still fresh, a catch-up fetch for the rest. On iOS
+  every sweep ends with `UsageModel.notifyWatch()` as well, the Watch's
+  one coalesced send (see "Apple Watch" above). The
   launch refresh starts from `applicationDidFinishLaunching`
   (`AppDelegate`), not from the Dashboard's view: that window may never
   open (a restored Settings window) or is closed at launch with the Dock
@@ -1674,7 +1710,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   run-out warning per window (`NotificationSchedulerTests`), the widgets'
   reset line (countdown or label), their reload after a reset and what
   counts as stale (`WidgetScheduleTests`), the export's CSV rows, JSON
-  document and file name (`UsageExportTests`),
+  document and file name (`UsageExportTests`), the Watch payload's round
+  trip through the session dictionary and what applying one leaves in
+  the Watch's stores (`WatchPayloadTests`),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes
@@ -1815,8 +1853,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   see `Scripts/IslandVideo/CLAUDE.md`).
 - Never commit: xcuserdata, local xcconfig, credentials, tokens, or
   anything under `docs/design/reference/` (gitignored).
-- The nested `CLAUDE.md` files are docs, never resources: the two
-  synchronized folders that hold one (`AIMeter/`, `AIMeterWidgets/`)
+- The nested `CLAUDE.md` files are docs, never resources: the three
+  synchronized folders that hold one (`AIMeter/`, `AIMeterWidgets/`,
+  `AIMeterWatch/`)
   list it in their target's `membershipExceptions` in
   `project.pbxproj`, so no bundle ships it. 3.0.0's app and widget did,
   on both platforms (58 KB and 16 KB); `find <built .app> -name '*.md'`
@@ -1883,7 +1922,9 @@ The icons are drawn in code; the PNGs are output, never edited by hand.
 3. Write: `node Scripts/AppIcon/render.mjs` (after `npm --prefix site ci`
    once, for `sharp`). It replaces in place `AppIcon.appiconset` (Sunset:
    the opaque iOS 1024, its tinted version, and the ten Mac sizes cut to
-   `Scripts/AppIcon/mac-mask.png`), each `AppIcon-<Look>.appiconset` (the
+   `Scripts/AppIcon/mac-mask.png`), the Watch app's
+   `AIMeterWatch/Assets.xcassets/AppIcon.appiconset` (the same opaque
+   Sunset; watchOS masks it round), each `AppIcon-<Look>.appiconset` (the
    iOS alternates, tinted versions included), `AppIconPreview-<Look>`
    (Settings' pictures), `AppIconDock-<Look>` (the Mac's Dock images, Mac
    idiom only, so iOS doesn't carry them), and the website's
@@ -1991,10 +2032,11 @@ there is no image to edit.
   eight languages (the script checks), tag it with exactly that version
   and keep the asset's name `AIMeter-macOS.zip`, which is what the Mac's
   updater looks for.
-- Verify on both platforms: `xcodebuild` for macOS and iOS Simulator plus
-  `swift test` in `Packages/UsageKit` must pass warning-free, and
-  `xcodebuild test -scheme AIMeter` (the app's own unit tests) on at
-  least one of them.
+- Verify on every platform: `xcodebuild` for macOS, iOS Simulator and
+  the Watch (`-scheme AIMeterWatch -destination 'generic/platform=watchOS
+  Simulator'`; the iOS build embeds it too) plus `swift test` in
+  `Packages/UsageKit` must pass warning-free, and `xcodebuild test
+  -scheme AIMeter` (the app's own unit tests) on at least one of them.
 - Docs follow reality, same as the data model: any change that touches
   behavior, config, file layout, or a new feature's shape is not done
   until every doc that describes it is updated too — this file, the

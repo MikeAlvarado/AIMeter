@@ -290,7 +290,7 @@ struct Preferences: Sendable {
 
     var lastScheduledAt: Date?
 
-    enum Keys {
+    nonisolated enum Keys {
         static let displayMode = "pref.displayMode"
         static let resetStyle = "pref.resetStyle"
         static let refreshCadence = "pref.refreshCadence"

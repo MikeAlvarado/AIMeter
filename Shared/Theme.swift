@@ -78,6 +78,9 @@ extension Color {
             let hex = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? dark : light
             return NSColor(Color(hex: hex))
         })
+        #elseif os(watchOS)
+        // The Watch has one appearance, the dark one.
+        self.init(hex: dark)
         #else
         self.init(UIColor { traits in
             UIColor(Color(hex: traits.userInterfaceStyle == .dark ? dark : light))

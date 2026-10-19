@@ -17,6 +17,9 @@ struct ProviderIdentityView: View {
     /// The account's chosen glyph (`ConnectedAccount.icon`); nil is the
     /// default mark.
     var icon: AccountIcon? = nil
+    /// A smaller pill for a header with little height (the Watch's list
+    /// sections): the phone's reads as tall as its row there.
+    var compactPill = false
 
     var body: some View {
         ProviderMark(size: iconSize, cornerRadius: iconCornerRadius, icon: icon)
@@ -31,10 +34,10 @@ struct ProviderIdentityView: View {
             .minimumScaleFactor(0.8)
         if let planName {
             Text(planName.capitalized)
-                .font(.caption.weight(.semibold))
+                .font(compactPill ? .caption2.weight(.semibold) : .caption.weight(.semibold))
                 .foregroundStyle(Theme.inkSecondary)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 3)
+                .padding(.horizontal, compactPill ? 7 : 10)
+                .padding(.vertical, compactPill ? 1.5 : 3)
                 .background(Theme.track.opacity(0.7), in: Capsule())
         }
     }

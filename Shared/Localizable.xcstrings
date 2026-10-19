@@ -4,6 +4,288 @@
     "" : {
 
     },
+    "The Watch shows what your iPhone fetched" : {
+      "comment" : "Privacy & data (iOS): the row about the Watch app.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Watch zeigt, was dein iPhone abgerufen hat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El Watch muestra lo que trajo tu iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'Apple Watch affiche ce que votre iPhone a récupéré"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple WatchはiPhoneが取得した内容を表示します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watch는 iPhone이 가져온 내용을 표시합니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Watch mostra o que seu iPhone buscou"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watch 显示 iPhone 获取的内容"
+          }
+        }
+      }
+    },
+    "The Watch app and its complications hold no credentials and never fetch on their own. Your iPhone sends them your accounts' figures, and Refresh on the Watch asks the iPhone." : {
+      "comment" : "Privacy & data (iOS): the Watch row's explanation.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Watch-App und ihre Komplikationen haben keine Zugangsdaten und rufen nie selbst ab. Dein iPhone schickt ihnen die Zahlen deiner Accounts, und Aktualisieren auf der Watch fragt das iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La app del Watch y sus complicaciones no guardan credenciales y nunca consultan por su cuenta. Tu iPhone les manda las cifras de tus cuentas, y Actualizar en el Watch se lo pide al iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'app Apple Watch et ses complications ne détiennent aucun identifiant et n'interrogent jamais rien d'elles-mêmes. Votre iPhone leur envoie les chiffres de vos comptes, et Actualiser sur la montre le demande à l'iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watchのアプリとコンプリケーションは認証情報を持たず、自分で取得することもありません。iPhoneがアカウントの数値を送り、Watchの更新はiPhoneに問い合わせます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watch 앱과 컴플리케이션은 자격 증명을 보관하지 않고 스스로 가져오지도 않습니다. iPhone이 계정의 수치를 보내고, Watch의 새로 고침은 iPhone에 요청합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O app do Watch e suas complicações não guardam credenciais e nunca buscam por conta própria. Seu iPhone envia os números das suas contas, e Atualizar no Watch pede ao iPhone."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watch App 及其复杂功能不保存任何凭据，也从不自行获取。iPhone 会把你各账户的数据发给它们，Apple Watch 上的刷新会向 iPhone 请求。"
+          }
+        }
+      }
+    },
+    "Open AIMeter on iPhone" : {
+      "comment" : "Watch: the empty state's title and the complication's text while the iPhone has sent nothing.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter auf dem iPhone öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre AIMeter en el iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez AIMeter sur l'iPhone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneでAIMeterを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone에서 AIMeter 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o AIMeter no iPhone"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iPhone 上打开 AIMeter"
+          }
+        }
+      }
+    },
+    "Connect an account there. The Watch shows what your iPhone last fetched." : {
+      "comment" : "Watch: the empty state's line under the title.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde dort einen Account. Die Watch zeigt, was dein iPhone zuletzt abgerufen hat."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecta ahí una cuenta. El Watch muestra lo último que trajo tu iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-y un compte. L'Apple Watch affiche ce que votre iPhone a récupéré en dernier."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "そこでアカウントを接続してください。Apple WatchにはiPhoneが最後に取得した内容が表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "거기서 계정을 연결하세요. Apple Watch에는 iPhone이 마지막으로 가져온 내용이 표시됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecte uma conta lá. O Watch mostra o que seu iPhone buscou por último."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在那里连接账户。Apple Watch 显示 iPhone 最近一次获取的内容。"
+          }
+        }
+      }
+    },
+    "iPhone not reachable. Showing the last update." : {
+      "comment" : "Watch: the footer after a refresh request the iPhone didn't answer.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone nicht erreichbar. Letzte Aktualisierung wird angezeigt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El iPhone no responde. Se muestra la última actualización."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone injoignable. Dernière mise à jour affichée."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneに接続できません。最後の更新を表示しています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone에 연결할 수 없습니다. 마지막 업데이트를 표시합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone fora de alcance. Mostrando a última atualização."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接 iPhone。显示上次更新的内容。"
+          }
+        }
+      }
+    },
+    "Session, weekly, and top-model usage. Edit the complication to pick which account." : {
+      "comment" : "Watch: the complication's description in the face editor.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzung, Woche und Top-Modell. Bearbeite die Komplikation, um den Account zu wählen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión, semana y modelo top. Edita la complicación para elegir la cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session, semaine et modèle principal. Modifiez la complication pour choisir le compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッション、週間、トップモデルの使用量。コンプリケーションを編集してアカウントを選びます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션, 주간, 최상위 모델 사용량. 컴플리케이션을 편집해 계정을 선택하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessão, semana e modelo principal. Edite a complicação para escolher a conta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会话、每周和顶级模型用量。编辑复杂功能以选择账户。"
+          }
+        }
+      }
+    },
     "Export" : {
       "comment" : "Settings: the section that saves the usage history as a file.",
       "localizations" : {

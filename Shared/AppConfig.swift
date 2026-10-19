@@ -33,6 +33,8 @@ nonisolated enum AppConfig {
     /// Large-only widget showing every connected account at once — no
     /// per-instance configuration, since there's nothing to pick.
     static let allAccountsWidgetKind = "AIMeterAllAccounts"
+    /// The Watch's complications, one kind for every accessory family.
+    static let watchWidgetKind = "AIMeterWatchUsage"
     static let refreshInterval: TimeInterval = 15 * 60
     /// A snapshot older than this is flagged as stale in widgets.
     static let staleAfter: TimeInterval = 30 * 60

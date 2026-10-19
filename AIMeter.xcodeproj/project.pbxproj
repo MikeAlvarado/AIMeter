@@ -11,6 +11,10 @@
 		AA0000000000000000000011 /* UsageKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA000000000000000000000F /* UsageKit */; };
 		AA0000000000000000000012 /* AIMeterWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000001 /* AIMeterWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA00000000000000000000BA /* UsageKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000B7 /* UsageKit */; };
+		AA00000000000000000000C8 /* UsageKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000C7 /* UsageKit */; };
+		AA00000000000000000000CB /* AIMeterWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000D1 /* AIMeterWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA00000000000000000000D8 /* UsageKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D7 /* UsageKit */; };
+		AA00000000000000000000E6 /* AIMeterWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000C1 /* AIMeterWatch.app */; platformFilters = (ios, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +32,20 @@
 			remoteGlobalIDString = BE364B9B3009B7B5002BE9D2;
 			remoteInfo = AIMeter;
 		};
+		AA00000000000000000000CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE364B943009B7B5002BE9D2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA00000000000000000000D0;
+			remoteInfo = AIMeterWatchWidgetsExtension;
+		};
+		AA00000000000000000000E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE364B943009B7B5002BE9D2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA00000000000000000000C0;
+			remoteInfo = AIMeterWatch;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +60,28 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA00000000000000000000CA /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA00000000000000000000CB /* AIMeterWatchWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000000000000000000E5 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				AA00000000000000000000E6 /* AIMeterWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +89,8 @@
 		AA0000000000000000000016 /* Config.local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.local.xcconfig; sourceTree = "<group>"; };
 		BE364B9C3009B7B5002BE9D2 /* AIMeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIMeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA00000000000000000000B0 /* AIMeterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIMeterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA00000000000000000000C1 /* AIMeterWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIMeterWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA00000000000000000000D1 /* AIMeterWatchWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AIMeterWatchWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -67,6 +109,21 @@
 				Info.plist,
 			);
 			target = AA0000000000000000000002 /* AIMeterWidgetsExtension */;
+		};
+		AA00000000000000000000E1 /* Exceptions for "AIMeterWatch" folder in "AIMeterWatch" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CLAUDE.md,
+				Info.plist,
+			);
+			target = AA00000000000000000000C0 /* AIMeterWatch */;
+		};
+		AA00000000000000000000E3 /* Exceptions for "AIMeterWatchWidgets" folder in "AIMeterWatchWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AA00000000000000000000D0 /* AIMeterWatchWidgetsExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -97,6 +154,27 @@
 			path = AIMeter;
 			sourceTree = "<group>";
 		};
+		AA00000000000000000000E0 /* AIMeterWatch */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA00000000000000000000E1 /* Exceptions for "AIMeterWatch" folder in "AIMeterWatch" target */,
+			);
+			path = AIMeterWatch;
+			sourceTree = "<group>";
+		};
+		AA00000000000000000000E2 /* AIMeterWatchWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA00000000000000000000E3 /* Exceptions for "AIMeterWatchWidgets" folder in "AIMeterWatchWidgetsExtension" target */,
+			);
+			path = AIMeterWatchWidgets;
+			sourceTree = "<group>";
+		};
+		AA00000000000000000000E4 /* WidgetsShared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WidgetsShared;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +202,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA00000000000000000000C6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA00000000000000000000C8 /* UsageKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000000000000000000D6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA00000000000000000000D8 /* UsageKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -133,6 +227,9 @@
 				BE364B9E3009B7B5002BE9D2 /* AIMeter */,
 				AA0000000000000000000009 /* AIMeterWidgets */,
 				AA000000000000000000000A /* Shared */,
+				AA00000000000000000000E4 /* WidgetsShared */,
+				AA00000000000000000000E0 /* AIMeterWatch */,
+				AA00000000000000000000E2 /* AIMeterWatchWidgets */,
 				AA00000000000000000000B1 /* AIMeterTests */,
 				AA0000000000000000000016 /* Config.local.xcconfig */,
 				BE364B9D3009B7B5002BE9D2 /* Products */,
@@ -144,6 +241,8 @@
 			children = (
 				BE364B9C3009B7B5002BE9D2 /* AIMeter.app */,
 				AA0000000000000000000001 /* AIMeterWidgetsExtension.appex */,
+				AA00000000000000000000C1 /* AIMeterWatch.app */,
+				AA00000000000000000000D1 /* AIMeterWatchWidgetsExtension.appex */,
 				AA00000000000000000000B0 /* AIMeterTests.xctest */,
 			);
 			name = Products;
@@ -167,6 +266,7 @@
 			fileSystemSynchronizedGroups = (
 				AA0000000000000000000009 /* AIMeterWidgets */,
 				AA000000000000000000000A /* Shared */,
+				AA00000000000000000000E4 /* WidgetsShared */,
 			);
 			name = AIMeterWidgetsExtension;
 			packageProductDependencies = (
@@ -184,11 +284,13 @@
 				BE364B993009B7B5002BE9D2 /* Frameworks */,
 				BE364B9A3009B7B5002BE9D2 /* Resources */,
 				AA0000000000000000000013 /* Embed Foundation Extensions */,
+				AA00000000000000000000E5 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				AA0000000000000000000014 /* PBXTargetDependency */,
+				AA00000000000000000000E7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AA000000000000000000000A /* Shared */,
@@ -226,6 +328,57 @@
 			productReference = AA00000000000000000000B0 /* AIMeterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		AA00000000000000000000C0 /* AIMeterWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA00000000000000000000C2 /* Build configuration list for PBXNativeTarget "AIMeterWatch" */;
+			buildPhases = (
+				AA00000000000000000000C5 /* Sources */,
+				AA00000000000000000000C6 /* Frameworks */,
+				AA00000000000000000000C9 /* Resources */,
+				AA00000000000000000000CA /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA00000000000000000000CC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AA000000000000000000000A /* Shared */,
+				AA00000000000000000000E0 /* AIMeterWatch */,
+			);
+			name = AIMeterWatch;
+			packageProductDependencies = (
+				AA00000000000000000000C7 /* UsageKit */,
+			);
+			productName = AIMeterWatch;
+			productReference = AA00000000000000000000C1 /* AIMeterWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AA00000000000000000000D0 /* AIMeterWatchWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA00000000000000000000D2 /* Build configuration list for PBXNativeTarget "AIMeterWatchWidgetsExtension" */;
+			buildPhases = (
+				AA00000000000000000000D5 /* Sources */,
+				AA00000000000000000000D6 /* Frameworks */,
+				AA00000000000000000000D9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA000000000000000000000A /* Shared */,
+				AA00000000000000000000E4 /* WidgetsShared */,
+				AA00000000000000000000E2 /* AIMeterWatchWidgets */,
+			);
+			name = AIMeterWatchWidgetsExtension;
+			packageProductDependencies = (
+				AA00000000000000000000D7 /* UsageKit */,
+			);
+			productName = AIMeterWatchWidgetsExtension;
+			productReference = AA00000000000000000000D1 /* AIMeterWatchWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -245,6 +398,12 @@
 					AA00000000000000000000B2 = {
 						CreatedOnToolsVersion = 26.6;
 						TestTargetID = BE364B9B3009B7B5002BE9D2;
+					};
+					AA00000000000000000000C0 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					AA00000000000000000000D0 = {
+						CreatedOnToolsVersion = 26.6;
 					};
 				};
 			};
@@ -275,6 +434,8 @@
 				BE364B9B3009B7B5002BE9D2 /* AIMeter */,
 				AA0000000000000000000002 /* AIMeterWidgetsExtension */,
 				AA00000000000000000000B2 /* AIMeterTests */,
+				AA00000000000000000000C0 /* AIMeterWatch */,
+				AA00000000000000000000D0 /* AIMeterWatchWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -295,6 +456,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AA00000000000000000000B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000000000000000000C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000000000000000000D9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -325,6 +500,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA00000000000000000000C5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000000000000000000D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -337,6 +526,17 @@
 			isa = PBXTargetDependency;
 			target = BE364B9B3009B7B5002BE9D2 /* AIMeter */;
 			targetProxy = AA00000000000000000000B9 /* PBXContainerItemProxy */;
+		};
+		AA00000000000000000000CC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA00000000000000000000D0 /* AIMeterWatchWidgetsExtension */;
+			targetProxy = AA00000000000000000000CD /* PBXContainerItemProxy */;
+		};
+		AA00000000000000000000E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = AA00000000000000000000C0 /* AIMeterWatch */;
+			targetProxy = AA00000000000000000000E8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -683,6 +883,138 @@
 			};
 			name = Release;
 		};
+		AA00000000000000000000C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA0000000000000000000016 /* Config.local.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AIMeterWatch/AIMeterWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AIMeterWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AIMeter;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 3.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mikealvarado.aimeter.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		AA00000000000000000000C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA0000000000000000000016 /* Config.local.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AIMeterWatch/AIMeterWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AIMeterWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AIMeter;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 3.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mikealvarado.aimeter.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		AA00000000000000000000D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA0000000000000000000016 /* Config.local.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AIMeterWatchWidgets/AIMeterWatchWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AIMeterWatchWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AIMeter;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 3.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mikealvarado.aimeter.watchkitapp.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		AA00000000000000000000D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA0000000000000000000016 /* Config.local.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AIMeterWatchWidgets/AIMeterWatchWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AIMeterWatchWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AIMeter;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 3.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mikealvarado.aimeter.watchkitapp.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -722,6 +1054,24 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		AA00000000000000000000C2 /* Build configuration list for PBXNativeTarget "AIMeterWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000000000000000000C3 /* Debug */,
+				AA00000000000000000000C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA00000000000000000000D2 /* Build configuration list for PBXNativeTarget "AIMeterWatchWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000000000000000000D3 /* Debug */,
+				AA00000000000000000000D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -741,6 +1091,14 @@
 			productName = UsageKit;
 		};
 		AA00000000000000000000B7 /* UsageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UsageKit;
+		};
+		AA00000000000000000000C7 /* UsageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UsageKit;
+		};
+		AA00000000000000000000D7 /* UsageKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UsageKit;
 		};

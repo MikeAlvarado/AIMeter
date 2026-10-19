@@ -34,6 +34,14 @@ struct PrivacyView: View {
                             title: String(localized: "No tracking, no analytics"),
                             text: String(localized: "No analytics SDKs, no ad networks, no crash reporting. The app collects no data at all.")
                         )
+                        #if os(iOS)
+                        Divider().overlay(Theme.track)
+                        PrivacyRow(
+                            systemName: "applewatch",
+                            title: String(localized: "The Watch shows what your iPhone fetched"),
+                            text: String(localized: "The Watch app and its complications hold no credentials and never fetch on their own. Your iPhone sends them your accounts' figures, and Refresh on the Watch asks the iPhone.")
+                        )
+                        #endif
                         #if os(macOS)
                         Divider().overlay(Theme.track)
                         PrivacyRow(

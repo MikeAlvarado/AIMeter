@@ -92,6 +92,11 @@ final class UsageModel {
     /// any one account) — "global" is a documented placeholder, never used
     /// as a real key.
     let peakPreferences = NotificationPreferences(accountID: "global")
+    #if os(iOS)
+    /// The Watch app's feed (`WatchBridge`); nil with no Watch to pair,
+    /// and in unit tests.
+    @ObservationIgnored var watch: WatchBridge?
+    #endif
     #if os(macOS)
     @ObservationIgnored var refreshScheduler: NSBackgroundActivityScheduler?
     /// Claude Code's local usage on this Mac (see `ClaudeCodeUsageModel`);
@@ -133,6 +138,10 @@ final class UsageModel {
         AppEnvironment.shared = self
         #if os(iOS)
         endDemoLiveActivities()
+        watch = WatchBridge.makeIfSupported()
+        watch?.model = self
+        // The Watch draws with the display preferences too.
+        PreferencesModel.onWidgetVisibleChange = { [weak self] in self?.notifyWatch() }
         #endif
         #if os(macOS)
         claudeCode = ClaudeCodeUsageModel(enabled: Preferences.load().claudeCodeUsageEnabled)
@@ -144,6 +153,13 @@ final class UsageModel {
         // fetched snapshot, so they only need scheduling once here (and
         // whenever the toggle changes) — not on every refresh.
         Task { await NotificationScheduler.reschedulePeakNotifications(preferences: peakPreferences) }
+        #if DEBUG
+        // `-AIMeterDemo YES`: the demo from launch, for captures and for
+        // the Watch simulator, which the demo then reaches (`WatchBridge`).
+        if UserDefaults.standard.bool(forKey: "AIMeterDemo") {
+            enterDemoMode()
+        }
+        #endif
     }
 
     /// Reuses any already-live `RefreshService` per account (keyed off the
@@ -180,6 +196,15 @@ final class UsageModel {
         }
         #endif
         reloadTimelines()
+        notifyWatch()
+    }
+
+    /// Everything the Watch shows changed: accounts, a snapshot, a
+    /// preference. Coalesced on the bridge's side.
+    func notifyWatch() {
+        #if os(iOS)
+        watch?.pushSoon()
+        #endif
     }
 
     // MARK: - Refresh
@@ -220,6 +245,7 @@ final class UsageModel {
         }
         await status
         if fetched { WidgetCenter.shared.reloadAllTimelines() }
+        notifyWatch()
     }
 
     /// This account's current array index. Never captured across an
@@ -238,6 +264,7 @@ final class UsageModel {
             WidgetCenter.shared.reloadAllTimelines()
         }
         await status
+        notifyWatch()
     }
 
     /// One account's fetch + bookkeeping. Returns whether a new snapshot
@@ -346,6 +373,7 @@ final class UsageModel {
         }
         await status
         if fetched { WidgetCenter.shared.reloadAllTimelines() }
+        notifyWatch()
     }
 
     var isRefreshing: Bool { accounts.contains { $0.isRefreshing } }

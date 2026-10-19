@@ -42,6 +42,11 @@ can be added later.
   widgets show up automatically in Notification Center / the desktop and
   are fed by the menu bar app, which is why AIMeter can keep running with
   no icons visible (see below) — that's what keeps them from going stale.
+- An **Apple Watch** app and complications (circular, rectangular,
+  inline, corner), showing every account the way the iPhone last saw it.
+  The Watch holds no credentials and never fetches: the iPhone sends it
+  the figures, and Refresh on the Watch asks the iPhone (which wakes the
+  app in the background).
 - In eight languages: English, Spanish, German, French, Japanese,
   Korean, Brazilian Portuguese and Simplified Chinese, picked from the
   device language.
@@ -252,6 +257,8 @@ It reads nothing else and changes nothing.
 **What is stored, and where**
 - OAuth tokens: device Keychain only (`AfterFirstUnlock`; on iOS in the
   App Group keychain access group so the widget can refresh usage itself).
+  Never on the Watch: the iPhone sends it the figures over Apple's
+  Watch pairing (WatchConnectivity), nothing leaves the two devices.
 - The last usage snapshot (percentages, reset dates, spend numbers) and
   your display preferences: the App Group container, so widgets can render
   without fetching.
@@ -344,9 +351,10 @@ running on your own devices).
    Apple Developer Team ID. Both targets read it from there, so you don't
    need to touch Signing & Capabilities for this.
 3. If your team can't use the bundle identifiers as-is, change
-   `com.mikealvarado.aimeter` / `com.mikealvarado.aimeter.widgets` and the
+   `com.mikealvarado.aimeter` / `com.mikealvarado.aimeter.widgets` (and
+   the Watch's `…aimeter.watchkitapp` / `…watchkitapp.widgets`) and the
    App Group `group.com.mikealvarado.aimeter` to your own — the App Group
-   must match in **both** targets' entitlements and in
+   must match in **every** target's entitlements and in
    `Shared/AppConfig.swift`.
 4. Build & run the `AIMeter` scheme.
 
@@ -422,6 +430,11 @@ AIMeterWidgets/         AIMeterUsage (one account's limits), AIMeterSingleUsage 
                         once), and a Live Activity (iOS) — all render App
                         Group snapshots and, on iOS, refresh themselves
                         when stale
+WidgetsShared/          what both widget extensions compile: the account
+                        picker intent, the accessory views, placeholders
+AIMeterWatch/           the Watch app (what the iPhone last fetched, a
+                        Refresh that asks the iPhone); AIMeterWatchWidgets/
+                        its complications
 Scripts/AppIcon/        draws the app icons (Sunset, Ivory, Night, Pet),
                         their Mac sizes and the website's favicons from
                         code (`node Scripts/AppIcon/render.mjs`)
@@ -443,7 +456,7 @@ Shared/                 config + presentation helpers used by app and
                         geometry (unit-tested)
 ```
 
-Each of `AIMeter/`, `AIMeterWidgets/`, `Packages/UsageKit/Sources/UsageKit/Providers/Claude/`,
+Each of `AIMeter/`, `AIMeterWidgets/`, `AIMeterWatch/`, `Packages/UsageKit/Sources/UsageKit/Providers/Claude/`,
 `Scripts/StoreFrames/` and `site/` has its own `CLAUDE.md` with the detail specific to that folder — the
 repo-root `CLAUDE.md` is the full spec that ties them together.
 

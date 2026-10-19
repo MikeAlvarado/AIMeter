@@ -37,15 +37,7 @@ struct UsageWindowOption: AppEntity {
             return nil
         }
         let accountID = String(parts[0])
-        self.init(accountID: accountID, kind: kind, accountName: Self.accountName(for: accountID))
-    }
-
-    /// Looks up the account's nickname from the shared registry. Falls back
-    /// to "Claude" for the legacy id or a registry that hasn't loaded yet
-    /// (e.g. the widget process running before the app has ever migrated).
-    static func accountName(for accountID: String) -> String {
-        AccountRegistryStore(suiteName: AppConfig.appGroupID)?.account(for: accountID)?.displayName
-            ?? (accountID == ProviderCatalog.legacyAccount.accountID ? ProviderCatalog.legacyAccount.displayName : accountID)
+        self.init(accountID: accountID, kind: kind, accountName: WidgetAccountFallback.name(for: accountID))
     }
 }
 
