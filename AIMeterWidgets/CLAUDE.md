@@ -59,7 +59,19 @@ legacy sentinel if none — rather than each re-deriving it.
   equal flexible slices so the layout fills any family height. The
   header also shows a small peak-hours badge (see "Peak hours" in the
   repo-root CLAUDE.md — never while the policy is retired, as it is
-  today); Lock Screen accessories don't. On iOS, the header
+  today); Lock Screen accessories don't. Every reset line (`WindowBarRow`,
+  the medium columns, the single widget) is a `ResetLineText` (Shared):
+  a live `Text(timerInterval:)` countdown, "Resets in 2:23:05", while
+  the reset is under a day away in the relative style, else the fixed
+  "Resets in 2d 22h" / "Resets at 7:59 PM" label, decided by the pure
+  `ResetLine.line(for:style:now:)` from the *entry's* date, never
+  `Date()` (an entry is drawn ahead of its time). The timer ticks on
+  WidgetKit's side with no entry of its own; what the reset itself
+  changes is the data, so each timeline's policy comes forward to a
+  minute after the soonest reset (`WidgetSchedule.nextReload`, iOS
+  only) and the self-fetch treats a snapshot overtaken by a reset as
+  stale whatever its age (`WidgetSchedule.isStale`), see "Widget
+  timeline" in the repo-root CLAUDE.md. On iOS, the header
   also carries an always-visible manual refresh button (`RefreshAccountIntent`,
   `Button(intent:)`) — deliberately not conditioned on staleness, same
   "predictable, always-available" philosophy as the app's own Dashboard

@@ -32,7 +32,9 @@ can be added later.
 - Widgets: "Usage Limits" shows one account's windows — `systemSmall`
   as rows with grouped reset countdowns, `systemMedium` as side-by-side
   columns with a big "42% left" figure, bar and reset line each — with
-  an always-visible manual refresh button (iOS); Lock Screen accessories (circular,
+  an always-visible manual refresh button (iOS); a reset under a day
+  away counts down live ("Resets in 2:23:05"), and on iOS the widget
+  fetches again a minute after a window resets; Lock Screen accessories (circular,
   rectangular, inline) — the circular gauge follows whichever window you
   pick as your glance metric. A `systemLarge` widget shows every connected
   account at once instead of picking one. On iOS widgets refresh

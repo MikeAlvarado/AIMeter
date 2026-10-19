@@ -160,7 +160,11 @@ assets and string catalog from there.
   type) keeps a single stored `Preferences` value behind computed
   accessors, so the field list exists once; `MetricChips.swift` is the
   1–3 window chip row the menu bar's
-  `multi` style and the notch island's wings both configure with.
+  `multi` style and the notch island's wings both configure with;
+  `ResetLine.swift` (a widget's reset line: the live countdown or the
+  label) and `WidgetSchedule.swift` (when a timeline reloads and what is
+  stale) are the widgets' pure rules, in `Shared/` so the app's tests
+  reach them.
 - The app icon (see "App icon" under "Design system"):
   `Shared/AppIconChoice.swift` (the four looks and their asset names),
   `AIMeter/Views/AppIconSettings.swift` (Settings' "App icon") and
@@ -498,9 +502,20 @@ the account silently freezes at its last snapshot.
   one shared allowance — a known tradeoff, not something fixed in code.
   The app's foreground push covers freshness during active use. On iOS
   `getTimeline` self-fetches for that instance's own configured account
-  when its stored snapshot is older than that interval, via a short-timeout
-  (`timeoutIntervalForRequest = 15`, `waitsForConnectivity = false`)
-  URLSession so a slow request fails fast instead of wasting the refresh.
+  when its stored snapshot is stale (`WidgetSchedule.isStale`: older
+  than that interval, or overtaken by a reset the fetch didn't see), via
+  a short-timeout (`timeoutIntervalForRequest = 15`,
+  `waitsForConnectivity = false`) URLSession so a slow request fails
+  fast instead of wasting the refresh. The entry's own reset lines count
+  down live under a day (`ResetLine`, Shared: a `Text(timerInterval:)`
+  WidgetKit ticks with no entry and no budget; a day or more away, or in
+  the absolute style, the fixed label), and on iOS the timeline comes
+  back a minute after the soonest reset ahead
+  (`WidgetSchedule.nextReload`, `afterReset`) rather than at the cadence,
+  so the refilled window shows minutes after the reset instead of up to
+  three hours later: one reload per reset against the budget. A Mac
+  widget only redraws what the app wrote, so there the cadence stands
+  (`UsageTimelineProvider.resets(of:)` is empty on macOS).
 - Usage history: two stores, written together by `UsageRecorder.record`
   wherever a fetch persists a snapshot (the app refresh *and* the iOS
   widget self-fetch, so both stay continuous when only the widget runs)
@@ -1642,7 +1657,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   grouped reset line, `UsageFormatting`, `UsageSnapshot.glanceOptions`,
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
   the scheduled notifications' triggers pinned to an instant and one
-  run-out warning per window (`NotificationSchedulerTests`),
+  run-out warning per window (`NotificationSchedulerTests`), the widgets'
+  reset line (countdown or label), their reload after a reset and what
+  counts as stale (`WidgetScheduleTests`),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes

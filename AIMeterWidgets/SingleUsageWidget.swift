@@ -63,7 +63,9 @@ struct SingleUsageTimelineProvider: AppIntentTimelineProvider {
             )
         }
         #endif
-        let next = Date(timeIntervalSinceNow: interval)
+        let next = WidgetSchedule.nextReload(
+            after: current.date, interval: interval, resets: UsageTimelineProvider.resets(of: current.snapshot)
+        )
         var entries = [current]
         // Same trick as the main widget: an extra entry dated exactly at
         // the next peak transition lets WidgetKit flip the header's badge

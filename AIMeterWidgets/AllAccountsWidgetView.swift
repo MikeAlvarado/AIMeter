@@ -42,7 +42,7 @@ struct AllAccountsWidgetView: View {
                     if index > 0 {
                         Divider().overlay(Theme.track)
                     }
-                    AccountRow(row: row, prefs: entry.prefs)
+                    AccountRow(row: row, prefs: entry.prefs, now: entry.date)
                 }
                 if entry.rows.count > Self.maxRows {
                     Text("+\(entry.rows.count - Self.maxRows) more")
@@ -67,6 +67,7 @@ struct AllAccountsWidgetView: View {
 private struct AccountRow: View {
     let row: AllAccountsEntry.Row
     let prefs: Preferences
+    let now: Date
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -98,6 +99,7 @@ private struct AccountRow: View {
                             kind: slot.kind,
                             window: slot.window,
                             prefs: prefs,
+                            now: now,
                             showsReset: WindowSlots.showsReset(at: index, in: slots),
                             moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
                         )

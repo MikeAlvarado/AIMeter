@@ -47,8 +47,22 @@ struct UsageTimelineProvider: AppIntentTimelineProvider {
             current = UsageEntry(date: .now, snapshot: fresh, accountID: current.accountID, accountName: current.accountName, prefs: current.prefs, accountIcon: current.accountIcon)
         }
         #endif
-        let next = Date(timeIntervalSinceNow: interval)
+        let next = WidgetSchedule.nextReload(
+            after: current.date, interval: interval, resets: Self.resets(of: current.snapshot)
+        )
         return Timeline(entries: [current] + peakTransitionEntry(after: current, before: next), policy: .after(next))
+    }
+
+    /// The resets the next reload may come forward for: on iOS, where
+    /// that reload fetches the refilled window (`WidgetSchedule.isStale`).
+    /// A Mac widget only ever shows what the app last wrote, so there a
+    /// reload at the reset would redraw the same figure.
+    static func resets(of snapshot: UsageSnapshot?) -> [Date] {
+        #if os(iOS)
+        snapshot?.windows.compactMap(\.resetsAt) ?? []
+        #else
+        []
+        #endif
     }
 
     /// If Claude's peak-hours schedule flips before the next scheduled

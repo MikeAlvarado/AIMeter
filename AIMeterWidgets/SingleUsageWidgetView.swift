@@ -77,7 +77,7 @@ struct SingleUsageWidgetView: View {
         if let resetsAt = entry.window?.resetsAt {
             HStack(spacing: 3) {
                 Image(systemName: "arrow.circlepath")
-                Text(UsageFormatting.resetLabel(for: resetsAt, style: entry.prefs.resetStyle))
+                ResetLineText(resetsAt: resetsAt, style: entry.prefs.resetStyle, now: entry.date)
             }
             .font(.system(size: 9))
             .foregroundStyle(Theme.inkSecondary.opacity(0.9))

@@ -37,9 +37,9 @@ enum WidgetRefresher {
         current: UsageSnapshot?,
         cadence: TimeInterval
     ) async -> UsageSnapshot? {
-        if let current, Date().timeIntervalSince(current.fetchedAt) < cadence {
-            return nil
-        }
+        // Older than the cadence, or overtaken by a reset: the reload a
+        // minute after one (`WidgetSchedule.nextReload`) lands here.
+        guard WidgetSchedule.isStale(current, cadence: cadence, now: Date()) else { return nil }
         // Every placed instance runs its own timeline in the same reload
         // burst, so three widgets for one account would otherwise be three
         // identical fetches (and three refresh-token rotations). Re-read the
@@ -47,7 +47,7 @@ enum WidgetRefresher {
         // the fetch with an in-flight stamp the others back off from.
         let store = SnapshotStore(suiteName: AppConfig.appGroupID)
         if let latest = store?.snapshot(for: accountID),
-           Date().timeIntervalSince(latest.fetchedAt) < cadence {
+           !WidgetSchedule.isStale(latest, cadence: cadence, now: Date()) {
             return latest
         }
         let defaults = UserDefaults(suiteName: AppConfig.appGroupID)

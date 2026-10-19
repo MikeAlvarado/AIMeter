@@ -110,6 +110,8 @@ struct WindowBarRow: View {
     let kind: UsageWindow.Kind
     let window: UsageWindow?
     let prefs: Preferences
+    /// The entry's date, which the reset countdown runs from.
+    let now: Date
     var showsReset = true
     /// "$14.27 of $25.00" — Credits has no reset date, so this optionally
     /// fills the same line instead (`Preferences.showCreditsAmount`).
@@ -134,7 +136,7 @@ struct WindowBarRow: View {
             if showsReset, let resetsAt = window?.resetsAt {
                 HStack(spacing: 3) {
                     Image(systemName: "arrow.circlepath")
-                    Text(UsageFormatting.resetLabel(for: resetsAt, style: prefs.resetStyle))
+                    ResetLineText(resetsAt: resetsAt, style: prefs.resetStyle, now: now)
                 }
                 .font(.system(size: 9))
                 .foregroundStyle(Theme.inkSecondary.opacity(0.9))
@@ -175,6 +177,7 @@ private struct WindowBarList: View {
                     kind: slot.kind,
                     window: slot.window,
                     prefs: prefs,
+                    now: date,
                     showsReset: WindowSlots.showsReset(at: index, in: slots),
                     moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
                 )

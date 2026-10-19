@@ -28,6 +28,7 @@ struct MediumUsageView: View {
                         kind: slot.kind,
                         window: slot.window,
                         prefs: prefs,
+                        now: date,
                         valueSize: wide ? 28 : 22,
                         moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
                     )
@@ -51,6 +52,7 @@ private struct WindowColumn: View {
     let kind: UsageWindow.Kind
     let window: UsageWindow?
     let prefs: Preferences
+    let now: Date
     let valueSize: CGFloat
     let moneySubtitle: String?
 
@@ -99,7 +101,7 @@ private struct WindowColumn: View {
         if let resetsAt = window?.resetsAt {
             HStack(spacing: 3) {
                 Image(systemName: "arrow.circlepath")
-                Text(UsageFormatting.resetLabel(for: resetsAt, style: prefs.resetStyle))
+                ResetLineText(resetsAt: resetsAt, style: prefs.resetStyle, now: now)
             }
         } else if let moneySubtitle {
             HStack(spacing: 3) {

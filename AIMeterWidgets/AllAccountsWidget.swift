@@ -43,7 +43,10 @@ struct AllAccountsTimelineProvider: TimelineProvider {
             #if os(iOS)
             current = await refreshingStaleRows(of: current, cadence: interval)
             #endif
-            let next = Date(timeIntervalSinceNow: interval)
+            let next = WidgetSchedule.nextReload(
+                after: current.date, interval: interval,
+                resets: current.rows.flatMap { UsageTimelineProvider.resets(of: $0.snapshot) }
+            )
             completion(Timeline(entries: [current], policy: .after(next)))
         }
     }
