@@ -34,7 +34,7 @@ widget placed before it that kept "claude" would stay empty until
 edited. A widget whose selection is that sentinel with no account of
 that id (one placed before this rule) shows the first connected account
 instead (`WidgetAccountFallback.resolve(configured:name:)`). `AIMeterAllAccounts` (see
-below) has no picker at all. Both configured widgets share the same
+below) has no account picker; its one choice is its layout. Both configured widgets share the same
 nil-configuration fallback (the timing edge case right after a widget is
 first placed, before the intent's default has resolved) through
 `WidgetAccountFallback.resolve()` — the first connected account, or the
@@ -101,9 +101,12 @@ legacy sentinel if none — rather than each re-deriving it.
   loading state — WidgetKit can't show a spinner mid-tap, so the widget
   just re-renders once the intent completes, same limitation every
   interactive widget has.
-- `AIMeterAllAccounts` (`.systemLarge` only, `StaticConfiguration` — no
-  per-instance configuration, since there's nothing to pick, it always
-  shows every connected account): one compact row per account —
+- `AIMeterAllAccounts` (`.systemLarge` only; `AppIntentConfiguration`
+  since 3.2 with one Edit Widget choice, Layout
+  (`AllAccountsConfigurationIntent`, `AllAccountsLayout`: Standard, the
+  default and what a widget placed before the choice existed keeps, or
+  Condensed); no account picker, it always shows every connected
+  account). **Standard**: one compact row per account —
   `ProviderIdentityView` at the same small size `AIMeterUsage`'s header
   uses, the same always-visible iOS refresh button, and that account's
   `WindowSlots` rendered as full `WindowBarRow`s — the exact same row
@@ -129,6 +132,16 @@ legacy sentinel if none — rather than each re-deriving it.
   saved) and claims the fetch with an in-flight stamp in the App Group
   (`widget.fetchInFlight.<accountID>`, 60 s), so three widgets for one
   account are one fetch — and one refresh-token rotation — per reload.
+  **Condensed** (`CondensedAccountsView`, its own file) fits six: a
+  header (the app's mark, "All Accounts", the peak badge), the slot
+  names over the columns, one line per account with its name, a bar per
+  column (the columns are the slots of the first account that has three,
+  else two; a slot an account lacks keeps its column, faded) and its
+  session's figure, and under them the soonest session reset of all the
+  accounts as a bare live countdown ("Next session reset: 1:02:40",
+  `ResetLineText(bare:)`). No reset under each bar and no per-account
+  refresh button there: that is what a line gives up for the room. Both
+  layouts order the rows the same way (`AllAccountsEntry.ordered`).
 - `AIMeterSingleUsage` (small only): shows exactly one (account, window)
   pair the user picks from the widget's own Edit Widget UI
   (`SingleUsageConfigurationIntent`) — `UsageWindowOption`'s composite id

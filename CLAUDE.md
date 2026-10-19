@@ -37,8 +37,9 @@ system, and behaviors. It should be enough to rebuild the app from zero.
   `AIMeterSingleUsage` (single-window widget, user-configurable via
   WidgetKit's `AppIntentConfiguration`: the window, and a bar or a
   ring), and `AIMeterAllAccounts`
-  (`.systemLarge`-only, every connected account at once, no per-instance
-  configuration — see `AIMeterWidgets/CLAUDE.md`); on the Watch,
+  (`.systemLarge`-only, every connected account at once, its layout the
+  one per-instance choice: two in full, or six condensed — see
+  `AIMeterWidgets/CLAUDE.md`); on the Watch,
   `AIMeterWatchUsage` (the complications, every accessory family).
 
 ## Layout of the repo

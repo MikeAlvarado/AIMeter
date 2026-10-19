@@ -8,6 +8,7 @@ import AppIntents
 /// One peak-hours badge for the whole widget, not repeated per account —
 /// same rule the macOS menu bar popover already follows ("peak is
 /// Claude-wide, not per account, so this isn't repeated per section").
+/// The standard layout; `CondensedAccountsView` is the other.
 struct AllAccountsWidgetView: View {
     let entry: AllAccountsEntry
     /// Each account renders its full window rows (reset lines included),
@@ -19,6 +20,19 @@ struct AllAccountsWidgetView: View {
     private static let maxRows = 2
 
     var body: some View {
+        Group {
+            if entry.layout == .condensed {
+                CondensedAccountsView(entry: entry)
+            } else {
+                standard
+            }
+        }
+        .containerBackground(for: .widget) {
+            Theme.card
+        }
+    }
+
+    private var standard: some View {
         VStack(alignment: .leading, spacing: 10) {
             // Claude's policy: badge only when a Claude account is shown.
             let hasClaude = entry.rows.contains { $0.account.providerID == ClaudeProvider.providerID }
@@ -53,9 +67,6 @@ struct AllAccountsWidgetView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .containerBackground(for: .widget) {
-            Theme.card
-        }
     }
 }
 

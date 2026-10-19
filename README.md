@@ -40,7 +40,8 @@ can be added later.
   fetches again a minute after a window resets; Lock Screen accessories (circular,
   rectangular, inline) — the circular gauge follows whichever window you
   pick as your glance metric. A `systemLarge` widget shows every connected
-  account at once instead of picking one. On iOS widgets refresh
+  account at once instead of picking one: two in full, or six in the
+  condensed layout you pick in Edit Widget. On iOS widgets refresh
   themselves in the background — you don't need to open the app. On macOS,
   widgets show up automatically in Notification Center / the desktop and
   are fed by the menu bar app, which is why AIMeter can keep running with
@@ -62,8 +63,8 @@ can be added later.
   so Finder keeps Sunset.
 - A second, single-window widget ("Single Limit") for when you only care
   about one number — pick the account and window (session, weekly, a
-  per-model limit, or usage credits) from the widget's own Edit Widget
-  configuration.
+  per-model limit, or usage credits) and a bar or a ring from the
+  widget's own Edit Widget configuration.
 - **Live Activity** (iOS): opt in per account from Provider Detail to put
   that account's session countdown on the Lock Screen and Dynamic Island
   while it's running — off by default. The countdown ticks live on-device
