@@ -254,6 +254,9 @@ struct Preferences: Sendable {
     /// device beyond the provider's own endpoints, disclosed in Privacy
     /// & data.
     var cloudSync: Bool = false
+    /// The account closest to a limit first, everywhere accounts are
+    /// listed (`AccountOrder`); off, the registry's order, the user's own.
+    var ordersByUrgency: Bool = false
     // MARK: Claude Code usage (macOS)
     //
     // Off by default and opt-in: the CLI's logs are another app's files.
@@ -318,6 +321,7 @@ struct Preferences: Sendable {
         static let appIcon = "pref.appIcon"
         static let checksServiceStatus = "pref.checksServiceStatus"
         static let cloudSync = "pref.cloudSync"
+        static let ordersByUrgency = "pref.ordersByUrgency"
         static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
         static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
         static let menuBarShowsClaudeCodeLine = "pref.menuBarShowsClaudeCodeLine"
@@ -375,6 +379,7 @@ struct Preferences: Sendable {
         prefs.loadNotchIsland(from: defaults)
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
         prefs.cloudSync = defaults.bool(forKey: Keys.cloudSync)
+        prefs.ordersByUrgency = defaults.bool(forKey: Keys.ordersByUrgency)
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
         prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
         prefs.menuBarShowsClaudeCodeLine = defaults.bool(forKey: Keys.menuBarShowsClaudeCodeLine)

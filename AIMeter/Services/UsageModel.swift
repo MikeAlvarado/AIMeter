@@ -78,6 +78,11 @@ final class UsageModel {
     /// (`Preferences.checksServiceStatus`, mirrored here by Settings so the
     /// model never reads the App Group behind the tests' back).
     var checksServiceStatus = true
+    /// "Order by urgency" (`Preferences.ordersByUrgency`, mirrored here by
+    /// Settings like the status check): `accounts` is sorted by
+    /// `AccountOrder` after every load and sweep, the registry's order
+    /// left as the user set it (see `UsageModel+Naming.swift`).
+    var ordersByUrgency = false
     @ObservationIgnored var serviceStatusCheckedAt: [String: Date] = [:]
     @ObservationIgnored var serviceStatusSources: [String: any ServiceStatusSource] = [:]
     /// nil in unit tests (no App Group); the last fetched status survives a
@@ -134,6 +139,7 @@ final class UsageModel {
         if platformServices {
             AccountMigration.run(registry: registry)
             checksServiceStatus = Preferences.load().checksServiceStatus
+            ordersByUrgency = Preferences.load().ordersByUrgency
         }
         loadAccounts()
         loadStoredServiceStatus()
@@ -204,6 +210,7 @@ final class UsageModel {
         }
         #endif
         reloadTimelines()
+        applyAccountOrder()
         notifyWatch()
     }
 
@@ -253,6 +260,7 @@ final class UsageModel {
         }
         await status
         if fetched { WidgetCenter.shared.reloadAllTimelines() }
+        applyAccountOrder()
         notifyWatch()
     }
 
@@ -272,6 +280,7 @@ final class UsageModel {
             WidgetCenter.shared.reloadAllTimelines()
         }
         await status
+        applyAccountOrder()
         notifyWatch()
     }
 
@@ -384,6 +393,7 @@ final class UsageModel {
         }
         await status
         if fetched { WidgetCenter.shared.reloadAllTimelines() }
+        applyAccountOrder()
         notifyWatch()
     }
 

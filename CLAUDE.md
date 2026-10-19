@@ -1292,6 +1292,25 @@ the account silently freezes at its last snapshot.
   also mean threading an account identity through every widget rendering
   path that reads them, for a cosmetic edge case (two accounts wanting
   different third-row fallback behavior) that hasn't come up.
+- Order by urgency (3.2, `Preferences.ordersByUrgency`, key
+  `pref.ordersByUrgency`, default **false**; Settings → "Accounts",
+  `AccountOrderSettings`, offered with 2+ accounts, mirrored into
+  `UsageModel.ordersByUrgency` through `setOrdersByUrgency` like the
+  status check): the account closest to a limit first, everywhere
+  accounts are listed. `AccountOrder` (Shared, pure, tested) says how:
+  an account's urgency is its most used window's percentage, a window
+  the provider flags critical or exceeded counting as full, no snapshot
+  last, ties stable (so equals keep the user's order). The model
+  re-sorts `accounts` with it after every load and sweep
+  (`applyAccountOrder`, called right before each `notifyWatch`, so the
+  Dashboard, the popover, the island and the Watch all show one order),
+  and the all-accounts widget sorts the registry the same way as it
+  reads it (`AllAccountsEntry.ordered`, again after its self-fetch). The
+  registry keeps the user's own order underneath, untouched, and
+  switching off puts `accounts` back in it; the Dashboard's drag and
+  its Move up/down are withheld while the switch is on, since the order
+  shown is not the registry's. The widget pickers keep the registry's
+  order either way.
 - Claude Code prefs (App Group, macOS-only meaning): `claudeCodeUsageEnabled`
   (default **false**), `claudeCodeUsageDismissed` (default false),
   `menuBarShowsClaudeCodeLine` (default false) — see "Claude Code local
@@ -1789,6 +1808,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   left alone, foreign and misfiled envelopes ignored, and what leaves
   the store with the switch or with an account (`CloudSyncTests`),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
+  urgency order and the model applying it over the registry's
+  (`AccountOrderTests`), the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes
   (every language, no em dash, every named feature one the tour knows)

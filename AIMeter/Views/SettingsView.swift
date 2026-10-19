@@ -20,6 +20,10 @@ struct SettingsView: View {
                 AppearanceSettings()
                 SettingsGap()
                 AppIconSettings()
+                if AccountOrderSettings.isOffered(model) {
+                    SettingsGap()
+                    AccountOrderSettings()
+                }
                 if PeakNotificationsSettings.isOffered {
                     SettingsGap()
                     PeakNotificationsSettings()

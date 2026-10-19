@@ -151,6 +151,7 @@ extension UsageModel {
         claudeCode?.enterDemo()
         DemoSessions.shared.reset()
         #endif
+        applyAccountOrder()
         notifyWatch()
     }
 

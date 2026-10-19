@@ -40,6 +40,27 @@ extension UsageModel {
     /// menu tap), so persisting and reloading widget timelines here is
     /// exactly once per reorder — which is what keeps this clear of the
     /// per-kind WidgetKit refresh budget the rest of the app depends on.
+    /// Settings' "Order by urgency" switch, mirrored (the model never reads
+    /// the App Group behind the tests' back).
+    func setOrdersByUrgency(_ enabled: Bool) {
+        ordersByUrgency = enabled
+        applyAccountOrder()
+    }
+
+    /// Puts `accounts` in the order the switch says: by urgency while it
+    /// is on, else the registry's, the user's own. Called after every
+    /// load and every sweep, before the Watch is told, so each surface
+    /// drawn from `accounts` (and the Watch) shows the same order. The
+    /// demo's accounts and a Mac's speculative CLI login are not in the
+    /// registry and keep their place.
+    func applyAccountOrder() {
+        if ordersByUrgency {
+            accounts = AccountOrder.byUrgency(accounts) { $0.snapshot }
+        } else if let order = registry?.accounts().map(\.accountID) {
+            accounts.sort { (order.firstIndex(of: $0.id) ?? .max) < (order.firstIndex(of: $1.id) ?? .max) }
+        }
+    }
+
     private func move(from: Int, to: Int) {
         guard !isDemoMode, accounts.indices.contains(from), accounts.indices.contains(to) else { return }
         let moved = accounts.remove(at: from)

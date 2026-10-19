@@ -11,6 +11,14 @@ struct AllAccountsEntry: TimelineEntry {
     let date: Date
     let rows: [Row]
     let prefs: Preferences
+
+    /// The rows in the order the app shows accounts: the registry's, or
+    /// by urgency with that switch on (`AccountOrder`), re-sorted after
+    /// a self-fetch moved a figure.
+    func ordered() -> AllAccountsEntry {
+        guard prefs.ordersByUrgency else { return self }
+        return AllAccountsEntry(date: date, rows: AccountOrder.byUrgency(rows) { $0.snapshot }, prefs: prefs)
+    }
 }
 
 /// Large-only widget with no per-instance configuration — unlike
@@ -56,7 +64,7 @@ struct AllAccountsTimelineProvider: TimelineProvider {
         let store = SnapshotStore(suiteName: AppConfig.appGroupID)
         let accounts = registry?.accounts() ?? []
         let rows = accounts.map { AllAccountsEntry.Row(account: $0, snapshot: store?.snapshot(for: $0.accountID)) }
-        return AllAccountsEntry(date: .now, rows: rows, prefs: Preferences.load())
+        return AllAccountsEntry(date: .now, rows: rows, prefs: Preferences.load()).ordered()
     }
 
     #if os(iOS)
@@ -79,7 +87,7 @@ struct AllAccountsTimelineProvider: TimelineProvider {
         let rows = entry.rows.map { row in
             AllAccountsEntry.Row(account: row.account, snapshot: fetched[row.account.accountID] ?? row.snapshot)
         }
-        return AllAccountsEntry(date: entry.date, rows: rows, prefs: entry.prefs)
+        return AllAccountsEntry(date: entry.date, rows: rows, prefs: entry.prefs).ordered()
     }
     #endif
 }

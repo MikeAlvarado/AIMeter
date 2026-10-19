@@ -177,6 +177,10 @@ final class PreferencesModel {
         get { stored.cloudSync }
         set { guard stored.cloudSync != newValue else { return }; stored.cloudSync = newValue; persist(newValue, Preferences.Keys.cloudSync, reloadsWidgets: false) }
     }
+    var ordersByUrgency: Bool {
+        get { stored.ordersByUrgency }
+        set { guard stored.ordersByUrgency != newValue else { return }; stored.ordersByUrgency = newValue; persist(newValue, Preferences.Keys.ordersByUrgency, reloadsWidgets: true) }
+    }
     var claudeCodeUsageEnabled: Bool {
         get { stored.claudeCodeUsageEnabled }
         set { guard stored.claudeCodeUsageEnabled != newValue else { return }; stored.claudeCodeUsageEnabled = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageEnabled, reloadsWidgets: false) }

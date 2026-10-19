@@ -35,7 +35,10 @@
   button and pull-to-refresh play a soft haptic, keyed on a
   user-initiated request counter rather than `isRefreshing`, which also
   flips for the foreground auto-refresh.
-  - **Reordering** (2+ accounts only): hold a card to lift it, drag, and
+  - **Reordering** (2+ accounts only, and never while "Order by urgency"
+    is on, `UsageModel.ordersByUrgency`, when the order shown is not the
+    registry's; see "Order by urgency" in the repo-root CLAUDE.md): hold
+    a card to lift it, drag, and
     release over another section to take that section's place, with
     `AccountDropHighlight`'s accent outline marking the target. The order is
     the account registry's own (see "Accounts vs. providers" in the
@@ -222,7 +225,10 @@
   style, the "App icon" card (`AppIconSettings`: the four looks as
   pictures with their names, the one in use ringed in the accent; on the
   Mac a footnote says only the Dock changes, see "App icon" in the
-  repo-root CLAUDE.md), a "Notifications" card with the one Peak-hours alerts toggle
+  repo-root CLAUDE.md), an "Accounts" card (`AccountOrderSettings`,
+  2+ accounts only: "Order by urgency", `Preferences.ordersByUrgency`,
+  off by default, mirrored into the model through `setOrdersByUrgency`;
+  see "Order by urgency" in the repo-root CLAUDE.md), a "Notifications" card with the one Peak-hours alerts toggle
   (the single exception to "no notification toggles here" — every other
   toggle moved fully into each account's own Provider Detail once there
   could be more than one "the" account to apply them to, but peak-hours

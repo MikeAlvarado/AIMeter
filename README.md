@@ -20,6 +20,9 @@ can be added later.
   them (or use Move up/Move down from the card header's context menu); the
   order carries over to the menu bar, the widgets, and every account
   picker.
+- **Order by urgency** (optional): the account closest to a limit goes
+  first, everywhere accounts are listed, the All Accounts widget and the
+  Watch included; off, you set the order yourself by dragging.
 - **Sign-in recovery**: Claude rotates its OAuth refresh token on every
   use, so a login shared with another client can stop working — after
   which usage would just quietly freeze at its last reading. AIMeter says

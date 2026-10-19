@@ -113,7 +113,9 @@ legacy sentinel if none — rather than each re-deriving it.
   full-detail row costs real vertical room, so this is capped at the
   first 2 accounts (registry order — the same order the Dashboard/menu bar
   use, and the one a Dashboard drag-reorder rewrites, which is why a
-  reorder reloads timelines) with a "+N more" line beyond that — deliberately not a
+  reorder reloads timelines; or by urgency with "Order by urgency" on,
+  `AllAccountsEntry.ordered` over `AccountOrder`, applied again after
+  the self-fetch) with a "+N more" line beyond that — deliberately not a
   `ScrollView`; static content is the safer choice for widgets. One
   peak-hours badge for the whole widget (hidden while the policy is
   retired), not repeated per account — same rule the macOS menu bar

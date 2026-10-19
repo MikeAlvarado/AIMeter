@@ -30,7 +30,9 @@ extension DashboardView {
     func accountSection(_ usage: UsageModel.AccountUsage) -> some View {
         // Always found: `usage` came from iterating this same array.
         let index = model.accounts.firstIndex { $0.id == usage.id } ?? 0
-        let canReorder = model.accounts.count > 1 && !model.isDemoMode
+        // Not while the order is urgency's (`AccountOrder`): a drag would
+        // write the registry under an order that isn't shown.
+        let canReorder = model.accounts.count > 1 && !model.isDemoMode && !model.ordersByUrgency
         let isDragging = draggingID == usage.id
         let section = AccountSectionView(
             usage: usage,
