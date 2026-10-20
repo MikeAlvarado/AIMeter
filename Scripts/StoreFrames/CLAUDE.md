@@ -19,8 +19,16 @@ this file current: it is the only record of how the assets were made.
   added with iOS 26 — the **header** (5244×2950) and the **search
   results** card (3840×2560) — `Sources/Marketing.swift`. Copy on the
   left, the dashboard in a bezel low and right, the three widget views
-  floating in front of it. Everything stays inside the central two
-  thirds: the store crops the edges on smaller screens. The widget
+  floating in front of it. The search card keeps everything inside the
+  central two thirds; the header is cropped far more: on an iPhone the
+  product page shows its top 63 % and central 54 % only, with the back,
+  share and close buttons over its top corners (measured on Mike's
+  phone on 2026-10-19, where "All your" and "AI" were cut off the 3.0
+  headline), so since 3.2 the header's headline, subhead, widgets and
+  phone sit inside x 24–77 %, y 25–63 % (`MarketingFrame.headerBand`),
+  with no pills (they would fall under the cut). `sips -c 1858 2857
+  --cropOffset 0 1183` on the rendered header shows what the phone
+  shows. The widget
   cluster is rendered in `main.swift` on a transparent background and
   passed in (cropping it out of the home-screen render dragged a
   rectangle of backdrop along).

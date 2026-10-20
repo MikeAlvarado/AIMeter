@@ -6,9 +6,15 @@ import AppKit
 /// 3840×1646) and the search-results card (5244×2950, 3840×2560 or
 /// 1920×1280). Same language as the screenshot frames — dark warm
 /// backdrop, one headline, the real app in a bezel — laid out
-/// landscape: copy on the left, device on the right, everything kept
-/// inside the central two thirds because the store crops the edges on
-/// smaller screens.
+/// landscape: copy on the left, device on the right. The store crops
+/// the edges on smaller screens, and the header much more than the
+/// central two thirds the 3.0 set assumed: on an iPhone the product
+/// page shows the header's top 63 % and its central 54 % (measured on
+/// Mike's phone, 2026-10-19: "All your" and "AI" were cut off the
+/// headline), with the back, share and close buttons over its top
+/// corners. So the header keeps everything that matters inside x 24–77 %
+/// and y 25–63 % (`MarketingFrame.headerBand`); the search card keeps
+/// the wider layout.
 enum MarketingKind {
     case header, search
 
@@ -53,10 +59,14 @@ struct MarketingFrame: View {
     let phone: NSImage
     let widgets: NSImage?
 
+    /// The iPhone's view of the header: the part of the canvas that is
+    /// on screen, as fractions of its width and height.
+    static let headerBand = (x: 0.24...0.77, y: 0.25...0.63)
+
     var body: some View {
         let c = kind.canvas
-        let headlineSize: CGFloat = kind == .header ? 108 : 74
-        let subheadSize: CGFloat = kind == .header ? 40 : 30
+        let headlineSize: CGFloat = kind == .header ? 66 : 74
+        let subheadSize: CGFloat = kind == .header ? 28 : 30
         ZStack {
             LinearGradient(
                 colors: [Color(hex: 0x221D19), Color(hex: 0x3D2B22), Color(hex: 0x14110F)],
@@ -68,8 +78,11 @@ struct MarketingFrame: View {
             )
             .offset(x: c.width * 0.18, y: c.height * 0.1)
 
+            if kind == .header {
+                headerLayout(c)
+            } else {
             HStack(alignment: .center, spacing: 0) {
-                VStack(alignment: .leading, spacing: kind == .header ? 26 : 20) {
+                VStack(alignment: .leading, spacing: 20) {
                     Text(headline)
                         .font(.system(size: headlineSize, weight: .bold))
                         .foregroundStyle(Color(hex: 0xFAF9F5))
@@ -110,9 +123,43 @@ struct MarketingFrame: View {
                 .frame(width: c.width * 0.40)
                 .padding(.trailing, c.width * 0.11)
             }
+            }
         }
         .frame(width: c.width, height: c.height)
         .clipped()
+    }
+
+    /// The header inside the phone's band: three headline lines and a
+    /// short subhead on the left (no pills: they would fall under the
+    /// cut), the widget cluster high in the middle and the phone to its
+    /// right, its bottom running off the band, where only bigger screens
+    /// see it.
+    @ViewBuilder
+    private func headerLayout(_ c: CGSize) -> some View {
+        let band = Self.headerBand
+        VStack(alignment: .leading, spacing: 20) {
+            Text(headline)
+                .font(.system(size: 66, weight: .bold))
+                .foregroundStyle(Color(hex: 0xFAF9F5))
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("Every window of every account, widgets, alerts and history. On iPhone, iPad and Mac.")
+                .font(.system(size: 28))
+                .foregroundStyle(Color(hex: 0xFAF9F5).opacity(0.72))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(width: c.width * 0.23, alignment: .leading)
+        .position(x: c.width * (band.x.lowerBound + 0.115), y: c.height * 0.425)
+        DeviceBezel(image: phone, screenW: c.height * 0.34, tilt: -5)
+            .position(x: c.width * 0.67, y: c.height * 0.62)
+        if let widgets {
+            Image(nsImage: widgets)
+                .resizable()
+                .interpolation(.high)
+                .frame(width: c.height * 0.36, height: c.height * 0.36 * widgets.size.height / widgets.size.width)
+                .rotationEffect(.degrees(-5))
+                .position(x: c.width * 0.555, y: c.height * 0.44)
+        }
     }
 
     private func pill(_ text: String) -> some View {
