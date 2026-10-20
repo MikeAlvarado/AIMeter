@@ -106,7 +106,7 @@ below and `AIMeterWatch/CLAUDE.md`.
   `SessionPet+Sprites.swift` (the hand-drawn pixels, which
   `Scripts/pets-preview.sh` draws into one PNG), all pure and tested,
   and `AIMeter/Views/ClaudeSessionsSettings.swift` (the
-  "Sessions" card of Settings' Claude Code tab), with
+  "Sessions" card of Settings' Notch island tab), with
   `Shared/AccessibilityState.swift` (pure, tested) and
   `AIMeter/Services/AccessibilityAccess.swift`, the one place the
   Accessibility permission is read and asked for. The same pets stand in
@@ -114,7 +114,7 @@ below and `AIMeterWatch/CLAUDE.md`.
   (its mood, an account's pet, a still frame's pixels, pure and tested),
   `Shared/PetPixelsView.swift` (that frame drawn, and the pets' colors the
   Mac's `PixelPetView` uses too), `AIMeterWidgets/ActivityPetView.swift`
-  and `AIMeter/Views/LiveActivityCard.swift` (Provider Detail's switches).
+  and `AIMeter/Views/LiveActivityCard.swift` (the account page's switches).
 - `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
   `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
   row builders, `ProviderDetailRows`), `HistoryCard.swift` (the Swift
@@ -130,7 +130,12 @@ below and `AIMeterWatch/CLAUDE.md`.
   `MacSettingsView.swift` (the tabs, and the trailing-switch toggle style)
   over `SettingsSections.swift` (one view per section, shared with the iOS
   sheet's `SettingsView`) and `MacChromeSettings.swift` (the Hiding and
-  Startup sections of its General tab). The
+  Startup sections of its This Mac tab); an account's own settings are
+  `AccountSettingsPage.swift` (`AccountSettingsCards`, the page, and
+  Provider Detail's row to it) over the account sections in
+  `AccountsSettings.swift` (the iOS account list, the usage rows, the
+  Lock Screen widget's window, the Mac's Accounts tab), see "Account
+  settings" in `AIMeter/CLAUDE.md`. The
   macOS notch island is `AIMeter/Views/NotchIsland/`:
   `NotchIslandController.swift` (lifecycle, the interaction's timers
   and monitors, the reveal), `NotchIslandController+Screen.swift`
@@ -856,8 +861,8 @@ the account silently freezes at its last snapshot.
   window keeps its slot (`--` + empty bar). The third slot shows the
   real per-model window when the plan reports one (e.g. Max/Team
   Premium's Fable 5 allowance). When it doesn't — most Claude Pro accounts,
-  since Fable moved to usage credits — `ModelSlotFallback` (Provider
-  Detail → "Third usage row": Auto/Hidden/Credits, default Auto) decides:
+  since Fable moved to usage credits — `ModelSlotFallback` (Settings →
+  "Usage rows": Auto/Hidden/Credits, default Auto) decides:
   `.hidden` drops the slot (two rows total), `.credits` keeps three rows
   and fills it with a synthesized `.credits` window from `spend` instead
   of a dead placeholder, `.auto` picks between those two on its own —
@@ -870,7 +875,8 @@ the account silently freezes at its last snapshot.
   surface that stacks the windows. The one surface that doesn't, the
   medium widget's side-by-side columns, shows each column's own line
   (see `AIMeterWidgets/CLAUDE.md`). Credits has
-  no reset date, so `showCreditsAmount` (off by default, Provider Detail)
+  no reset date, so `showCreditsAmount` (off by default, Settings →
+  "Usage rows")
   optionally fills that same line with `SpendStatus.amountLabel`
   ("$14.27 of $25.00") instead of leaving it blank. In the absolute style a reset today reads
   "Resets at 7:59 PM", one later this week "Resets Sun 7:59 PM", and one
@@ -956,8 +962,8 @@ the account silently freezes at its last snapshot.
   this — it is not a bill", the folder read, and — when Claude Code's own
   `cost-state` totals exist for fully-priced sessions — how far the table
   is from them, the early warning that the table went stale). Settings →
-  "Claude Code" holds the toggle (and "Show today's total in the menu
-  bar", one `Claude Code today: 300K · ≈ $2.00` line under the popover's
+  This Mac → "Claude Code usage" holds the toggle (and "Show today's
+  total in the menu bar", one `Claude Code today: 300K · ≈ $2.00` line under the popover's
   accounts); Privacy & data has its row. `UsageModel.claudeCode` owns
   the model and rescans it on every refresh sweep while enabled; off
   clears what's shown *and* deletes the reader's index. In demo mode the
@@ -1266,8 +1272,9 @@ the account silently freezes at its last snapshot.
   just applies the shared `glanceMetric` to that account's snapshot; macOS
   has no per-instance mechanism (`MenuBarExtra` is a single scene), so a
   new paired preference, `primaryAccountID` (`Shared/PreferencesStore.swift`,
-  Settings → the "Account" menu, `PrimaryAccountPicker`, in both the Menu
-  bar and the Notch island cards, or a click or a swipe on the island
+  Settings → Accounts → "Main account", `PrimaryAccountPicker`, once
+  since 3.2 (the Menu bar and Notch island cards note it under their
+  previews, `MainAccountNote`), or a click or a swipe on the island
   itself, see "Notch island"), picks which account the one status
   item — and the notch island's wings — represent
   (`UsageModel.primaryAccountUsage(preferredID:)`, falling back
@@ -1275,13 +1282,14 @@ the account silently freezes at its last snapshot.
   menu, like "Style", because the unlabeled row of account segments it
   replaced sat above the equally unlabeled window segments and read as
   one more window picker. Both pickers moved
-  out of Claude's Provider Detail and into Settings' Menu bar and Notch
-  island tabs — with
+  out of Claude's Provider Detail and into Settings (2.0: the Menu bar
+  and Notch island tabs; 3.2: the Accounts tab) — with
   several accounts there's no longer one unambiguous account whose detail
-  screen could own "which window does the menu bar read"; iOS keeps its
-  equivalent "Lock Screen widget" pill in Provider Detail, since that one
-  is still meaningfully per-account (which window *of this account* the
-  gauge reads). `glanceMetric` is stored as a plain `UsageWindow.Kind` (not
+  screen could own "which window does the menu bar read"; iOS's
+  equivalent "Lock Screen widget" pill is general too since 3.2
+  (`GlanceMetricSettings`, its options the union of what the accounts
+  report), since the one stored value applies to every widget instance
+  whatever account it is set to. `glanceMetric` is stored as a plain `UsageWindow.Kind` (not
   a fixed enum) so its option list scales with whichever account it's
   being read against: Session and Weekly always, the per-model window
   (e.g. Fable on Max) whenever that account reports one, and Credits
@@ -1424,10 +1432,10 @@ the account silently freezes at its last snapshot.
   migrated notification keys). Bools whose default is `true` must load
   through `Preferences.bool(_:_:default:)`, which presence-checks the key —
   `UserDefaults.bool(forKey:)` reports `false` for an unwritten key and
-  would silently flip them. Unlike `glanceMetric` (account-dependent, so it
-  lives in Claude's Provider Detail on iOS) these are provider-agnostic app
-  chrome and surface in app-wide Settings (`MacSettingsView`'s General
-  and Menu bar tabs: `HidingSettings`, `MenuBarSettings`). The label itself is computed once per state change
+  would silently flip them. Unlike `glanceMetric` (which reads one
+  account's windows) these are provider-agnostic app chrome and surface
+  in app-wide Settings (`MacSettingsView`'s This Mac and Menu bar tabs:
+  `HidingSettings`, `MenuBarSettings`). The label itself is computed once per state change
   by `MenuBarLabelModel` (Shared, pure) and only drawn by `MenuBarLabel`:
   the gauge styles are the variable-value SF Symbol as always, `bar` and
   `battery` are rendered to an `NSImage` with `ImageRenderer` (a status
@@ -1438,8 +1446,9 @@ the account silently freezes at its last snapshot.
   value(s) stay in the tooltip and the accessibility label.
 - Discreet mode (macOS, 3.2; `Preferences.discreetMode`, off by
   default, and `discreetAccountIDs`, the accounts marked for it; Settings
-  → General → "Discreet mode", `DiscreetModeSettings`, with a switch
-  per account under the mode's own, the eye in the menu bar popover's
+  → Accounts → "Discreet mode", `DiscreetModeSettings`, the switch
+  alone, each account's "Hide in discreet mode" on its own settings page
+  (`DiscreetAccountSettings`), the eye in the menu bar popover's
   footer (crossed and in the accent while on) and ⌘⇧D in the Usage
   menu, all one switch): for a screen others can see, at work. While it
   is on, the marked accounts leave the Mac's three glance surfaces at
@@ -1653,7 +1662,7 @@ Claude and Claude Code logos as single-path template SVGs). Every choice
 is drawn the same way, a template glyph in the accent on the wash at the
 same size, so headers keep one shape and weight whatever the pick. The
 picker is `AIMeter/Views/AccountIconPicker.swift` (Dashboard header
-context menu "Change icon…", Provider Detail → Account → Icon): the
+context menu "Change icon…", the account's settings → Account → Icon): the
 three marks, a curated SF Symbols grid, and a free-text field validated
 against the OS's symbol set, applying immediately through
 `UsageModel.setIcon`, which writes the registry and nudges the same

@@ -217,8 +217,9 @@ above); no new target, no push entitlement.
   ~8h hard cap, and "counting down to a deadline" is the Live Activity
   metaphor; a 7-day window doesn't fit either. Not a "later" gap — the
   wrong shape for this mechanism entirely.
-- **Opt-in per account, off by default** — a "Live Activity" toggle in
-  Provider Detail, same visual/persistence pattern as the Smart
+- **Opt-in per account, off by default** — a "Live Activity" toggle on
+  the account's settings page (`AccountSettingsCards`; in Provider
+  Detail until 3.2), same visual/persistence pattern as the Smart
   Notifications toggles (App-Group-backed, keyed by accountID). Matches
   every other visible/persistent thing this app does (peak notifications,
   the login item): a Dynamic Island takeover is prominent enough that it
@@ -294,7 +295,7 @@ above); no new target, no push entitlement.
   is icon + percentage, with the same bolt appended when `isPeak`;
   `.minimal` is icon only (no room for the badge at that size).
 - **The pet** (opt-in per account, off by default; "Show a pet" under the
-  Live Activity switch in Provider Detail, `LiveActivityCard`, shown only
+  Live Activity switch on the account's settings page, `LiveActivityCard`, shown only
   while that switch is on, with the account's pet drawn beside the words):
   the account's own pixel pet, the same creatures as the Mac's session
   pets, from its accountID through FNV-1a (`SessionPet(accountID:)`, so

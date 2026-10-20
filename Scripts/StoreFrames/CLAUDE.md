@@ -80,7 +80,10 @@ so they move and follow the language.
   source. No account."; the pills are "Open source" and "No account"
   (three longer pills truncate on the search card). A capture of
   Provider Detail must stop above the Spend card, and the footnote
-  under the alerts names the provider, so it never shows either.
+  under the alerts names the provider, so it never shows either. From
+  3.2 the alerts live on the account's settings page (Settings → the
+  account), so the next round's `detail-smart.png` is a capture of that
+  page.
 - No em dash (—) anywhere in store text: headlines, subheads, What's
   New, promotional text, description, keywords, in every language. A
   comma, colon or period instead.

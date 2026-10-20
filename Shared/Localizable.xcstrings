@@ -4,6 +4,617 @@
     "" : {
 
     },
+    "Account settings" : {
+      "comment" : "Settings: the header of the account list (iOS), of the Mac Accounts tab's per-account part, and Provider Detail's row to the account's page.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accounteinstellungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes de la cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages du compte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウント設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 설정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes da conta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账户设置"
+          }
+        }
+      }
+    },
+    "Main account" : {
+      "comment" : "Settings (macOS), Accounts tab: the card with the menu bar's and island's account.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptaccount"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta principal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte principal"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メインアカウント"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 계정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta principal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主账户"
+          }
+        }
+      }
+    },
+    "This Mac" : {
+      "comment" : "Settings (macOS): the tab with what this computer does on its own.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Mac"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMac"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Mac"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Mac"
+          }
+        }
+      }
+    },
+    "Usage rows" : {
+      "comment" : "Settings: the card with the third row's fallback and the credit amounts.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzungszeilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filas de uso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lignes d'usage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用量の行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용량 행"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linhas de uso"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用量行"
+          }
+        }
+      }
+    },
+    "Claude Code usage" : {
+      "comment" : "Settings (macOS), This Mac tab: the card that reads Claude Code's local logs.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code-Nutzung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso de Claude Code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usage de Claude Code"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code の使用量"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 사용량"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso do Claude Code"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 用量"
+          }
+        }
+      }
+    },
+    "Hide in discreet mode" : {
+      "comment" : "An account's settings (macOS): the switch that hides this account while discreet mode is on.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im diskreten Modus verbergen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar en modo discreto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer en mode discret"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモードで隠す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드에서 숨기기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar no modo discreto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在低调模式下隐藏"
+          }
+        }
+      }
+    },
+    "Shows the main account, chosen in Accounts." : {
+      "comment" : "Settings (macOS): the note under the Menu bar and Notch island previews with two or more accounts.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt den Hauptaccount, gewählt unter Accounts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra la cuenta principal, elegida en Cuentas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche le compte principal, choisi dans Comptes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メインアカウントを表示します。「アカウント」で選べます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 계정을 표시합니다. 계정에서 선택합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra a conta principal, escolhida em Contas."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示主账户，在“账户”中选择。"
+          }
+        }
+      }
+    },
+    "Each account's notifications, Live Activity, name and icon." : {
+      "comment" : "Settings (iOS): the footnote under the account list.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Mitteilungen, die Live-Aktivität, der Name und das Symbol jedes Accounts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notificaciones, la actividad en vivo, el nombre y el ícono de cada cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications, l'activité en direct, le nom et l'icône de chaque compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各アカウントの通知、ライブアクティビティ、名前とアイコン。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "각 계정의 알림, 실시간 현황, 이름과 아이콘."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações, a Atividade ao Vivo, o nome e o ícone de cada conta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个账户的通知、实时活动、名称和图标。"
+          }
+        }
+      }
+    },
+    "Its notifications, name and icon, and disconnecting." : {
+      "comment" : "Provider Detail: the footnote under the Account settings row.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seine Mitteilungen, Name und Symbol, und das Trennen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sus notificaciones, su nombre y su ícono, y desconectarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses notifications, son nom et son icône, et sa déconnexion."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知、名前とアイコン、接続解除。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림, 이름과 아이콘, 연결 해제."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas notificações, nome e ícone, e desconectar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它的通知、名称和图标，以及断开连接。"
+          }
+        }
+      }
+    },
+    "While it is on, the accounts marked for it in their own settings leave the menu bar and the notch island, and Claude Code's sessions leave the island: what a glance at your screen at work would otherwise see. The Dashboard and the widgets keep showing everything. The eye in the menu bar popover and ⌘⇧D turn it on and off." : {
+      "comment" : "Settings (macOS), Accounts tab: the footnote under the discreet mode switch.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solange er an ist, verschwinden die in ihren eigenen Einstellungen dafür markierten Accounts aus der Menüleiste und der Notch-Insel, und die Sitzungen von Claude Code aus der Insel: was ein Blick auf deinen Bildschirm bei der Arbeit sonst sähe. Das Dashboard und die Widgets zeigen weiter alles. Das Auge im Menüleisten-Popover und ⌘⇧D schalten ihn ein und aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mientras está activado, las cuentas marcadas en sus propios ajustes desaparecen de la barra de menús y de la isla del notch, y las sesiones de Claude Code desaparecen de la isla: lo que un vistazo a tu pantalla en el trabajo vería. El panel y los widgets siguen mostrando todo. El ojo en el menú de la barra de menús y ⌘⇧D lo activan y desactivan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tant qu'il est activé, les comptes cochés dans leurs propres réglages quittent la barre des menus et l'île de l'encoche, et les sessions de Claude Code quittent l'île : ce qu'un coup d'œil à votre écran au travail verrait sinon. Le tableau de bord et les widgets continuent de tout afficher. L'œil dans le menu de la barre des menus et ⌘⇧D l'activent et le désactivent."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンの間、各アカウントの設定で選んだアカウントはメニューバーとノッチアイランドから、Claude Code のセッションはアイランドから消えます。職場で画面をのぞかれても見えないように。ダッシュボードとウィジェットはすべてを表示したままです。メニューバーのポップオーバーの目のアイコンと ⌘⇧D でオン・オフできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜져 있는 동안 각 계정 설정에서 표시한 계정은 메뉴 막대와 노치 아일랜드에서, Claude Code 세션은 아일랜드에서 사라집니다. 직장에서 화면을 흘끗 보더라도 보이지 않습니다. 대시보드와 위젯은 계속 모든 것을 보여줍니다. 메뉴 막대 팝오버의 눈 아이콘과 ⌘⇧D로 켜고 끕니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enquanto estiver ligado, as contas marcadas nos seus próprios ajustes somem da barra de menus e da ilha do notch, e as sessões do Claude Code somem da ilha: o que uma olhada na sua tela no trabalho veria. O painel e os widgets continuam mostrando tudo. O olho no menu da barra de menus e ⌘⇧D ligam e desligam."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，在各自设置中勾选的账户会从菜单栏和刘海岛中消失，Claude Code 的会话也会从岛中消失：也就是在公司被人瞥见屏幕时能看到的内容。仪表板和小组件仍会显示全部。菜单栏弹出窗口中的眼睛图标和 ⌘⇧D 可以开关它。"
+          }
+        }
+      }
+    },
+    "While discreet mode is on, this account leaves the menu bar and the notch island. The mode itself is switched in Accounts, with the eye in the menu bar popover, or with ⌘⇧D." : {
+      "comment" : "An account's settings (macOS): the footnote under Hide in discreet mode.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solange der diskrete Modus an ist, verschwindet dieser Account aus der Menüleiste und der Notch-Insel. Der Modus selbst wird unter Accounts, mit dem Auge im Menüleisten-Popover oder mit ⌘⇧D geschaltet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con el modo discreto activado, esta cuenta desaparece de la barra de menús y de la isla del notch. El modo se activa en Cuentas, con el ojo en el menú de la barra de menús o con ⌘⇧D."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tant que le mode discret est activé, ce compte quitte la barre des menus et l'île de l'encoche. Le mode lui-même s'active dans Comptes, avec l'œil du menu de la barre des menus ou avec ⌘⇧D."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモードがオンの間、このアカウントはメニューバーとノッチアイランドから消えます。モード自体は「アカウント」、メニューバーのポップオーバーの目のアイコン、または ⌘⇧D で切り替えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드가 켜져 있는 동안 이 계정은 메뉴 막대와 노치 아일랜드에서 사라집니다. 모드 자체는 계정에서, 메뉴 막대 팝오버의 눈 아이콘으로, 또는 ⌘⇧D로 켜고 끕니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o modo discreto ligado, esta conta some da barra de menus e da ilha do notch. O modo em si é ligado em Contas, com o olho no menu da barra de menus ou com ⌘⇧D."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启低调模式后，此账户会从菜单栏和刘海岛中消失。模式本身在“账户”中、通过菜单栏弹出窗口中的眼睛图标或 ⌘⇧D 开关。"
+          }
+        }
+      }
+    },
+    "Which usage window the Lock Screen circular widget shows, whichever account it is set to. The options are what your accounts report." : {
+      "comment" : "Settings (iOS): the footnote under the Lock Screen widget card.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welches Nutzungsfenster das runde Sperrbildschirm-Widget zeigt, für welchen Account es auch eingestellt ist. Die Optionen sind, was deine Accounts melden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qué ventana de uso muestra el widget circular de la pantalla bloqueada, sea cual sea la cuenta que tenga configurada. Las opciones son las que reportan tus cuentas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quelle fenêtre d'usage le widget circulaire de l'écran verrouillé affiche, quel que soit le compte choisi. Les options sont celles que vos comptes rapportent."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ロック画面の円形ウィジェットがどの使用ウインドウを表示するか。設定したアカウントが何であっても同じです。選択肢はアカウントが報告するものです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠금 화면 원형 위젯이 어떤 사용 기간을 표시할지, 어느 계정으로 설정했든 같습니다. 선택지는 계정이 보고하는 것들입니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qual janela de uso o widget circular da Tela Bloqueada mostra, seja qual for a conta configurada. As opções são as que suas contas informam."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锁定屏幕圆形小组件显示哪个用量周期，无论设置为哪个账户都一样。选项来自你的账户报告的内容。"
+          }
+        }
+      }
+    },
+    "No account connected." : {
+      "comment" : "Settings (macOS), Accounts tab: in place of an account's settings while nothing is connected.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Account verbunden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna cuenta conectada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun compte connecté."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続されたアカウントはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결된 계정이 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma conta conectada."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未连接任何账户。"
+          }
+        }
+      }
+    },
     "Discreet mode" : {
       "comment" : "Settings (macOS): the header and switch of discreet mode; also the popover's eye button name.",
       "localizations" : {
@@ -94,100 +705,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "低调模式"
-          }
-        }
-      }
-    },
-    "Accounts hidden while it is on" : {
-      "comment" : "Settings (macOS): the caption over the per-account switches of discreet mode.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accounts, die dabei verborgen sind"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuentas ocultas mientras está activado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comptes masqués tant qu'il est activé"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オンの間は隠すアカウント"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "켜져 있는 동안 숨길 계정"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contas ocultas enquanto estiver ligado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启时隐藏的账户"
-          }
-        }
-      }
-    },
-    "While discreet mode is on, the accounts marked here leave the menu bar and the notch island, and Claude Code's sessions leave the island: what a glance at your screen at work would otherwise see. The Dashboard and the widgets keep showing everything. The eye in the menu bar popover and ⌘⇧D turn it on and off." : {
-      "comment" : "Settings (macOS): the footnote under discreet mode.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solange der diskrete Modus an ist, verschwinden die hier markierten Accounts aus der Menüleiste und der Notch-Insel, und die Sitzungen von Claude Code aus der Insel: was ein Blick auf deinen Bildschirm bei der Arbeit sonst sähe. Das Dashboard und die Widgets zeigen weiter alles. Das Auge im Menüleisten-Popover und ⌘⇧D schalten ihn ein und aus."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Con el modo discreto activado, las cuentas marcadas aquí desaparecen de la barra de menús y de la isla del notch, y las sesiones de Claude Code desaparecen de la isla: lo que un vistazo a tu pantalla en el trabajo vería. El panel y los widgets siguen mostrando todo. El ojo en el menú de la barra de menús y ⌘⇧D lo activan y desactivan."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tant que le mode discret est activé, les comptes cochés ici quittent la barre des menus et l'île de l'encoche, et les sessions de Claude Code quittent l'île : ce qu'un coup d'œil à votre écran au travail verrait sinon. Le tableau de bord et les widgets continuent de tout afficher. L'œil dans le menu de la barre des menus et ⌘⇧D l'activent et le désactivent."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "控えめモードがオンの間、ここで選んだアカウントはメニューバーとノッチアイランドから、Claude Code のセッションはアイランドから消えます。職場で画面をのぞかれても見えないように。ダッシュボードとウィジェットはすべてを表示したままです。メニューバーのポップオーバーの目のアイコンと ⌘⇧D でオン・オフできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비공개 모드가 켜져 있는 동안 여기서 표시한 계정은 메뉴 막대와 노치 아일랜드에서, Claude Code 세션은 아일랜드에서 사라집니다. 직장에서 화면을 흘끗 보더라도 보이지 않습니다. 대시보드와 위젯은 계속 모든 것을 보여줍니다. 메뉴 막대 팝오버의 눈 아이콘과 ⌘⇧D로 켜고 끕니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Com o modo discreto ligado, as contas marcadas aqui somem da barra de menus e da ilha do notch, e as sessões do Claude Code somem da ilha: o que uma olhada na sua tela no trabalho veria. O painel e os widgets continuam mostrando tudo. O olho no menu da barra de menus e ⌘⇧D ligam e desligam."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启低调模式后，这里勾选的账户会从菜单栏和刘海岛中消失，Claude Code 的会话也会从岛中消失：也就是在公司被人瞥见屏幕时能看到的内容。仪表板和小组件仍会显示全部。菜单栏弹出窗口中的眼睛图标和 ⌘⇧D 可以开关它。"
           }
         }
       }
@@ -19420,52 +19937,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "菜单栏以百分比显示哪个用量周期。选项与此账户实际报告的内容一致。"
-          }
-        }
-      }
-    },
-    "Which usage window the Lock Screen circular widget shows. Options match what this account actually reports." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welches Nutzungsfenster das runde Sperrbildschirm-Widget zeigt. Die Optionen entsprechen dem, was dieser Account tatsächlich meldet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qué ventana de uso muestra el widget circular de la pantalla bloqueada. Las opciones coinciden con lo que esta cuenta realmente reporta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quelle fenêtre d'usage le widget circulaire de l'écran verrouillé affiche. Les options correspondent à ce que ce compte signale réellement."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ロック画面の円形ウィジェットに表示する使用ウインドウ。選択肢はこのアカウントが実際に報告するものに対応します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "잠금 화면 원형 위젯에 표시할 사용 기간입니다. 선택지는 이 계정이 실제로 보고하는 항목과 일치합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qual janela de uso o widget circular da Tela Bloqueada mostra. As opções correspondem ao que esta conta realmente informa."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "锁定屏幕圆形小组件显示哪个用量周期。选项与此账户实际报告的内容一致。"
           }
         }
       }

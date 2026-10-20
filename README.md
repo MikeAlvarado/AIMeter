@@ -65,7 +65,7 @@ can be added later.
   about one number — pick the account and window (session, weekly, a
   per-model limit, or usage credits) and a bar or a ring from the
   widget's own Edit Widget configuration.
-- **Live Activity** (iOS): opt in per account from Provider Detail to put
+- **Live Activity** (iOS): opt in per account from the account's settings to put
   that account's session countdown on the Lock Screen and Dynamic Island
   while it's running — off by default. The countdown ticks live on-device
   with no network involved; since AIMeter has no server to push updates
@@ -322,7 +322,7 @@ removing them they simply do nothing.
 — no push service involved.
 
 **Disconnecting** is per account, on both platforms — a button on that
-account's Provider Detail screen deletes its stored token, cached
+account's settings page deletes its stored token, cached
 snapshot, and history. The one exception is a Mac's auto-detected
 Claude Code login: there's nothing of AIMeter's own to delete there,
 since it only ever reads Claude Code's existing credentials.

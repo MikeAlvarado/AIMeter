@@ -4,16 +4,16 @@ import UsageKit
 
 /// The Mac's Settings window: the sections the iOS sheet stacks in one
 /// list (`SettingsSections.swift`), spread over toolbar tabs the way a
-/// Mac app's settings are — General, the two glance surfaces, Claude Code
-/// and Privacy & data — at a fixed width, so rows, pills and switches
-/// never stretch across a wide window. Every toggle in it is a trailing
-/// switch (`SettingsSwitchToggleStyle`).
+/// Mac app's settings are — General, Accounts, the two glance surfaces,
+/// This Mac and Privacy & data — at a fixed width, so rows, pills and
+/// switches never stretch across a wide window. Every toggle in it is a
+/// trailing switch (`SettingsSwitchToggleStyle`).
 struct MacSettingsView: View {
     @Environment(UsageModel.self) private var model
     @State private var tab: Tab = Self.launchTab ?? .general
 
     enum Tab: String, Hashable {
-        case general, notchIsland, menuBar, claudeCode, privacy
+        case general, accounts, notchIsland, menuBar, thisMac, privacy
     }
 
     /// `DEBUG` only: `-AIMeterSettingsTab <tab>` (a `Tab` raw value) opens
@@ -39,32 +39,33 @@ struct MacSettingsView: View {
             page(scrolls: true) { GeneralSettingsPage() }
                 .tabItem { Label("General", systemImage: "gearshape") }
                 .tag(Tab.general)
-            page(scrolls: true) { NotchIslandSettings() }
-                .tabItem { Label("Notch island", systemImage: "laptopcomputer") }
-                .tag(Tab.notchIsland)
+            page(scrolls: true) { MacAccountsSettingsPage() }
+                .tabItem { Label("Accounts", systemImage: "person.crop.circle") }
+                .tag(Tab.accounts)
+            page(scrolls: true) {
+                NotchIslandSettings()
+                // Claude Code's sessions are what the island shows beside
+                // the notch, so their card is here. The demo has none to
+                // configure (it shows fabricated sessions).
+                if !model.isDemoMode {
+                    SettingsGap()
+                    ClaudeSessionsSettings()
+                }
+            }
+            .tabItem { Label("Notch island", systemImage: "laptopcomputer") }
+            .tag(Tab.notchIsland)
             page(scrolls: false) { MenuBarSettings() }
                 .tabItem { Label("Menu bar", systemImage: "menubar.rectangle") }
                 .tag(Tab.menuBar)
-            // The demo has no Claude Code section to configure (it shows
-            // fabricated sessions), same as the single list hid the card.
-            if !model.isDemoMode {
-                page(scrolls: false) {
-                    ClaudeSessionsSettings()
-                    SettingsGap()
-                    ClaudeCodeSettings()
-                }
-                .tabItem { Label("Claude Code", systemImage: "terminal") }
-                .tag(Tab.claudeCode)
-            }
+            page(scrolls: true) { ThisMacSettingsPage() }
+                .tabItem { Label("This Mac", systemImage: "desktopcomputer") }
+                .tag(Tab.thisMac)
             PrivacyView()
                 .frame(width: Self.width, height: Self.scrollingHeight)
                 .tabItem { Label("Privacy & data", systemImage: "lock.shield") }
                 .tag(Tab.privacy)
         }
         .toggleStyle(.settingsSwitch)
-        .onChange(of: model.isDemoMode) { _, demo in
-            if demo, tab == .claudeCode { tab = .general }
-        }
     }
 
     @ViewBuilder
@@ -84,8 +85,8 @@ struct MacSettingsView: View {
     }
 }
 
-/// General: the iOS list's sections, plus the Mac's own chrome — hiding
-/// the icons and opening at login.
+/// General: the iOS list's sections that are general and not the Mac's
+/// own (those are This Mac's) nor an account's (Accounts).
 private struct GeneralSettingsPage: View {
     @Environment(UsageModel.self) private var model
 
@@ -97,14 +98,8 @@ private struct GeneralSettingsPage: View {
         AppearanceSettings()
         SettingsGap()
         AppIconSettings()
-        if AccountOrderSettings.isOffered(model) {
-            SettingsGap()
-            AccountOrderSettings()
-        }
-        if DiscreetModeSettings.isOffered(model) {
-            SettingsGap()
-            DiscreetModeSettings()
-        }
+        SettingsGap()
+        UsageRowsSettings()
         if PeakNotificationsSettings.isOffered {
             SettingsGap()
             PeakNotificationsSettings()
@@ -120,12 +115,6 @@ private struct GeneralSettingsPage: View {
             ExportSettings()
         }
         SettingsGap()
-        HidingSettings()
-        SettingsGap()
-        StartupSettings()
-        SettingsGap()
-        UpdatesSettings()
-        SettingsGap()
         TourSettings()
         SettingsGap()
         FeedbackSettings()
@@ -138,9 +127,27 @@ private struct GeneralSettingsPage: View {
     }
 }
 
-/// "Usage": reading the CLI's local logs for token counts, and the
-/// popover's line. Under "Sessions" (`ClaudeSessionsSettings`) in the
-/// Claude Code tab.
+/// This Mac: what this computer does on its own — hiding the icons,
+/// opening at login, updating itself, and reading Claude Code's logs.
+private struct ThisMacSettingsPage: View {
+    @Environment(UsageModel.self) private var model
+
+    var body: some View {
+        HidingSettings()
+        SettingsGap()
+        StartupSettings()
+        SettingsGap()
+        UpdatesSettings()
+        // The demo has no logs to read (its coding sessions are fabricated).
+        if !model.isDemoMode {
+            SettingsGap()
+            ClaudeCodeSettings()
+        }
+    }
+}
+
+/// "Claude Code usage": reading the CLI's local logs for token counts,
+/// and the popover's line. In the This Mac tab.
 struct ClaudeCodeSettings: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
@@ -148,7 +155,7 @@ struct ClaudeCodeSettings: View {
     var body: some View {
         @Bindable var prefs = prefs
 
-        SectionHeader(title: String(localized: "Usage"))
+        SectionHeader(title: String(localized: "Claude Code usage"))
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                 Toggle(isOn: $prefs.claudeCodeUsageEnabled) {

@@ -5,11 +5,11 @@ import UsageKit
 /// "Account": which connected account the two glance surfaces read — the
 /// status item and the notch island's wings (`Preferences.primaryAccountID`,
 /// falling back to the first account). Offered only with two or more
-/// accounts, in both of their Settings cards, as a labeled menu like the
-/// "Style" row: the row of unlabeled segments it replaces sat right above
-/// the equally unlabeled window segments and read as one more window
-/// picker, not as the choice of account it was — and it lived only in
-/// the Menu bar card, whose icon the island hides.
+/// accounts, once, in the Accounts tab's "Main account" card
+/// (`MacAccountsSettingsPage`); the Menu bar and Notch island cards say
+/// so under their previews (`MainAccountNote`) instead of repeating it.
+/// A labeled menu like the "Style" row: the row of unlabeled segments it
+/// replaced read as one more window picker.
 struct PrimaryAccountPicker: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
@@ -45,6 +45,16 @@ struct PrimaryAccountPicker: View {
             get: { model.primaryAccountUsage(preferredID: prefs.primaryAccountID)?.account.accountID ?? ClaudeKeychainCredentialSource.legacyAccountID },
             set: { prefs.primaryAccountID = $0 }
         )
+    }
+}
+
+/// Under the Menu bar and Notch island previews with two or more
+/// accounts: where the account they show is chosen.
+struct MainAccountNote: View {
+    var body: some View {
+        Label(String(localized: "Shows the main account, chosen in Accounts."), systemImage: "person.crop.circle")
+            .font(Theme.caption)
+            .foregroundStyle(Theme.inkSecondary)
     }
 }
 #endif

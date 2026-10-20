@@ -29,7 +29,7 @@ struct MenuBarSettings: View {
                 Divider().overlay(Theme.track)
 
                 if model.accounts.count > 1 {
-                    PrimaryAccountPicker()
+                    MainAccountNote()
                     Divider().overlay(Theme.track)
                 }
 

@@ -3,7 +3,9 @@ import UsageKit
 
 /// Settings as one list — the iOS sheet. The Mac's Settings window shows
 /// the same sections over tabs instead (`MacSettingsView`); both are
-/// built from the section views in `SettingsSections.swift`.
+/// built from the section views in `SettingsSections.swift`. The list is
+/// the general settings; each account's own are on its page, reached
+/// from the account list (`AccountListSettings`).
 struct SettingsView: View {
     @Environment(UsageModel.self) private var model
 
@@ -20,9 +22,19 @@ struct SettingsView: View {
                 AppearanceSettings()
                 SettingsGap()
                 AppIconSettings()
+                SettingsGap()
+                UsageRowsSettings()
+                #if os(iOS)
+                SettingsGap()
+                GlanceMetricSettings()
+                #endif
                 if AccountOrderSettings.isOffered(model) {
                     SettingsGap()
                     AccountOrderSettings()
+                }
+                if AccountListSettings.isOffered(model) {
+                    SettingsGap()
+                    AccountListSettings()
                 }
                 if PeakNotificationsSettings.isOffered {
                     SettingsGap()

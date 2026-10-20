@@ -49,7 +49,7 @@ struct NotchIslandSettings: View {
                     // The wings are one account's; the chips below are
                     // that account's windows.
                     Divider().overlay(Theme.track)
-                    PrimaryAccountPicker()
+                    MainAccountNote()
                 }
                 Divider().overlay(Theme.track)
                 VStack(alignment: .leading, spacing: 8) {
