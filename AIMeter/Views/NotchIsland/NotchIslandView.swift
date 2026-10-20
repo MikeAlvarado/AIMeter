@@ -267,12 +267,14 @@ extension NotchIslandModel {
         // The demo is where the store and site captures come from: it
         // shows its own fabricated sessions (`DemoSessions`), and no real
         // session (or its name) ever shows in it.
+        // Discreet mode: no session at all, and only the accounts it
+        // leaves (`UsageModel.glanceAccounts`).
         let source: (sessions: [ClaudeCodeSessionActivity], justFinished: ClaudeCodeSessionActivity?) =
-            !prefs.claudeSessionsEnabled ? ([], nil)
+            !prefs.claudeSessionsEnabled || prefs.discreetMode ? ([], nil)
             : model.isDemoMode ? (DemoSessions.shared.sessions, DemoSessions.shared.justFinished)
             : (ClaudeSessionMonitor.shared.sessions, ClaudeSessionMonitor.shared.justFinished)
         return NotchIslandModel(
-            accounts: model.accounts.map { usage in
+            accounts: model.glanceAccounts(prefs).map { usage in
                 AccountInput(
                     account: usage.account,
                     snapshot: usage.snapshot,

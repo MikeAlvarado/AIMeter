@@ -181,6 +181,20 @@ final class PreferencesModel {
         get { stored.ordersByUrgency }
         set { guard stored.ordersByUrgency != newValue else { return }; stored.ordersByUrgency = newValue; persist(newValue, Preferences.Keys.ordersByUrgency, reloadsWidgets: true) }
     }
+    var discreetMode: Bool {
+        get { stored.discreetMode }
+        set { guard stored.discreetMode != newValue else { return }; stored.discreetMode = newValue; persist(newValue, Preferences.Keys.discreetMode, reloadsWidgets: false) }
+    }
+    var discreetAccountIDs: Set<String> {
+        get { stored.discreetAccountIDs }
+        set { guard stored.discreetAccountIDs != newValue else { return }; stored.discreetAccountIDs = newValue; persist(Array(newValue).sorted(), Preferences.Keys.discreetAccountIDs, reloadsWidgets: false) }
+    }
+    /// Marks an account for discreet mode, or clears it.
+    func setDiscreet(_ hidden: Bool, accountID: String) {
+        var ids = discreetAccountIDs
+        if hidden { ids.insert(accountID) } else { ids.remove(accountID) }
+        discreetAccountIDs = ids
+    }
     var claudeCodeUsageEnabled: Bool {
         get { stored.claudeCodeUsageEnabled }
         set { guard stored.claudeCodeUsageEnabled != newValue else { return }; stored.claudeCodeUsageEnabled = newValue; persist(newValue, Preferences.Keys.claudeCodeUsageEnabled, reloadsWidgets: false) }

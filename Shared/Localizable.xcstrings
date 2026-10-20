@@ -4,6 +4,241 @@
     "" : {
 
     },
+    "Discreet mode" : {
+      "comment" : "Settings (macOS): the header and switch of discreet mode; also the popover's eye button name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diskreter Modus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo discreto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode discret"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo discreto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低调模式"
+          }
+        }
+      }
+    },
+    "Discreet Mode" : {
+      "comment" : "The Usage menu (macOS): the discreet mode toggle, title case like the menu's other items.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diskreter Modus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo discreto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode discret"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo discreto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低调模式"
+          }
+        }
+      }
+    },
+    "Accounts hidden while it is on" : {
+      "comment" : "Settings (macOS): the caption over the per-account switches of discreet mode.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accounts, die dabei verborgen sind"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuentas ocultas mientras está activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comptes masqués tant qu'il est activé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンの間は隠すアカウント"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜져 있는 동안 숨길 계정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contas ocultas enquanto estiver ligado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启时隐藏的账户"
+          }
+        }
+      }
+    },
+    "While discreet mode is on, the accounts marked here leave the menu bar and the notch island, and Claude Code's sessions leave the island: what a glance at your screen at work would otherwise see. The Dashboard and the widgets keep showing everything. The eye in the menu bar popover and ⌘⇧D turn it on and off." : {
+      "comment" : "Settings (macOS): the footnote under discreet mode.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solange der diskrete Modus an ist, verschwinden die hier markierten Accounts aus der Menüleiste und der Notch-Insel, und die Sitzungen von Claude Code aus der Insel: was ein Blick auf deinen Bildschirm bei der Arbeit sonst sähe. Das Dashboard und die Widgets zeigen weiter alles. Das Auge im Menüleisten-Popover und ⌘⇧D schalten ihn ein und aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con el modo discreto activado, las cuentas marcadas aquí desaparecen de la barra de menús y de la isla del notch, y las sesiones de Claude Code desaparecen de la isla: lo que un vistazo a tu pantalla en el trabajo vería. El panel y los widgets siguen mostrando todo. El ojo en el menú de la barra de menús y ⌘⇧D lo activan y desactivan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tant que le mode discret est activé, les comptes cochés ici quittent la barre des menus et l'île de l'encoche, et les sessions de Claude Code quittent l'île : ce qu'un coup d'œil à votre écran au travail verrait sinon. Le tableau de bord et les widgets continuent de tout afficher. L'œil dans le menu de la barre des menus et ⌘⇧D l'activent et le désactivent."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモードがオンの間、ここで選んだアカウントはメニューバーとノッチアイランドから、Claude Code のセッションはアイランドから消えます。職場で画面をのぞかれても見えないように。ダッシュボードとウィジェットはすべてを表示したままです。メニューバーのポップオーバーの目のアイコンと ⌘⇧D でオン・オフできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드가 켜져 있는 동안 여기서 표시한 계정은 메뉴 막대와 노치 아일랜드에서, Claude Code 세션은 아일랜드에서 사라집니다. 직장에서 화면을 흘끗 보더라도 보이지 않습니다. 대시보드와 위젯은 계속 모든 것을 보여줍니다. 메뉴 막대 팝오버의 눈 아이콘과 ⌘⇧D로 켜고 끕니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o modo discreto ligado, as contas marcadas aqui somem da barra de menus e da ilha do notch, e as sessões do Claude Code somem da ilha: o que uma olhada na sua tela no trabalho veria. O painel e os widgets continuam mostrando tudo. O olho no menu da barra de menus e ⌘⇧D ligam e desligam."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启低调模式后，这里勾选的账户会从菜单栏和刘海岛中消失，Claude Code 的会话也会从岛中消失：也就是在公司被人瞥见屏幕时能看到的内容。仪表板和小组件仍会显示全部。菜单栏弹出窗口中的眼睛图标和 ⌘⇧D 可以开关它。"
+          }
+        }
+      }
+    },
+    "Hidden in discreet mode" : {
+      "comment" : "Menu bar popover (macOS): the line shown when every account is hidden by discreet mode.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im diskreten Modus verborgen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculto en modo discreto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masqué en mode discret"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモードで非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드로 숨김"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculto no modo discreto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低调模式下已隐藏"
+          }
+        }
+      }
+    },
     "Layout" : {
       "comment" : "All-accounts widget, Edit Widget: the layout choice's title.",
       "localizations" : {

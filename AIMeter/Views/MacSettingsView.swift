@@ -101,6 +101,10 @@ private struct GeneralSettingsPage: View {
             SettingsGap()
             AccountOrderSettings()
         }
+        if DiscreetModeSettings.isOffered(model) {
+            SettingsGap()
+            DiscreetModeSettings()
+        }
         if PeakNotificationsSettings.isOffered {
             SettingsGap()
             PeakNotificationsSettings()

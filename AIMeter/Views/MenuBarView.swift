@@ -70,6 +70,15 @@ struct MenuBarView: View {
                 .keyboardShortcut("r", modifiers: .command)
                 .disabled(model.isRefreshing)
 
+                // Discreet mode (see `DiscreetModeSettings`): the eye is
+                // crossed and in the accent while it is on.
+                if !model.accounts.isEmpty {
+                    footerButton("Discreet mode", systemImage: prefs.discreetMode ? "eye.slash.fill" : "eye", isOn: prefs.discreetMode) {
+                        prefs.discreetMode.toggle()
+                    }
+                    .keyboardShortcut("d", modifiers: [.command, .shift])
+                }
+
                 Spacer()
 
                 // The popover is its own window with no main menu, so the
@@ -104,7 +113,16 @@ struct MenuBarView: View {
     private var accountList: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
-                ForEach(model.accounts) { usage in
+                let shown = model.glanceAccounts(prefs)
+                if shown.isEmpty {
+                    // Every account marked for discreet mode: say so, so
+                    // the empty list is not read as nothing connected.
+                    Label("Hidden in discreet mode", systemImage: "eye.slash")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .padding(.vertical, 6)
+                }
+                ForEach(shown) { usage in
                     AccountSectionView(
                         usage: usage,
                         iconSize: 20,
@@ -118,7 +136,7 @@ struct MenuBarView: View {
                 if !model.isDemoMode {
                     addAccountButton
                 }
-                if prefs.menuBarShowsClaudeCodeLine, !model.isDemoMode, let line = model.claudeCode?.menuBarLine() {
+                if prefs.menuBarShowsClaudeCodeLine, !model.isDemoMode, !prefs.discreetMode, let line = model.claudeCode?.menuBarLine() {
                     Divider().overlay(Theme.track)
                     Label(line, systemImage: "terminal")
                         .font(Theme.caption)
@@ -135,7 +153,7 @@ struct MenuBarView: View {
         .frame(height: min(listHeight, Self.maxListHeight))
     }
 
-    private func footerButton(_ title: LocalizedStringKey, systemImage: String, action: @escaping () -> Void) -> some View {
+    private func footerButton(_ title: LocalizedStringKey, systemImage: String, isOn: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemImage)
                 .font(.body)
@@ -143,7 +161,7 @@ struct MenuBarView: View {
                 // The whole square, not just the glyph's strokes.
                 .contentShape(Rectangle())
         }
-        .buttonStyle(FooterIconButtonStyle())
+        .buttonStyle(FooterIconButtonStyle(isOn: isOn))
         .help(Text(title))
         .accessibilityLabel(Text(title))
     }
@@ -174,21 +192,25 @@ struct MenuBarView: View {
     }
 }
 
-/// The popover footer's icons: ink like the text around them, dimmed
-/// while pressed, and faint while disabled (Refresh, mid-refresh) — a
-/// plain style with a fixed color would hide both states.
+/// The popover footer's icons: ink like the text around them (the accent
+/// for a switch that is on), dimmed while pressed, and faint while
+/// disabled (Refresh, mid-refresh) — a plain style with a fixed color
+/// would hide both states.
 private struct FooterIconButtonStyle: ButtonStyle {
+    var isOn = false
+
     func makeBody(configuration: Configuration) -> some View {
-        Icon(configuration: configuration)
+        Icon(configuration: configuration, isOn: isOn)
     }
 
     private struct Icon: View {
         let configuration: ButtonStyleConfiguration
+        let isOn: Bool
         @Environment(\.isEnabled) private var isEnabled
 
         var body: some View {
             configuration.label
-                .foregroundStyle(Theme.ink)
+                .foregroundStyle(isOn ? Theme.accent : Theme.ink)
                 .opacity(isEnabled ? (configuration.isPressed ? 0.5 : 1) : 0.35)
         }
     }

@@ -169,7 +169,7 @@ struct NotchIslandSettings: View {
 
     private var glanceOptions: [UsageWindow.Kind] {
         UsageSnapshot.glanceOptions(
-            for: model.primaryAccountUsage(preferredID: prefs.primaryAccountID)?.snapshot,
+            for: model.glancePrimary(prefs)?.snapshot,
             modelSlotFallback: prefs.modelSlotFallback
         )
     }

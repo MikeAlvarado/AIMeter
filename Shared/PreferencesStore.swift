@@ -257,6 +257,14 @@ struct Preferences: Sendable {
     /// The account closest to a limit first, everywhere accounts are
     /// listed (`AccountOrder`); off, the registry's order, the user's own.
     var ordersByUrgency: Bool = false
+    // MARK: Discreet mode (macOS)
+    //
+    // While on, the accounts in `discreetAccountIDs` leave the menu bar
+    // and the notch island, and Claude Code's sessions leave the island:
+    // what a colleague's glance at the screen at work would otherwise
+    // see. The Dashboard and the widgets keep showing everything.
+    var discreetMode: Bool = false
+    var discreetAccountIDs: Set<String> = []
     // MARK: Claude Code usage (macOS)
     //
     // Off by default and opt-in: the CLI's logs are another app's files.
@@ -322,6 +330,8 @@ struct Preferences: Sendable {
         static let checksServiceStatus = "pref.checksServiceStatus"
         static let cloudSync = "pref.cloudSync"
         static let ordersByUrgency = "pref.ordersByUrgency"
+        static let discreetMode = "pref.discreetMode"
+        static let discreetAccountIDs = "pref.discreetAccountIDs"
         static let claudeCodeUsageEnabled = "pref.claudeCodeUsageEnabled"
         static let claudeCodeUsageDismissed = "pref.claudeCodeUsageDismissed"
         static let menuBarShowsClaudeCodeLine = "pref.menuBarShowsClaudeCodeLine"
@@ -380,6 +390,8 @@ struct Preferences: Sendable {
         prefs.checksServiceStatus = bool(defaults, Keys.checksServiceStatus, default: true)
         prefs.cloudSync = defaults.bool(forKey: Keys.cloudSync)
         prefs.ordersByUrgency = defaults.bool(forKey: Keys.ordersByUrgency)
+        prefs.discreetMode = defaults.bool(forKey: Keys.discreetMode)
+        prefs.discreetAccountIDs = Set(defaults.stringArray(forKey: Keys.discreetAccountIDs) ?? [])
         prefs.claudeCodeUsageEnabled = defaults.bool(forKey: Keys.claudeCodeUsageEnabled)
         prefs.claudeCodeUsageDismissed = defaults.bool(forKey: Keys.claudeCodeUsageDismissed)
         prefs.menuBarShowsClaudeCodeLine = defaults.bool(forKey: Keys.menuBarShowsClaudeCodeLine)

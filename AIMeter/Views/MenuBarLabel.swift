@@ -94,7 +94,7 @@ extension MenuBarLabelModel {
     /// truth rather than a copy of it.
     @MainActor
     static func current(model: UsageModel, prefs: PreferencesModel, now: Date = Date()) -> MenuBarLabelModel {
-        let usage = model.primaryAccountUsage(preferredID: prefs.primaryAccountID)
+        let usage = model.glancePrimary(prefs)
         let showsName = prefs.menuBarShowsAccountName && model.accounts.count > 1
         return MenuBarLabelModel(
             snapshot: usage?.snapshot,

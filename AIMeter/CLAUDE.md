@@ -268,7 +268,9 @@
   Dashboard's navigation stack sets it too, so Provider Detail's toggles
   match — the Mac default was a checkbox before the title). The tabs:
   **General** — the iOS list's sections except the Privacy link (iCloud and
-  Export included, after Service status), plus the
+  Export included, after Service status, and the Mac's own "Discreet
+  mode" card after Accounts: `DiscreetModeSettings`, the switch and one
+  per account, see "Discreet mode" in the repo-root CLAUDE.md), plus the
   Mac's own chrome from `MacChromeSettings.swift`: "Hiding AIMeter"
   (`HidingSettings`: Hide Dock icon / Hide menu bar icon, with a warning
   row once both are hidden and the island is off) and "Startup"
@@ -480,7 +482,9 @@
   repeated per section) + divider, a compact `ServiceStatusBanner` only
   while the provider reports an incident (same rule as the Dashboard's),
   then **every**
-  connected account as its own `AccountSectionView` (shared with the
+  connected account that discreet mode leaves (`UsageModel.glanceAccounts`;
+  all of them marked, a "Hidden in discreet mode" line instead) as its
+  own `AccountSectionView` (shared with the
   Dashboard, `linksToDetail: false` here since the popover has no
   navigation stack to push into — tapping a section header does nothing,
   unlike the Dashboard's chevron-and-push, and no reorder affordance
@@ -497,7 +501,11 @@
   icon-only buttons, each with its full name in `.help` and the
   accessibility label (`FooterIconButtonStyle`: ink, dimmed while pressed,
   faint while disabled): Open AIMeter (`macwindow`,
-  `AppChrome.revealMainWindow()`) and Refresh on the left, Settings and
+  `AppChrome.revealMainWindow()`), Refresh and, with an account
+  connected, the discreet-mode eye (`eye`, or `eye.slash.fill` in the
+  accent while on; ⌘⇧D; the same switch as Settings' card and the Usage
+  menu's "Discreet Mode", see "Discreet mode" in the repo-root
+  CLAUDE.md) on the left, Settings and
   Quit (`power`) on the right — it used to be one icon among three text
   buttons. "Open
   AIMeter" is the popover's only route to Provider Detail, since the

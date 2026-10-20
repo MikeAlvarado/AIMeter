@@ -1413,7 +1413,9 @@ the account silently freezes at its last snapshot.
   **on**, presence-checked; see "Updates (macOS) and What's new"), and
   `appIcon` (the icon the Dock shows, `AppIconChoice`, default Sunset,
   the bundle's own; an unknown value reads as Sunset; see "App icon"
-  under "Design system"). All default to the behavior that shipped before they
+  under "Design system"), `discreetMode` (default off) with
+  `discreetAccountIDs` (a set, stored as a sorted array; see "Discreet
+  mode" below). All default to the behavior that shipped before they
   existed, so an upgrade never changes an existing install — including
   the one migration: `menuBarShowsPercentage`, the pre-style bool, is
   only read at load now, to derive `menuBarStyle` for an install that
@@ -1434,6 +1436,28 @@ the account silently freezes at its last snapshot.
   bar, except under a tint, where it carries the real `Theme.warning` or
   `Theme.danger` and is marked non-template. Whatever the style, the exact
   value(s) stay in the tooltip and the accessibility label.
+- Discreet mode (macOS, 3.2; `Preferences.discreetMode`, off by
+  default, and `discreetAccountIDs`, the accounts marked for it; Settings
+  → General → "Discreet mode", `DiscreetModeSettings`, with a switch
+  per account under the mode's own, the eye in the menu bar popover's
+  footer (crossed and in the accent while on) and ⌘⇧D in the Usage
+  menu, all one switch): for a screen others can see, at work. While it
+  is on, the marked accounts leave the Mac's three glance surfaces at
+  once, since all three draw from `UsageModel.glanceAccounts(prefs)`
+  (`UsageModel+Discreet.swift`, pure, tested): the status item
+  (`glancePrimary`: the chosen primary while it shows, else the first
+  that does, `primaryAccountID` itself left as chosen so it is back when
+  the mode goes off), the popover's list (all of them marked: a "Hidden
+  in discreet mode" line, so an empty list is not read as nothing
+  connected) and the notch island's wings, rows and rotation
+  (`NotchIslandModel.current`); and Claude Code's sessions leave the
+  island (its source is empty, as with sessions off) and the popover's
+  "Claude Code today" line is withheld. The Dashboard, Provider Detail
+  and the widgets keep showing everything: the Dashboard is the window
+  the user opens, and the widgets read the App Group on their own
+  schedule. The "needs you" notification still fires. Mike's ask,
+  2026-10-19: at work, neither his sessions nor his personal account's
+  usage on screen.
 - Notch island (macOS, 2.0): a pure-black panel fused to the MacBook's
   notch — or, on a screen without one (an external display, an iMac, a
   MacBook Air, a closed MacBook feeding a monitor), an island it draws
@@ -1750,7 +1774,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
 - Keyboard shortcuts (macOS): a "Usage" menu in the main menu bar
   (`AIMeterApp.commands`) carries them so they are discoverable — ⌘R
   Refresh All, ⌘N Add Account…, ⌘⇧U Used/Remaining, ⌘⇧A relative/absolute
-  reset times. ⌘R is declared there and on the popover's Refresh button
+  reset times, ⌘⇧D Discreet Mode (a `Toggle`, checked while on; see
+  "Discreet mode" under "Presentation rules"). ⌘R is declared there and on the popover's Refresh button
   (the popover is its own window with no main menu), never on the
   Dashboard's own button as well: both firing was the bug. The popover
   also declares ⌘, and ⌘Q on its Settings…/Quit buttons for the same
@@ -1811,7 +1836,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   the store with the switch or with an account (`CloudSyncTests`),
   `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
   urgency order and the model applying it over the registry's
-  (`AccountOrderTests`), the
+  (`AccountOrderTests`), discreet mode's keys, which accounts the glance
+  surfaces keep and the primary they fall back to (`DiscreetModeTests`), the
   usage levels and the usage-colors switch with its presence-checked
   default (`UsageLevelTests`), versions and the bundled What's New notes
   (every language, no em dash, every named feature one the tour knows)

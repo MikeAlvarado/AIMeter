@@ -100,6 +100,12 @@ struct AIMeterApp: App {
                     prefs.toggleResetStyle()
                 }
                 .keyboardShortcut("a", modifiers: [.command, .shift])
+
+                Divider()
+
+                // The same switch as Settings' and the popover's eye.
+                Toggle("Discreet Mode", isOn: $prefs.discreetMode)
+                    .keyboardShortcut("d", modifiers: [.command, .shift])
             }
         }
         #endif

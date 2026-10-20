@@ -85,6 +85,10 @@ can be added later.
   the device for 30 days. **Export** them from Settings as a CSV (for
   Numbers or Excel) or a JSON (for a script): every account, every
   window, the share sheet on iOS and a save panel on the Mac.
+- **Discreet mode** (Mac): one switch (the eye in the menu bar popover,
+  ⌘⇧D, or Settings) takes the accounts you mark out of the menu bar and
+  the notch island, and Claude Code's sessions out of the island, for a
+  screen others can see. The Dashboard and the widgets keep everything.
 - **iCloud sync** (opt-in, off by default): your display preferences and
   each account's history follow you between iPhone and Mac through your
   own iCloud. Logins never do: each device signs in on its own, and the
