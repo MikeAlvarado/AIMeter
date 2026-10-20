@@ -54,7 +54,7 @@ struct ProviderMark: View {
     }
 
     /// The glyph every account starts with.
-    static let defaultSymbol = "sparkle"
+    nonisolated static let defaultSymbol = "sparkle"
 
     static func assetName(for mark: AccountIcon.Mark) -> String {
         switch mark {

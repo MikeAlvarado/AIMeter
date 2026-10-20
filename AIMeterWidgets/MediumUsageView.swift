@@ -58,7 +58,7 @@ private struct WindowColumn: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(kind.shortName)
+            Text(window?.shortTitle ?? kind.shortName)
                 .font(.system(size: 11))
                 .foregroundStyle(Theme.inkSecondary)
                 .lineLimit(1)

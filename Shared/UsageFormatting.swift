@@ -1,9 +1,14 @@
 import Foundation
 import UsageKit
 
-/// Fixed three-slot presentation used across dashboard, detail, and
-/// widgets: session, weekly, top model — always visible; a missing window
-/// keeps its slot so the composition never shifts.
+/// The up-to-three-slot presentation used across dashboard, detail, and
+/// widgets. Before the first fetch (no snapshot) the two placeholders,
+/// session and weekly, so the composition is there from the start. With
+/// a snapshot, what the account reports: its session and its overall
+/// period (the week, or Codex Free's month) in that order, then the third
+/// slot; or, for a provider that meters named quotas and no rate window
+/// (GitHub Copilot's monthly premium requests, chat and completions), up
+/// to three of those in the provider's order.
 ///
 /// The third slot only ever shows a real per-model window when the plan
 /// actually reports one (e.g. Max/Team Premium's Fable 5 allowance). When it
@@ -14,24 +19,37 @@ import UsageKit
 /// (the default) picks between those two by itself — the row appears
 /// exactly when the account's spend/credits status is enabled.
 struct WindowSlots {
+    static let maxSlots = 3
+
     let slots: [(kind: UsageWindow.Kind, window: UsageWindow?)]
 
     init(snapshot: UsageSnapshot?, modelSlotFallback: ModelSlotFallback) {
-        let model = snapshot?.modelWindows.first
-        var built: [(kind: UsageWindow.Kind, window: UsageWindow?)] = [
-            (.session, snapshot?.sessionWindow),
-            (.weekly, snapshot?.weeklyWindow),
-        ]
-        if let model {
+        guard let snapshot else {
+            slots = [(.session, nil), (.weekly, nil)]
+            return
+        }
+        var built: [(kind: UsageWindow.Kind, window: UsageWindow?)] = []
+        if let session = snapshot.sessionWindow { built.append((.session, session)) }
+        if let weekly = snapshot.weeklyWindow { built.append((.weekly, weekly)) }
+        if built.isEmpty {
+            let quotas = snapshot.quotaWindows.prefix(Self.maxSlots).map { (kind: $0.kind, window: Optional($0)) }
+            if !quotas.isEmpty {
+                slots = quotas
+                return
+            }
+            // A snapshot with no rate window at all keeps the placeholders.
+            built = [(.session, nil), (.weekly, nil)]
+        }
+        if let model = snapshot.modelWindows.first {
             built.append((model.kind, model))
         } else {
             switch modelSlotFallback {
             case .hidden:
                 break
             case .credits:
-                built.append((.credits, snapshot?.creditsWindow))
+                built.append((.credits, snapshot.creditsWindow))
             case .auto:
-                if let creditsWindow = snapshot?.creditsWindow {
+                if let creditsWindow = snapshot.creditsWindow {
                     built.append((.credits, creditsWindow))
                 }
             }
@@ -74,14 +92,15 @@ extension UsageSnapshot {
         switch kind {
         case .session: return sessionWindow
         case .weekly: return weeklyWindow
-        case .modelSpecific: return modelWindows.first { $0.kind == kind }
+        case .modelSpecific, .quota: return windows.first { $0.kind == kind }
         case .credits: return creditsWindow
         }
     }
 
     /// The window kinds this account currently reports, for pickers that
     /// need a live list instead of a hardcoded one — session and weekly
-    /// are always offered; the per-model window (e.g. Fable on Max) is
+    /// while the account reports them (both, before the first fetch), or
+    /// else its named quotas; the per-model window (e.g. Fable on Max) is
     /// offered whenever the account has one; Credits only when the
     /// account has it enabled *and* the user hasn't turned the third-row
     /// fallback fully off — the same `modelSlotFallback` rule
@@ -89,7 +108,13 @@ extension UsageSnapshot {
     /// setting "Third usage row" to Hidden also removes Credits from this
     /// picker's options.
     static func glanceOptions(for snapshot: UsageSnapshot?, modelSlotFallback: ModelSlotFallback) -> [UsageWindow.Kind] {
-        var kinds: [UsageWindow.Kind] = [.session, .weekly]
+        var kinds: [UsageWindow.Kind] = []
+        if let snapshot {
+            if snapshot.sessionWindow != nil { kinds.append(.session) }
+            if snapshot.weeklyWindow != nil { kinds.append(.weekly) }
+            if kinds.isEmpty { kinds = snapshot.quotaWindows.map(\.kind) }
+        }
+        if kinds.isEmpty { kinds = [.session, .weekly] }
         if let model = snapshot?.modelWindows.first {
             kinds.append(model.kind)
         }
@@ -97,6 +122,15 @@ extension UsageSnapshot {
             kinds.append(.credits)
         }
         return kinds
+    }
+
+    /// The one window a glance surface reads for `metric`: that kind when
+    /// the account reports it, else the first it does report, so a
+    /// preference set against one provider's session never leaves
+    /// another provider's account blank.
+    static func glanceMetric(_ metric: UsageWindow.Kind, for snapshot: UsageSnapshot?, modelSlotFallback: ModelSlotFallback) -> UsageWindow.Kind {
+        let available = glanceOptions(for: snapshot, modelSlotFallback: modelSlotFallback)
+        return available.contains(metric) ? metric : (available.first ?? metric)
     }
 }
 

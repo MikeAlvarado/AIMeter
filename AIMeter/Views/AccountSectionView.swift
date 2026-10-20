@@ -72,7 +72,7 @@ struct AccountSectionView: View {
             }
         }
         .sheet(isPresented: $showingReconnect) {
-            ConnectClaudeSheet(reconnecting: usage.account)
+            ConnectAccountSheet(reconnecting: usage.account)
         }
         .renameAccountAlert(for: usage.account.accountID, isPresented: $showingRename, name: $renameDraft)
         .sheet(isPresented: $showingIconPicker) {

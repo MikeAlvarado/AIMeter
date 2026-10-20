@@ -93,7 +93,7 @@ struct NotificationTogglesCard: View {
                     // any other slot with no data.
                     let disabled = slot.window == nil || slot.kind == .credits
                     Toggle(isOn: binding(for: slot.kind)) {
-                        Text(slot.kind.displayName)
+                        Text(slot.window?.title ?? slot.kind.displayName)
                             .font(Theme.rowTitle)
                             .foregroundStyle(disabled ? Theme.inkSecondary : Theme.ink)
                     }

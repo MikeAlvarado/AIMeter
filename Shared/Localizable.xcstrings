@@ -4,6 +4,2306 @@
     "" : {
 
     },
+    "%lld-day window" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld-Tage-Fenster"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ventana de %lld días"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenêtre de %lld jours"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld日間の枠"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일 기간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Janela de %lld dias"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天周期"
+          }
+        }
+      }
+    },
+    "%lld-day · %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Tage · %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld días · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld jours · %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld日間 · %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일 · %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dias · %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天 · %@"
+          }
+        }
+      }
+    },
+    "%lld-hour session" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld-Stunden-Sitzung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión de %lld horas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session de %lld heures"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld時間セッション"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld시간 세션"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessão de %lld horas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 小时会话"
+          }
+        }
+      }
+    },
+    "30d" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 T"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30d"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 j"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30일"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30d"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30天"
+          }
+        }
+      }
+    },
+    "A login Claude Code or Codex already keeps on this Mac is only read, never changed, and one you sign in with through AIMeter is stored encrypted in the system Keychain. Nothing leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Anmeldung, die Claude Code oder Codex bereits auf diesem Mac speichern, wird nur gelesen, nie verändert, und eine, mit der du dich über AIMeter anmeldest, wird verschlüsselt im Schlüsselbund des Systems gespeichert. Nichts verlässt dieses Gerät. Das Widget greift nicht direkt auf den Schlüsselbund zu; die Menüleisten-App versorgt es mit deiner Nutzung."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un inicio de sesión que Claude Code o Codex ya guardan en este Mac solo se lee, nunca se modifica, y uno con el que inicias sesión a través de AIMeter se guarda cifrado en el llavero del sistema. Nada sale de este dispositivo. El widget no accede al llavero directamente; la app de la barra de menús le pasa tu uso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une connexion que Claude Code ou Codex conserve déjà sur ce Mac est seulement lue, jamais modifiée, et celle avec laquelle vous vous connectez via AIMeter est stockée chiffrée dans le trousseau du système. Rien ne quitte cet appareil. Le widget n'accède pas directement au trousseau ; l'app de la barre des menus lui transmet votre utilisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code や Codex がこの Mac に保存しているログインは読み取るだけで、変更はしません。AIMeter を通じてサインインしたものはシステムのキーチェーンに暗号化して保存します。このデバイスから出ていくものは何もありません。ウィジェットはキーチェーンに直接アクセスせず、メニューバーのアプリが使用量を渡します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code나 Codex가 이 Mac에 이미 보관한 로그인은 읽기만 하고 변경하지 않으며, AIMeter를 통해 로그인한 것은 시스템 키체인에 암호화되어 저장됩니다. 이 기기 밖으로 나가는 것은 없습니다. 위젯은 키체인에 직접 접근하지 않고 메뉴 막대 앱이 사용량을 전달합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um login que o Claude Code ou o Codex já guardam neste Mac é apenas lido, nunca alterado, e um com o qual você faz login pelo AIMeter é guardado criptografado nas Chaves do sistema. Nada sai deste dispositivo. O widget não acessa as Chaves diretamente; o app da barra de menus passa seu uso para ele."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 或 Codex 已保存在这台 Mac 上的登录只会被读取，绝不更改；你通过 AIMeter 登录的则加密保存在系统钥匙串中。没有任何数据离开本设备。小组件不直接访问钥匙串，由菜单栏应用把用量传给它。"
+          }
+        }
+      }
+    },
+    "AIMeter also reads each provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous (nothing about you or your account is sent), and you can turn it off in Settings." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter liest beim Aktualisieren auch die öffentliche Statusseite jedes Anbieters, um einen Ausfall des Dienstes von einem Problem mit deinem Account zu unterscheiden. Diese Anfrage ist anonym (nichts über dich oder deinen Account wird gesendet), und du kannst sie in den Einstellungen abschalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter también lee la página pública de estado de cada proveedor al actualizar, para distinguir una caída del servicio de un problema con tu cuenta. Esa petición es anónima (no se envía nada sobre ti ni sobre tu cuenta) y puedes desactivarla en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter lit aussi la page d'état publique de chaque fournisseur lors de l'actualisation, pour distinguer une panne du service d'un problème avec votre compte. Cette requête est anonyme (rien sur vous ni sur votre compte n'est envoyé), et vous pouvez la désactiver dans les Réglages."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter は更新時に各プロバイダの公開ステータスページも読み取り、サービス障害とアカウントの問題を区別します。このリクエストは匿名で（あなたやアカウントに関する情報は送信されません）、設定でオフにできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 새로 고침할 때 각 제공업체의 공개 상태 페이지도 읽어 서비스 장애와 계정 문제를 구분합니다. 이 요청은 익명이며(사용자나 계정에 관한 어떤 정보도 보내지 않음), 설정에서 끌 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter também lê a página pública de status de cada provedor ao atualizar, para distinguir uma queda do serviço de um problema com sua conta. Essa solicitação é anônima (nada sobre você ou sua conta é enviado), e você pode desativá-la nos Ajustes."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新时 AIMeter 还会读取各提供方的公开状态页面，以区分服务故障和你账户的问题。该请求是匿名的（不会发送任何关于你或你账户的信息），你可以在设置中关闭。"
+          }
+        }
+      }
+    },
+    "AIMeter has no server and no account of its own. Usage is read directly from each provider and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way: from a fixed schedule and the clock, with no extra network call." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter hat keinen Server und keinen eigenen Account. Die Nutzung wird direkt von jedem Anbieter gelesen und auf diesem Gerät zwischengespeichert, damit Widgets sie anzeigen können. Nichts wird anderswohin gesendet. Die Stoßzeiten-Anzeige wird genauso berechnet: aus einem festen Zeitplan und der Uhr, ohne zusätzlichen Netzwerkaufruf."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de cada proveedor y se guarda en caché en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro sitio. El indicador de horas punta se calcula igual: a partir de un horario fijo y el reloj, sin ninguna llamada de red adicional."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter n'a ni serveur ni compte propre. L'utilisation est lue directement auprès de chaque fournisseur et mise en cache sur cet appareil pour que les widgets puissent l'afficher. Rien n'est envoyé ailleurs. L'indicateur d'heures de pointe est calculé de la même façon : à partir d'un horaire fixe et de l'horloge, sans appel réseau supplémentaire."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter にはサーバーも独自のアカウントもありません。使用量は各プロバイダから直接読み取り、ウィジェットが表示できるようこのデバイスにキャッシュします。他の場所には何も送信しません。ピーク時間の表示も同じ方法で、固定スケジュールと時計から計算し、追加のネットワーク通信はありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter에는 서버도 자체 계정도 없습니다. 사용량은 각 제공업체에서 직접 읽어 위젯이 표시할 수 있도록 이 기기에 캐시됩니다. 다른 곳으로는 아무것도 보내지 않습니다. 피크 시간 표시도 같은 방식으로, 고정된 일정과 시계로만 계산하며 추가 네트워크 호출이 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter não tem servidor nem conta própria. O uso é lido diretamente de cada provedor e guardado em cache neste dispositivo para que os widgets possam mostrá-lo. Nada é enviado para outro lugar. O indicador de horário de pico é calculado do mesmo jeito: a partir de um horário fixo e do relógio, sem nenhuma chamada de rede extra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 没有服务器，也没有自己的账户。用量直接从各个提供方读取并缓存在本设备上，供小组件显示。不会向其他任何地方发送。高峰时段指示也以同样方式计算：基于固定时间表和时钟，无需额外网络请求。"
+          }
+        }
+      }
+    },
+    "AIMeter is an independent app, not affiliated with Anthropic, OpenAI or GitHub. It only reads your own usage limits, never sends prompts or spends your plan's usage, and your sign-in tokens stay on this device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter ist eine unabhängige App und steht in keiner Verbindung zu Anthropic, OpenAI oder GitHub. Sie liest nur deine eigenen Nutzungslimits, sendet nie Prompts, verbraucht nie die Nutzung deines Plans, und deine Anmelde-Tokens bleiben auf diesem Gerät."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter es una app independiente, sin relación con Anthropic, OpenAI ni GitHub. Solo lee tus propios límites de uso, nunca envía prompts ni gasta el uso de tu plan, y tus tokens de inicio de sesión se quedan en este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter est une app indépendante, sans lien avec Anthropic, OpenAI ni GitHub. Elle ne lit que vos propres limites d'utilisation, n'envoie jamais de prompts ni ne consomme l'usage de votre forfait, et vos jetons de connexion restent sur cet appareil."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter は Anthropic、OpenAI、GitHub とは無関係の独立したアプリです。読み取るのはあなた自身の使用量の上限だけで、プロンプトを送ったりプランの使用量を消費したりすることはなく、サインイン用のトークンはこのデバイスに留まります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 Anthropic, OpenAI, GitHub와 무관한 독립 앱입니다. 본인의 사용량 한도만 읽고, 프롬프트를 보내거나 플랜의 사용량을 소비하지 않으며, 로그인 토큰은 이 기기에만 저장됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter é um app independente, sem vínculo com a Anthropic, a OpenAI ou o GitHub. Ele só lê seus próprios limites de uso, nunca envia prompts nem gasta o uso do seu plano, e seus tokens de login ficam neste dispositivo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 是独立应用，与 Anthropic、OpenAI 或 GitHub 均无关联。它只读取你自己的用量限额，绝不发送提示词或消耗你的套餐用量，登录令牌只保存在本设备上。"
+          }
+        }
+      }
+    },
+    "AIMeter is an independent app, not affiliated with GitHub. It asks GitHub for no scope at all, reads your Copilot quotas and nothing else, and your sign-in token stays on this device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter ist eine unabhängige App und steht in keiner Verbindung zu GitHub. Sie fragt bei GitHub keinerlei Scope an, liest deine Copilot-Kontingente und sonst nichts, und dein Anmelde-Token bleibt auf diesem Gerät."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter es una app independiente, sin relación con GitHub. No le pide a GitHub ningún permiso, lee tus cuotas de Copilot y nada más, y tu token de inicio de sesión se queda en este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter est une app indépendante, sans lien avec GitHub. Elle ne demande aucune portée à GitHub, lit vos quotas Copilot et rien d'autre, et votre jeton de connexion reste sur cet appareil."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter は GitHub とは無関係の独立したアプリです。GitHub にスコープを一切要求せず、読み取るのは Copilot の割り当てのみで、サインイン用のトークンはこのデバイスに留まります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 GitHub와 무관한 독립 앱입니다. GitHub에 어떤 권한 범위도 요청하지 않고, Copilot 할당량만 읽으며, 로그인 토큰은 이 기기에만 저장됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter é um app independente, sem vínculo com o GitHub. Ele não pede ao GitHub nenhum escopo, lê suas cotas do Copilot e nada mais, e seu token de login fica neste dispositivo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 是独立应用，与 GitHub 无关联。它不向 GitHub 请求任何权限范围，只读取你的 Copilot 配额，登录令牌只保存在本设备上。"
+          }
+        }
+      }
+    },
+    "AIMeter is an independent app, not affiliated with OpenAI. It only reads your Codex limits, the same figures the CLI's /status shows, never sends prompts, and your sign-in token stays on this device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter ist eine unabhängige App und steht in keiner Verbindung zu OpenAI. Sie liest nur deine Codex-Limits, dieselben Zahlen, die /status im CLI zeigt, sendet nie Prompts, und dein Anmelde-Token bleibt auf diesem Gerät."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter es una app independiente, sin relación con OpenAI. Solo lee tus límites de Codex, las mismas cifras que muestra /status en el CLI, nunca envía prompts, y tu token de inicio de sesión se queda en este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter est une app indépendante, sans lien avec OpenAI. Elle ne lit que vos limites Codex, les mêmes chiffres que /status affiche dans le CLI, n'envoie jamais de prompts, et votre jeton de connexion reste sur cet appareil."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter は OpenAI とは無関係の独立したアプリです。読み取るのは Codex の上限、つまり CLI の /status が示すのと同じ数値だけで、プロンプトを送ることはなく、サインイン用のトークンはこのデバイスに留まります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 OpenAI와 무관한 독립 앱입니다. CLI의 /status가 보여주는 것과 같은 Codex 한도만 읽고, 프롬프트를 보내지 않으며, 로그인 토큰은 이 기기에만 저장됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter é um app independente, sem vínculo com a OpenAI. Ele só lê seus limites do Codex, os mesmos números que o /status do CLI mostra, nunca envia prompts, e seu token de login fica neste dispositivo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 是独立应用，与 OpenAI 无关联。它只读取你的 Codex 限额，也就是 CLI 的 /status 显示的数字，绝不发送提示词，登录令牌只保存在本设备上。"
+          }
+        }
+      }
+    },
+    "AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic, OpenAI or GitHub. \"Claude\" and \"Anthropic\" are trademarks of Anthropic, PBC; \"ChatGPT\", \"Codex\" and \"OpenAI\" of OpenAI; \"GitHub\" and \"Copilot\" of GitHub, Inc. They are used only to identify the services whose usage this app displays." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter ist ein unabhängiges Open-Source-Projekt (MIT). Es steht in keiner Verbindung zu Anthropic, OpenAI oder GitHub und wird von ihnen weder unterstützt noch gesponsert. \"Claude\" und \"Anthropic\" sind Marken von Anthropic, PBC; \"ChatGPT\", \"Codex\" und \"OpenAI\" von OpenAI; \"GitHub\" und \"Copilot\" von GitHub, Inc. Sie werden nur verwendet, um die Dienste zu benennen, deren Nutzung diese App anzeigt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter es un proyecto independiente de código abierto (MIT). No está afiliado a Anthropic, OpenAI ni GitHub, ni cuenta con su respaldo o patrocinio. \"Claude\" y \"Anthropic\" son marcas de Anthropic, PBC; \"ChatGPT\", \"Codex\" y \"OpenAI\", de OpenAI; \"GitHub\" y \"Copilot\", de GitHub, Inc. Se usan solo para identificar los servicios cuyo uso muestra esta app."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter est un projet open source indépendant (MIT). Il n'est ni affilié à, ni approuvé, ni sponsorisé par Anthropic, OpenAI ou GitHub. \"Claude\" et \"Anthropic\" sont des marques d'Anthropic, PBC ; \"ChatGPT\", \"Codex\" et \"OpenAI\", d'OpenAI ; \"GitHub\" et \"Copilot\", de GitHub, Inc. Elles ne servent qu'à identifier les services dont cette app affiche l'utilisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter は独立したオープンソースプロジェクト（MIT）です。Anthropic、OpenAI、GitHub とは提携、承認、後援の関係にありません。\"Claude\" と \"Anthropic\" は Anthropic, PBC の商標、\"ChatGPT\"、\"Codex\"、\"OpenAI\" は OpenAI の商標、\"GitHub\" と \"Copilot\" は GitHub, Inc. の商標で、このアプリが使用量を表示するサービスを識別するためだけに使っています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 독립적인 오픈 소스 프로젝트(MIT)입니다. Anthropic, OpenAI, GitHub와 제휴, 보증, 후원 관계가 없습니다. \"Claude\"와 \"Anthropic\"은 Anthropic, PBC의 상표이고, \"ChatGPT\", \"Codex\", \"OpenAI\"는 OpenAI의 상표이며, \"GitHub\"와 \"Copilot\"은 GitHub, Inc.의 상표로, 이 앱이 사용량을 표시하는 서비스를 가리키기 위해서만 사용됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter é um projeto independente de código aberto (MIT). Não é afiliado, endossado nem patrocinado pela Anthropic, pela OpenAI ou pelo GitHub. \"Claude\" e \"Anthropic\" são marcas da Anthropic, PBC; \"ChatGPT\", \"Codex\" e \"OpenAI\", da OpenAI; \"GitHub\" e \"Copilot\", da GitHub, Inc. São usadas apenas para identificar os serviços cujo uso este app mostra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 是独立的开源项目（MIT）。它与 Anthropic、OpenAI 或 GitHub 均无关联，也未获其认可或赞助。\"Claude\" 和 \"Anthropic\" 是 Anthropic, PBC 的商标；\"ChatGPT\"、\"Codex\" 和 \"OpenAI\" 是 OpenAI 的商标；\"GitHub\" 和 \"Copilot\" 是 GitHub, Inc. 的商标，仅用于指明本应用所显示用量的服务。"
+          }
+        }
+      }
+    },
+    "AIMeter asks GitHub for no scope at all, so the token reaches nothing private of yours. It reads GitHub's Copilot quota endpoint (the one Copilot's editor plug-ins read), whose answer includes your user id, used to tell the account apart on your other devices. It can't read your code or your repositories." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter fragt bei GitHub keinerlei Scope an, sodass das Token an nichts Privates von dir herankommt. Es liest den Copilot-Kontingent-Endpunkt von GitHub (denselben, den die Copilot-Editor-Plug-ins lesen), dessen Antwort deine Benutzer-ID enthält, mit der der Account auf deinen anderen Geräten zugeordnet wird. Deinen Code oder deine Repositories kann es nicht lesen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter no le pide a GitHub ningún permiso, así que el token no alcanza nada privado tuyo. Lee el endpoint de cuotas de Copilot de GitHub (el que leen los complementos de Copilot para editores), cuya respuesta incluye tu id de usuario, usado para distinguir la cuenta en tus otros dispositivos. No puede leer tu código ni tus repositorios."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter ne demande aucune portée à GitHub, donc le jeton n'atteint rien de privé chez vous. Il lit le point de terminaison des quotas Copilot de GitHub (celui que lisent les extensions Copilot des éditeurs), dont la réponse inclut votre identifiant utilisateur, utilisé pour reconnaître le compte sur vos autres appareils. Il ne peut lire ni votre code ni vos dépôts."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter は GitHub にスコープを一切要求しないので、トークンはあなたの非公開の情報には届きません。読み取るのは GitHub の Copilot 割り当てエンドポイント（Copilot のエディタ用プラグインが読むのと同じもの）で、その応答に含まれるユーザー ID を、他のデバイスでアカウントを識別するために使います。コードやリポジトリは読み取れません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 GitHub에 어떤 권한 범위도 요청하지 않으므로 토큰은 비공개 정보에 접근하지 못합니다. GitHub의 Copilot 할당량 엔드포인트(Copilot 편집기 플러그인이 읽는 것)를 읽으며, 그 응답에 포함된 사용자 ID로 다른 기기에서 계정을 구분합니다. 코드나 저장소는 읽을 수 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter não pede ao GitHub nenhum escopo, então o token não alcança nada privado seu. Ele lê o endpoint de cotas do Copilot do GitHub (o mesmo que os plug-ins do Copilot para editores leem), cuja resposta inclui seu id de usuário, usado para distinguir a conta nos seus outros dispositivos. Ele não consegue ler seu código nem seus repositórios."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 不向 GitHub 请求任何权限范围，因此令牌无法触及你的任何私密内容。它读取 GitHub 的 Copilot 配额端点（Copilot 编辑器插件读取的同一个），其响应包含你的用户 ID，用于在你的其他设备上区分账户。它无法读取你的代码或仓库。"
+          }
+        }
+      }
+    },
+    "AIMeter shows you a one-time code. Open ChatGPT's device page, sign in and enter the code; the account connects as soon as you approve. Any ChatGPT plan works, Free included." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter zeigt dir einen Einmalcode. Öffne die Geräteseite von ChatGPT, melde dich an und gib den Code ein; der Account wird verbunden, sobald du bestätigst. Jeder ChatGPT-Plan funktioniert, auch der kostenlose."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter te muestra un código de un solo uso. Abre la página de dispositivos de ChatGPT, inicia sesión e introduce el código; la cuenta se conecta en cuanto apruebes. Sirve cualquier plan de ChatGPT, incluido el gratuito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter vous montre un code à usage unique. Ouvrez la page des appareils de ChatGPT, connectez-vous et saisissez le code ; le compte se connecte dès que vous approuvez. Tout forfait ChatGPT convient, y compris le gratuit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter がワンタイムコードを表示します。ChatGPT のデバイスページを開いてサインインし、コードを入力してください。承認するとすぐにアカウントが接続されます。無料プランを含め、どの ChatGPT プランでも使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter가 일회용 코드를 표시합니다. ChatGPT의 기기 페이지를 열고 로그인한 뒤 코드를 입력하세요. 승인하면 바로 계정이 연결됩니다. 무료 플랜을 포함해 어떤 ChatGPT 플랜이든 됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter mostra um código de uso único. Abra a página de dispositivos do ChatGPT, faça login e digite o código; a conta é conectada assim que você aprovar. Qualquer plano do ChatGPT funciona, inclusive o gratuito."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 会显示一个一次性代码。打开 ChatGPT 的设备页面，登录并输入代码；你批准后账户立即连接。任何 ChatGPT 套餐都可以，包括免费版。"
+          }
+        }
+      }
+    },
+    "AIMeter shows you a one-time code. Open GitHub's device page, sign in and enter the code; the account connects as soon as you approve. Copilot Free, Pro and Pro+ all work." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter zeigt dir einen Einmalcode. Öffne die Geräteseite von GitHub, melde dich an und gib den Code ein; der Account wird verbunden, sobald du bestätigst. Copilot Free, Pro und Pro+ funktionieren alle."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter te muestra un código de un solo uso. Abre la página de dispositivos de GitHub, inicia sesión e introduce el código; la cuenta se conecta en cuanto apruebes. Sirven Copilot Free, Pro y Pro+."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter vous montre un code à usage unique. Ouvrez la page des appareils de GitHub, connectez-vous et saisissez le code ; le compte se connecte dès que vous approuvez. Copilot Free, Pro et Pro+ conviennent tous."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter がワンタイムコードを表示します。GitHub のデバイスページを開いてサインインし、コードを入力してください。承認するとすぐにアカウントが接続されます。Copilot Free、Pro、Pro+ のいずれでも使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter가 일회용 코드를 표시합니다. GitHub의 기기 페이지를 열고 로그인한 뒤 코드를 입력하세요. 승인하면 바로 계정이 연결됩니다. Copilot Free, Pro, Pro+ 모두 됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter mostra um código de uso único. Abra a página de dispositivos do GitHub, faça login e digite o código; a conta é conectada assim que você aprovar. Copilot Free, Pro e Pro+ funcionam."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 会显示一个一次性代码。打开 GitHub 的设备页面，登录并输入代码；你批准后账户立即连接。Copilot Free、Pro 和 Pro+ 都可以。"
+          }
+        }
+      }
+    },
+    "Add an account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir una cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un compte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントを追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar uma conta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加账户"
+          }
+        }
+      }
+    },
+    "Chat" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チャット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "채팅"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天"
+          }
+        }
+      }
+    },
+    "Claude: on the Mac, AIMeter can read the login Claude Code already keeps on this computer, never modifying or rotating those tokens; Claude Code stays in charge of its own session. Or you sign in on Claude's own page in your browser and paste back the code it shows." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: Auf dem Mac kann AIMeter die Anmeldung lesen, die Claude Code bereits auf diesem Computer speichert, ohne diese Tokens je zu verändern oder zu rotieren; Claude Code bleibt für seine eigene Sitzung zuständig. Oder du meldest dich auf der Seite von Claude in deinem Browser an und fügst den angezeigten Code ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: en el Mac, AIMeter puede leer el inicio de sesión que Claude Code ya guarda en este equipo, sin modificar ni rotar nunca esos tokens; Claude Code sigue al mando de su propia sesión. O inicias sesión en la propia página de Claude en tu navegador y pegas el código que muestra."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude : sur le Mac, AIMeter peut lire la connexion que Claude Code conserve déjà sur cet ordinateur, sans jamais modifier ni renouveler ces jetons ; Claude Code reste maître de sa propre session. Ou vous vous connectez sur la page de Claude dans votre navigateur et collez le code affiché."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude：Mac では、AIMeter は Claude Code がこのコンピュータに保存しているログインを読み取れます。トークンを変更したり更新したりすることはなく、セッションの管理は Claude Code のままです。または、ブラウザで Claude のページにサインインし、表示されるコードを貼り付けます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: Mac에서는 AIMeter가 Claude Code가 이 컴퓨터에 이미 보관한 로그인을 읽을 수 있으며, 그 토큰을 수정하거나 갱신하지 않습니다. 세션은 Claude Code가 계속 관리합니다. 또는 브라우저에서 Claude 페이지에 로그인하고 표시된 코드를 붙여넣습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: no Mac, o AIMeter pode ler o login que o Claude Code já guarda neste computador, sem nunca modificar nem renovar esses tokens; o Claude Code continua no comando da própria sessão. Ou você faz login na página do Claude no navegador e cola o código que ela mostra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude：在 Mac 上，AIMeter 可以读取 Claude Code 已保存在这台电脑上的登录，绝不修改或轮换这些令牌；会话仍由 Claude Code 自己掌管。或者你在浏览器中的 Claude 页面登录，再粘贴它显示的代码。"
+          }
+        }
+      }
+    },
+    "Claude: you sign in on Claude's own page in your browser, never in an embedded web view, so AIMeter can't see your password. You only paste back the code Claude shows after you approve." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: Du meldest dich auf der Seite von Claude in deinem Browser an, nie in einer eingebetteten Webansicht, sodass AIMeter dein Passwort nicht sehen kann. Du fügst nur den Code ein, den Claude nach deiner Bestätigung anzeigt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: inicias sesión en la propia página de Claude en tu navegador, nunca en una vista web incrustada, así que AIMeter no puede ver tu contraseña. Solo pegas el código que Claude muestra después de aprobar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude : vous vous connectez sur la page de Claude dans votre navigateur, jamais dans une vue web intégrée, donc AIMeter ne peut pas voir votre mot de passe. Vous ne collez que le code que Claude affiche après votre approbation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude：ブラウザで Claude のページにサインインします。埋め込みの Web ビューは使わないので、AIMeter にパスワードは見えません。承認後に Claude が表示するコードを貼り付けるだけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: 브라우저에서 Claude 페이지에 로그인하며, 내장 웹 보기는 쓰지 않으므로 AIMeter는 비밀번호를 볼 수 없습니다. 승인 후 Claude가 표시한 코드만 붙여넣으면 됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude: você faz login na página do Claude no navegador, nunca em uma web view embutida, então o AIMeter não pode ver sua senha. Você só cola o código que o Claude mostra depois de aprovar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude：你在浏览器中的 Claude 页面登录，绝不在内嵌网页视图中，所以 AIMeter 看不到你的密码。你只需在批准后粘贴 Claude 显示的代码。"
+          }
+        }
+      }
+    },
+    "Codex no longer accepts this account's saved sign-in. Sign in again with the code to restore it. Its history, alerts and widgets all stay as they are." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex akzeptiert die gespeicherte Anmeldung dieses Accounts nicht mehr. Melde dich mit dem Code erneut an, um ihn wiederherzustellen. Verlauf, Hinweise und Widgets bleiben, wie sie sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex ya no acepta el inicio de sesión guardado de esta cuenta. Vuelve a iniciar sesión con el código para restaurarla. Su historial, sus alertas y sus widgets se quedan como están."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex n'accepte plus la connexion enregistrée de ce compte. Reconnectez-vous avec le code pour le rétablir. Son historique, ses alertes et ses widgets restent tels quels."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex はこのアカウントの保存されたサインインを受け付けなくなりました。コードでもう一度サインインすると復元されます。履歴、通知、ウィジェットはそのまま残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex가 이 계정의 저장된 로그인을 더 이상 받아들이지 않습니다. 코드로 다시 로그인하면 복구됩니다. 기록, 알림, 위젯은 그대로 유지됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Codex não aceita mais o login salvo desta conta. Faça login de novo com o código para restaurá-la. Histórico, alertas e widgets continuam como estão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 不再接受此账户保存的登录。请用代码重新登录以恢复。它的历史、提醒和小组件都保持不变。"
+          }
+        }
+      }
+    },
+    "Codex: AIMeter shows you a one-time code that you enter on ChatGPT's own device page in your browser, the same device code sign-in the Codex CLI offers." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: AIMeter zeigt dir einen Einmalcode, den du auf der Geräteseite von ChatGPT in deinem Browser eingibst, dieselbe Anmeldung per Gerätecode, die das Codex-CLI anbietet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: AIMeter te muestra un código de un solo uso que introduces en la propia página de dispositivos de ChatGPT en tu navegador, el mismo inicio de sesión por código de dispositivo que ofrece el CLI de Codex."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex : AIMeter vous montre un code à usage unique que vous saisissez sur la page des appareils de ChatGPT dans votre navigateur, la même connexion par code d'appareil que propose le CLI Codex."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex：AIMeter が表示するワンタイムコードを、ブラウザで ChatGPT のデバイスページに入力します。Codex CLI が提供するのと同じデバイスコードによるサインインです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: AIMeter가 표시하는 일회용 코드를 브라우저의 ChatGPT 기기 페이지에 입력합니다. Codex CLI가 제공하는 것과 같은 기기 코드 로그인입니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: o AIMeter mostra um código de uso único que você digita na página de dispositivos do ChatGPT no navegador, o mesmo login por código de dispositivo que o CLI do Codex oferece."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex：AIMeter 显示一个一次性代码，你在浏览器中的 ChatGPT 设备页面输入它，这与 Codex CLI 提供的设备代码登录相同。"
+          }
+        }
+      }
+    },
+    "Codex: AIMeter shows you a one-time code that you enter on ChatGPT's own device page in your browser, the same device code sign-in the Codex CLI offers. On the Mac it can instead read the login Codex keeps in ~/.codex, without ever changing it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: AIMeter zeigt dir einen Einmalcode, den du auf der Geräteseite von ChatGPT in deinem Browser eingibst, dieselbe Anmeldung per Gerätecode, die das Codex-CLI anbietet. Auf dem Mac kann es stattdessen die Anmeldung lesen, die Codex in ~/.codex speichert, ohne sie je zu verändern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: AIMeter te muestra un código de un solo uso que introduces en la propia página de dispositivos de ChatGPT en tu navegador, el mismo inicio de sesión por código de dispositivo que ofrece el CLI de Codex. En el Mac puede en cambio leer el inicio de sesión que Codex guarda en ~/.codex, sin cambiarlo nunca."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex : AIMeter vous montre un code à usage unique que vous saisissez sur la page des appareils de ChatGPT dans votre navigateur, la même connexion par code d'appareil que propose le CLI Codex. Sur le Mac, il peut plutôt lire la connexion que Codex conserve dans ~/.codex, sans jamais la modifier."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex：AIMeter が表示するワンタイムコードを、ブラウザで ChatGPT のデバイスページに入力します。Codex CLI が提供するのと同じデバイスコードによるサインインです。Mac では代わりに、Codex が ~/.codex に保存しているログインを変更せずに読み取ることもできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: AIMeter가 표시하는 일회용 코드를 브라우저의 ChatGPT 기기 페이지에 입력합니다. Codex CLI가 제공하는 것과 같은 기기 코드 로그인입니다. Mac에서는 대신 Codex가 ~/.codex에 보관한 로그인을 변경 없이 읽을 수도 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex: o AIMeter mostra um código de uso único que você digita na página de dispositivos do ChatGPT no navegador, o mesmo login por código de dispositivo que o CLI do Codex oferece. No Mac, ele pode em vez disso ler o login que o Codex guarda em ~/.codex, sem nunca alterá-lo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex：AIMeter 显示一个一次性代码，你在浏览器中的 ChatGPT 设备页面输入它，这与 Codex CLI 提供的设备代码登录相同。在 Mac 上，它也可以改为读取 Codex 保存在 ~/.codex 中的登录，绝不更改它。"
+          }
+        }
+      }
+    },
+    "Completions" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vervollständigungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autocompletados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complétions"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "補完"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자동 완성"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conclusões"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代码补全"
+          }
+        }
+      }
+    },
+    "Connect an account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account verbinden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectar una cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecter un compte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントを接続"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 연결"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectar uma conta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接账户"
+          }
+        }
+      }
+    },
+    "Connect your Codex account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde deinen Codex-Account"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecta tu cuenta de Codex"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez votre compte Codex"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex アカウントを接続"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 계정 연결"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecte sua conta do Codex"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接你的 Codex 账户"
+          }
+        }
+      }
+    },
+    "Connect your GitHub Copilot account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde deinen GitHub Copilot-Account"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecta tu cuenta de GitHub Copilot"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez votre compte GitHub Copilot"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot アカウントを接続"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot 계정 연결"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecte sua conta do GitHub Copilot"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接你的 GitHub Copilot 账户"
+          }
+        }
+      }
+    },
+    "Connecting…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinden …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続中…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在连接…"
+          }
+        }
+      }
+    },
+    "Copy code" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code kopieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le code"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コードをコピー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드 복사"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar código"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制代码"
+          }
+        }
+      }
+    },
+    "Device code sign-in has to be allowed in ChatGPT: Settings, Security, \"Allow device code login\"." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldung per Gerätecode muss in ChatGPT erlaubt sein: Einstellungen, Sicherheit, \"Anmeldung per Gerätecode erlauben\"."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El inicio de sesión por código de dispositivo tiene que estar permitido en ChatGPT: Ajustes, Seguridad, \"Permitir inicio de sesión por código de dispositivo\"."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connexion par code d'appareil doit être autorisée dans ChatGPT : Réglages, Sécurité, \"Autoriser la connexion par code d'appareil\"."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT でデバイスコードによるサインインを許可しておく必要があります：設定、セキュリティ、\"デバイスコードログインを許可\"。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT에서 기기 코드 로그인을 허용해야 합니다: 설정, 보안, \"기기 코드 로그인 허용\"."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O login por código de dispositivo precisa estar permitido no ChatGPT: Ajustes, Segurança, \"Permitir login por código de dispositivo\"."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要先在 ChatGPT 中允许设备代码登录：设置、安全、\"允许设备代码登录\"。"
+          }
+        }
+      }
+    },
+    "Each one is the sign-in flow the provider's own tools use; AIMeter only receives the token the provider hands back." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeder davon ist der Anmeldeablauf, den die eigenen Werkzeuge des Anbieters verwenden; AIMeter erhält nur das Token, das der Anbieter zurückgibt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada uno es el flujo de inicio de sesión que usan las propias herramientas del proveedor; AIMeter solo recibe el token que el proveedor devuelve."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chacun est le parcours de connexion qu'utilisent les propres outils du fournisseur ; AIMeter ne reçoit que le jeton que le fournisseur renvoie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いずれも各プロバイダ自身のツールが使うサインインの流れで、AIMeter が受け取るのはプロバイダが返すトークンだけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "각각은 제공업체 자체 도구가 쓰는 로그인 절차이며, AIMeter는 제공업체가 돌려주는 토큰만 받습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada um é o fluxo de login que as próprias ferramentas do provedor usam; o AIMeter só recebe o token que o provedor devolve."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每一种都是提供方自家工具所用的登录流程；AIMeter 只接收提供方返回的令牌。"
+          }
+        }
+      }
+    },
+    "GitHub Copilot: the same kind of one-time code, entered on GitHub's device page in your browser. AIMeter asks GitHub for no scope at all." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot: dieselbe Art Einmalcode, eingegeben auf der Geräteseite von GitHub in deinem Browser. AIMeter fragt bei GitHub keinerlei Scope an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot: el mismo tipo de código de un solo uso, introducido en la página de dispositivos de GitHub en tu navegador. AIMeter no le pide a GitHub ningún permiso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot : le même type de code à usage unique, saisi sur la page des appareils de GitHub dans votre navigateur. AIMeter ne demande aucune portée à GitHub."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot：同じ種類のワンタイムコードを、ブラウザで GitHub のデバイスページに入力します。AIMeter が GitHub に要求するスコープはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot: 같은 종류의 일회용 코드를 브라우저의 GitHub 기기 페이지에 입력합니다. AIMeter는 GitHub에 어떤 권한 범위도 요청하지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot: o mesmo tipo de código de uso único, digitado na página de dispositivos do GitHub no navegador. O AIMeter não pede ao GitHub nenhum escopo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Copilot：同样的一次性代码，在浏览器中的 GitHub 设备页面输入。AIMeter 不向 GitHub 请求任何权限范围。"
+          }
+        }
+      }
+    },
+    "GitHub no longer accepts this account's saved sign-in. Sign in again with the code to restore it. Its history, alerts and widgets all stay as they are." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub akzeptiert die gespeicherte Anmeldung dieses Accounts nicht mehr. Melde dich mit dem Code erneut an, um ihn wiederherzustellen. Verlauf, Hinweise und Widgets bleiben, wie sie sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub ya no acepta el inicio de sesión guardado de esta cuenta. Vuelve a iniciar sesión con el código para restaurarla. Su historial, sus alertas y sus widgets se quedan como están."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub n'accepte plus la connexion enregistrée de ce compte. Reconnectez-vous avec le code pour le rétablir. Son historique, ses alertes et ses widgets restent tels quels."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub はこのアカウントの保存されたサインインを受け付けなくなりました。コードでもう一度サインインすると復元されます。履歴、通知、ウィジェットはそのまま残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub가 이 계정의 저장된 로그인을 더 이상 받아들이지 않습니다. 코드로 다시 로그인하면 복구됩니다. 기록, 알림, 위젯은 그대로 유지됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O GitHub não aceita mais o login salvo desta conta. Faça login de novo com o código para restaurá-la. Histórico, alertas e widgets continuam como estão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub 不再接受此账户保存的登录。请用代码重新登录以恢复。它的历史、提醒和小组件都保持不变。"
+          }
+        }
+      }
+    },
+    "Month" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mois"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mês"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月"
+          }
+        }
+      }
+    },
+    "Monthly" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monatlich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensual"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensuel"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每月"
+          }
+        }
+      }
+    },
+    "Monthly · %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monatlich · %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensual · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensuel · %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月間 · %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월간 · %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensal · %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每月 · %@"
+          }
+        }
+      }
+    },
+    "Open ChatGPT's device page" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geräteseite von ChatGPT öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir la página de dispositivos de ChatGPT"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir la page des appareils de ChatGPT"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT のデバイスページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatGPT 기기 페이지 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir a página de dispositivos do ChatGPT"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 ChatGPT 设备页面"
+          }
+        }
+      }
+    },
+    "Open GitHub's device page" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geräteseite von GitHub öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir la página de dispositivos de GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir la page des appareils de GitHub"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub のデバイスページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub 기기 페이지 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir a página de dispositivos do GitHub"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 GitHub 设备页面"
+          }
+        }
+      }
+    },
+    "Pick the service to connect. Each one signs in through its own page, and AIMeter only ever reads your usage limits." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle den Dienst, den du verbinden möchtest. Jeder meldet sich über seine eigene Seite an, und AIMeter liest nur deine Nutzungslimits."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige el servicio que quieres conectar. Cada uno inicia sesión en su propia página, y AIMeter solo lee tus límites de uso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez le service à connecter. Chacun se connecte sur sa propre page, et AIMeter ne lit que vos limites d'utilisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続するサービスを選んでください。それぞれ自身のページでサインインし、AIMeter は使用量の上限を読み取るだけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결할 서비스를 선택하세요. 각 서비스는 자체 페이지에서 로그인하며, AIMeter는 사용량 한도만 읽습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o serviço para conectar. Cada um faz login na própria página, e o AIMeter só lê seus limites de uso."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择要连接的服务。每个服务都在自己的页面登录，AIMeter 只读取你的用量限额。"
+          }
+        }
+      }
+    },
+    "Premium" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレミアム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프리미엄"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级"
+          }
+        }
+      }
+    },
+    "Premium requests" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium-Anfragen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitudes premium"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requêtes premium"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレミアムリクエスト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프리미엄 요청"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitações premium"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级请求"
+          }
+        }
+      }
+    },
+    "Reads the login Codex keeps in ~/.codex, without changing it. Or sign in below with a code of your own." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liest die Anmeldung, die Codex in ~/.codex speichert, ohne sie zu verändern. Oder melde dich unten mit einem eigenen Code an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lee el inicio de sesión que Codex guarda en ~/.codex, sin cambiarlo. O inicia sesión abajo con un código propio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lit la connexion que Codex conserve dans ~/.codex, sans la modifier. Ou connectez-vous ci-dessous avec un code à vous."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex が ~/.codex に保存しているログインを変更せずに読み取ります。または下で自分のコードでサインインします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex가 ~/.codex에 보관한 로그인을 변경 없이 읽습니다. 또는 아래에서 직접 코드로 로그인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lê o login que o Codex guarda em ~/.codex, sem alterá-lo. Ou faça login abaixo com um código seu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取 Codex 保存在 ~/.codex 中的登录，不做任何更改。或者在下方用你自己的代码登录。"
+          }
+        }
+      }
+    },
+    "Sign in on Claude's page and paste the code it shows." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich auf der Seite von Claude an und füge den angezeigten Code ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión en la página de Claude y pega el código que muestra."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous sur la page de Claude et collez le code affiché."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude のページでサインインし、表示されるコードを貼り付けます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 페이지에서 로그인하고 표시된 코드를 붙여넣으세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça login na página do Claude e cole o código que ela mostra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Claude 页面登录，然后粘贴它显示的代码。"
+          }
+        }
+      }
+    },
+    "Sign in with ChatGPT using a one-time code." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich mit ChatGPT über einen Einmalcode an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con ChatGPT mediante un código de un solo uso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous avec ChatGPT à l'aide d'un code à usage unique."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンタイムコードで ChatGPT にサインインします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일회용 코드로 ChatGPT에 로그인합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça login com o ChatGPT usando um código de uso único."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用一次性代码登录 ChatGPT。"
+          }
+        }
+      }
+    },
+    "Sign in with GitHub using a one-time code." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich mit GitHub über einen Einmalcode an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con GitHub mediante un código de un solo uso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous avec GitHub à l'aide d'un code à usage unique."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンタイムコードで GitHub にサインインします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일회용 코드로 GitHub에 로그인합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça login com o GitHub usando um código de uso único."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用一次性代码登录 GitHub。"
+          }
+        }
+      }
+    },
+    "That sign-in is for another service than this account." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Anmeldung gehört zu einem anderen Dienst als dieser Account."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ese inicio de sesión es de otro servicio distinto al de esta cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette connexion concerne un autre service que celui de ce compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "そのサインインはこのアカウントとは別のサービスのものです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그 로그인은 이 계정과 다른 서비스의 것입니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esse login é de outro serviço, não o desta conta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该登录属于另一个服务，与此账户不符。"
+          }
+        }
+      }
+    },
+    "The code expired before it was entered." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Code ist abgelaufen, bevor er eingegeben wurde."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El código caducó antes de introducirse."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le code a expiré avant d'être saisi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力される前にコードの期限が切れました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드를 입력하기 전에 만료되었습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O código expirou antes de ser digitado."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代码在输入前已过期。"
+          }
+        }
+      }
+    },
+    "The sign-in is ChatGPT's own device code login, with the access the Codex CLI gets; AIMeter calls one read-only endpoint with it, your Codex limits (the same figures the CLI's /status shows), and nothing else." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldung ist die Anmeldung per Gerätecode von ChatGPT selbst, mit dem Zugriff, den das Codex-CLI erhält; AIMeter ruft damit einen einzigen Nur-Lese-Endpunkt auf, deine Codex-Limits (dieselben Zahlen, die /status im CLI zeigt), und sonst nichts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El inicio de sesión es el propio inicio por código de dispositivo de ChatGPT, con el acceso que recibe el CLI de Codex; AIMeter llama con él a un único endpoint de solo lectura, tus límites de Codex (las mismas cifras que muestra /status en el CLI), y nada más."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connexion est la connexion par code d'appareil de ChatGPT lui-même, avec l'accès qu'obtient le CLI Codex ; AIMeter n'appelle avec elle qu'un seul point de terminaison en lecture seule, vos limites Codex (les mêmes chiffres que /status affiche dans le CLI), et rien d'autre."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインは ChatGPT 自身のデバイスコードログインで、Codex CLI が得るのと同じアクセス権です。AIMeter がそれで呼び出すのは読み取り専用のエンドポイント 1 つ、Codex の上限（CLI の /status が示すのと同じ数値）だけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인은 ChatGPT 자체의 기기 코드 로그인이며, Codex CLI가 받는 것과 같은 접근 권한입니다. AIMeter는 이것으로 읽기 전용 엔드포인트 하나, 즉 Codex 한도(CLI의 /status가 보여주는 것과 같은 수치)만 호출하고 그 밖에는 아무것도 하지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O login é o próprio login por código de dispositivo do ChatGPT, com o acesso que o CLI do Codex recebe; o AIMeter chama com ele um único endpoint somente leitura, seus limites do Codex (os mesmos números que o /status do CLI mostra), e nada mais."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录采用 ChatGPT 自己的设备代码登录，权限与 Codex CLI 获得的相同；AIMeter 只用它调用一个只读端点，即你的 Codex 限额（与 CLI 的 /status 显示的数字相同），别无其他。"
+          }
+        }
+      }
+    },
+    "Try again" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erneut versuchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réessayer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再試行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 시도"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar de novo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重试"
+          }
+        }
+      }
+    },
+    "Use Codex's login on this Mac" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex-Anmeldung auf diesem Mac verwenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar el inicio de sesión de Codex en este Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser la connexion de Codex sur ce Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この Mac の Codex のログインを使う"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Mac의 Codex 로그인 사용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar o login do Codex neste Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用此 Mac 上 Codex 的登录"
+          }
+        }
+      }
+    },
+    "Waiting for your approval…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warten auf deine Bestätigung …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando tu aprobación…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente de votre approbation…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "承認を待っています…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "승인을 기다리는 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aguardando sua aprovação…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待你批准…"
+          }
+        }
+      }
+    },
+    "Your code: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Code: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu código: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre code : %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コード：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu código: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的代码：%@"
+          }
+        }
+      }
+    },
     "Account settings" : {
       "comment" : "Settings: the header of the account list (iOS), of the Mac Accounts tab's per-account part, and Provider Detail's row to the account's page.",
       "localizations" : {
@@ -8490,52 +10790,6 @@
         }
       }
     },
-    "AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous (nothing about you or your account is sent), and you can turn it off in Settings." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter liest beim Aktualisieren auch die öffentliche Statusseite des Anbieters, um eine Störung des Dienstes von einem Problem mit deinem Account zu unterscheiden. Diese Anfrage ist anonym (es wird nichts über dich oder deinen Account gesendet), und du kannst sie in den Einstellungen abschalten."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter también consulta la página pública de estado del proveedor al actualizar, para distinguir una caída del servicio de un problema con tu cuenta. Esa petición es anónima (no se envía nada sobre ti ni sobre tu cuenta) y puedes desactivarla en Ajustes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter consulte aussi la page d'état publique du fournisseur lors de l'actualisation, pour distinguer une panne du service d'un problème avec votre compte. Cette requête est anonyme (rien sur vous ni votre compte n'est envoyé), et vous pouvez la désactiver dans les Réglages."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeterは更新時にプロバイダの公開ステータスページも読み取り、サービス障害とアカウントの問題を区別します。このリクエストは匿名で、あなたやアカウントに関する情報は送信されません。設定でオフにできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter는 새로 고침할 때 공급자의 공개 상태 페이지도 읽어 서비스 장애와 계정 문제를 구분합니다. 이 요청은 익명이며 사용자나 계정에 관한 정보는 전송되지 않습니다. 설정에서 끌 수 있습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O AIMeter também consulta a página pública de status do provedor ao atualizar, para distinguir uma queda do serviço de um problema com sua conta. Essa requisição é anônima (nada sobre você ou sua conta é enviado), e você pode desativá-la nos Ajustes."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter 刷新时也会读取服务商的公开状态页，以区分服务故障和账户问题。该请求是匿名的，不会发送任何关于你或你账户的信息，你可以在设置中关闭。"
-          }
-        }
-      }
-    },
     "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8583,52 +10837,6 @@
         }
       }
     },
-    "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way: from a fixed schedule and the clock, with no extra network call." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter hat keinen Server und keinen eigenen Account. Die Nutzung wird direkt von Anthropic gelesen und auf diesem Gerät zwischengespeichert, damit Widgets sie anzeigen können. Nichts wird woandershin gesendet. Die Stoßzeiten-Anzeige wird genauso berechnet: aus einem festen Zeitplan und der Uhr, ohne zusätzliche Netzwerkanfrage."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de Anthropic y se guarda en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro lado. El indicador de horario pico se calcula de la misma forma: a partir de un horario fijo y el reloj, sin ninguna llamada de red adicional."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter n'a ni serveur ni compte propre. L'usage est lu directement auprès d'Anthropic et mis en cache sur cet appareil pour que les widgets puissent l'afficher. Rien n'est envoyé ailleurs. L'indicateur d'heures de pointe est calculé de la même façon : à partir d'un horaire fixe et de l'horloge, sans appel réseau supplémentaire."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeterには独自のサーバもアカウントもありません。使用量はAnthropicから直接読み取り、ウィジェットが表示できるようこのデバイスにキャッシュします。他にはどこにも送信しません。ピーク時間の表示も同じで、固定のスケジュールと時計から計算し、追加の通信はありません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter에는 자체 서버도 계정도 없습니다. 사용량은 Anthropic에서 직접 읽어 위젯이 표시할 수 있도록 이 기기에 캐시됩니다. 다른 곳으로는 아무것도 전송되지 않습니다. 피크 시간 표시도 같은 방식으로, 고정된 일정과 시계만으로 계산하며 추가 네트워크 요청이 없습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O AIMeter não tem servidor nem conta própria. O uso é lido diretamente da Anthropic e guardado neste dispositivo para que os widgets possam mostrá-lo. Nada é enviado a outro lugar. O indicador de horário de pico é calculado do mesmo jeito: a partir de um horário fixo e do relógio, sem chamada de rede extra."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter 没有自己的服务器和账户。用量直接从 Anthropic 读取并缓存在本设备上，供小组件显示。不会发送到任何其他地方。高峰时段指示也是同样方式计算的：仅依据固定时间表和时钟，没有额外的网络请求。"
-          }
-        }
-      }
-    },
     "AIMeter is an independent app, not affiliated with Anthropic. It only reads your own usage limits, never sends prompts or spends your plan's usage, and your sign-in token stays on this device." : {
       "localizations" : {
         "de" : {
@@ -8671,52 +10879,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AIMeter 是独立 App，与 Anthropic 无关。它只读取你自己的用量额度，绝不发送提示词或消耗你套餐的用量，你的登录令牌也只保存在本设备上。"
-          }
-        }
-      }
-    },
-    "AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic. \"Claude\" and \"Anthropic\" are trademarks of Anthropic, PBC, used only to identify the service whose usage this app displays." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter ist ein unabhängiges Open-Source-Projekt (MIT). Es ist nicht mit Anthropic verbunden und wird von Anthropic weder unterstützt noch gesponsert. „Claude“ und „Anthropic“ sind Marken von Anthropic, PBC, und werden nur verwendet, um den Dienst zu bezeichnen, dessen Nutzung diese App anzeigt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter es un proyecto independiente de código abierto (MIT). No está afiliado a Anthropic ni cuenta con su respaldo o patrocinio. \"Claude\" y \"Anthropic\" son marcas de Anthropic, PBC, usadas únicamente para identificar el servicio cuyo uso muestra esta app."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter est un projet open source indépendant (MIT). Il n'est ni affilié à Anthropic, ni approuvé ou sponsorisé par Anthropic. « Claude » et « Anthropic » sont des marques d'Anthropic, PBC, utilisées uniquement pour identifier le service dont cette app affiche l'usage."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeterは独立したオープンソースプロジェクト（MIT）です。Anthropicとの提携、承認、後援はありません。「Claude」と「Anthropic」はAnthropic, PBCの商標で、このアプリが使用量を表示するサービスを示す目的でのみ使用しています。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter는 독립적인 오픈 소스 프로젝트(MIT)입니다. Anthropic과 제휴, 보증, 후원 관계가 없습니다. \"Claude\"와 \"Anthropic\"은 Anthropic, PBC의 상표이며, 이 앱이 사용량을 표시하는 서비스를 식별하는 용도로만 사용됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O AIMeter é um projeto independente de código aberto (MIT). Não é afiliado, endossado nem patrocinado pela Anthropic. \"Claude\" e \"Anthropic\" são marcas da Anthropic, PBC, usadas apenas para identificar o serviço cujo uso este app exibe."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter 是独立的开源项目（MIT）。与 Anthropic 没有关联、认可或赞助关系。\"Claude\" 和 \"Anthropic\" 是 Anthropic, PBC 的商标，仅用于标识本 App 所显示用量的服务。"
           }
         }
       }
@@ -8768,9 +10930,7 @@
       }
     },
     "AIMeter isn't running." : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "AIMeter keeps running and refreshing your usage either way. Hiding only changes what you see. Quit still quits." : {
       "localizations" : {
@@ -10439,52 +12599,6 @@
         }
       }
     },
-    "Connect Claude account" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude-Account verbinden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conectar cuenta de Claude"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecter un compte Claude"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claudeアカウントを接続"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude 계정 연결"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conectar conta Claude"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "连接 Claude 账户"
-          }
-        }
-      }
-    },
     "Connect your Claude account" : {
       "localizations" : {
         "de" : {
@@ -11641,9 +13755,7 @@
       }
     },
     "Fetches the latest usage for every connected account and updates the widgets." : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there. No extra permissions needed." : {
       "localizations" : {
@@ -12331,52 +14443,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "积累几次会话后才会显示分析。"
-          }
-        }
-      }
-    },
-    "It is the same OAuth flow Claude Code itself uses; AIMeter only receives the token Claude hands back." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Es ist derselbe OAuth-Ablauf, den Claude Code selbst verwendet; AIMeter erhält nur das Token, das Claude zurückgibt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Es el mismo flujo OAuth que usa el propio Claude Code; AIMeter solo recibe el token que Claude entrega."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "C'est le même flux OAuth que Claude Code utilise lui-même ; AIMeter ne reçoit que le jeton que Claude renvoie."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude Code自身が使うのと同じOAuthフローです。AIMeterはClaudeが返すトークンを受け取るだけです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude Code가 사용하는 것과 같은 OAuth 흐름입니다. AIMeter는 Claude가 돌려주는 토큰만 받습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "É o mesmo fluxo OAuth que o próprio Claude Code usa; o AIMeter só recebe o token que o Claude devolve."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "这与 Claude Code 本身使用的 OAuth 流程相同；AIMeter 只接收 Claude 返回的令牌。"
           }
         }
       }
@@ -13763,52 +15829,6 @@
         }
       }
     },
-    "On the Mac, AIMeter only reads the login Claude Code already keeps on this computer. It never modifies or rotates those tokens; Claude Code stays in charge of its own session." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auf dem Mac liest AIMeter nur die Anmeldung, die Claude Code bereits auf diesem Computer hält. Es ändert oder rotiert diese Tokens nie; Claude Code bleibt für seine eigene Sitzung zuständig."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En la Mac, AIMeter solo lee la sesión que Claude Code ya mantiene en esta computadora. Nunca modifica ni rota esos tokens; Claude Code sigue a cargo de su propia sesión."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sur le Mac, AIMeter ne fait que lire la connexion que Claude Code conserve déjà sur cet ordinateur. Il ne modifie ni ne renouvelle jamais ces jetons ; Claude Code reste maître de sa propre session."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Macでは、AIMeterはClaude Codeがこのコンピュータに保持しているログインを読み取り専用で読みます。トークンを変更したり更新したりすることはなく、セッションの管理はClaude Codeのままです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mac에서 AIMeter는 Claude Code가 이 컴퓨터에 이미 보관 중인 로그인을 읽기 전용으로 읽습니다. 그 토큰을 수정하거나 갱신하지 않으며, 세션 관리는 Claude Code가 계속 담당합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Mac, o AIMeter só lê o login que o Claude Code já mantém neste computador. Ele nunca modifica nem renova esses tokens; o Claude Code continua no comando da própria sessão."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Mac 上，AIMeter 以只读方式读取 Claude Code 已保存在这台电脑上的登录。它绝不修改或轮换这些令牌，会话仍由 Claude Code 自己管理。"
-          }
-        }
-      }
-    },
     "Open AIMeter" : {
       "comment" : "Tooltip/accessibility label for the menu bar popover button that brings the main Dashboard window forward.",
       "localizations" : {
@@ -14133,9 +16153,7 @@
       }
     },
     "Opens AIMeter's dashboard." : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "Output (incl. thinking)" : {
       "localizations" : {
@@ -15345,9 +17363,7 @@
       }
     },
     "Refresh Usage" : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "Relative" : {
       "localizations" : {
@@ -15718,9 +17734,7 @@
       }
     },
     "Reset" : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "Reset %lld times." : {
       "localizations" : {
@@ -17199,9 +19213,7 @@
       }
     },
     "Show Usage" : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "Show Used" : {
       "localizations" : {
@@ -18362,14 +20374,10 @@
       }
     },
     "Threshold" : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "Time" : {
-      "localizations" : {
-
-    }
+      "localizations" : {}
     },
     "To draw the history chart, AIMeter keeps the percentages it has already fetched (just the numbers and their dates, nothing about what you did) on this device for 30 days. Disconnecting an account deletes its history." : {
       "localizations" : {
@@ -20264,52 +22272,6 @@
         }
       }
     },
-    "You sign in on Claude's own page in your browser, never in an embedded web view, so AIMeter can't see your password. You only paste back the code Claude shows after you approve." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du meldest dich auf Claudes eigener Seite in deinem Browser an, nie in einer eingebetteten Web-Ansicht, sodass AIMeter dein Passwort nicht sehen kann. Du fügst nur den Code ein, den Claude nach deiner Zustimmung anzeigt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicias sesión en la propia página de Claude en tu navegador, nunca en un web view incrustado, así que AIMeter no puede ver tu contraseña. Solo pegas de vuelta el código que Claude muestra cuando apruebas."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous vous connectez sur la page de Claude dans votre navigateur, jamais dans une vue web intégrée, donc AIMeter ne peut pas voir votre mot de passe. Vous ne collez que le code que Claude affiche après votre approbation."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインインはブラウザ上のClaude自身のページで行い、埋め込みWebビューは使わないため、AIMeterがパスワードを見ることはありません。承認後にClaudeが表示するコードを貼り付けるだけです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로그인은 브라우저의 Claude 페이지에서 이루어지며 내장 웹 보기를 사용하지 않으므로 AIMeter는 비밀번호를 볼 수 없습니다. 승인 후 Claude가 표시하는 코드만 붙여 넣으면 됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você entra na própria página do Claude no seu navegador, nunca em uma web view embutida, então o AIMeter não vê sua senha. Você só cola de volta o código que o Claude mostra depois de aprovar."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在浏览器中 Claude 自己的页面上登录，绝不是内嵌网页视图，所以 AIMeter 看不到你的密码。你只需粘贴确认后 Claude 显示的代码。"
-          }
-        }
-      }
-    },
     "You're at %lld%% of this window." : {
       "localizations" : {
         "de" : {
@@ -20536,52 +22498,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的 %@ 用量周期已重置。已恢复全部容量。"
-          }
-        }
-      }
-    },
-    "Your sign-in token is only read from the Keychain item Claude Code already keeps on this Mac, and it never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dein Anmeldetoken wird nur aus dem Schlüsselbund-Eintrag gelesen, den Claude Code bereits auf diesem Mac hält, und es verlässt dieses Gerät nie. Das Widget greift nicht direkt auf den Schlüsselbund zu; die Menüleisten-App liefert ihm stattdessen deine Nutzung."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu token de inicio de sesión solo se lee del llavero que Claude Code ya mantiene en esta Mac, y nunca sale de este dispositivo. El widget no accede al llavero directamente; la app de la barra de menú le pasa tu uso."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre jeton de connexion est seulement lu depuis l'élément du trousseau que Claude Code conserve déjà sur ce Mac, et il ne quitte jamais cet appareil. Le widget n'accède pas directement au trousseau ; c'est l'app de la barre des menus qui lui fournit votre usage."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインイントークンはClaude CodeがこのMacに保持しているキーチェーン項目から読み取り専用で読みます。このデバイスから出ることはありません。ウィジェットはキーチェーンに直接アクセスせず、メニューバーアプリが使用量を渡します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로그인 토큰은 Claude Code가 이 Mac에 이미 보관 중인 키체인 항목에서 읽기 전용으로 읽으며, 이 기기를 떠나지 않습니다. 위젯은 키체인에 직접 접근하지 않고 메뉴 막대 앱이 사용량을 전달합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seu token de login só é lido do item das Chaves que o Claude Code já mantém neste Mac, e nunca sai deste dispositivo. O widget não acessa as Chaves diretamente; o app da barra de menus é quem lhe passa o uso."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的登录令牌以只读方式从 Claude Code 已保存在这台 Mac 上的钥匙串项读取，绝不离开本设备。小组件不直接访问钥匙串，而是由菜单栏 App 向它提供用量。"
           }
         }
       }

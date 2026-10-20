@@ -8,23 +8,23 @@ import UsageKit
 extension UsageModel {
     // MARK: - Account management
 
-    /// Called by the connect sheet after a successful OAuth exchange. Adds
-    /// a new account (the app's own managed credentials — never the
-    /// macOS auto-detect path, which only ever applies to a CLI-mirrored
-    /// login found automatically, not a manual paste/OAuth flow).
-    func completeConnection(_ credentials: ClaudeCredentials, displayName: String? = nil) async {
+    /// Called by the Connect sheet after a successful sign-in of any
+    /// family (`ProviderLogin`). Adds a new account with the app's own
+    /// managed credentials — never the macOS auto-detect path, which only
+    /// ever applies to a CLI login found on this Mac, not a sign-in.
+    func completeConnection(_ login: ProviderLogin, displayName: String? = nil) async {
         let accountID = UUID().uuidString
         // The Connect sheet already refuses a taken nickname; this only
         // guarantees the registry never holds two accounts under one name.
-        let requested = displayName ?? suggestedNickname()
-        let name = isNameTaken(requested) ? suggestedNickname() : requested
+        let requested = displayName ?? suggestedNickname(providerID: login.providerID)
+        let name = isNameTaken(requested) ? suggestedNickname(providerID: login.providerID) : requested
         let account = ConnectedAccount(
-            accountID: accountID, providerID: ProviderCatalog.defaultProviderID,
+            accountID: accountID, providerID: login.providerID,
             displayName: name, credentialStrategy: .managed
         )
         let service = RefreshService(account: account)
         do {
-            try await service.storeConnection(credentials)
+            try await service.storeConnection(login)
         } catch {
             connectionError = (error as? UsageError)?.errorDescription ?? error.localizedDescription
             return
@@ -49,9 +49,13 @@ extension UsageModel {
     /// account selection of every widget already on a Home Screen. That is
     /// the whole point of not routing this through
     /// `completeConnection`, which mints a new id.
-    func reconnect(accountID: String, credentials: ClaudeCredentials) async {
+    func reconnect(accountID: String, login: ProviderLogin) async {
         guard let startIndex = index(for: accountID) else { return }
         var account = accounts[startIndex].account
+        guard account.providerID == login.providerID else {
+            connectionError = String(localized: "That sign-in is for another service than this account.")
+            return
+        }
         // Whatever the user just signed in with is a token pair the app
         // owns, so a macOS account that used to mirror Claude Code's login
         // stops being `.autoDetected` — and stops deferring to a CLI login
@@ -64,7 +68,7 @@ extension UsageModel {
         }
         let service = RefreshService(account: account)
         do {
-            try await service.storeConnection(credentials)
+            try await service.storeConnection(login)
         } catch {
             connectionError = (error as? UsageError)?.errorDescription ?? error.localizedDescription
             return
@@ -99,9 +103,11 @@ extension UsageModel {
         guard let service = services[accountID] else { return }
         do {
             try service.disconnect()
-            if service.account.credentialStrategy == .autoDetected {
+            if service.account.credentialStrategy == .autoDetected, service.account.providerID == ClaudeProvider.providerID {
                 // See `Preferences.autoDetectDeclined`: without this the
-                // CLI login comes right back on the next launch.
+                // CLI login comes right back on the next launch. Only
+                // Claude's is ever mirrored speculatively; Codex's is
+                // connected on purpose and stays gone when removed.
                 Preferences.autoDetectDeclined = true
             }
             if let identity = service.account.syncIdentity ?? registry?.account(for: accountID)?.syncIdentity {
@@ -180,6 +186,37 @@ extension UsageModel {
     #endif
 
     #if os(macOS)
+    /// Whether the Connect sheet may offer the login the Codex CLI keeps
+    /// on this Mac: the file holds one, and no account mirrors it yet
+    /// (the CLI tracks one login per machine, so one account is the cap,
+    /// as for Claude Code's).
+    var canConnectCodexCLILogin: Bool {
+        CodexFileCredentialSource.isAvailable
+            && !accounts.contains { $0.account.providerID == CodexProvider.providerID && $0.account.credentialStrategy == .autoDetected }
+    }
+
+    /// Connects the login the Codex CLI keeps on this Mac as a read-only
+    /// mirror (`.autoDetected`, `CodexFileCredentialSource`), the Codex
+    /// counterpart of the Claude Code login the first account mirrors;
+    /// unlike that one it is never guessed at launch, only added here.
+    /// Signing in again later makes it `.managed` (`reconnect`).
+    func connectCodexCLILogin(displayName: String? = nil) async {
+        guard canConnectCodexCLILogin else { return }
+        let requested = displayName ?? suggestedNickname(providerID: CodexProvider.providerID)
+        let name = isNameTaken(requested) ? suggestedNickname(providerID: CodexProvider.providerID) : requested
+        let account = ConnectedAccount(
+            accountID: UUID().uuidString, providerID: CodexProvider.providerID,
+            displayName: name, credentialStrategy: .autoDetected
+        )
+        connectionError = nil
+        registry?.add(account)
+        addAccount(account, service: RefreshService(account: account))
+        if accounts.count == 2 {
+            relabelPendingNotifications(except: account.accountID)
+        }
+        await refresh(accountID: account.accountID)
+    }
+
     /// The disconnected Dashboard card's way back to the zero-setup path:
     /// true once the user removed the CLI-mirrored account
     /// (`Preferences.autoDetectDeclined`), which is what stops

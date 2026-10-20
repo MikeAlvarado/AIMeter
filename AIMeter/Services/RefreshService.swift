@@ -182,7 +182,7 @@ struct RefreshService {
         preferences prefs: NotificationPreferences
     ) async {
         await NotificationScheduler.notifyEarlyResets(
-            ResetDetector.earlyResets(previous: previous, current: current),
+            ResetDetector.earlyResets(previous: previous, current: current), in: current,
             accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
         )
 
@@ -231,15 +231,27 @@ struct RefreshService {
         return (try? keychainStore.data(for: key)) != nil
     }
 
-    /// The Claude connect path: the one place this type is provider-typed,
-    /// because the credentials themselves are (`ClaudeCredentials` from the
-    /// in-app OAuth exchange or a pasted JSON). A second provider adds its
-    /// own connect path beside this one rather than generalizing it.
-    func storeConnection(_ credentials: ClaudeCredentials) async throws {
-        guard let source = credentialSource as? any ClaudeCredentialSource else {
-            throw UsageError.storage("account \(account.accountID) is not a \(ClaudeProvider.providerDisplayName) account")
+    /// The connect path: the one place this type is provider-typed,
+    /// because the credentials themselves are (`ProviderLogin`: what each
+    /// family's sign-in flow hands back). The login must be of the
+    /// account's own family; the source built for the account is the only
+    /// one that can hold it.
+    func storeConnection(_ login: ProviderLogin) async throws {
+        switch login {
+        case .claude(let credentials):
+            guard let source = credentialSource as? any ClaudeCredentialSource else { throw mismatch(login) }
+            try await source.save(credentials)
+        case .codex(let credentials):
+            guard let source = credentialSource as? any CodexCredentialSource else { throw mismatch(login) }
+            try await source.save(credentials)
+        case .copilot(let credentials):
+            guard let source = credentialSource as? any CopilotCredentialSource else { throw mismatch(login) }
+            try await source.save(credentials)
         }
-        try await source.save(credentials)
+    }
+
+    private func mismatch(_ login: ProviderLogin) -> UsageError {
+        .storage("account \(account.accountID) is not a \(ProviderCatalog.displayName(for: login.providerID)) account")
     }
 
     func disconnect() throws {

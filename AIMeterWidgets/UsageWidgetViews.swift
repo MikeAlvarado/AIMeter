@@ -120,7 +120,7 @@ struct WindowBarRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2.5) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(kind.shortName)
+                Text(window?.shortTitle ?? kind.shortName)
                     .font(.system(size: 11))
                     .foregroundStyle(Theme.inkSecondary)
                 Spacer(minLength: 4)

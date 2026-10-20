@@ -12,16 +12,34 @@ import UsageKit
 /// pure functions, read from default arguments and from widget timeline
 /// code that runs off the main actor.
 nonisolated enum ProviderCatalog {
-    /// The provider a new connection belongs to. There is exactly one
-    /// today; the Connect sheet gets a picker the day there are two.
+    /// The provider the legacy single-account install belongs to, and
+    /// what an id the registry can't place fetches as.
     static let defaultProviderID = ClaudeProvider.providerID
+
+    /// Every family this build can connect, in the order the Connect
+    /// sheet's picker lists them.
+    static let providerIDs = [ClaudeProvider.providerID, CodexProvider.providerID, CopilotProvider.providerID]
 
     /// Plain-text name shown for accounts of this family — nominative use
     /// only, never a logo (see "Design system" in the repo-root CLAUDE.md).
     static func displayName(for providerID: String) -> String {
         switch providerID {
         case ClaudeProvider.providerID: ClaudeProvider.providerDisplayName
+        case CodexProvider.providerID: CodexProvider.providerDisplayName
+        case CopilotProvider.providerID: CopilotProvider.providerDisplayName
         default: providerID.capitalized
+        }
+    }
+
+    /// The glyph beside a family's name in the Connect sheet's picker: an
+    /// SF Symbol, never a logo. Accounts themselves start on the default
+    /// mark whatever their family (`ProviderMark`).
+    static func symbolName(for providerID: String) -> String {
+        switch providerID {
+        case ClaudeProvider.providerID: "sparkle"
+        case CodexProvider.providerID: "terminal"
+        case CopilotProvider.providerID: "chevron.left.forwardslash.chevron.right"
+        default: ProviderMark.defaultSymbol
         }
     }
 
@@ -52,8 +70,10 @@ nonisolated enum ProviderCatalog {
     /// A working provider for one connected account, plus the credential
     /// store to clear on disconnect. Keyed by `account.providerID`; the
     /// credential strategy and the account's Keychain key decide which
-    /// source backs it (see the Claude provider's CLAUDE.md for the
-    /// `.autoDetected` / `.managed` split).
+    /// source backs it: on macOS an `.autoDetected` account mirrors the
+    /// CLI's own login (Claude Code's Keychain item, Codex's auth.json),
+    /// read-only; every `.managed` account has the app's own copy in the
+    /// Keychain (see each provider's CLAUDE.md).
     static func makeProvider(
         for account: ConnectedAccount,
         keychain: KeychainStore,
@@ -75,33 +95,63 @@ nonisolated enum ProviderCatalog {
             let provider = transport.map { ClaudeProvider(credentialSource: source, transport: $0) }
                 ?? ClaudeProvider(credentialSource: source)
             return (provider, source)
+        case CodexProvider.providerID:
+            let key = CodexKeychainCredentialSource.storageKey(for: account.accountID)
+            let source: any CodexCredentialSource
+            #if os(macOS)
+            if account.credentialStrategy == .autoDetected {
+                source = CodexFileCredentialSource()
+            } else {
+                source = CodexKeychainCredentialSource(store: keychain, key: key)
+            }
+            #else
+            source = CodexKeychainCredentialSource(store: keychain, key: key)
+            #endif
+            let provider = transport.map { CodexProvider(credentialSource: source, transport: $0) }
+                ?? CodexProvider(credentialSource: source)
+            return (provider, source)
+        case CopilotProvider.providerID:
+            let key = CopilotKeychainCredentialSource.storageKey(for: account.accountID)
+            let source = CopilotKeychainCredentialSource(store: keychain, key: key)
+            let provider = transport.map { CopilotProvider(credentialSource: source, transport: $0) }
+                ?? CopilotProvider(credentialSource: source)
+            return (provider, source)
         default:
             // Only this app writes the registry, so an unknown family means
             // a build older than the one that wrote it. Fail loudly in
             // development; in release, treat it as the family it almost
             // certainly is rather than crash over a meter.
             assertionFailure("unknown provider \(account.providerID)")
-            var claude = account
-            claude = ConnectedAccount(
-                accountID: claude.accountID, providerID: ClaudeProvider.providerID,
-                displayName: claude.displayName, credentialStrategy: claude.credentialStrategy,
-                connectedAt: claude.connectedAt, icon: claude.icon
+            let claude = ConnectedAccount(
+                accountID: account.accountID, providerID: ClaudeProvider.providerID,
+                displayName: account.displayName, credentialStrategy: account.credentialStrategy,
+                connectedAt: account.connectedAt, icon: account.icon
             )
             return makeProvider(for: claude, keychain: keychain, transport: transport)
         }
     }
 
-    /// Where this family publishes its service health, if anywhere. nil
-    /// for a provider without a status page: the app then shows nothing
+    /// Where this family publishes its service health, if anywhere. Every
+    /// family this build knows has a Statuspage (`StatuspageSource`); a
+    /// provider without one would get nil, and the app would show nothing
     /// for it — there is nothing to show, and a guess is worse than
     /// silence.
     static func statusSource(for providerID: String, transport: (any HTTPTransport)? = nil) -> (any ServiceStatusSource)? {
         switch providerID {
         case ClaudeProvider.providerID:
             transport.map { ClaudeStatusSource(transport: $0) } ?? ClaudeStatusSource()
+        case CodexProvider.providerID:
+            statuspage(CodexProvider.statusSummaryEndpoint, CodexProvider.statusPageURL, transport)
+        case CopilotProvider.providerID:
+            statuspage(CopilotProvider.statusSummaryEndpoint, CopilotProvider.statusPageURL, transport)
         default:
             nil
         }
+    }
+
+    private static func statuspage(_ summary: URL, _ page: URL, _ transport: (any HTTPTransport)?) -> StatuspageSource {
+        transport.map { StatuspageSource(summaryEndpoint: summary, pageURL: page, transport: $0) }
+            ?? StatuspageSource(summaryEndpoint: summary, pageURL: page)
     }
 
     /// The human status page, for a banner whose incident carries no link
@@ -109,6 +159,8 @@ nonisolated enum ProviderCatalog {
     static func statusPageURL(for providerID: String) -> URL? {
         switch providerID {
         case ClaudeProvider.providerID: ClaudeStatusSource.pageURL
+        case CodexProvider.providerID: CodexProvider.statusPageURL
+        case CopilotProvider.providerID: CopilotProvider.statusPageURL
         default: nil
         }
     }

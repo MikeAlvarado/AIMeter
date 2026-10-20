@@ -74,12 +74,16 @@ struct MenuBarLabelModel: Equatable {
     ) {
         self.style = style
         let available = UsageSnapshot.glanceOptions(for: snapshot, modelSlotFallback: modelSlotFallback)
+        // The chosen window when the account reports it, else its first:
+        // a metric set against one provider's session never leaves
+        // another provider's account blank.
+        let fallback = UsageSnapshot.glanceMetric(metric, for: snapshot, modelSlotFallback: modelSlotFallback)
         let kinds: [UsageWindow.Kind]
         if style == .multi {
             let chosen = Array(metrics.filter(available.contains).prefix(Self.maxMetrics))
-            kinds = chosen.isEmpty ? [metric] : chosen
+            kinds = chosen.isEmpty ? [fallback] : chosen
         } else {
-            kinds = [metric]
+            kinds = [fallback]
         }
         let windows = kinds.compactMap { kind in snapshot?.window(for: kind).map { (kind, $0) } }
         let primary = windows.first?.1
@@ -111,8 +115,8 @@ struct MenuBarLabelModel: Equatable {
             accessibilityLabel = String(localized: "AIMeter: no usage data yet")
             return
         }
-        var spoken = windows.map { kind, window in
-            String(localized: "\(kind.shortName): \(Int(window.displayedPct(displayMode)))% \(displayMode.label)")
+        var spoken = windows.map { _, window in
+            String(localized: "\(window.shortTitle): \(Int(window.displayedPct(displayMode)))% \(displayMode.label)")
         }.joined(separator: ", ")
         if let countdown {
             spoken += ", " + String(localized: "resets in \(countdown)")
@@ -124,13 +128,24 @@ struct MenuBarLabelModel: Equatable {
     }
 
     /// One or two letters per window for the multi style. Localized, since
-    /// "Session" and "Semana" would otherwise collide on "S".
+    /// "Session" and "Semana" would otherwise collide on "S". A quota's
+    /// are its own (Copilot's chat and completions both start with C).
     static func abbreviation(_ kind: UsageWindow.Kind) -> String {
         switch kind {
         case .session: String(localized: "S")
         case .weekly: String(localized: "W")
         case .modelSpecific(let model): String(model.prefix(1)).uppercased()
+        case .quota(let id): Self.quotaAbbreviation(id)
         case .credits: String(localized: "C")
+        }
+    }
+
+    static func quotaAbbreviation(_ id: String) -> String {
+        switch id {
+        case "premium_interactions": return "P"
+        case "chat": return "Ch"
+        case "completions": return "Co"
+        default: return String(UsageWindow.Kind.quotaName(id).prefix(1)).uppercased()
         }
     }
 }

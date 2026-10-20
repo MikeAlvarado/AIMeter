@@ -95,7 +95,7 @@ struct ProviderDetailView: View {
         .background(Theme.background)
         .sheet(isPresented: $showingReconnect) {
             if let account = usage?.account {
-                ConnectClaudeSheet(reconnecting: account)
+                ConnectAccountSheet(reconnecting: account)
             }
         }
         .navigationTitle(accountName)

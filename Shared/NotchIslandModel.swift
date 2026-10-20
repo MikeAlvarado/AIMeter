@@ -202,7 +202,10 @@ struct NotchIslandModel: Equatable {
         guard let primary else { return Collapsed(left: [], right: []) }
         let available = UsageSnapshot.glanceOptions(for: primary.snapshot, modelSlotFallback: modelSlotFallback)
         let chosen = Array(metrics.filter(available.contains).prefix(maxMetrics))
-        let kinds = chosen.isEmpty ? [glanceMetric] : chosen
+        // The glance metric when the account reports it, else its first
+        // window (`UsageSnapshot.glanceMetric`), like the menu bar.
+        let fallback = UsageSnapshot.glanceMetric(glanceMetric, for: primary.snapshot, modelSlotFallback: modelSlotFallback)
+        let kinds = chosen.isEmpty ? [fallback] : chosen
         let segments = kinds.map { kind in
             segment(
                 kind: kind, window: primary.snapshot?.window(for: kind), snapshot: primary.snapshot, compact: true,
@@ -233,7 +236,7 @@ struct NotchIslandModel: Equatable {
         }
         let shown = window.displayedPct(displayMode)
         let percent = "\(Int(shown))%"
-        var spoken = String(localized: "\(kind.shortName): \(Int(shown))% \(displayMode.label)")
+        var spoken = String(localized: "\(window.shortTitle): \(Int(shown))% \(displayMode.label)")
 
         // The wings show only the figure (no room, and no clock to tick it);
         // the spoken label keeps the reset either way.
@@ -254,11 +257,15 @@ struct NotchIslandModel: Equatable {
     /// The window's length, not its type: under 48 h in hours, from there
     /// on in days — so a provider whose "week" is a month reads "30d"
     /// without a new `Kind`. Per-model windows carry the model's name
-    /// (cut to `collapsedLabelLimit` in the wings); credits has no length.
+    /// (cut to `collapsedLabelLimit` in the wings), a quota its short
+    /// name (Copilot's "Prem", "Chat", "Comp" in the wings); credits has
+    /// no length.
     static func label(for kind: UsageWindow.Kind, duration: TimeInterval?, compact: Bool) -> String {
         switch kind {
         case .modelSpecific(let model):
             return compact ? String(model.prefix(collapsedLabelLimit)) : model
+        case .quota(let id):
+            return compact ? quotaWingLabel(id) : UsageWindow.Kind.quotaShortName(id)
         case .credits:
             return String(localized: "Cr")
         case .session, .weekly:
@@ -267,6 +274,16 @@ struct NotchIslandModel: Equatable {
                 return String(localized: "\(Int((duration / 3600).rounded()))h")
             }
             return String(localized: "\(Int((duration / 86_400).rounded()))d")
+        }
+    }
+
+    /// A quota's label in the wings: four letters at most.
+    static func quotaWingLabel(_ id: String) -> String {
+        switch id {
+        case "premium_interactions": return "Prem"
+        case "chat": return "Chat"
+        case "completions": return "Comp"
+        default: return String(UsageWindow.Kind.quotaShortName(id).prefix(collapsedLabelLimit))
         }
     }
 

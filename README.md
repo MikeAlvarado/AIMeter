@@ -13,8 +13,12 @@ no server, no account.
 **[Download on the App Store](https://apps.apple.com/app/id6797946742)** (iPhone, iPad, Apple Watch) ·
 **[Download for Mac](https://github.com/MikeAlvarado/AIMeter/releases/latest/download/AIMeter-macOS.zip)** (macOS 14+, notarized, updates itself)
 
-Supported today: **Claude** Pro and Max (the session, weekly and per-model
-windows). The architecture is provider-agnostic, so more can follow.
+Supported today: **Claude** Pro and Max (the session, weekly and
+per-model windows), **Codex** on any ChatGPT plan, Free included (its
+5-hour and weekly windows, or Free's one monthly window), and **GitHub
+Copilot** Free, Pro and Pro+ (the monthly chat, completion and
+premium-request quotas). The architecture is provider-agnostic, so more
+can follow.
 
 ## What it does
 
@@ -43,7 +47,8 @@ windows). The architecture is provider-agnostic, so more can follow.
   fetched. The Watch never holds a login.
 - **Live Activity.** An account's session countdown on the Lock Screen and
   the Dynamic Island, with its pet if you like. Opt-in, per account.
-- **Several accounts.** Personal and work, each with its own name, icon
+- **Several accounts, three services.** Claude, Codex and GitHub
+  Copilot side by side, personal and work, each with its own name, icon
   and alerts. Drag to reorder, or let the one closest to a limit come
   first.
 - **A tour, what's new, and updates.** The first launch walks through each
@@ -72,18 +77,26 @@ windows). The architecture is provider-agnostic, so more can follow.
 
 ## How it connects
 
-- **Mac**: zero setup for the first account. AIMeter reads the login
-  Claude Code already keeps on your Mac, read-only, and never touches it;
-  Claude Code keeps owning its own token refresh.
-- **iPhone, iPad, and every account after the first on the Mac**: tap
-  **Connect**. AIMeter opens Claude's sign-in page in your browser (the
+- **Claude on the Mac**: zero setup for the first account. AIMeter reads
+  the login Claude Code already keeps on your Mac, read-only, and never
+  touches it; Claude Code keeps owning its own token refresh.
+- **Claude on iPhone and iPad, and every Claude account after the first on
+  the Mac**: tap **Add account** and pick Claude. AIMeter opens Claude's sign-in page in your browser (the
   same PKCE flow Claude Code uses, any sign-in method works), you paste
   back the code it shows, and the app keeps its own token in the
   Keychain, refreshing it itself. On the Mac the same field also accepts
   the credentials JSON copied from another Mac; the iOS build accepts
   nothing but the sign-in code.
-- **Sign-in recovery**: Claude rotates its refresh token on every use, so a
-  login shared with another client can stop working. AIMeter says so on
+- **Codex**: pick Codex under **Add account**. AIMeter shows a one-time
+  code, you enter it on ChatGPT's device page in your browser (the same
+  device-code sign-in the Codex CLI offers; it has to be allowed under
+  ChatGPT's security settings), and the account connects as soon as you
+  approve. On the Mac, one click reads the login the Codex CLI keeps in
+  `~/.codex` instead, read-only.
+- **GitHub Copilot**: the same kind of code, entered on GitHub's device
+  page. AIMeter asks GitHub for no scope at all.
+- **Sign-in recovery**: Claude and OpenAI rotate the refresh token on
+  every use, so a login shared with another client can stop working. AIMeter says so on
   the card, notifies you once, and offers **Sign in again**, which repairs
   the account in place: history, alerts and placed widgets all survive.
 
@@ -92,13 +105,18 @@ windows). The architecture is provider-agnostic, so more can follow.
 Everything in this section can be checked against the code. The full
 policy is on the [website](https://mikealvarado.github.io/AIMeter/privacy/).
 
-- **What leaves your device**: HTTPS requests to `api.anthropic.com`
-  (`/api/oauth/usage` for the windows and spend, `/api/oauth/profile` for
-  the plan name, at most every 6 hours) and, when you sign in through the
-  app, the standard OAuth exchange with `claude.ai` and
-  `console.anthropic.com`; one anonymous GET of the public status page
-  (`status.claude.com/api/v2/summary.json`, off with "Check service
-  status"); on the Mac, once a day, `api.github.com` for a newer release
+- **What leaves your device**: HTTPS requests to the services you
+  connected. Claude: `api.anthropic.com` (`/api/oauth/usage` for the
+  windows and spend, `/api/oauth/profile` for the plan name, at most
+  every 6 hours) and, when you sign in through the app, the standard
+  OAuth exchange with `claude.ai` and `console.anthropic.com`. Codex:
+  `chatgpt.com` (`/backend-api/wham/usage`) and `auth.openai.com` (the
+  device-code sign-in and the token refresh). GitHub Copilot:
+  `github.com` (the device-code sign-in, no scope) and `api.github.com`
+  (the Copilot quota endpoint, whose answer carries your user id). One
+  anonymous GET of each connected service's public status page
+  (`status.claude.com`, `status.openai.com`, `www.githubstatus.com`, off
+  with "Check service status"); on the Mac, once a day, `api.github.com` for a newer release
   and its download (off with "Check for updates automatically"); and,
   only with "Sync preferences and history" on, your display preferences
   and each account's history to your own iCloud, never the logins.
@@ -109,6 +127,8 @@ policy is on the [website](https://mikealvarado.github.io/AIMeter/privacy/).
   group, never on the Watch); the last snapshot and your preferences in
   the App Group container; up to 30 days of percentages per window as a
   small file per account, deleted when you disconnect.
+- **Read-only on the Mac**: a login Claude Code or the Codex CLI already
+  keeps is only read, never changed or rotated.
 - **Opt-in on the Mac**: reading Claude Code's logs in `~/.claude/projects`
   for the cost figures (only the usage fields, never a prompt or a
   reply); the Claude Code sessions in the notch read only each record's
@@ -122,21 +142,28 @@ policy is on the [website](https://mikealvarado.github.io/AIMeter/privacy/).
   in the snapshot. No push service.
 - **Audit it**: `Scripts/probe-usage-endpoint.sh` prints the exact JSON
   the app reads with your own login (the token is never printed or
-  written), `Scripts/probe-status-endpoint.sh` the status page, and
+  written), `Scripts/probe-codex-usage.sh` and
+  `Scripts/probe-copilot-quota.sh` do the same for Codex and Copilot
+  (identifiers redacted), `Scripts/probe-status-endpoint.sh` the status
+  page, and
   `Scripts/probe-claude-code-logs.sh` which fields of the logs are
   looked at.
 
 ## Disclaimer
 
-AIMeter reads usage from an **undocumented endpoint**
-(`https://api.anthropic.com/api/oauth/usage`) that Claude Code uses
-internally, authenticated with your own Claude Code OAuth token. This
-endpoint may change or disappear at any time and its use is not
-officially supported.
+AIMeter reads usage from **undocumented endpoints**: the one Claude Code
+reads (`https://api.anthropic.com/api/oauth/usage`), the one the Codex
+CLI's `/status` reads (`https://chatgpt.com/backend-api/wham/usage`) and
+the one Copilot's editor plug-ins read
+(`https://api.github.com/copilot_internal/user`), each with your own
+token for that service. They may change or disappear at any time and
+their use is not officially supported.
 
 This project is **not affiliated with, endorsed by, or sponsored by
-Anthropic**. "Claude" is a trademark of Anthropic, PBC. Use at your own
-risk and in accordance with Anthropic's terms of service.
+Anthropic, OpenAI or GitHub**. "Claude" is a trademark of Anthropic, PBC;
+"ChatGPT", "Codex" and "OpenAI" of OpenAI; "GitHub" and "Copilot" of
+GitHub, Inc. Use at your own risk and in accordance with each service's
+terms.
 
 AIMeter's own sign-in requests a single OAuth scope, `user:profile`, the
 one the usage and profile endpoints need, and never `user:inference`, so a
@@ -193,7 +220,9 @@ and tag the commit with exactly that version.
 ```
 Packages/UsageKit      provider-agnostic Swift Package (no UI imports)
   Core/                UsageProvider protocol, UsageSnapshot, UsageWindow
-  Providers/Claude/    all endpoint- and OAuth-specific code, isolated
+  Providers/Claude/    each service's endpoint- and sign-in-specific code,
+  Providers/Codex/     isolated, with its own CLAUDE.md
+  Providers/Copilot/
   Storage/             Keychain wrapper + App Group snapshot store +
                        AccountRegistryStore (the list of connected logins)
 AIMeter/                multiplatform SwiftUI app (iOS + macOS);
@@ -218,17 +247,18 @@ site/                   the website (product page, privacy policy, support;
                         React + Vite), deployed to GitHub Pages from main
 ```
 
-Each of `AIMeter/`, `AIMeterWidgets/`, `AIMeterWatch/`,
-`Packages/UsageKit/Sources/UsageKit/Providers/Claude/`, `Scripts/StoreFrames/`
-and `site/` has its own `CLAUDE.md` with that folder's detail; the
+Each of `AIMeter/`, `AIMeterWidgets/`, `AIMeterWatch/`, the three
+`Packages/UsageKit/Sources/UsageKit/Providers/*/` folders,
+`Scripts/StoreFrames/` and `site/` has its own `CLAUDE.md` with that folder's detail; the
 repo-root `CLAUDE.md` is the full spec that ties them together.
 
 Adding a provider = implementing `UsageProvider` (one folder under
 `Providers/`), returning `UsageWindow`s with an extensible `kind`
-(`.session`, `.weekly`, `.modelSpecific("…")`) and their own `duration`,
-plus one case each in `Shared/ProviderCatalog.swift` (display name, and
-which credential store backs an account of that family). Widgets render
-whatever windows a snapshot contains.
+(`.session`, `.weekly`, `.modelSpecific("…")`, `.quota("…")`) and their
+own `duration`, plus one case each in `Shared/ProviderCatalog.swift`
+(display name, picker glyph, which credential store backs an account of
+that family, its status page), a `ProviderLogin` case and a Connect view
+for its sign-in. Widgets render whatever windows a snapshot contains.
 
 ## Acknowledgments
 

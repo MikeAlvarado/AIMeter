@@ -125,6 +125,10 @@ repo-root CLAUDE.md):
   (status.anthropic.com 301s there; the code uses the canonical host).
   No auth, no parameters, `Accept: application/json`, 10 s timeout. It is
   the one request in this package that carries nothing about the user.
+  Since 4.0 the reading itself is `StatuspageSource` (UsageKit core),
+  which Codex's (status.openai.com) and Copilot's (githubstatus.com)
+  pages go through too; `ClaudeStatusSource` names the URLs and
+  delegates, and the rules below are the shared reader's.
 - Fields read (everything else is ignored by construction — the
   `Decodable`s only declare these): `status.indicator` (`none` →
   `.operational`, `minor`/`major`/`critical`/`maintenance` → same, anything

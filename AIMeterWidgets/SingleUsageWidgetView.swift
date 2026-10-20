@@ -26,7 +26,7 @@ struct SingleUsageWidgetView: View {
 
     private var bars: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SingleUsageHeader(entry: entry, trailing: entry.kind.shortName)
+            SingleUsageHeader(entry: entry, trailing: entry.windowName)
             Spacer(minLength: 4)
             valueBlock
             Spacer(minLength: 10)
@@ -80,6 +80,12 @@ struct SingleUsageWidgetView: View {
             .padding(.top, 4)
         }
     }
+}
+
+extension SingleUsageEntry {
+    /// The picked window's compact name with its real length, else the
+    /// kind's own while the account has no window of it.
+    var windowName: String { window?.shortTitle ?? kind.shortName }
 }
 
 /// The account's name with its mark, and on the trailing edge the window
@@ -168,14 +174,14 @@ private struct RingUsageView: View {
     private var caption: some View {
         if let resetsAt = entry.window?.resetsAt {
             HStack(spacing: 3) {
-                Text(entry.kind.shortName)
+                Text(entry.windowName)
                 Text(verbatim: "·")
                 ResetLineText(resetsAt: resetsAt, style: entry.prefs.resetStyle, now: entry.date, bare: true)
             }
         } else if let amount = entry.prefs.creditsAmountSubtitle(for: entry.kind, snapshot: entry.snapshot) {
-            Text(verbatim: "\(entry.kind.shortName) · \(amount)")
+            Text(verbatim: "\(entry.windowName) · \(amount)")
         } else {
-            Text(entry.kind.shortName)
+            Text(entry.windowName)
         }
     }
 }

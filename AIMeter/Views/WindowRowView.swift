@@ -32,7 +32,7 @@ struct WindowRowView: View {
 
         VStack(alignment: .leading, spacing: 7) {
             HStack(alignment: .firstTextBaseline) {
-                Text(kind.displayName)
+                Text(window?.title ?? kind.displayName)
                     .font(Theme.rowTitle)
                     .foregroundStyle(Theme.ink)
                 Spacer()

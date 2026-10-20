@@ -14,7 +14,7 @@ struct PrivacyView: View {
                         PrivacyRow(
                             systemName: "iphone",
                             title: String(localized: "Everything stays on your device"),
-                            text: String(localized: "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way: from a fixed schedule and the clock, with no extra network call.")
+                            text: String(localized: "AIMeter has no server and no account of its own. Usage is read directly from each provider and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way: from a fixed schedule and the clock, with no extra network call.")
                         )
                         Divider().overlay(Theme.track)
                         PrivacyRow(
@@ -88,17 +88,31 @@ struct PrivacyView: View {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                         #if os(macOS)
-                        Text("On the Mac, AIMeter only reads the login Claude Code already keeps on this computer. It never modifies or rotates those tokens; Claude Code stays in charge of its own session.")
+                        Text("Claude: on the Mac, AIMeter can read the login Claude Code already keeps on this computer, never modifying or rotating those tokens; Claude Code stays in charge of its own session. Or you sign in on Claude's own page in your browser and paste back the code it shows.")
                             .font(.callout)
                             .foregroundStyle(Theme.ink)
                         #else
-                        Text("You sign in on Claude's own page in your browser, never in an embedded web view, so AIMeter can't see your password. You only paste back the code Claude shows after you approve.")
+                        Text("Claude: you sign in on Claude's own page in your browser, never in an embedded web view, so AIMeter can't see your password. You only paste back the code Claude shows after you approve.")
                             .font(.callout)
                             .foregroundStyle(Theme.ink)
                         #endif
+                        Divider().overlay(Theme.track)
+                        #if os(macOS)
+                        Text("Codex: AIMeter shows you a one-time code that you enter on ChatGPT's own device page in your browser, the same device code sign-in the Codex CLI offers. On the Mac it can instead read the login Codex keeps in ~/.codex, without ever changing it.")
+                            .font(.callout)
+                            .foregroundStyle(Theme.ink)
+                        #else
+                        Text("Codex: AIMeter shows you a one-time code that you enter on ChatGPT's own device page in your browser, the same device code sign-in the Codex CLI offers.")
+                            .font(.callout)
+                            .foregroundStyle(Theme.ink)
+                        #endif
+                        Divider().overlay(Theme.track)
+                        Text("GitHub Copilot: the same kind of one-time code, entered on GitHub's device page in your browser. AIMeter asks GitHub for no scope at all.")
+                            .font(.callout)
+                            .foregroundStyle(Theme.ink)
                     }
                 }
-                SectionFootnote(text: String(localized: "It is the same OAuth flow Claude Code itself uses; AIMeter only receives the token Claude hands back."))
+                SectionFootnote(text: String(localized: "Each one is the sign-in flow the provider's own tools use; AIMeter only receives the token the provider hands back."))
 
                 sectionGap
                 SectionHeader(title: String(localized: "What the connection can access"))
@@ -122,7 +136,29 @@ struct PrivacyView: View {
                         Text("When you sign in through AIMeter it requests only the profile scope (what the usage and profile endpoints need) and never the inference scope, so a token issued to AIMeter can't send prompts or spend usage on your behalf even in theory. Either way it only ever calls two read-only endpoints: your usage windows and your profile (to show the plan). The source is open if you want to verify.")
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
-                        Text("AIMeter also reads the provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous (nothing about you or your account is sent), and you can turn it off in Settings.")
+                        Divider().overlay(Theme.track)
+                        HStack(spacing: 8) {
+                            ProviderMark(size: 22, cornerRadius: 6, icon: .symbol(ProviderCatalog.symbolName(for: CodexProvider.providerID)))
+                            Text(verbatim: "Codex")
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(Theme.ink)
+                        }
+                        Text("The sign-in is ChatGPT's own device code login, with the access the Codex CLI gets; AIMeter calls one read-only endpoint with it, your Codex limits (the same figures the CLI's /status shows), and nothing else.")
+                            .font(Theme.caption)
+                            .foregroundStyle(Theme.inkSecondary)
+                        Divider().overlay(Theme.track)
+                        HStack(spacing: 8) {
+                            ProviderMark(size: 22, cornerRadius: 6, icon: .symbol(ProviderCatalog.symbolName(for: CopilotProvider.providerID)))
+                            Text(verbatim: "GitHub Copilot")
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(Theme.ink)
+                        }
+                        // `CopilotDeviceAuth.scope` is empty: no chip to show.
+                        Text("AIMeter asks GitHub for no scope at all, so the token reaches nothing private of yours. It reads GitHub's Copilot quota endpoint (the one Copilot's editor plug-ins read), whose answer includes your user id, used to tell the account apart on your other devices. It can't read your code or your repositories.")
+                            .font(Theme.caption)
+                            .foregroundStyle(Theme.inkSecondary)
+                        Divider().overlay(Theme.track)
+                        Text("AIMeter also reads each provider's public status page when it refreshes, to tell a service outage apart from a problem with your account. That request is anonymous (nothing about you or your account is sent), and you can turn it off in Settings.")
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
                     }
@@ -130,7 +166,7 @@ struct PrivacyView: View {
 
                 sectionGap
                 Card {
-                    Text("AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic. \"Claude\" and \"Anthropic\" are trademarks of Anthropic, PBC, used only to identify the service whose usage this app displays.")
+                    Text("AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic, OpenAI or GitHub. \"Claude\" and \"Anthropic\" are trademarks of Anthropic, PBC; \"ChatGPT\", \"Codex\" and \"OpenAI\" of OpenAI; \"GitHub\" and \"Copilot\" of GitHub, Inc. They are used only to identify the services whose usage this app displays.")
                         .font(Theme.caption)
                         .foregroundStyle(Theme.inkSecondary)
                 }
@@ -154,7 +190,7 @@ struct PrivacyView: View {
     /// file) — this row must say the true thing for whichever one is running.
     private var keychainRowText: String {
         #if os(macOS)
-        String(localized: "Your sign-in token is only read from the Keychain item Claude Code already keeps on this Mac, and it never leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead.")
+        String(localized: "A login Claude Code or Codex already keeps on this Mac is only read, never changed, and one you sign in with through AIMeter is stored encrypted in the system Keychain. Nothing leaves this device. The widget doesn't access the Keychain directly; the menu bar app feeds it your usage instead.")
         #else
         String(localized: "Your sign-in token is stored encrypted in the system Keychain, shared only with the widget (through the App Group's keychain access group) so it can refresh usage by itself. It is used exclusively to read your usage.")
         #endif

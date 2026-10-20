@@ -1,0 +1,64 @@
+{
+  "user_id": "<redacted>",
+  "account_id": "<redacted>",
+  "email": "<redacted>",
+  "plan_type": "plus",
+  "rate_limit": {
+    "allowed": true,
+    "limit_reached": false,
+    "primary_window": {
+      "used_percent": 42,
+      "limit_window_seconds": 18000,
+      "reset_after_seconds": 9000,
+      "reset_at": 1792009000
+    },
+    "secondary_window": {
+      "used_percent": 17,
+      "limit_window_seconds": 604800,
+      "reset_after_seconds": 300000,
+      "reset_at": 1792300000
+    }
+  },
+  "code_review_rate_limit": null,
+  "additional_rate_limits": [
+    {
+      "limit_name": "GPT-5.3-Codex-Spark",
+      "metered_feature": "codex_spark",
+      "rate_limit": {
+        "allowed": true,
+        "limit_reached": false,
+        "primary_window": {
+          "used_percent": 3,
+          "limit_window_seconds": 18000,
+          "reset_after_seconds": 9000,
+          "reset_at": 1792009000
+        },
+        "secondary_window": {
+          "used_percent": 8,
+          "limit_window_seconds": 604800,
+          "reset_after_seconds": 300000,
+          "reset_at": 1792300000
+        }
+      }
+    }
+  ],
+  "model_usage": {},
+  "credits": {
+    "has_credits": false,
+    "unlimited": false,
+    "overage_limit_reached": false,
+    "balance": null,
+    "approx_local_messages": null,
+    "approx_cloud_messages": null
+  },
+  "spend_control": {
+    "reached": false,
+    "individual_limit": null
+  },
+  "rate_limit_reached_type": null,
+  "promo": null,
+  "rate_limit_reset_credits": {
+    "available_count": 0,
+    "applicable_available_count": 0
+  }
+}

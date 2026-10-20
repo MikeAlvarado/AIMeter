@@ -222,7 +222,7 @@ extension ClaudeUsageResponse {
         switch kind {
         case .session: 5 * 3600
         case .weekly, .modelSpecific: 7 * 86400
-        case .credits: nil
+        case .quota, .credits: nil
         }
     }
 }

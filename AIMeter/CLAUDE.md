@@ -382,11 +382,18 @@
   the Claude Code sessions with their optional hooks, the optional
   Accessibility permission and what it reads, the opt-in login item and
   the daily update check against GitHub), how connecting
-  works (per platform), the one requested OAuth scope (`user:profile`) as a
-  chip + the two read-only endpoints called + the anonymous status-page
-  check and where to turn it off, and the independence/MIT/
-  trademark footer. Every claim must stay true to the code — the scope chip
-  in particular must match `ClaudeOAuth.scope`.
+  works, per family and platform (Claude's page and the code it shows,
+  the Mac's read-only mirror of Claude Code's login; Codex's device
+  code on ChatGPT's page, the Mac's mirror of `~/.codex`; GitHub
+  Copilot's device code on GitHub's page), what each connection can
+  access (Claude's `user:profile` scope as a chip + its two read-only
+  endpoints; Codex's one usage endpoint with the CLI's own access;
+  Copilot's quota endpoint, whose answer carries the user id, with no
+  scope asked for) + the anonymous status-page check of each family and
+  where to turn it off, and the independence/MIT/trademark footer naming
+  all three companies. Every claim must stay true to the code — the
+  scope chip in particular must match `ClaudeOAuth.scope`, and the
+  Copilot text the empty `CopilotDeviceAuth.scope`.
 - The GitHub mark is a bundled PNG (`Shared/Media.xcassets/GitHubIcon`,
   light/dark appearance variants in its imageset) —
   SF Symbols has no third-party brand glyphs. It is pre-colored per
@@ -399,8 +406,38 @@
   third-party mark in the bundle: the provider itself is drawn by the
   neutral `ProviderMark`, never by Anthropic's logo (see "Design system"
   in the repo-root CLAUDE.md).
-- **Connect sheet**: `ProviderMark` header (prominent tile), title "Connect
-  your Claude account", explainer, "Open Claude Sign-In", a
+- **Connect sheet** (`ConnectAccountSheet`, since 4.0): which service,
+  then that service's own sign-in. Adding opens the picker — the app's
+  mark, "Add an account", one row per family in `ProviderCatalog.providerIDs`
+  order (its SF Symbol from `ProviderCatalog.symbolName`, its name, one
+  line on how its sign-in goes), the independence footnote naming
+  Anthropic, OpenAI and GitHub, Cancel — and a tap swaps in the family's
+  flow: `ConnectClaudeSheet` (below) for Claude, `CodexConnectView` or
+  `CopilotConnectView` (both `DeviceCodeConnectView`,
+  `DeviceCodeConnectView.swift`) for the other two. Signing in again
+  (`ConnectAccountSheet(reconnecting:)`, from every "Sign in again") skips
+  the picker: the account's family is known. The device-code flow, the
+  shape Codex's and Copilot's share: the family's mark, title and
+  explainer, on the Mac Codex's "Use Codex's login on this Mac" button
+  (while `UsageModel.canConnectCodexCLILogin`: the CLI's file holds a
+  login and no account mirrors it; one click registers an
+  `.autoDetected` account, `connectCodexCLILogin`), then the one-time
+  code the service minted (large, monospaced, a Copy button; "Waiting
+  for your approval…" under it), a button that opens the service's
+  device page (`auth.openai.com/codex/device`, `github.com/login/device`),
+  Codex's note that device code login must be allowed in ChatGPT's
+  security settings, the nickname field under the same rules as Claude's,
+  the family's own independence footnote, and Cancel. The view polls at
+  the service's interval until the login lands (then
+  `UsageModel.completeConnection(_:displayName:)` or
+  `reconnect(accountID:login:)` with the `ProviderLogin`, and dismiss),
+  the code expires ("Try again" asks for a new one) or the sheet closes
+  (the task goes with it). Every flow lands on the same two model
+  entry points with a `ProviderLogin`; a login of another family than
+  the account being repaired is refused with a message.
+  - **Claude's flow** (`ConnectClaudeSheet`): `ProviderMark` header
+  (prominent tile), title "Connect your Claude account", explainer,
+  "Open Claude Sign-In", a
   nickname field (only shown once at least one account is already
   connected — a first connection needs no name; the placeholder is the
   first free "Claude N", `UsageModel.suggestedNickname`, and a typed name
@@ -423,10 +460,11 @@
   on both platforms — the macOS auto-detect path is never something a user
   picks here; it only ever applies automatically to the one CLI-mirrored
   login (see "Accounts vs. providers" in the repo-root CLAUDE.md).
-  - **Reconnect mode** (`ConnectClaudeSheet(reconnecting:)`): the same
+  - **Reconnect mode** (`reconnecting:`, routed by `ConnectAccountSheet`
+    by the account's family): the same
     sheet and the same exchange, titled "Sign in again", with no nickname
     field (the account keeps the name it has) and landing on
-    `UsageModel.reconnect(accountID:)`, so the existing account is repaired
+    `UsageModel.reconnect(accountID:login:)`, so the existing account is repaired
     in place rather than a new one created — see "Losing a login" in the
     repo-root CLAUDE.md for why that distinction is the whole point. Its
     extra footnote (signing in here mints AIMeter's own token, separate

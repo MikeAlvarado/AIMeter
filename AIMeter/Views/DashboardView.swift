@@ -116,10 +116,10 @@ struct DashboardView: View {
         }
         #endif
         .sheet(isPresented: $showingConnect) {
-            ConnectClaudeSheet()
+            ConnectAccountSheet()
         }
         .sheet(item: $reconnecting) { account in
-            ConnectClaudeSheet(reconnecting: account)
+            ConnectAccountSheet(reconnecting: account)
         }
         #if os(macOS)
         // The Mac's window already has a title bar that says "AIMeter",

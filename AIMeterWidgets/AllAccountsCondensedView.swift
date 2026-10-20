@@ -4,10 +4,13 @@ import UsageKit
 
 /// The all-accounts widget's condensed layout (Edit Widget → Layout):
 /// one line per account, its name, a bar per window slot in the columns
-/// the slots make, and its session's figure, under the slots' names;
-/// then the soonest session reset of them all as a live countdown. Six
-/// accounts fit where the standard layout's full rows hold two; what a
-/// line gives up is the reset under each bar and the iOS refresh button.
+/// the slots make, and its first window's figure, under the slots'
+/// names; then the soonest session reset of them all as a live
+/// countdown. Six accounts fit where the standard layout's full rows
+/// hold two; what a line gives up is the reset under each bar and the
+/// iOS refresh button. The columns are kinds: an account's bar sits in
+/// the column of its kind, so two providers' accounts never share a
+/// column by position alone, and a column an account lacks is faded.
 struct CondensedAccountsView: View {
     let entry: AllAccountsEntry
     static let maxRows = 6
@@ -51,6 +54,12 @@ struct CondensedAccountsView: View {
         return slotKinds.first { $0.count > 2 } ?? slotKinds.first ?? [.session, .weekly]
     }
 
+    /// The caption over a column: the first shown window of that kind
+    /// names it with its real length ("Month" for a 30-day week).
+    static func caption(for kind: UsageWindow.Kind, in entry: AllAccountsEntry) -> String {
+        entry.rows.lazy.compactMap { $0.snapshot?.window(for: kind) }.first?.shortTitle ?? kind.shortName
+    }
+
     private var header: some View {
         HStack(spacing: 5) {
             ProviderMark(size: 15, cornerRadius: 3.5)
@@ -70,7 +79,7 @@ struct CondensedAccountsView: View {
         HStack(spacing: 6) {
             Color.clear.frame(width: Self.nameWidth, height: 1)
             ForEach(Array(columns.enumerated()), id: \.offset) { _, kind in
-                Text(kind.shortName)
+                Text(Self.caption(for: kind, in: entry))
                     .font(.system(size: 9))
                     .foregroundStyle(Theme.inkSecondary)
                     .lineLimit(1)
@@ -91,12 +100,13 @@ struct CondensedAccountsView: View {
                 .lineLimit(1)
                 .frame(width: Self.nameWidth, alignment: .leading)
             ForEach(columns.indices, id: \.self) { index in
-                let window = index < slots.count ? slots[index].window : nil
+                let slot = slots.first { $0.kind == columns[index] }
+                let window = slot?.window
                 UsageBarView(
                     value: window?.displayedPct(mode),
                     tint: window?.tint(usageColors: entry.prefs.usageColors) ?? Theme.accent
                 )
-                .opacity(index < slots.count ? 1 : 0.35)
+                .opacity(slot == nil ? 0.35 : 1)
             }
             Text(slots.first?.window.map { "\(Int($0.displayedPct(mode)))%" } ?? "--")
                 .font(.system(size: 11, weight: .semibold))

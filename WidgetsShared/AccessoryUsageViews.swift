@@ -13,7 +13,8 @@ struct CircularUsageView: View {
     let prefs: Preferences
 
     var body: some View {
-        let window = snapshot.window(for: prefs.glanceMetric)
+        let kind = UsageSnapshot.glanceMetric(prefs.glanceMetric, for: snapshot, modelSlotFallback: prefs.modelSlotFallback)
+        let window = snapshot.window(for: kind)
         Gauge(value: min(window?.displayedPct(prefs.displayMode) ?? 0, 100), in: 0...100) {
             Text(caption)
         } currentValueLabel: {
@@ -22,17 +23,27 @@ struct CircularUsageView: View {
         .gaugeStyle(.accessoryCircularCapacity)
     }
 
-    /// Compact subtitle under the ring — a rollover hint for the two rate
-    /// windows (matching the space "5h"/"7d" fit), a currency glyph for
-    /// Credits since that one has no fixed period, and the provider's own
-    /// short name for a per-model window (e.g. "Fable" on Max) since
-    /// there's no generic hint that fits every plan's model name.
+    /// Compact subtitle under the ring — the window's length for the two
+    /// rate windows ("5h", "7d", "30d" for a month, the space that fits),
+    /// a currency glyph for Credits since that one has no fixed period,
+    /// and the provider's own short name for a per-model window (e.g.
+    /// "Fable" on Max) or a quota ("Premium"), since no generic hint fits
+    /// every plan's names. The metric falls back to the account's first
+    /// window when it reports no window of the chosen kind.
     private var caption: String {
-        switch prefs.glanceMetric {
-        case .session: return String(localized: "5h")
-        case .weekly: return String(localized: "7d")
+        let kind = UsageSnapshot.glanceMetric(prefs.glanceMetric, for: snapshot, modelSlotFallback: prefs.modelSlotFallback)
+        let duration = snapshot.window(for: kind)?.effectiveDuration
+        switch kind {
+        case .session:
+            return String(localized: "\(UsageWindow.Kind.hours(duration))h")
+        case .weekly:
+            switch UsageWindow.Kind.period(duration) {
+            case .week: return String(localized: "7d")
+            case .month: return String(localized: "30d")
+            case .days(let days): return String(localized: "\(days)d")
+            }
         case .credits: return String(localized: "$")
-        case .modelSpecific: return prefs.glanceMetric.shortName
+        case .modelSpecific, .quota: return kind.shortName
         }
     }
 }
@@ -45,7 +56,7 @@ struct RectangularUsageView: View {
         VStack(alignment: .leading, spacing: 1) {
             ForEach(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots, id: \.kind) { slot in
                 HStack {
-                    Text(slot.kind.shortName)
+                    Text(slot.window?.shortTitle ?? slot.kind.shortName)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                     Spacer()
@@ -63,7 +74,7 @@ struct InlineUsageView: View {
 
     var body: some View {
         let parts = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.compactMap { slot in
-            slot.window.map { "\(slot.kind.shortName) \(Int($0.displayedPct(prefs.displayMode)))%" }
+            slot.window.map { "\($0.shortTitle) \(Int($0.displayedPct(prefs.displayMode)))%" }
         }
         Text(parts.joined(separator: " · "))
     }
@@ -77,14 +88,15 @@ struct CornerUsageView: View {
     let prefs: Preferences
 
     var body: some View {
-        let window = snapshot.window(for: prefs.glanceMetric)
+        let kind = UsageSnapshot.glanceMetric(prefs.glanceMetric, for: snapshot, modelSlotFallback: prefs.modelSlotFallback)
+        let window = snapshot.window(for: kind)
         let value = window?.displayedPct(prefs.displayMode)
         Text(value.map { "\(Int($0))%" } ?? "--")
             .font(.system(size: 22, weight: .semibold))
             .monospacedDigit()
             .widgetLabel {
                 Gauge(value: min(value ?? 0, 100), in: 0...100) {
-                    Text(prefs.glanceMetric.shortName)
+                    Text(window?.shortTitle ?? kind.shortName)
                 }
                 .gaugeStyle(.accessoryLinearCapacity)
             }

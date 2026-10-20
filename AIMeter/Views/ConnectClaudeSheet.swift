@@ -196,7 +196,7 @@ struct ConnectClaudeSheet: View {
 
     /// Placeholder for the nickname field — see `UsageModel.suggestedNickname`.
     private var defaultNickname: String {
-        model.suggestedNickname()
+        model.suggestedNickname(providerID: ClaudeProvider.providerID)
     }
 
     /// The typed nickname collides with another account's: Connect is
@@ -231,9 +231,9 @@ struct ConnectClaudeSheet: View {
             do {
                 let credentials = try await obtainCredentials()
                 if let reconnecting {
-                    await model.reconnect(accountID: reconnecting.accountID, credentials: credentials)
+                    await model.reconnect(accountID: reconnecting.accountID, login: .claude(credentials))
                 } else {
-                    await model.completeConnection(credentials, displayName: resolvedNickname)
+                    await model.completeConnection(.claude(credentials), displayName: resolvedNickname)
                 }
                 if let connectionError = model.connectionError {
                     errorText = connectionError

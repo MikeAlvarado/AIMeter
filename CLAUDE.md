@@ -2,11 +2,13 @@
 
 Open source multiplatform app (iOS 17+ / macOS 14+, pure SwiftUI, no
 dependencies, no server) that shows AI subscription usage and remaining
-limits in the app, in widgets, and in the macOS menu bar. First provider:
-Claude Pro/Max. The architecture is provider-agnostic so more AI providers
-(Codex, Cursor, …) can be added as new sections later, and multi-account:
-several logins of the same provider (e.g. two Claude accounts) can be
-connected and refreshed simultaneously — see "Accounts vs. providers" below.
+limits in the app, in widgets, and in the macOS menu bar. Three provider
+families since 4.0: Claude (Pro/Max), Codex (any ChatGPT plan, Free
+included) and GitHub Copilot (Free, Pro, Pro+), each a folder under
+UsageKit's `Providers/` behind one seam (see "Provider seam" below), so
+more can follow; and multi-account: several logins, of one family or
+several (e.g. two Claude accounts and a Codex one), can be connected and
+refreshed simultaneously — see "Accounts vs. providers" below.
 
 This file is the complete spec: product, data source, architecture, design
 system, and behaviors. It should be enough to rebuild the app from zero.
@@ -173,6 +175,13 @@ below and `AIMeterWatch/CLAUDE.md`.
   `AIMeter/Views/PrimaryAccountPicker.swift` is the "Account" menu both
   the Menu bar and the Notch island cards show with two or more
   accounts.
+- `AIMeter/Views/ConnectAccountSheet.swift` is the Connect sheet: the
+  provider picker, then the family's own flow — `ConnectClaudeSheet.swift`
+  (Claude's page and the code it shows) or `DeviceCodeConnectView.swift`
+  (`CodexConnectView`, `CopilotConnectView`: a one-time code the user
+  enters on the service's device page) — and
+  `AIMeter/Services/ProviderLogin.swift` is what a flow hands the model;
+  see "Connect sheet" in `AIMeter/CLAUDE.md`.
 - `AIMeter/Intents/` — the App Intents (`RefreshUsageIntent`,
   `ShowUsageIntent`, `AIMeterShortcuts`), both platforms; see
   "Conventions" for why they exist.
@@ -232,43 +241,66 @@ below and `AIMeterWatch/CLAUDE.md`.
   mapping code never produces it and it's never part of a persisted
   snapshot's `windows`. Widgets and views render whatever windows a
   snapshot contains; provider names are never hardcoded in rendering logic.
-- **Provider seam** (what a second provider plugs into): every provider
+- **Provider seam** (what every provider family plugs into, three of
+  them since 4.0: Claude, Codex and GitHub Copilot, each a folder under
+  `Packages/UsageKit/.../Providers/` with its own CLAUDE.md): every
   family is resolved through `Shared/ProviderCatalog.swift` —
-  `displayName(for:)` (the plain-text name, never a logo), the
-  `legacyAccount` sentinel every widget fallback uses,
-  `fallbackAccount(for:)` (what the widget's self-fetch builds for an id
-  the registry can't place: that id's own login, never the legacy
-  account's — whose figures would otherwise be saved under the wrong
-  account), and
+  `providerIDs` (the families this build can connect, in the Connect
+  sheet's order), `displayName(for:)` (the plain-text name, never a
+  logo), `symbolName(for:)` (the SF Symbol beside it in the picker; an
+  account itself starts on the default mark), the `legacyAccount`
+  sentinel every widget fallback uses, `fallbackAccount(for:)` (what the
+  widget's self-fetch builds for an id the registry can't place: that
+  id's own login, never the legacy account's — whose figures would
+  otherwise be saved under the wrong account), and
   `makeProvider(for:keychain:transport:)`, the one switch on
   `providerID` that builds a `UsageProvider` plus the `CredentialStore`
   to clear on disconnect, and `statusSource(for:)` /
   `statusPageURL(for:)`, which resolve the family's public status page
-  (`ServiceStatusSource`, UsageKit core) or nil for a provider without
-  one — the app then simply shows no status for it. `RefreshService` holds only those two
-  existentials and never names a provider; `WidgetRefresher` builds its
-  self-fetch provider through the same catalog. The literal `"claude"`
-  lives in `ClaudeProvider.providerID` (with `providerDisplayName`) and
-  nowhere else; `ProviderCatalog.defaultProviderID` is what a new
-  connection belongs to until there is a picker. `CredentialStore`
-  (UsageKit core — `clear()`, `invalidateCache()`) is the
-  provider-agnostic half of `ClaudeCredentialSource`, which refines it
-  with the typed `load`/`save`; `RefreshService.storeConnection` is the
-  one deliberately Claude-typed member (the credentials from the OAuth
-  exchange are), and a second provider adds its own connect path beside
-  it rather than generalizing it. Window lengths come from the window,
+  (`ServiceStatusSource`, UsageKit core; all three are Atlassian
+  Statuspages read by the shared `StatuspageSource`) or nil for a
+  provider without one — the app then simply shows no status for it.
+  `RefreshService` holds only those two existentials and never names a
+  provider; `WidgetRefresher` builds its self-fetch provider through the
+  same catalog. Each literal lives in its provider alone
+  (`ClaudeProvider.providerID` `"claude"`, `CodexProvider.providerID`
+  `"codex"`, `CopilotProvider.providerID` `"copilot"`, with their
+  `providerDisplayName`s); `ProviderCatalog.defaultProviderID` (Claude)
+  is what the legacy account and an id the registry can't place belong
+  to. `CredentialStore` (UsageKit core — `clear()`, `invalidateCache()`)
+  is the provider-agnostic half of each family's typed source
+  (`ClaudeCredentialSource`, `CodexCredentialSource`,
+  `CopilotCredentialSource`, which refine it with `load`/`save`). What a
+  sign-in flow hands the model is a `ProviderLogin`
+  (`AIMeter/Services/ProviderLogin.swift`: `.claude`, `.codex`,
+  `.copilot`, each carrying its family's credentials), the one value
+  `UsageModel.completeConnection(_:displayName:)` and
+  `reconnect(accountID:login:)` take and `RefreshService.storeConnection`
+  stores through the account's own source (a login of another family
+  than the account's is refused). Window lengths come from the window,
   not the kind: `UsageWindow.duration` is set by the provider's mapping
-  (Claude states 5 h / 7 d on every window) and `effectiveDuration` is
-  what pace and run-out math read, falling back to `Kind.windowDuration`'s
-  Claude-shaped default only for windows saved before the field existed —
-  a provider whose week is a month sets `duration` instead of needing a
-  new `Kind`. Peak hours stay Claude's: `ClaudePeakStatus.forProvider`
-  reports off-peak for any other family, so its bolt never appears on
-  another provider's account. Still Claude-shaped, deliberately, until a
-  second provider exists to design against: `WindowSlots`' three-slot
-  layout and the credits fallback, `ConnectClaudeSheet` as the only
-  connect flow (no provider picker on "Add account"), and
-  `CredentialStrategy.autoDetected`, which is Claude Code's semantics.
+  (Claude states 5 h / 7 d on every window, Codex what the endpoint
+  says, 30 days for Free's one window, Copilot the month that ends at
+  the reset) and `effectiveDuration` is what pace and run-out math read,
+  falling back to `Kind.windowDuration`'s Claude-shaped default only for
+  windows saved before the field existed — a provider whose week is a
+  month sets `duration` instead of needing a new `Kind`, and the
+  presentation names the window by its length (`UsageWindow.title`,
+  `shortTitle`: "Monthly", "Month", "30d" for a 30-day week; see
+  "Presentation rules"). A provider whose allowances are neither a
+  session nor an overall period uses `Kind.quota(<id>)` (GitHub
+  Copilot's `premium_interactions`, `chat`, `completions`): the string
+  is the provider's stable id, never a display name, so storage keys
+  (`quota.<id>`) are the same in every language, and
+  `UsageWindow.Kind.quotaName` names the known ids. Peak hours stay
+  Claude's: `ClaudePeakStatus.forProvider` reports off-peak for any other
+  family, so its bolt never appears on another provider's account. Still
+  Claude's alone, by nature rather than by omission: the profile call and
+  its plan cache (Codex's plan comes with every usage response, Copilot's
+  too), the speculative CLI mirror at launch (Codex's is offered in the
+  Connect sheet instead), the pasted credentials JSON, and the Live
+  Activity's session window (Codex's paid plans have one too, so it
+  works there as well; Copilot has none).
 - **Accounts vs. providers**: `providerID` (`UsageProvider.id`,
   `UsageSnapshot.providerID`) identifies a provider *family* — `"claude"` —
   and never changes per login; `accountID` identifies one specific
@@ -287,10 +319,12 @@ below and `AIMeterWatch/CLAUDE.md`.
   accounts, case-insensitively, since it's all that tells them apart in
   widget pickers and notification titles; see `AIMeter/CLAUDE.md` →
   "Renaming"), and `credentialStrategy`:
-  `.managed` for an app-owned Keychain copy from OAuth/paste, or macOS-only
-  `.autoDetected` for the one login mirrored from Claude Code's own
-  Keychain item — capped at exactly one account, since the CLI itself only
-  ever tracks one login per machine; every other account, on either
+  `.managed` for an app-owned Keychain copy from a sign-in or a paste, or
+  macOS-only `.autoDetected` for a login mirrored read-only from a CLI's
+  own store: Claude Code's Keychain item (guessed at launch while nothing
+  is connected) or the Codex CLI's `~/.codex/auth.json` (offered in the
+  Connect sheet, never guessed) — one per family at most, since each CLI
+  only ever tracks one login per machine; every other account, on either
   platform, is `.managed`). Only the app ever writes to the registry
   (`add`/`rename`/`remove`/`replaceAll`/`setCredentialStrategy`); the widget
   extension only reads
@@ -356,9 +390,10 @@ below and `AIMeterWatch/CLAUDE.md`.
 - Typed errors (`UsageError`) carry the raw HTTP body so the UI can show
   exactly what the endpoint said; UI decides presentation.
 
-Undocumented-endpoint specifics (exact URLs, headers, OAuth flow,
-credential sources) live in
-`Packages/UsageKit/Sources/UsageKit/Providers/Claude/CLAUDE.md` — loaded
+Undocumented-endpoint specifics (exact URLs, headers, sign-in flows,
+credential sources, fixtures) live in each family's own doc:
+`Packages/UsageKit/Sources/UsageKit/Providers/Claude/CLAUDE.md`,
+`Providers/Codex/CLAUDE.md` and `Providers/Copilot/CLAUDE.md` — loaded
 automatically when working in that directory.
 
 ## Data-shaping rules (applied at fetch time, in this order)
@@ -368,17 +403,22 @@ automatically when working in that directory.
    endpoint reports microsecond-apart timestamps for what is one boundary).
 3. `fillingMissingResets(from: previousSnapshot)` — weekly windows whose
    `resetsAt` came back null inherit the previous date advanced in whole
-   7-day periods (weekly boundaries are fixed anchors, so this is truth,
-   not a guess). Sessions only carry a still-future date: an idle session
-   genuinely has no reset. Reported dates are never overwritten.
+   periods of their own length (`UsageWindow.nominalPeriod`: 7 days for
+   Claude, a month for Codex Free or a Copilot quota; periodic boundaries
+   are fixed anchors, so this is truth, not a guess). Sessions only carry
+   a still-future date: an idle session genuinely has no reset. Reported
+   dates are never overwritten. Rules 1 and 2 are Claude's; Codex's and
+   Copilot's mappings are in their own CLAUDE.md.
 
 ## Losing a login (and getting it back)
 
-A stored login can stop working for good — Anthropic rotates the refresh
-token on every use, so any other client refreshing the *same* login (Claude
-Code on another machine, or — macOS only, the iOS build has no such path —
-a second Mac the same credentials JSON was pasted into) leaves AIMeter's
-copy invalid; a password change or global sign-out does the same. From then on every refresh fails identically and
+A stored login can stop working for good — Anthropic and OpenAI rotate
+the refresh token on every use, so any other client refreshing the *same*
+login (Claude Code or the Codex CLI on another machine, or — macOS only,
+the iOS build has no such path — a second Mac the same credentials JSON
+was pasted into) leaves AIMeter's copy invalid; a password change or
+global sign-out does the same, and a revoked GitHub token is the same
+failure for a Copilot account. From then on every refresh fails identically and
 the account silently freezes at its last snapshot.
 
 - `UsageError.requiresReauthentication` marks the three failures no retry
@@ -463,9 +503,12 @@ the account silently freezes at its last snapshot.
   each connected provider *family*'s status page for its health — once per
   family, never per account, concurrently with the fetches and never
   blocking them, and at most every 5 minutes
-  (`serviceStatusMinimumInterval`). Claude's is the Atlassian Statuspage
-  at status.claude.com (`ClaudeStatusSource`, `summary.json`; shape and
-  fixtures in the Claude provider's CLAUDE.md). The result is a
+  (`serviceStatusMinimumInterval`). All three families publish an
+  Atlassian Statuspage, read by `StatuspageSource` (UsageKit core,
+  `summary.json`): status.claude.com (`ClaudeStatusSource` wraps it),
+  status.openai.com and githubstatus.com, named by each provider; shape
+  and fixtures in the Claude provider's CLAUDE.md, and OpenAI's summary,
+  which carries no `incidents` key at all, in Codex's. The result is a
   `ServiceStatus` per `providerID` (`UsageModel.serviceStatus`, persisted
   in the App Group through `ServiceStatusStore` so a relaunch shows the
   last confirmed state until the first check lands). The rule is that
@@ -490,8 +533,10 @@ the account silently freezes at its last snapshot.
   otherwise fire at its `resetsAt` for an account that no longer exists),
   and its per-account preference keys (`NotificationPreferences.clear()`,
   `LiveActivityPreferences.clear()`), so a UUID's worth of keys doesn't
-  leak into the App Group forever. On macOS, disconnecting the
-  `.autoDetected` account also sets `Preferences.autoDetectDeclined`:
+  leak into the App Group forever. On macOS, disconnecting the Claude
+  `.autoDetected` account also sets `Preferences.autoDetectDeclined`
+  (a Codex mirror, connected on purpose from the Connect sheet and never
+  guessed, sets nothing and simply stays gone):
   disconnecting only clears the app's fallback copy, the CLI's own
   Keychain item is untouched, and without the tombstone `loadAccounts()`
   would speculatively re-mirror it on the next launch — the account the
@@ -859,18 +904,27 @@ the account silently freezes at its last snapshot.
 
 ## Presentation rules
 
-- Session and weekly slots are always present (`WindowSlots`); a missing
-  window keeps its slot (`--` + empty bar). The third slot shows the
-  real per-model window when the plan reports one (e.g. Max/Team
-  Premium's Fable 5 allowance). When it doesn't — most Claude Pro accounts,
-  since Fable moved to usage credits — `ModelSlotFallback` (Settings →
-  "Usage rows": Auto/Hidden/Credits, default Auto) decides:
-  `.hidden` drops the slot (two rows total), `.credits` keeps three rows
-  and fills it with a synthesized `.credits` window from `spend` instead
-  of a dead placeholder, `.auto` picks between those two on its own —
-  showing the credits row exactly when `spend.enabled` is true, hiding it
-  otherwise, no manual choice needed. The credits row's notification
-  toggle is always disabled (no reset date to schedule against).
+- Slots (`WindowSlots`, up to three): before the first fetch the two
+  placeholders, session and weekly (`--` + empty bar), so the composition
+  is there from the start; with a snapshot, what the account reports —
+  its session and its overall period (the week, or Codex Free's month,
+  titled by its length: "Monthly") in that order, then the third slot;
+  or, for a provider that meters named quotas and no rate window (GitHub
+  Copilot's premium requests, chat and completions), up to three of
+  those in the provider's order. The third slot shows the real per-model
+  window when the plan reports one (e.g. Max/Team Premium's Fable 5
+  allowance). When it doesn't — most Claude Pro accounts, since Fable
+  moved to usage credits — `ModelSlotFallback` (Settings → "Usage rows":
+  Auto/Hidden/Credits, default Auto) decides: `.hidden` drops the slot
+  (two rows total), `.credits` keeps three rows and fills it with a
+  synthesized `.credits` window from `spend` instead of a dead
+  placeholder, `.auto` picks between those two on its own — showing the
+  credits row exactly when `spend.enabled` is true, hiding it otherwise,
+  no manual choice needed. Row titles are the window's own
+  (`UsageWindow.title`: "5-hour session", "Weekly", "Monthly",
+  "Weekly · Fable", "Premium requests"), and so are notification titles
+  ("Monthly limit reset"). The credits row's notification toggle is
+  always disabled (no reset date to schedule against).
 - Reset lines: consecutive windows sharing one reset date show
   "Resets in …" once, under the last of the group (`WindowSlots.showsReset`)
   — applies to dashboard, detail, menu bar, widgets, landscape: every
@@ -1293,11 +1347,18 @@ the account silently freezes at its last snapshot.
   report), since the one stored value applies to every widget instance
   whatever account it is set to. `glanceMetric` is stored as a plain `UsageWindow.Kind` (not
   a fixed enum) so its option list scales with whichever account it's
-  being read against: Session and Weekly always, the per-model window
-  (e.g. Fable on Max) whenever that account reports one, and Credits
-  whenever it has that enabled *and* `modelSlotFallback` isn't Hidden
-  (`UsageSnapshot.glanceOptions`) — 2 to 4 choices, same live-options
-  principle `UsageWindowOptionQuery` uses for the single-window widget.
+  being read against: Session and Weekly while the account reports them
+  (both before the first fetch; Codex Free reports only its month-long
+  week, Copilot only its named quotas, which are offered instead), the
+  per-model window (e.g. Fable on Max) whenever that account reports
+  one, and Credits whenever it has that enabled *and* `modelSlotFallback`
+  isn't Hidden (`UsageSnapshot.glanceOptions`) — 2 to 4 choices, same
+  live-options principle `UsageWindowOptionQuery` uses for the
+  single-window widget. A metric the primary account doesn't report
+  falls back to that account's first window
+  (`UsageSnapshot.glanceMetric`), on the status item, the island's wings
+  and the Lock Screen gauge alike, so a preference set against one
+  family's session never leaves another family's account blank.
   `modelSlotFallback` and `showCreditsAmount` themselves stay **global**
   (one shared value for every account, not re-keyed per account) — a
   deliberate scope simplification, not an oversight: re-scoping them would
@@ -1497,8 +1558,9 @@ the account silently freezes at its last snapshot.
   the window's real length**, not its kind — under 48 h in hours ("5h"),
   from there on in days ("7d", "30d", so a provider whose week is a
   month needs no new `Kind`), a per-model window is the model's name
-  (cut to 6 characters in the wings), credits is "Cr" (localized like the
-  menu bar's "S/W/C"); percentage and bar fraction follow `DisplayMode`;
+  (cut to 6 characters in the wings), a named quota its short name
+  ("Prem", "Chat", "Comp" in the wings, `NotchIslandModel.quotaWingLabel`),
+  credits is "Cr" (localized like the menu bar's "S/W/C"); percentage and bar fraction follow `DisplayMode`;
   the reset is the bare countdown or clock time per `ResetStyle` (the
   full "Resets in …" sentence stays in the accessibility label), and a
   credits slot shows `SpendStatus.amountLabel` there when
@@ -1825,13 +1887,20 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   captured response — mapping tests assert against it;
   `AIMETER_LIVE_TEST=1` enables an opt-in live test;
   `ClaudeCodeSessionTests` pins the session rules on the measured record
-  shapes) and the app's own
+  shapes; `CodexTests` and `CopilotTests` pin the two other families'
+  mapping, sign-in and provider rules on their fixtures, `QuotaKindTests`
+  the quota kind's keys and the length a periodic window advances a
+  missing reset by, and `StatuspageSourceTests` the shared status reader
+  on OpenAI's incident-less summary) and the app's own
   `AIMeterTests` target (`xcodebuild test -scheme AIMeter`, hosted in
   `AIMeter.app` on either platform, `@testable import AIMeter`), which
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
   grouped reset line, `UsageFormatting` (the date a far reset shows included), the
   feedback row's issue link (`FeedbackSettingsTests`),
-  `UsageSnapshot.glanceOptions`,
+  `UsageSnapshot.glanceOptions`, the three families in the catalog and
+  what a `ProviderLogin` is of, the slots and glance surfaces of an
+  account with no session (Copilot's quotas, Codex Free's month) and the
+  titles a window's own length gives it (`MultiProviderTests`),
   `NotificationPreferences` (incl. `SmartAlert` and `clear()` scoping),
   the scheduled notifications' triggers pinned to an instant and one
   run-out warning per window (`NotificationSchedulerTests`), the widgets'
@@ -1922,8 +1991,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
 
 - MIT license. README includes: undocumented-endpoint disclaimer, privacy
   /data-transparency section (which lists every host the app talks to —
-  the usage/profile endpoints, the OAuth page on iOS, the public
-  status page, and on the Mac GitHub's release API and download), build
+  each family's usage endpoints, sign-in pages and public status page,
+  and on the Mac GitHub's release API and download), build
   instructions with the user's own team ID, no
   affiliation with Anthropic.
 - The App Store Connect app record's **Name** is `AIMeter: Usage Tracker`,
@@ -1953,8 +2022,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   user picks otherwise — the two Anthropic marks bundled since 1.6 for
   the per-account icon picker are opt-in and never appear in demo data or
   screenshots; a knowing exception, see "Design system");
-  "Claude" only as plain-text nominative use *inside* the app, never in
-  the App Store name, subtitle, icon, or keywords, with the store
+  "Claude", "Codex" and "GitHub Copilot" only as plain-text nominative
+  use *inside* the app, never in the App Store name, subtitle, icon, or
+  keywords, with the store
   description carrying the not-affiliated/trademark line the Privacy
   screen already shows; the in-app OAuth requests `user:profile` only; the
   iOS build never accepts another app's credential file; the Connect
@@ -2140,8 +2210,12 @@ there is no image to edit.
   `Scripts/probe-usage-endpoint.sh` (usage),
   `Scripts/probe-profile-endpoint.sh` (the profile's shape, never its
   values) or
-  `Scripts/probe-status-endpoint.sh` (the status page) and check the
-  captured fixtures; before touching the Claude Code log reader, run
+  `Scripts/probe-status-endpoint.sh` (the status page),
+  `Scripts/probe-codex-usage.sh` (Codex, with the CLI's own login on this
+  Mac) or `Scripts/probe-copilot-quota.sh` (GitHub Copilot, through a
+  device sign-in the user completes in the browser; the token never
+  leaves the shell) and check the captured fixtures; before touching the
+  Claude Code log reader, run
   `Scripts/probe-claude-code-logs.sh` (shape only). Never guess wire
   formats.
 - Before large changes, propose the plan and wait for approval.

@@ -86,7 +86,8 @@ nonisolated struct UsageExport: Sendable {
         return text
     }
 
-    /// Session, weekly, the per-model windows by name, then the rest.
+    /// Session, weekly, the per-model windows by name, the quotas by
+    /// name, then the rest.
     static func orderedKeys<S: Sequence>(_ keys: S) -> [String] where S.Element == String {
         keys.sorted { lhs, rhs in
             let (l, r) = (rank(lhs), rank(rhs))
@@ -99,8 +100,9 @@ nonisolated struct UsageExport: Sendable {
         case .session: 0
         case .weekly: 1
         case .modelSpecific: 2
-        case .credits: 3
-        case nil: 4
+        case .quota: 3
+        case .credits: 4
+        case nil: 5
         }
     }
 

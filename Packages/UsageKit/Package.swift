@@ -15,7 +15,7 @@ let package = Package(
     targets: [
         .target(
             name: "UsageKit",
-            exclude: ["Providers/Claude/CLAUDE.md"],
+            exclude: ["Providers/Claude/CLAUDE.md", "Providers/Codex/CLAUDE.md", "Providers/Copilot/CLAUDE.md"],
             resources: [.process("Resources")]
         ),
         .testTarget(

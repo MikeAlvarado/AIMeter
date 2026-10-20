@@ -48,8 +48,11 @@ legacy sentinel if none — rather than each re-deriving it.
   ("42% left" / "42% used", `DisplayMode.suffix`), the bar, and under it
   the reset line, the optional credits amount, or "Not available" for a
   slot the account doesn't report (`--` where the figure would be).
-  Two or three columns, whatever the slots yield; the figure drops from
-  28 pt to 22 pt for three so "100% left" still fits. Each column shows
+  One to three columns, whatever the slots yield (a Codex Free account
+  has one, its month; Copilot's quotas make three); the figure drops from
+  28 pt to 22 pt for three so "100% left" still fits. Column and row
+  names are the window's own (`UsageWindow.shortTitle`: "Month" for a
+  30-day week, "Premium" for a quota). Each column shows
   its own reset line — the grouped-reset rule (`WindowSlots.showsReset`)
   is for stacked rows, where one line can sit under a group; side by
   side, a column with nothing under its bar reads as unfinished. The
@@ -134,10 +137,13 @@ legacy sentinel if none — rather than each re-deriving it.
   account are one fetch — and one refresh-token rotation — per reload.
   **Condensed** (`CondensedAccountsView`, its own file) fits six: a
   header (the app's mark, "All Accounts", the peak badge), the slot
-  names over the columns, one line per account with its name, a bar per
-  column (the columns are the slots of the first account that has three,
-  else two; a slot an account lacks keeps its column, faded) and its
-  session's figure, and under them the soonest session reset of all the
+  names over the columns (the window's own short name, "Month" for a
+  30-day week), one line per account with its name, a bar per
+  column (the columns are kinds: the slots of the first account that has
+  three, else two; each account's bar sits in the column of its kind and
+  a kind it lacks keeps the column, faded, so a Claude and a Copilot
+  account never share a column by position alone) and its first
+  window's figure, and under them the soonest session reset of all the
   accounts as a bare live countdown ("Next session reset: 1:02:40",
   `ResetLineText(bare:)`). No reset under each bar and no per-account
   refresh button there: that is what a line gives up for the room. Both

@@ -182,11 +182,12 @@ export const en = {
     sections: [
       {
         heading: 'What leaves your device',
-        paragraphs: ['Only HTTPS requests to the provider whose usage you asked AIMeter to read (and, on the Mac, to GitHub for updates), and nothing to us, because there is no “us” to send it to.'],
+        paragraphs: ['Only HTTPS requests to the providers whose usage you asked AIMeter to read (and, on the Mac, to GitHub for updates), and nothing to us, because there is no “us” to send it to.'],
         bullets: [
-          'api.anthropic.com: /api/oauth/usage for your limits and spend numbers, and /api/oauth/profile to resolve your plan name (re-checked at most every 6 hours).',
-          'claude.ai and console.anthropic.com: the standard OAuth sign-in exchange when you connect an account through the app. You sign in on the provider’s own page in your browser, never in an embedded web view, and paste back the code it shows.',
-          'status.claude.com: one anonymous request to the public status page on each refresh, to tell a service incident apart from a problem with your account. It carries nothing about you and can be turned off in Settings.',
+          'Claude. api.anthropic.com: /api/oauth/usage for your limits and spend numbers, and /api/oauth/profile to resolve your plan name (re-checked at most every 6 hours). claude.ai and console.anthropic.com: the standard OAuth sign-in exchange when you connect an account through the app. You sign in on the provider’s own page in your browser, never in an embedded web view, and paste back the code it shows.',
+          'Codex. chatgpt.com: /backend-api/wham/usage for your Codex limits, the same figures the Codex CLI’s /status shows. auth.openai.com: ChatGPT’s own device-code sign-in (you enter a one-time code on its page, in your browser) and the token refresh that follows. On the Mac, the login the Codex CLI keeps in ~/.codex can be read instead, never modified.',
+          'GitHub Copilot. github.com: GitHub’s device-code sign-in, asking for no scope at all. api.github.com: the Copilot quota endpoint its editor plug-ins read, whose answer carries your user id, used to tell the account apart on your other devices.',
+          'status.claude.com, status.openai.com and githubstatus.com: one anonymous request to each connected provider’s public status page on each refresh, to tell a service incident apart from a problem with your account. It carries nothing about you and can be turned off in Settings.',
           'api.github.com and github.com (Mac only): once a day, a request asking whether a newer version of AIMeter exists, and its download from the project’s release page when there is one. It carries nothing about you and can be turned off in Settings.',
           'iCloud (optional, off by default): with “Sync preferences and history” on in Settings, your display preferences and each account’s usage history (the percentages and their dates, nothing else) go to your own iCloud key-value store, under your Apple Account, to reach your other devices with AIMeter. Sign-in tokens never do, and there is no server of ours in between. Turning it off removes what AIMeter kept there.',
           'This website is static: no analytics, no cookies, fonts are self-hosted and no third-party request is made. It is served by GitHub Pages, whose ordinary server logs are GitHub’s.',
@@ -196,7 +197,7 @@ export const en = {
         heading: 'What is stored, and where',
         paragraphs: ['Everything below lives on the device, in storage only AIMeter and its widget can read.'],
         bullets: [
-          'Sign-in tokens: in the system Keychain only, encrypted, available after first unlock. On iOS the widget shares them through the App Group’s keychain access group so it can refresh usage by itself. On the Mac, a first account can simply read the login your command-line tool already keeps, read-only, without ever modifying it.',
+          'Sign-in tokens: in the system Keychain only, encrypted, available after first unlock. On iOS the widget shares them through the App Group’s keychain access group so it can refresh usage by itself. On the Mac, an account can simply read the login Claude Code or the Codex CLI already keeps, read-only, without ever modifying it.',
           'The last usage snapshot (percentages, reset dates, spend numbers) and your display preferences: in the App Group container, so widgets can render without fetching.',
           'Up to 30 days of usage percentages per window (the numbers, their dates and the reset dates), as a small file per account in the same container, for the history chart.',
           'Nothing is ever written anywhere else on the device, unencrypted, or outside the app’s own containers.',

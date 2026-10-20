@@ -82,8 +82,8 @@ enum NotificationScheduler {
                   resetsAt > Date() else { continue }
 
             let content = UNMutableNotificationContent()
-            content.title = labeled(String(localized: "\(window.kind.displayName) limit reset"), accountLabel)
-            content.body = String(localized: "Your \(window.kind.displayName) usage window has reset. Full capacity available.")
+            content.title = labeled(String(localized: "\(window.title) limit reset"), accountLabel)
+            content.body = String(localized: "Your \(window.title) usage window has reset. Full capacity available.")
             content.sound = .default
 
             let components = triggerComponents(at: resetsAt)
@@ -103,6 +103,7 @@ enum NotificationScheduler {
     /// delivers right away (nil trigger).
     static func notifyEarlyResets(
         _ kinds: [UsageWindow.Kind],
+        in current: UsageSnapshot? = nil,
         accountID: String,
         accountLabel: String? = nil,
         preferences: NotificationPreferences
@@ -111,9 +112,10 @@ enum NotificationScheduler {
         let center = UNUserNotificationCenter.current()
 
         for kind in kinds {
+            let title = current?.title(for: kind) ?? kind.displayName
             let content = UNMutableNotificationContent()
-            content.title = labeled(String(localized: "\(kind.displayName) refilled early"), accountLabel)
-            content.body = String(localized: "Your \(kind.displayName) limit reset ahead of schedule. Full capacity available.")
+            content.title = labeled(String(localized: "\(title) refilled early"), accountLabel)
+            content.body = String(localized: "Your \(title) limit reset ahead of schedule. Full capacity available.")
             content.sound = .default
 
             // A unique id per event so repeated early resets each notify.
@@ -143,7 +145,7 @@ enum NotificationScheduler {
         for kind in kinds {
             let used = current.windows.first { $0.kind == kind }?.usedPct ?? 0
             let content = UNMutableNotificationContent()
-            content.title = labeled(String(localized: "\(kind.displayName) nearing its limit"), accountLabel)
+            content.title = labeled(String(localized: "\(current.title(for: kind)) nearing its limit"), accountLabel)
             content.body = String(localized: "You're at \(Int(used))% of this window.")
             content.sound = .default
             await add(content, prefix: nearLimitPrefix, accountID: accountID, kind: kind, to: center)
@@ -168,7 +170,7 @@ enum NotificationScheduler {
 
         for kind in kinds {
             let content = UNMutableNotificationContent()
-            content.title = labeled(String(localized: "\(kind.displayName) limit reached"), accountLabel)
+            content.title = labeled(String(localized: "\(current.title(for: kind)) limit reached"), accountLabel)
             content.body = hasCredits
                 ? String(localized: "Further usage now draws on your usage credits.")
                 : String(localized: "You're blocked on this limit until it resets.")

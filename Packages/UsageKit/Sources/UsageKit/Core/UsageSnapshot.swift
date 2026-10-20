@@ -46,10 +46,12 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
     }
 
     public var modelWindows: [UsageWindow] {
-        windows.filter {
-            if case .modelSpecific = $0.kind { return true }
-            return false
-        }
+        windows.filter(\.kind.isModelSpecific)
+    }
+
+    /// The named quotas, in the order the provider reports them.
+    public var quotaWindows: [UsageWindow] {
+        windows.filter(\.kind.isQuota)
     }
 
     /// Providers omit `resetsAt` for windows with no usage yet, but weekly
@@ -66,7 +68,7 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
                   let old = previous.windows.first(where: { $0.kind == window.kind })?.resetsAt
             else { return window }
             var filled = window
-            filled.resetsAt = Self.advance(old, by: window.kind.nominalPeriod, until: now)
+            filled.resetsAt = Self.advance(old, by: window.nominalPeriod, until: now)
             return filled
         }
         return updated
@@ -83,24 +85,29 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
     }
 }
 
-extension UsageWindow.Kind {
-    /// The kind's nominal rollover period, when the kind itself defines
-    /// one: weekly windows repeat every 7 days. Sessions start on first
-    /// use, so they have no fixed anchor.
+extension UsageWindow {
+    /// The window's rollover period, for advancing a reset the provider
+    /// left out: the periodic kinds (weekly, per-model, a named quota)
+    /// repeat every `effectiveDuration` (7 days for Claude, a month for
+    /// Codex Free or Copilot). Sessions start on first use, so they have
+    /// no fixed anchor, and credits are not a time window.
     var nominalPeriod: TimeInterval? {
-        switch self {
-        case .weekly, .modelSpecific:
-            return 7 * 86400
+        switch kind {
+        case .weekly, .modelSpecific, .quota:
+            return effectiveDuration
         case .session, .credits:
             return nil
         }
     }
+}
 
+extension UsageWindow.Kind {
     /// The nominal *length* of the window, for pace math (where a steady
     /// burn would put you now = elapsed / duration). Distinct from
-    /// `nominalPeriod`: a session has no fixed rollover anchor (nil period)
-    /// yet is still exactly 5 hours long. `.credits` is a spend cap, not a
-    /// time window, so it has no duration.
+    /// `UsageWindow.nominalPeriod`: a session has no fixed rollover
+    /// anchor yet is still exactly 5 hours long. `.credits` is a spend
+    /// cap, not a time window, so it has no duration, and a named quota
+    /// has whatever length its provider states, nothing by default.
     ///
     /// These lengths (5h / 7d) are Claude's — the *default* for a kind.
     /// A provider with different lengths sets `UsageWindow.duration`
@@ -112,7 +119,7 @@ extension UsageWindow.Kind {
             return 5 * 3600
         case .weekly, .modelSpecific:
             return 7 * 86400
-        case .credits:
+        case .quota, .credits:
             return nil
         }
     }

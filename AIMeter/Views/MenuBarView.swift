@@ -41,7 +41,7 @@ struct MenuBarView: View {
             UpdateReadyNotice()
 
             if model.needsConnection {
-                DisconnectedPrompt(buttonLabel: "Connect Claude account", verticalPadding: 10) {
+                DisconnectedPrompt(buttonLabel: "Connect an account", verticalPadding: 10) {
                     AppChrome.connect(.add)
                 }
             } else {
