@@ -146,7 +146,7 @@ export const es = {
       { title: 'Sin servidor, sin cuenta', body: 'Tu uso va de tu proveedor a tu dispositivo, sin nada en medio.' },
       { title: 'Los tokens viven en el llavero', body: 'Cifrados por el sistema. AIMeter pide un permiso de solo lectura, nunca uno que ejecute prompts.' },
       { title: 'Sin analíticas, sin rastreo', body: 'Ni analíticas, ni anuncios, ni reportes de fallos, en la app ni en este sitio.' },
-      { title: 'Tuyo para borrarlo', body: 'Desconectar una cuenta borra su token y su historial. En la nube no hay nada.' },
+      { title: 'Tuyo para borrarlo', body: 'Desconectar una cuenta borra su token y su historial. En la nube no hay nada, salvo que actives la sincronización con iCloud, que puedes apagar cuando quieras.' },
     ],
     cta: 'Lee la política de privacidad',
   },
@@ -266,7 +266,7 @@ export const es = {
     title: 'Soporte',
     description: 'Cómo conectar una cuenta, qué significan las alertas y dónde pedir ayuda.',
     intro: 'AIMeter la construye y mantiene una sola persona, a la vista de todos. La mayoría de las respuestas están abajo; lo demás está a un issue de GitHub o un correo de distancia.',
-    updated: 'Para AIMeter 3.0',
+    updated: 'Para AIMeter 3.2',
     sections: [
       {
         heading: 'Conectar en iPhone y iPad',

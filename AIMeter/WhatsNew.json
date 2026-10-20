@@ -1,6 +1,201 @@
 {
   "releases": [
     {
+      "version": "3.2.0",
+      "items": [
+        {
+          "symbol": "applewatch",
+          "title": {
+            "en": "AIMeter on your wrist",
+            "es": "AIMeter en tu muñeca",
+            "de": "AIMeter am Handgelenk",
+            "fr": "AIMeter à votre poignet",
+            "ja": "手首にAIMeter",
+            "ko": "손목 위의 AIMeter",
+            "pt-BR": "AIMeter no seu pulso",
+            "zh-Hans": "手腕上的 AIMeter"
+          },
+          "detail": {
+            "en": "The Apple Watch app and its complications show every account's limits, with the reset counting down. The Watch holds no sign-in: your iPhone sends it the figures, and Refresh on the Watch asks the iPhone.",
+            "es": "La app para Apple Watch y sus complicaciones muestran los límites de cada cuenta, con el reinicio en cuenta regresiva. El Watch no guarda ningún inicio de sesión: tu iPhone le envía las cifras, y Actualizar en el Watch se lo pide al iPhone.",
+            "de": "Die Apple Watch-App und ihre Komplikationen zeigen die Limits jedes Accounts, mit dem Countdown bis zum Reset. Die Watch speichert keine Anmeldung: Dein iPhone schickt ihr die Zahlen, und Aktualisieren auf der Watch fragt das iPhone.",
+            "fr": "L'app Apple Watch et ses complications affichent les limites de chaque compte, avec le compte à rebours jusqu'à la réinitialisation. La Watch ne garde aucune connexion : votre iPhone lui envoie les chiffres, et Actualiser sur la Watch les demande à l'iPhone.",
+            "ja": "Apple Watchアプリとコンプリケーションが、各アカウントの上限をリセットまでのカウントダウンと一緒に表示します。Watchにサインイン情報は保存されません。iPhoneが数値を送り、Watchの「更新」はiPhoneに問い合わせます。",
+            "ko": "Apple Watch 앱과 컴플리케이션이 각 계정의 한도를 초기화 카운트다운과 함께 보여줍니다. Watch에는 로그인 정보가 없습니다. iPhone이 수치를 보내고, Watch의 새로 고침은 iPhone에 요청합니다.",
+            "pt-BR": "O app para Apple Watch e suas complicações mostram os limites de cada conta, com a contagem regressiva até o reinício. O Watch não guarda nenhum login: seu iPhone envia os números, e Atualizar no Watch pede ao iPhone.",
+            "zh-Hans": "Apple Watch App 和复杂功能会显示每个账户的额度，并倒计时到重置。手表不保存任何登录信息：由 iPhone 发送数据，手表上的“刷新”会向 iPhone 请求。"
+          },
+          "platforms": [
+            "iOS"
+          ]
+        },
+        {
+          "symbol": "icloud",
+          "title": {
+            "en": "Your preferences and history, on every device",
+            "es": "Tus preferencias e historial, en todos tus dispositivos",
+            "de": "Deine Einstellungen und dein Verlauf auf jedem Gerät",
+            "fr": "Vos préférences et votre historique, sur chaque appareil",
+            "ja": "設定と履歴を、どのデバイスでも",
+            "ko": "환경설정과 기록을 모든 기기에서",
+            "pt-BR": "Suas preferências e seu histórico, em todos os dispositivos",
+            "zh-Hans": "你的偏好设置和历史记录，每台设备都有"
+          },
+          "detail": {
+            "en": "Turn on Sync preferences and history in Settings, iCloud, and your display preferences and each account's history follow you between iPhone and Mac through your own iCloud. Sign-ins never do.",
+            "es": "Activa Sincronizar preferencias e historial en Ajustes, iCloud, y tus preferencias de visualización y el historial de cada cuenta te siguen entre iPhone y Mac a través de tu propio iCloud. Los inicios de sesión nunca.",
+            "de": "Schalte unter Einstellungen, iCloud, Einstellungen und Verlauf synchronisieren ein: Deine Anzeigeeinstellungen und der Verlauf jedes Accounts begleiten dich über deine eigene iCloud zwischen iPhone und Mac. Anmeldungen nie.",
+            "fr": "Activez Synchroniser les préférences et l'historique dans Réglages, iCloud : vos préférences d'affichage et l'historique de chaque compte vous suivent entre iPhone et Mac via votre propre iCloud. Jamais les connexions.",
+            "ja": "設定の「iCloud」で「設定と履歴を同期」をオンにすると、表示の設定と各アカウントの履歴が、あなた自身のiCloudを通じてiPhoneとMacの間で引き継がれます。サインイン情報は決して同期されません。",
+            "ko": "설정의 iCloud에서 환경설정과 기록 동기화를 켜면 표시 환경설정과 각 계정의 기록이 내 iCloud를 통해 iPhone과 Mac 사이에서 따라옵니다. 로그인 정보는 절대 동기화되지 않습니다.",
+            "pt-BR": "Ligue Sincronizar preferências e histórico em Ajustes, iCloud, e suas preferências de exibição e o histórico de cada conta acompanham você entre iPhone e Mac pelo seu próprio iCloud. Os logins nunca.",
+            "zh-Hans": "在设置的 iCloud 中打开“同步偏好设置和历史记录”，你的显示偏好设置和每个账户的历史记录就会通过你自己的 iCloud 在 iPhone 和 Mac 之间同步。登录信息绝不会同步。"
+          }
+        },
+        {
+          "symbol": "square.and.arrow.up",
+          "title": {
+            "en": "Export your history",
+            "es": "Exporta tu historial",
+            "de": "Verlauf exportieren",
+            "fr": "Exportez votre historique",
+            "ja": "履歴を書き出し",
+            "ko": "기록 내보내기",
+            "pt-BR": "Exporte seu histórico",
+            "zh-Hans": "导出你的历史记录"
+          },
+          "detail": {
+            "en": "Settings, Export, writes every account's history and last snapshot to a CSV for Numbers or Excel, or a JSON for a script. The file goes only where you send it.",
+            "es": "Ajustes, Exportar, escribe el historial y la última captura de cada cuenta en un CSV para Numbers o Excel, o en un JSON para un script. El archivo va solo a donde tú lo envíes.",
+            "de": "Einstellungen, Exportieren, schreibt den Verlauf und den letzten Stand jedes Accounts in eine CSV-Datei für Numbers oder Excel oder in eine JSON-Datei für ein Skript. Die Datei geht nur dorthin, wohin du sie schickst.",
+            "fr": "Réglages, Exporter, écrit l'historique et le dernier relevé de chaque compte dans un CSV pour Numbers ou Excel, ou un JSON pour un script. Le fichier ne va que là où vous l'envoyez.",
+            "ja": "設定の「書き出し」で、各アカウントの履歴と最新の状態を、NumbersやExcel向けのCSV、またはスクリプト向けのJSONに書き出せます。ファイルはあなたが送った先にしか行きません。",
+            "ko": "설정의 내보내기에서 각 계정의 기록과 마지막 스냅샷을 Numbers나 Excel용 CSV 또는 스크립트용 JSON으로 저장합니다. 파일은 내가 보내는 곳으로만 갑니다.",
+            "pt-BR": "Ajustes, Exportar, grava o histórico e o último registro de cada conta em um CSV para Numbers ou Excel, ou em um JSON para um script. O arquivo só vai para onde você enviar.",
+            "zh-Hans": "在设置的“导出”中，可将每个账户的历史记录和最新快照写入 CSV（用于 Numbers 或 Excel）或 JSON（用于脚本）。文件只会去你发送的地方。"
+          }
+        },
+        {
+          "symbol": "timer",
+          "title": {
+            "en": "Widgets that count down",
+            "es": "Widgets con cuenta regresiva",
+            "de": "Widgets zählen herunter",
+            "fr": "Des widgets qui comptent à rebours",
+            "ja": "カウントダウンするウィジェット",
+            "ko": "카운트다운하는 위젯",
+            "pt-BR": "Widgets que fazem contagem regressiva",
+            "zh-Hans": "会倒计时的小组件"
+          },
+          "detail": {
+            "en": "A reset under a day away now counts down live in every widget, second by second, and on iPhone a widget refreshes a minute after a window resets instead of up to three hours later.",
+            "es": "Un reinicio a menos de un día ahora cuenta en vivo en todos los widgets, segundo a segundo, y en iPhone un widget se actualiza un minuto después de que una ventana se reinicia, en vez de hasta tres horas después.",
+            "de": "Ein Reset in weniger als einem Tag zählt jetzt in jedem Widget live herunter, Sekunde für Sekunde, und auf dem iPhone aktualisiert sich ein Widget eine Minute nach dem Reset eines Fensters statt bis zu drei Stunden später.",
+            "fr": "Une réinitialisation à moins d'un jour défile désormais en direct dans chaque widget, seconde par seconde, et sur iPhone un widget s'actualise une minute après la réinitialisation d'une fenêtre, au lieu de jusqu'à trois heures plus tard.",
+            "ja": "1日以内のリセットは、すべてのウィジェットで1秒ごとにライブでカウントダウンします。iPhoneでは、ウインドウのリセットの1分後にウィジェットが更新されます。これまでは最大3時間かかっていました。",
+            "ko": "하루 안에 오는 초기화는 이제 모든 위젯에서 초 단위로 실시간 카운트다운됩니다. iPhone에서는 기간이 초기화되고 1분 뒤에 위젯이 새로 고쳐집니다. 전에는 최대 3시간이 걸렸습니다.",
+            "pt-BR": "Um reinício a menos de um dia agora conta ao vivo em todos os widgets, segundo a segundo, e no iPhone um widget atualiza um minuto depois que uma janela reinicia, em vez de até três horas depois.",
+            "zh-Hans": "一天内的重置现在会在每个小组件中逐秒实时倒计时；在 iPhone 上，周期重置一分钟后小组件就会刷新，而不是最多等上三小时。"
+          }
+        },
+        {
+          "symbol": "rectangle.3.group",
+          "title": {
+            "en": "New widget looks",
+            "es": "Nuevos estilos de widget",
+            "de": "Neue Widget-Looks",
+            "fr": "De nouveaux styles de widgets",
+            "ja": "ウィジェットの新しい見た目",
+            "ko": "새로운 위젯 모양",
+            "pt-BR": "Novos visuais de widget",
+            "zh-Hans": "小组件的新样式"
+          },
+          "detail": {
+            "en": "Single Limit can be a ring with the figure in its centre (Edit Widget, Style), and All Accounts has a condensed layout that fits six accounts (Edit Widget, Layout).",
+            "es": "Límite individual puede ser un anillo con la cifra al centro (Editar widget, Estilo), y Todas las cuentas tiene un diseño condensado en el que caben seis cuentas (Editar widget, Diseño).",
+            "de": "Einzelnes Limit kann ein Ring mit der Zahl in der Mitte sein (Widget bearbeiten, Stil), und Alle Accounts hat ein kompaktes Layout für sechs Accounts (Widget bearbeiten, Layout).",
+            "fr": "Limite unique peut être un anneau avec le chiffre au centre (Modifier le widget, Style), et Tous les comptes a une disposition condensée qui accueille six comptes (Modifier le widget, Disposition).",
+            "ja": "「単一の上限」は中央に数値を置いたリングにでき（ウィジェットを編集、スタイル）、「すべてのアカウント」には6アカウントが収まるコンパクトなレイアウトが加わりました（ウィジェットを編集、レイアウト）。",
+            "ko": "단일 한도는 가운데에 수치가 있는 링으로 바꿀 수 있고(위젯 편집, 스타일), 모든 계정에는 계정 여섯 개가 들어가는 간결한 레이아웃이 생겼습니다(위젯 편집, 레이아웃).",
+            "pt-BR": "Limite único pode ser um anel com o número no centro (Editar widget, Estilo), e Todas as contas tem um layout condensado que cabe seis contas (Editar widget, Layout).",
+            "zh-Hans": "“单项额度”可以显示为中间带数字的圆环（编辑小组件，样式），“所有账户”新增了可容纳六个账户的紧凑布局（编辑小组件，布局）。"
+          }
+        },
+        {
+          "symbol": "arrow.up.arrow.down",
+          "title": {
+            "en": "Order by urgency",
+            "es": "Ordenar por urgencia",
+            "de": "Nach Dringlichkeit ordnen",
+            "fr": "Trier par urgence",
+            "ja": "緊急度順に並べる",
+            "ko": "긴급한 순서로 정렬",
+            "pt-BR": "Ordenar por urgência",
+            "zh-Hans": "按紧急程度排序"
+          },
+          "detail": {
+            "en": "Settings, Accounts, can put the account closest to a limit first, everywhere accounts are listed. Off, the order stays yours.",
+            "es": "Ajustes, Cuentas, puede poner primero la cuenta más cerca de un límite, en todos los lugares donde se listan las cuentas. Apagado, el orden sigue siendo tuyo.",
+            "de": "Einstellungen, Accounts, kann den Account, der einem Limit am nächsten ist, überall zuerst zeigen, wo Accounts aufgeführt sind. Aus, bleibt die Reihenfolge deine.",
+            "fr": "Réglages, Comptes, peut placer en premier le compte le plus proche d'une limite, partout où les comptes sont listés. Désactivé, l'ordre reste le vôtre.",
+            "ja": "設定の「アカウント」で、上限に最も近いアカウントを、アカウントの一覧があるすべての場所で先頭にできます。オフなら順序は今までどおりあなたのものです。",
+            "ko": "설정의 계정에서 한도에 가장 가까운 계정을 계정이 표시되는 모든 곳에서 먼저 보이게 할 수 있습니다. 끄면 순서는 그대로 내가 정한 대로입니다.",
+            "pt-BR": "Ajustes, Contas, pode colocar primeiro a conta mais perto de um limite, em todos os lugares onde as contas aparecem. Desligado, a ordem continua sendo sua.",
+            "zh-Hans": "在设置的“账户”中，可以让最接近额度上限的账户在所有列出账户的地方排在最前。关闭后顺序仍由你决定。"
+          }
+        },
+        {
+          "symbol": "eye.slash",
+          "title": {
+            "en": "Discreet mode",
+            "es": "Modo discreto",
+            "de": "Diskreter Modus",
+            "fr": "Mode discret",
+            "ja": "控えめモード",
+            "ko": "비공개 모드",
+            "pt-BR": "Modo discreto",
+            "zh-Hans": "低调模式"
+          },
+          "detail": {
+            "en": "For a screen others can see: one switch (the eye in the menu bar popover, ⌘⇧D, or Settings, Accounts) takes the accounts you mark out of the menu bar and the notch island, and Claude Code's sessions out of the island. The Dashboard and the widgets keep everything.",
+            "es": "Para una pantalla que otros pueden ver: un interruptor (el ojo en el menú de la barra de menú, ⌘⇧D, o Ajustes, Cuentas) saca de la barra de menú y de la isla del notch las cuentas que marques, y las sesiones de Claude Code de la isla. El panel y los widgets siguen mostrando todo.",
+            "de": "Für einen Bildschirm, den andere sehen können: Ein Schalter (das Auge im Menüleisten-Popover, ⌘⇧D oder Einstellungen, Accounts) nimmt die markierten Accounts aus der Menüleiste und der Notch-Insel, und die Sitzungen von Claude Code aus der Insel. Das Dashboard und die Widgets zeigen weiter alles.",
+            "fr": "Pour un écran que d'autres peuvent voir : un interrupteur (l'œil dans le menu de la barre des menus, ⌘⇧D, ou Réglages, Comptes) retire de la barre des menus et de l'îlot de l'encoche les comptes que vous cochez, et les sessions de Claude Code de l'îlot. Le tableau de bord et les widgets continuent de tout afficher.",
+            "ja": "人に見られる画面のために。ひとつのスイッチ（メニューバーのポップオーバーの目のアイコン、⌘⇧D、または設定の「アカウント」）で、選んだアカウントがメニューバーとノッチアイランドから、Claude Codeのセッションがアイランドから消えます。ダッシュボードとウィジェットはすべてを表示したままです。",
+            "ko": "다른 사람이 볼 수 있는 화면을 위해. 스위치 하나(메뉴 막대 팝오버의 눈 아이콘, ⌘⇧D, 또는 설정의 계정)로 표시한 계정이 메뉴 막대와 노치 아일랜드에서, Claude Code 세션이 아일랜드에서 사라집니다. 대시보드와 위젯은 계속 모든 것을 보여줍니다.",
+            "pt-BR": "Para uma tela que outros podem ver: um interruptor (o olho no menu da barra de menus, ⌘⇧D, ou Ajustes, Contas) tira da barra de menus e da ilha do notch as contas que você marcar, e as sessões do Claude Code da ilha. O painel e os widgets continuam mostrando tudo.",
+            "zh-Hans": "为了别人也能看到的屏幕：一个开关（菜单栏弹出窗口中的眼睛图标、⌘⇧D，或设置的“账户”）就能让你勾选的账户从菜单栏和刘海岛中消失，Claude Code 的会话也从岛中消失。仪表板和小组件仍会显示全部。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "slider.horizontal.3",
+          "title": {
+            "en": "Settings, reorganized",
+            "es": "Ajustes reorganizados",
+            "de": "Einstellungen neu geordnet",
+            "fr": "Réglages réorganisés",
+            "ja": "設定を整理しました",
+            "ko": "정리된 설정",
+            "pt-BR": "Ajustes reorganizados",
+            "zh-Hans": "重新整理的设置"
+          },
+          "detail": {
+            "en": "General settings on one side, each account's on its own page: notifications, name and icon, and on iPhone the Live Activity. Open it from Settings or from the end of an account's details. On the Mac, Settings has six tabs: General, Accounts, Notch island, Menu bar, This Mac and Privacy & data.",
+            "es": "Los ajustes generales por un lado y los de cada cuenta en su propia página: notificaciones, nombre e icono, y en iPhone la Actividad en vivo. Ábrela desde Ajustes o desde el final de los detalles de una cuenta. En el Mac, Ajustes tiene seis pestañas: General, Cuentas, Isla del notch, Barra de menú, Este Mac y Privacidad y datos.",
+            "de": "Die allgemeinen Einstellungen auf der einen Seite, die jedes Accounts auf seiner eigenen Seite: Mitteilungen, Name und Symbol, und auf dem iPhone die Live-Aktivität. Du öffnest sie aus den Einstellungen oder am Ende der Details eines Accounts. Auf dem Mac haben die Einstellungen sechs Tabs: Allgemein, Accounts, Notch-Insel, Menüleiste, Dieser Mac und Datenschutz & Daten.",
+            "fr": "Les réglages généraux d'un côté, ceux de chaque compte sur sa propre page : notifications, nom et icône, et sur iPhone l'activité en direct. Ouvrez-la depuis Réglages ou depuis la fin des détails d'un compte. Sur le Mac, Réglages a six onglets : Général, Comptes, Îlot de l'encoche, Barre des menus, Ce Mac et Confidentialité et données.",
+            "ja": "一般の設定と、各アカウント専用のページ（通知、名前とアイコン、iPhoneではライブアクティビティ）に分かれました。設定から、またはアカウントの詳細の末尾から開けます。Macの設定は6つのタブになりました：一般、アカウント、ノッチアイランド、メニューバー、このMac、プライバシーとデータ。",
+            "ko": "일반 설정은 한쪽에, 각 계정의 설정은 그 계정의 페이지에: 알림, 이름과 아이콘, iPhone에서는 실시간 현황. 설정에서 또는 계정 세부 정보의 끝에서 엽니다. Mac에서는 설정이 여섯 개의 탭으로 나뉩니다: 일반, 계정, 노치 아일랜드, 메뉴 막대, 이 Mac, 개인정보 및 데이터.",
+            "pt-BR": "Os ajustes gerais de um lado e os de cada conta na sua própria página: notificações, nome e ícone, e no iPhone a Atividade ao Vivo. Abra pelos Ajustes ou pelo fim dos detalhes de uma conta. No Mac, os Ajustes têm seis abas: Geral, Contas, Ilha do notch, Barra de menus, Este Mac e Privacidade e dados.",
+            "zh-Hans": "通用设置在一边，每个账户的设置在它自己的页面：通知、名称和图标，在 iPhone 上还有实时活动。可从设置或账户详情的末尾打开。在 Mac 上，设置分为六个标签：通用、账户、刘海岛、菜单栏、此 Mac，以及隐私与数据。"
+          }
+        }
+      ]
+    },
+    {
       "version": "3.1.0",
       "items": [
         {
@@ -48,7 +243,9 @@
             "pt-BR": "Na Atividade ao Vivo de uma conta, ative Mostrar um bichinho: o bichinho de pixels acompanha a contagem regressiva da sessão na Dynamic Island e na Tela Bloqueada, e fica nervoso quando a sessão se aproxima do limite.",
             "zh-Hans": "在账户的\"实时活动\"中打开\"显示宠物\"，它的像素宠物会在灵动岛和锁定屏幕上陪着会话倒计时，接近上限时会紧张起来。"
           },
-          "platforms": ["iOS"]
+          "platforms": [
+            "iOS"
+          ]
         },
         {
           "symbol": "lizard.fill",
@@ -72,7 +269,9 @@
             "pt-BR": "Os bichinhos das suas sessões ganharam uma sétima criatura: o axolote, de rosto claro, guelras da sua cor e todos os acessórios.",
             "zh-Hans": "会话宠物新增第七种生物：六角恐龙，脸色浅白，鳃是它自己的颜色，所有配饰都能戴。"
           },
-          "platforms": ["macOS"]
+          "platforms": [
+            "macOS"
+          ]
         },
         {
           "symbol": "accessibility",
@@ -96,7 +295,9 @@
             "pt-BR": "O AIMeter só pede Acessibilidade ao macOS quando nunca a teve. Se os Ajustes do Sistema mostram o acesso ativado mas não confiam nesta cópia, como depois de instalar outra versão, os Ajustes explicam como resolver em vez de pedir de novo.",
             "zh-Hans": "AIMeter 仅在从未获得辅助功能权限时才向 macOS 请求。如果系统设置显示已开启但不信任这份副本（例如安装了另一个版本之后），设置会说明如何解决，而不是再次请求。"
           },
-          "platforms": ["macOS"]
+          "platforms": [
+            "macOS"
+          ]
         },
         {
           "symbol": "checkmark.seal",
@@ -148,7 +349,9 @@
             "pt-BR": "Deixar o cursor sobre o notch continua mostrando a espiada; a ilha abre quando você clica, e um clique dentro dela a mantém aberta.",
             "zh-Hans": "将光标停在刘海上仍会显示预览；点击即可打开刘海岛，在其中点击也不会关闭。"
           },
-          "platforms": ["macOS"]
+          "platforms": [
+            "macOS"
+          ]
         },
         {
           "symbol": "arrow.left.arrow.right",
@@ -172,7 +375,9 @@
             "pt-BR": "Deslize dois dedos sobre a ilha, ou arraste-a, para ver a próxima sessão enquanto alguma trabalha, ou sua próxima conta.",
             "zh-Hans": "在刘海岛上用双指滑动或拖动，有会话在工作时显示下一个会话，否则显示下一个账户。"
           },
-          "platforms": ["macOS"]
+          "platforms": [
+            "macOS"
+          ]
         },
         {
           "symbol": "hand.tap",
@@ -196,7 +401,9 @@
             "pt-BR": "Clique em um bichinho, uma sessão ou uma conta na ilha aberta, e o notch mostra. Uma sessão que pede sua permissão continua vindo primeiro.",
             "zh-Hans": "在展开的刘海岛中点击宠物、会话或账户，刘海就会显示它。请求你授权的会话仍会优先显示。"
           },
-          "platforms": ["macOS"]
+          "platforms": [
+            "macOS"
+          ]
         }
       ]
     },
@@ -225,7 +432,9 @@
             "pt-BR": "Cada sessão em andamento ganha um bichinho de pixels ao lado do notch. Ele anda enquanto a sessão trabalha, se agita quando precisa da sua permissão e dorme quando termina. Abra a ilha para ver todas as sessões.",
             "zh-Hans": "每个进行中的会话都会在刘海旁出现一只像素小宠物。会话工作时它会走动，需要你授权时会摇晃，完成后会睡觉。打开刘海岛即可查看所有会话。"
           },
-          "platforms": ["macOS"],
+          "platforms": [
+            "macOS"
+          ],
           "feature": "sessions"
         },
         {
@@ -250,7 +459,9 @@
             "pt-BR": "A ilha do notch aberta alinha os limites de todas as suas contas nas mesmas colunas, de borda a borda, para ler tudo de relance.",
             "zh-Hans": "展开的刘海岛会将所有账户的上限从边到边对齐在同一列中，一眼就能看清。"
           },
-          "platforms": ["macOS"],
+          "platforms": [
+            "macOS"
+          ],
           "feature": "notchIsland"
         },
         {
@@ -275,7 +486,9 @@
             "pt-BR": "Mostre o nome da sessão em andamento ao lado do notch, em Ajustes, Claude Code. Com a Acessibilidade permitida, a ilha encolhe antes de cobrir seus menus ou os ícones da direita.",
             "zh-Hans": "可在设置的 Claude Code 中，于刘海旁显示正在工作的会话名称。允许辅助功能后，刘海岛会在遮挡你的菜单或右侧图标之前缩小。"
           },
-          "platforms": ["macOS"],
+          "platforms": [
+            "macOS"
+          ],
           "feature": "sessionNames"
         },
         {
@@ -373,7 +586,9 @@
         },
         {
           "symbol": "arrow.down.circle",
-          "platforms": ["macOS"],
+          "platforms": [
+            "macOS"
+          ],
           "title": {
             "en": "Updates on its own",
             "es": "Se actualiza sola",

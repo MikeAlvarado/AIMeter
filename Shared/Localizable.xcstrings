@@ -445,7 +445,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tant qu'il est activé, les comptes cochés dans leurs propres réglages quittent la barre des menus et l'île de l'encoche, et les sessions de Claude Code quittent l'île : ce qu'un coup d'œil à votre écran au travail verrait sinon. Le tableau de bord et les widgets continuent de tout afficher. L'œil dans le menu de la barre des menus et ⌘⇧D l'activent et le désactivent."
+            "value" : "Tant qu'il est activé, les comptes cochés dans leurs propres réglages quittent la barre des menus et l'îlot de l'encoche, et les sessions de Claude Code quittent l'îlot : ce qu'un coup d'œil à votre écran au travail verrait sinon. Le tableau de bord et les widgets continuent de tout afficher. L'œil dans le menu de la barre des menus et ⌘⇧D l'activent et le désactivent."
           }
         },
         "ja" : {
@@ -492,7 +492,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tant que le mode discret est activé, ce compte quitte la barre des menus et l'île de l'encoche. Le mode lui-même s'active dans Comptes, avec l'œil du menu de la barre des menus ou avec ⌘⇧D."
+            "value" : "Tant que le mode discret est activé, ce compte quitte la barre des menus et l'îlot de l'encoche. Le mode lui-même s'active dans Comptes, avec l'œil du menu de la barre des menus ou avec ⌘⇧D."
           }
         },
         "ja" : {

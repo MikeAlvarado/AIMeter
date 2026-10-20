@@ -58,7 +58,7 @@ export const en = {
       {
         id: 'widgets',
         title: 'Widgets that keep score',
-        body: 'Small, medium and large widgets, the Lock Screen and a Live Activity with the countdown.',
+        body: 'Small, medium and large widgets, the Lock Screen, a Live Activity with the countdown, and Apple Watch complications.',
         points: ['One account or all of them', 'On iPhone they refresh themselves'],
         imageAlt: 'Home Screen with the small, medium and large AIMeter widgets.',
       },
@@ -146,7 +146,7 @@ export const en = {
       { title: 'No server, no account', body: 'Your usage goes from your provider to your device, with nothing in between.' },
       { title: 'Tokens stay in the Keychain', body: 'Encrypted by the system. AIMeter asks for a read-only scope, never one that runs prompts.' },
       { title: 'No analytics, no tracking', body: 'No analytics, ads or crash reporting, in the app or on this site.' },
-      { title: 'Yours to delete', body: 'Disconnecting an account deletes its token and history. Nothing is in the cloud.' },
+      { title: 'Yours to delete', body: 'Disconnecting an account deletes its token and history. Nothing is in the cloud unless you turn on iCloud sync, and that is yours to turn off.' },
     ],
     cta: 'Read the privacy policy',
   },
@@ -266,7 +266,7 @@ export const en = {
     title: 'Support',
     description: 'How to connect an account, what the alerts mean, and where to ask for help.',
     intro: 'AIMeter is built and maintained by one person, in the open. Most answers are below; anything else is a GitHub issue or an email away.',
-    updated: 'For AIMeter 3.0',
+    updated: 'For AIMeter 3.2',
     sections: [
       {
         heading: 'Connecting on iPhone and iPad',
