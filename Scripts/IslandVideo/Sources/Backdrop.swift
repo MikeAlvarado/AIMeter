@@ -76,7 +76,7 @@ enum Backdrop {
             ])
         }
         var shown = texts
-        while shown.count > 2, 20 + shown.map { $0.size().width + 18 }.reduce(0, +) - 18 > clearLeft {
+        while shown.count > 2, 20 + shown.map({ $0.size().width + 18 }).reduce(0, +) - 18 > clearLeft {
             shown.remove(at: shown.count - 2)
         }
         var x: CGFloat = 20

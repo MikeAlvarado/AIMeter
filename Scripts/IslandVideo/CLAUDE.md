@@ -65,4 +65,5 @@ that is fine for trying the pipeline, not for the site.
 The Screen Recording permission the recorder needs is the terminal's
 (the same one `screencapture` uses). The script relaunches the app
 normally at the end, even after a failure, so the user's own accounts
-come back. Recorded on 2026-10-15.
+come back. Recorded on 2026-10-15, and again on 2026-10-21 for 4.0
+(the expanded island's account rows on their own layout, `IslandColumns`).
