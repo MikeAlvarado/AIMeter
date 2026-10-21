@@ -1,8 +1,12 @@
 ## Screens
 
-- **Dashboard**: on iOS, floating gear + refresh buttons (refresh icon
-  spins while busy; soft haptic on refresh start) and a small centered
-  serif "AIMeter" title; on macOS no in-page header at all — the window's
+- **Dashboard** (on `AppBackground`, see "Surfaces" in the repo-root
+  CLAUDE.md): on iOS, floating gear + refresh buttons on Liquid Glass
+  (`RoundIconButton`, `glassControl`; refresh icon spins while busy; soft
+  haptic on refresh start) and a small centered serif "AIMeter" title
+  with "Updated X ago" under it, the newest account's refresh
+  (`DashboardView.lastUpdatedLabel`); on macOS no in-page header at all,
+  that line being the window's subtitle (`navigationSubtitle`) — the window's
   own title bar already says "AIMeter", so Refresh (a small spinner while
   busy) and Settings sit in the window's toolbar at its trailing edge,
   the way a Mac app keeps them, and the window opens 460 × 760 pt
@@ -12,14 +16,16 @@
   see "Conventions" in the repo-root CLAUDE.md — and from the menu bar
   popover's own button, never from the toolbar's. Then — only while the provider reports an incident
   (`UsageModel.activeIncident`, see "Service status" in the repo-root
-  CLAUDE.md) — a `ServiceStatusBanner`, then one section per *connected account*
-  (`AccountSectionView`, shared with the macOS menu bar popover): logo +
-  nickname + Pro/Max pill (trailing) → card with the three windows (each
-  with a small 24-hour sparkline before its percentage once three samples
-  exist — see "History" in the repo-root CLAUDE.md), error,
-  "Updated X ago"; tapping a section's header pushes that account's
-  Provider Detail (`NavigationLink(value: accountID)`). An "Add account"
-  row follows the list (hidden in demo mode, same as the menu bar's copy:
+  CLAUDE.md) — a `ServiceStatusBanner`, then one card per *connected account*
+  (`AccountSectionView`, 16 pt apart; see "Account cards" in the repo-root
+  CLAUDE.md): inside the card, the identity (mark, nickname, plan pill,
+  chevron), the most urgent window large with its 24-hour sparkline once
+  three samples exist (see "History" in the repo-root CLAUDE.md), the
+  other windows one line each, and only when there is one the error,
+  "Sign in again", the incident line or a stale "Updated X ago"; tapping
+  the identity pushes that account's Provider Detail
+  (`NavigationLink(value: accountID)`). An "Add account" capsule on glass
+  follows the list (hidden in demo mode, same as the menu bar's copy:
   `completeConnection` would register a real account underneath the
   fabricated row, invisible until Exit Demo). Disconnected state (no
   accounts at all) shows a Connect card instead; on macOS, once the user
@@ -151,7 +157,7 @@
     Connect sheet in reconnect mode (see "Connect sheet" below and "Losing
     a login" in the repo-root CLAUDE.md). Same row appears in Provider
     Detail, landscape, and the macOS menu bar popover — it lives in the
-    shared `AccountSectionView`/`UsageStatusFooter`, not per screen.
+    shared `UsageStatusFooter`, not per screen.
 - **Provider detail** (push, one per account — `ProviderDetailView(accountID:)`):
   what the account shows, and nothing it does: rate-limit rows for that
   account (with the same "Sign in again" recovery row when this
@@ -521,7 +527,8 @@
   Detail's bottom button also becomes "Exit Demo" (both platforms) instead
   of "Disconnect Claude" (iOS-only) while active.
 - **Landscape (iPhone)**: `verticalSizeClass == .compact` swaps the
-  dashboard for a fullscreen card with the same stacked rows.
+  dashboard for a full screen of the same account cards
+  (`AccountSectionView(linksToDetail: false)`, no sparkline).
 - **macOS menu bar**: one status item regardless of how many accounts are
   connected — `MenuBarExtra` has no per-instance configuration the way
   widgets do. The label (`MenuBarLabel`, drawing a `MenuBarLabelModel`)
@@ -544,39 +551,44 @@
   is off (`MenuBarExtra(isInserted:)`). The popover shows a peak-hours
   badge row at the top only while peak is active (never, while the policy
   is retired; peak is Claude-wide, not per account, so this isn't
-  repeated per section) + divider, a compact `ServiceStatusBanner` only
+  repeated per section), a compact `ServiceStatusBanner` only
   while the provider reports an incident (same rule as the Dashboard's),
   then **every**
   connected account that discreet mode leaves (`UsageModel.glanceAccounts`;
-  all of them marked, a "Hidden in discreet mode" line instead) as its
-  own `AccountSectionView` (shared with the
-  Dashboard, `linksToDetail: false` here since the popover has no
-  navigation stack to push into — tapping a section header does nothing,
-  unlike the Dashboard's chevron-and-push, and no reorder affordance
-  either: the popover follows the registry order the Dashboard writes,
-  it doesn't set it) inside a height-capped
-  `ScrollView` so a handful of accounts still fit and more scrolls, then an
-  "Add account" row — then, only with "Show today's total in the menu
-  bar" on and something to show, one `Claude Code today: …` line
-  (`ClaudeCodeUsageModel.menuBarLine`) — (the "Add account" row has the
-  same affordance and copy as the Dashboard's own —
-  this is the only way to add another account once the Dock icon is
-  hidden, since the Dashboard window stays closed by default in that case;
-  see "macOS hiding & re-entry" below), then divider + a footer of four
-  icon-only buttons, each with its full name in `.help` and the
-  accessibility label (`FooterIconButtonStyle`: ink, dimmed while pressed,
-  faint while disabled): Open AIMeter (`macwindow`,
-  `AppChrome.revealMainWindow()`), Refresh and, with an account
-  connected, the discreet-mode eye (`eye`, or `eye.slash.fill` in the
-  accent while on; ⌘⇧D; the same switch as Settings' card and the Usage
-  menu's "Discreet Mode", see "Discreet mode" in the repo-root
-  CLAUDE.md) on the left, Settings and
-  Quit (`power`) on the right — it used to be one icon among three text
-  buttons. "Open
-  AIMeter" is the popover's only route to Provider Detail, since the
-  popover itself has no navigation stack — it reopens the Dashboard window
-  even after `AppDelegate` closed it at launch, because the scene registers
-  the reopen hook on first appearance, before that close ever runs.
+  all of them marked, a "Hidden in discreet mode" line instead) as a
+  panel block (4.0, `PopoverAccountBlock`, 340 pt wide, on the system's
+  own material with no fill of its own — Liquid Glass on macOS 26): the
+  identity on one line, then the account's `WindowSlots` side by side as
+  columns (short name, the figure at 19 pt in `Theme.figure`, a 4 pt bar,
+  the bare reset or credits amount), the medium widget's layout, so four
+  accounts fit without scrolling; the status tail under them only when
+  it has something to say. The block under the pointer lights up (ink at
+  7 %, a chevron appears) and a click opens that account's Provider
+  Detail in the Dashboard window (`AppChrome.openAccount`: the window's
+  `NavigationStack` path lives in `ContentView`, which registers
+  `AppChrome.presentAccount` on appear, the same bridge shape as
+  `presentConnect`, a request made while the window is closed waiting in
+  `pendingAccount`). No reorder affordance: the popover follows the
+  registry order the Dashboard writes. The list sits inside a
+  height-capped `ScrollView` so a handful of accounts still fit and more
+  scrolls, then an "Add account" row — then, only with "Show today's
+  total in the menu bar" on and something to show, one `Claude Code
+  today: …` line (`ClaudeCodeUsageModel.menuBarLine`) — (the "Add
+  account" row has the same copy as the Dashboard's own — this is the
+  only way to add another account once the Dock icon is hidden, since
+  the Dashboard window stays closed by default in that case; see "macOS
+  hiding & re-entry" below), then a footer with no divider above it:
+  "Open AIMeter" as the one labeled button (`.glass` on macOS 26,
+  `.bordered` before; `AppChrome.revealMainWindow()`) on the left, and on
+  the right four icon-only buttons, each with its full name in `.help`
+  and the accessibility label (`FooterIconButtonStyle`: ink, dimmed while
+  pressed, faint while disabled): Refresh, with an account connected the
+  discreet-mode eye (`eye`, or `eye.slash.fill` in the accent while on;
+  ⌘⇧D; the same switch as Settings' card and the Usage menu's "Discreet
+  Mode", see "Discreet mode" in the repo-root CLAUDE.md), Settings and
+  Quit (`power`). "Open AIMeter" reopens the Dashboard window even after
+  `AppDelegate` closed it at launch, because the scene registers the
+  reopen hook on first appearance, before that close ever runs.
   "Refresh" calls `refreshAll()` (every account, concurrently). The popover
   presents **no sheets of its own**: a sheet attached to a `MenuBarExtra`
   window renders clipped and floating beside it, so "Connect", "Add
@@ -586,9 +598,8 @@
   the Dashboard's live hook, set on appear and cleared on disappear; a
   request made while the window is closed waits in
   `AppChrome.pendingConnect` for the Dashboard's `onAppear`). The Usage
-  menu's "Add Account…" uses the same route. `AccountSectionView(presentsSheets: false)`
-  is how the popover's copy of the account card opts out of its own
-  reconnect sheet. Peak-hours
+  menu's "Add Account…" uses the same route, and so does a block's "Sign
+  in again". Peak-hours
   state folds into the status item's
   tooltip/accessibility text rather than a second glyph there (see "Peak
   hours" in the repo-root CLAUDE.md); the popover's top badge row is the

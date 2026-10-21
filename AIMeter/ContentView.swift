@@ -5,6 +5,9 @@ import UsageKit
 struct ContentView: View {
     @Environment(UsageModel.self) private var model
     @Environment(\.scenePhase) private var scenePhase
+    /// The Dashboard's navigation, held here so the Mac's popover can open
+    /// an account's detail in it (`AppChrome.openAccount`).
+    @State private var path = NavigationPath()
     #if os(iOS)
     /// Compact height == iPhone in landscape → fullscreen usage mode.
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -89,7 +92,7 @@ struct ContentView: View {
     }
 
     private var dashboard: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             DashboardView()
                 #if os(iOS)
                 // The Dashboard draws its own header on iOS; the Mac's
@@ -98,6 +101,18 @@ struct ContentView: View {
                 #endif
         }
         #if os(macOS)
+        // A click on an account in the menu bar popover opens its detail
+        // here (`AppChrome.openAccount`).
+        .onAppear {
+            AppChrome.presentAccount = { accountID in
+                path = NavigationPath()
+                path.append(accountID)
+            }
+            AppChrome.deliverPendingAccount()
+        }
+        .onDisappear {
+            AppChrome.presentAccount = nil
+        }
         // The detail screens' toggles as trailing switches, like Settings'.
         .toggleStyle(.settingsSwitch)
         // Room for two accounts and an incident notice without scrolling;

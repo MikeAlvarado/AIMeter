@@ -109,8 +109,7 @@ struct CondensedAccountsView: View {
                 .opacity(slot == nil ? 0.35 : 1)
             }
             Text(slots.first?.window.map { "\(Int($0.displayedPct(mode)))%" } ?? "--")
-                .font(.system(size: 11, weight: .semibold))
-                .monospacedDigit()
+                .font(Theme.figure(size: 11))
                 .foregroundStyle(Theme.ink)
                 .frame(width: Self.figureWidth, alignment: .trailing)
         }

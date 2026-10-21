@@ -1,25 +1,19 @@
 import SwiftUI
 import UsageKit
 
-/// One connected account's section: header (icon + nickname + plan pill,
-/// tappable to push Provider Detail) + card with its rate-limit rows and
-/// status footer. Shared by the Dashboard (one section per account) and,
-/// where there's room, the macOS menu bar popover.
+/// One connected account's card (4.0): its identity inside the card at the
+/// top (icon + nickname + plan pill, tappable to push Provider Detail),
+/// then its most urgent window as the protagonist and the rest as compact
+/// rows (`AccountCardLayout`), and the status tail only when there is
+/// something to say. Shared by the Dashboard (one card per account) and
+/// iPhone landscape; the macOS menu bar popover has its own denser block
+/// (`PopoverAccountBlock`).
 struct AccountSectionView: View {
     let usage: UsageModel.AccountUsage
-    var iconSize: CGFloat = 22
-    var iconCornerRadius: CGFloat = 6
-    var font: Font = Theme.sectionHeader
     /// The Dashboard pushes Provider Detail from the header (needs an
-    /// ancestor `NavigationStack`). The macOS menu bar popover has no
-    /// navigation stack of its own, so it renders the same header as
-    /// plain, non-interactive text instead — matching how the popover
-    /// already behaved before there could be more than one account.
+    /// ancestor `NavigationStack`). Landscape has no navigation stack, so
+    /// it renders the same header as plain, non-interactive content.
     var linksToDetail = true
-    /// Off for the menu bar popover, which already brackets each section
-    /// with its own dividers — same rule `UsageStatusFooter` documents for
-    /// its other callers.
-    var showsStatusDividers = true
     /// Reorder actions for the header's context menu, supplied by the
     /// Dashboard (the one surface that reorders) and nil at either end of
     /// the list. They exist alongside drag-and-drop rather than instead of
@@ -30,47 +24,46 @@ struct AccountSectionView: View {
     var moveDown: (() -> Void)?
     /// Whether the header's context menu offers "Rename…" — on for the
     /// Dashboard (every account: unlike the reorder actions it isn't gated
-    /// on 2+, since one account is enough to want a name), off for the
-    /// menu bar popover and landscape, which follow the Dashboard's edits
-    /// rather than making their own. The alert itself talks to
-    /// `UsageModel` directly (see `renameAccountAlert`).
+    /// on 2+, since one account is enough to want a name), off for
+    /// landscape, which follows the Dashboard's edits rather than making
+    /// its own. The alert itself talks to `UsageModel` directly (see
+    /// `renameAccountAlert`).
     var canRename = false
-    /// Whether this view presents the reconnect sheet itself. The menu bar
-    /// popover passes `false`: a sheet attached to a `MenuBarExtra` window
-    /// renders clipped and floating, so its "Sign in again" routes through
-    /// `AppChrome.connect(.reconnect(_:))` to the Dashboard instead.
-    var presentsSheets = true
-    /// Whether each usage row carries its 24-hour sparkline — on for the
-    /// Dashboard, off for the popover and landscape, which stay a glance.
-    var showsSparklines = false
+    /// Whether the protagonist carries its 24-hour sparkline — on for the
+    /// Dashboard, off for landscape, which stays a glance.
+    var showsSparkline = false
 
-    /// The sheet is owned here rather than by each caller because all three
-    /// surfaces that render an account (Dashboard, landscape, macOS menu
-    /// bar popover) need the same recovery, and the failure they're
-    /// recovering from belongs to this account, not to the screen.
+    /// The sheet is owned here rather than by each caller because both
+    /// surfaces that render this card need the same recovery, and the
+    /// failure they're recovering from belongs to this account, not to the
+    /// screen.
     @State private var showingReconnect = false
     @State private var showingRename = false
     @State private var renameDraft = ""
     @State private var showingIconPicker = false
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let layout = AccountCardLayout(snapshot: usage.snapshot, modelSlotFallback: prefs.modelSlotFallback)
+        VStack(alignment: .leading, spacing: 20) {
             header
-            Card {
-                VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                    WindowRowsList(snapshot: usage.snapshot, accountID: usage.account.accountID, showsSparklines: showsSparklines)
-                    UsageStatusFooter(
-                        snapshot: usage.snapshot,
-                        error: usage.lastError,
-                        showsDividers: showsStatusDividers,
-                        reauthenticate: usage.needsReauthentication ? { reconnect() } : nil,
-                        offline: usage.isOffline,
-                        serviceIncident: model.incidentNote(for: usage)
-                    )
-                }
+            HeroWindowView(
+                kind: layout.hero.kind,
+                window: layout.hero.window,
+                moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: usage.snapshot),
+                sparkline: showsSparkline
+                    ? HistoryChartData(samples: model.timeline(for: usage.account.accountID, kind: layout.hero.kind), range: .day, now: Date())
+                    : nil
+            )
+            if !layout.others.isEmpty {
+                CompactWindowRows(slots: layout.others, snapshot: usage.snapshot)
             }
+            statusTail
         }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardSurface()
         .sheet(isPresented: $showingReconnect) {
             ConnectAccountSheet(reconnecting: usage.account)
         }
@@ -80,14 +73,24 @@ struct AccountSectionView: View {
         }
     }
 
-    private func reconnect() {
-        #if os(macOS)
-        guard presentsSheets else {
-            AppChrome.connect(.reconnect(usage.account))
-            return
+    /// The error, the reconnect prompt, the incident line, and "Updated X
+    /// ago" once the card's figures are stale; nothing at all on a normal
+    /// day, since the Dashboard's header says when it last refreshed.
+    @ViewBuilder
+    private var statusTail: some View {
+        let hasError = usage.lastError != nil || usage.needsReauthentication
+        if hasError || usage.snapshot?.isStale == true {
+            VStack(alignment: .leading, spacing: 8) {
+                UsageStatusFooter(
+                    snapshot: usage.snapshot,
+                    error: usage.lastError,
+                    reauthenticate: usage.needsReauthentication ? { showingReconnect = true } : nil,
+                    offline: usage.isOffline,
+                    serviceIncident: model.incidentNote(for: usage),
+                    updated: .whenStale
+                )
+            }
         }
-        #endif
-        showingReconnect = true
     }
 
     /// The context menu goes on the header alone, not the whole section:
@@ -125,12 +128,10 @@ struct AccountSectionView: View {
             } label: {
                 Label("Rename…", systemImage: "pencil")
             }
-            if presentsSheets {
-                Button {
-                    showingIconPicker = true
-                } label: {
-                    Label("Change icon…", systemImage: "sparkle")
-                }
+            Button {
+                showingIconPicker = true
+            } label: {
+                Label("Change icon…", systemImage: "sparkle")
             }
         }
         if let moveUp {
@@ -146,26 +147,26 @@ struct AccountSectionView: View {
     }
 
     private func headerContent(showsChevron: Bool) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 10) {
             ProviderIdentityView(
                 name: usage.account.displayName,
-                iconSize: iconSize,
-                iconCornerRadius: iconCornerRadius,
-                font: font,
-                nameColor: Theme.inkSecondary,
+                iconSize: 26,
+                iconCornerRadius: 8,
+                font: .headline,
+                nameColor: Theme.ink,
                 planName: usage.snapshot?.planName,
                 icon: usage.account.icon
             )
             Spacer()
             if showsChevron {
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
+                    .font(.footnote.weight(.semibold))
                     .foregroundStyle(Theme.inkSecondary)
             }
         }
         // The Spacer between name and chevron is not hit-testable on its
         // own; without this, tapping the empty middle of the header did
-        // nothing. Also what makes the header — not the card behind it —
+        // nothing. Also what makes the header — not the card around it —
         // own a long press anywhere along its width (context menu).
         .contentShape(Rectangle())
     }

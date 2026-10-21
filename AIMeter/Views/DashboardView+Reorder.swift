@@ -39,7 +39,7 @@ extension DashboardView {
             moveUp: canReorder && index > 0 ? { model.moveAccount(usage.id, by: -1) } : nil,
             moveDown: canReorder && index < model.accounts.count - 1 ? { model.moveAccount(usage.id, by: 1) } : nil,
             canRename: !model.isDemoMode,
-            showsSparklines: true
+            showsSparkline: true
         )
 
         if canReorder {

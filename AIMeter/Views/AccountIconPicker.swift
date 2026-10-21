@@ -97,7 +97,7 @@ struct AccountIconPicker: View {
                 }
                 .padding(Theme.cardPadding)
             }
-            .background(Theme.background)
+            .appBackground()
             .navigationTitle(Text("Account icon"))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)

@@ -43,12 +43,11 @@ struct SingleUsageWidgetView: View {
         VStack(alignment: .leading, spacing: 1) {
             if let window = entry.window {
                 Text("\(Int(window.displayedPct(entry.prefs.displayMode)))%")
-                    .font(.system(size: 32, weight: .bold))
-                    .monospacedDigit()
+                    .font(Theme.figure(size: 32))
                     .foregroundStyle(Theme.ink)
             } else {
                 Text("--")
-                    .font(.system(size: 32, weight: .bold))
+                    .font(Theme.figure(size: 32))
                     .foregroundStyle(Theme.inkSecondary)
             }
             Text(entry.prefs.displayMode.label)
@@ -149,8 +148,7 @@ private struct RingUsageView: View {
                 }
                 VStack(spacing: 1) {
                     Text(entry.window.map { "\(Int($0.displayedPct(entry.prefs.displayMode)))%" } ?? "--")
-                        .font(.system(size: 24, weight: .bold))
-                        .monospacedDigit()
+                        .font(Theme.figure(size: 24))
                         .foregroundStyle(entry.window == nil ? Theme.inkSecondary : Theme.ink)
                     caption
                         .font(.system(size: 9))

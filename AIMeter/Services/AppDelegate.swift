@@ -176,6 +176,27 @@ enum AppChrome {
         present(request)
     }
 
+    /// One account's Provider Detail, from a surface outside the
+    /// Dashboard's navigation (a click on an account in the menu bar
+    /// popover). Same bridge shape as `connect(_:)`: the Dashboard window's
+    /// navigation stack registers `presentAccount` on appear and clears it
+    /// on disappear, and a request made while the window is closed waits in
+    /// `pendingAccount` until it appears.
+    static var presentAccount: ((String) -> Void)?
+    static var pendingAccount: String?
+
+    static func openAccount(_ accountID: String) {
+        pendingAccount = accountID
+        revealMainWindow()
+        deliverPendingAccount()
+    }
+
+    static func deliverPendingAccount() {
+        guard let accountID = pendingAccount, let present = presentAccount else { return }
+        pendingAccount = nil
+        present(accountID)
+    }
+
     static func revealMainWindow() {
         // Prefer an existing window: ordering it front keeps the user's
         // place instead of building a second one beside it.

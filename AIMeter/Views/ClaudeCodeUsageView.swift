@@ -53,7 +53,7 @@ struct ClaudeCodeUsageView: View {
             }
             .padding(20)
         }
-        .background(Theme.background)
+        .appBackground()
         .navigationTitle(Text(ClaudeCodeFormatting.sectionTitle(demo: model.claudeCode?.isDemo == true)))
     }
 

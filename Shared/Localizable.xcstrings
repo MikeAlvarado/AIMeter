@@ -1568,6 +1568,53 @@
         }
       }
     },
+    "Open %@ in AIMeter" : {
+      "comment" : "Tooltip on an account in the macOS menu bar popover; a click opens that account's detail in the Dashboard window. %@ is the account's nickname.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ in AIMeter öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir %@ en AIMeter"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir %@ dans AIMeter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterで%@を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter에서 %@ 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir %@ no AIMeter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 AIMeter 中打开 %@"
+          }
+        }
+      }
+    },
     "Open ChatGPT's device page" : {
       "localizations" : {
         "de" : {

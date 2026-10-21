@@ -102,94 +102,13 @@ struct WidgetHeader: View {
     }
 }
 
-/// One usage window as a labeled bar with its reset line under it, like
-/// the dashboard rows: name + percent, capsule bar, "Resets in 4h 10m".
-/// Internal (not `private`): also reused by `AllAccountsWidgetView` for its
-/// per-account rows, so the two widgets render windows identically.
-struct WindowBarRow: View {
-    let kind: UsageWindow.Kind
-    let window: UsageWindow?
-    let prefs: Preferences
-    /// The entry's date, which the reset countdown runs from.
-    let now: Date
-    var showsReset = true
-    /// "$14.27 of $25.00" — Credits has no reset date, so this optionally
-    /// fills the same line instead (`Preferences.showCreditsAmount`).
-    var moneySubtitle: String? = nil
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2.5) {
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(window?.shortTitle ?? kind.shortName)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Theme.inkSecondary)
-                Spacer(minLength: 4)
-                Text(window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--")
-                    .font(.system(size: 11, weight: .semibold))
-                    .monospacedDigit()
-                    .foregroundStyle(Theme.ink)
-            }
-            UsageBarView(
-                value: window?.displayedPct(prefs.displayMode),
-                tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent
-            )
-            if showsReset, let resetsAt = window?.resetsAt {
-                HStack(spacing: 3) {
-                    Image(systemName: "arrow.circlepath")
-                    ResetLineText(resetsAt: resetsAt, style: prefs.resetStyle, now: now)
-                }
-                .font(.system(size: 9))
-                .foregroundStyle(Theme.inkSecondary.opacity(0.9))
-            } else if let moneySubtitle {
-                HStack(spacing: 3) {
-                    Image(systemName: "dollarsign.circle")
-                    Text(moneySubtitle)
-                }
-                .font(.system(size: 9))
-                .foregroundStyle(Theme.inkSecondary.opacity(0.9))
-                .lineLimit(1)
-            }
-        }
-        .accessibilityElement(children: .combine)
-    }
-}
-
-/// Header at the top, then each window row in an equal flexible slice of
-/// the remaining height — the content spreads to fill the family instead
-/// of clumping at the top (small) or leaving a gap below (medium).
-/// Consecutive windows sharing one reset date (Weekly and Weekly·Fable)
-/// show the "Resets in" line once, under the last bar of the group.
-private struct WindowBarList: View {
-    let snapshot: UsageSnapshot
-    let prefs: Preferences
-    let count: Int
-    let date: Date
-    let accountID: String
-    let accountName: String
-    var accountIcon: AccountIcon? = nil
-
-    var body: some View {
-        let slots = Array(WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots.prefix(count))
-        VStack(alignment: .leading, spacing: 0) {
-            WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName, accountIcon: accountIcon)
-            ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
-                WindowBarRow(
-                    kind: slot.kind,
-                    window: slot.window,
-                    prefs: prefs,
-                    now: date,
-                    showsReset: WindowSlots.showsReset(at: index, in: slots),
-                    moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-    }
-}
-
-/// Small: header plus the windows as stacked rows (the medium family is
-/// `MediumUsageView`, columns).
+/// Small: the app's account card in a small square (4.0) — the header,
+/// the most urgent window as the protagonist (its name, the figure large,
+/// a thicker bar, and the reset beside the figure as a bare live
+/// countdown), then up to two other windows as compact lines (name, a thin
+/// bar, the figure). The same `AccountCardLayout` decides which leads, so
+/// the widget and the Dashboard always agree. The medium family is
+/// `MediumUsageView`, columns, like the Mac's popover.
 struct SystemUsageView: View {
     let snapshot: UsageSnapshot
     let prefs: Preferences
@@ -199,6 +118,110 @@ struct SystemUsageView: View {
     var accountIcon: AccountIcon? = nil
 
     var body: some View {
-        WindowBarList(snapshot: snapshot, prefs: prefs, count: 3, date: date, accountID: accountID, accountName: accountName, accountIcon: accountIcon)
+        let layout = AccountCardLayout(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback)
+        VStack(alignment: .leading, spacing: 0) {
+            WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName, accountIcon: accountIcon)
+            Spacer(minLength: 6)
+            WidgetHero(
+                kind: layout.hero.kind,
+                window: layout.hero.window,
+                prefs: prefs,
+                now: date,
+                moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: snapshot)
+            )
+            Spacer(minLength: 6)
+            WidgetCompactRows(slots: Array(layout.others.prefix(2)), prefs: prefs)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+
+/// A widget's protagonist (the small family, and each account of the
+/// all-accounts widget): the window's name, the figure with its reset on
+/// the same line, and a thicker bar.
+struct WidgetHero: View {
+    let kind: UsageWindow.Kind
+    let window: UsageWindow?
+    let prefs: Preferences
+    let now: Date
+    let moneySubtitle: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(window?.shortTitle ?? kind.shortName)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Theme.inkSecondary)
+                .lineLimit(1)
+            HStack(alignment: .firstTextBaseline, spacing: 1) {
+                if let window {
+                    Text(verbatim: "\(Int(window.displayedPct(prefs.displayMode)))")
+                        .font(Theme.figure(size: 32))
+                        .foregroundStyle(Theme.ink)
+                    Text(verbatim: "%")
+                        .font(Theme.figure(size: 15))
+                        .foregroundStyle(Theme.inkSecondary)
+                } else {
+                    Text(verbatim: "--")
+                        .font(Theme.figure(size: 32))
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+                Spacer(minLength: 4)
+                Group {
+                    if let resetsAt = window?.resetsAt {
+                        HStack(spacing: 2) {
+                            Image(systemName: "arrow.circlepath")
+                            ResetLineText(resetsAt: resetsAt, style: prefs.resetStyle, now: now, bare: true)
+                        }
+                    } else if let moneySubtitle {
+                        Text(moneySubtitle)
+                    }
+                }
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(Theme.inkSecondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            }
+            UsageBarView(
+                value: window?.displayedPct(prefs.displayMode),
+                tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent,
+                height: 7,
+                lit: true
+            )
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// A widget card's other windows, one line each: name, a thin bar, the
+/// figure, in shared columns so the bars start and end together (the
+/// app card's `CompactWindowRows`, at widget sizes).
+struct WidgetCompactRows: View {
+    let slots: [AccountCardLayout.Slot]
+    let prefs: Preferences
+
+    var body: some View {
+        Grid(alignment: .leading, horizontalSpacing: 6, verticalSpacing: 6) {
+            ForEach(slots, id: \.kind) { slot in
+                let window = slot.window
+                GridRow {
+                    Text(window?.shortTitle ?? slot.kind.shortName)
+                        .font(.system(size: 11))
+                        .foregroundStyle(Theme.ink)
+                        .lineLimit(1)
+                        .layoutPriority(1)
+                    UsageBarView(
+                        value: window?.displayedPct(prefs.displayMode),
+                        tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent,
+                        height: 4
+                    )
+                    .frame(minWidth: 24)
+                    .accessibilityHidden(true)
+                    Text(verbatim: window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--")
+                        .font(Theme.figure(size: 11))
+                        .foregroundStyle(window == nil ? Theme.inkSecondary : Theme.ink)
+                        .gridColumnAlignment(.trailing)
+                }
+            }
+        }
     }
 }

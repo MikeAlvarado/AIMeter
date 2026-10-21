@@ -75,12 +75,12 @@ struct MacSettingsView: View {
         if scrolls {
             ScrollView { stack }
                 .frame(width: Self.width, height: Self.scrollingHeight)
-                .background(Theme.background)
+                .appBackground()
         } else {
             stack
                 .frame(width: Self.width, alignment: .top)
                 .fixedSize(horizontal: false, vertical: true)
-                .background(Theme.background)
+                .appBackground()
         }
     }
 }

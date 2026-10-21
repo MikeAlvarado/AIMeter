@@ -30,7 +30,7 @@ struct LandscapeUsageView: View {
             }
             .padding(16)
         }
-        .background(Theme.background.ignoresSafeArea())
+        .appBackground()
         .statusBarHidden()
     }
 }

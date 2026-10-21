@@ -30,7 +30,7 @@ struct UpdateWindow: View {
                 .padding([.horizontal, .bottom], 28)
         }
         .frame(width: 440)
-        .background(Theme.background)
+        .appBackground()
         .background(NonRestorableWindow())
         .onDisappear {
             if updater.notesToShow != nil { updater.dismissNotes() }

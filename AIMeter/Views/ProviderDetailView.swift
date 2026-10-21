@@ -92,7 +92,7 @@ struct ProviderDetailView: View {
             }
             .padding(20)
         }
-        .background(Theme.background)
+        .appBackground()
         .sheet(isPresented: $showingReconnect) {
             if let account = usage?.account {
                 ConnectAccountSheet(reconnecting: account)

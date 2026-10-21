@@ -108,7 +108,7 @@ private struct WatchAccountRows: View {
                         .foregroundStyle(Theme.inkSecondary)
                     Spacer(minLength: 4)
                     Text(slot.window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--")
-                        .font(.caption.monospacedDigit().weight(.semibold))
+                        .font(.system(.caption, design: .rounded).weight(.semibold).monospacedDigit())
                         .foregroundStyle(Theme.ink)
                 }
                 UsageBarView(

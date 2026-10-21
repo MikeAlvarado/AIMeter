@@ -120,8 +120,13 @@ below and `AIMeterWatch/CLAUDE.md`.
 - `AIMeter/Views/` — Provider Detail is `ProviderDetailView.swift` plus
   `ProviderDetailCards.swift` (Peak, Forecast, raw detail rows and their
   row builders, `ProviderDetailRows`), `HistoryCard.swift` (the Swift
-  Charts history card and the Dashboard row's `Sparkline`) and
-  `NotificationTogglesCards.swift` (both notification cards). The Dashboard is `DashboardView.swift` plus
+  Charts history card and the account card's `Sparkline`) and
+  `NotificationTogglesCards.swift` (both notification cards). An account's
+  card (Dashboard, landscape) is `AccountSectionView.swift` over
+  `AccountCardViews.swift` (`HeroWindowView`, the protagonist, and
+  `CompactWindowRows`, the rest), and the macOS menu bar popover's block
+  is `PopoverAccountBlock.swift`; see "Account cards" under "Design
+  system". The Dashboard is `DashboardView.swift` plus
   `DashboardView+Reorder.swift` (the hold-and-drag reorder, whose state
   stays on the view — internal `@State`, for the same reason as above) and
   `RoundIconButton.swift`. The macOS status item is `MenuBarLabel.swift`
@@ -185,7 +190,10 @@ below and `AIMeterWatch/CLAUDE.md`.
 - `AIMeter/Intents/` — the App Intents (`RefreshUsageIntent`,
   `ShowUsageIntent`, `AIMeterShortcuts`), both platforms; see
   "Conventions" for why they exist.
-- `Shared/` — `PeakBadge.swift` is the one peak glyph every glance surface
+- `Shared/` — `Surfaces.swift` is the backdrop and the two surfaces
+  (`AppBackground`, `cardSurface`, `glassControl`) and
+  `AccountCardLayout.swift` the rule for which window leads a card, see
+  "Design system"; `PeakBadge.swift` is the one peak glyph every glance surface
   composes (menu bar popover, both widget headers, the all-accounts
   widget, the Live Activity); `ServiceStatusBanner.swift` is the one
   incident notice (dashboard, menu bar popover); `UsageRecorder.swift` is
@@ -927,10 +935,13 @@ the account silently freezes at its last snapshot.
   always disabled (no reset date to schedule against).
 - Reset lines: consecutive windows sharing one reset date show
   "Resets in …" once, under the last of the group (`WindowSlots.showsReset`)
-  — applies to dashboard, detail, menu bar, widgets, landscape: every
-  surface that stacks the windows. The one surface that doesn't, the
-  medium widget's side-by-side columns, shows each column's own line
-  (see `AIMeterWidgets/CLAUDE.md`). Credits has
+  — applies to Provider Detail, the one surface that still stacks every
+  window as a full row. The account card (Dashboard, landscape, the small
+  and all-accounts widgets) gives its protagonist the full line and each
+  compact row its own bare value in a column of its own ("2h 58m", the
+  widgets' compact rows none: no room); the side-by-side columns (the
+  medium widget, the menu bar popover) show each column's own (see
+  `AIMeterWidgets/CLAUDE.md`). Credits has
   no reset date, so `showCreditsAmount` (off by default, Settings →
   "Usage rows")
   optionally fills that same line with `SpendStatus.amountLabel`
@@ -988,13 +999,15 @@ the account silently freezes at its last snapshot.
   Until the range holds two samples an hour apart the card shows
   "Recording since …" instead of asserting a shape from one point. The
   chart is one VoiceOver element with a spoken summary
-  (`HistoryChartData.summary`: span, peak, resets). The Dashboard's usage
-  rows carry a 56×16 pt `Sparkline` of the same 24-hour data before the
-  percentage, only once three points exist, decorative and in the
-  secondary color — drawn as one continuous line with a faint fill rather
-  than one segment per window (a session's sawtooth split at every reset
-  rendered as hatch marks at that size) (`WindowRowsList(showsSparklines:)`, true only from the
-  Dashboard — the popover, landscape, detail and widget rows don't). Demo
+  (`HistoryChartData.summary`: span, peak, resets). The Dashboard's
+  account cards carry a 92×30 pt `Sparkline` of the protagonist's
+  24-hour data over its reset line, only once three points exist,
+  decorative, in the bar's color with a faint fade under it and a dot on
+  the latest point — drawn as one continuous line rather than one
+  segment per window (a session's sawtooth split at every reset
+  rendered as hatch marks at that size) (`AccountSectionView(showsSparkline:)`,
+  true only from the Dashboard — landscape, the popover, detail and the
+  widgets don't). Demo
   mode draws from `DemoUsageData.timeline(for:)`, thirty fabricated days
   ending exactly on that demo account's snapshot figures (the demo has
   two accounts, see `AIMeter/CLAUDE.md` → "Demo mode").
@@ -1762,13 +1775,61 @@ and on every change: the Dock and ⌘Tab show it while AIMeter runs,
 Finder keeps Sunset, and the footnote says so. Every picture comes from
 `Scripts/AppIcon/render.mjs` (node, the website's `sharp`): run it after
 changing a look, never edit the PNGs by hand.
+**Surfaces** (4.0, `Shared/Surfaces.swift`; Mike's brief, 2026-10-21:
+super clean, Liquid Glass, backgrounds as smooth as Claude's iOS app,
+nothing that shines, and one design on the Mac, iOS and the widgets).
+Every app screen sits on `AppBackground` (`.appBackground()`): Claude's
+ivory / charcoal (`Theme.background`) eased a shade lighter at the top
+(`backgroundTop`) and deeper at the bottom (`backgroundBottom`), with a
+terracotta warmth at 4.5 % past the top-right corner. Cards take
+`.cardSurface()`: on iOS and macOS 26 and later, Liquid Glass tinted
+with `Theme.card` (78 % light, 62 % dark) and one soft shadow; before
+that (and on the Watch) the solid card with a light along its top edge
+(`Theme.edgeLight`), a hairline below (`edgeShade`) and a two-layer
+shadow; 24 pt continuous corners (`Theme.cardRadius`). Floating controls
+(the Dashboard's round buttons, "Add account") take `.glassControl(in:)`:
+interactive glass on 26, a thin material before; the popover's "Open
+AIMeter" is the system's `.glass` button style there. No hairline
+separates rows anywhere since 4.0 (rows, the status tail, the popover's
+blocks: spacing alone), and nothing glows: the protagonist's bar eases
+into its color with no halo. Every usage figure, in the app, the
+widgets, the Live Activity, the Lock Screen and the Watch, is
+`Theme.figure(size:)`: SF Rounded, semibold, tabular digits. Widgets keep
+the flat `Theme.card` as their container (a widget is a card on the Home
+Screen).
+
+**Account cards** (4.0): one composition everywhere an account is shown
+as a card. `AccountCardLayout` (Shared, pure, tested) picks the
+protagonist, the window closest to its limit (`AccountOrder`'s measure:
+its used %, a critical or exceeded flag counting as full; ties keep the
+slots' order, so the session leads on a quiet day; before the first
+fetch the session placeholder), and keeps the others in `WindowSlots`
+order. The Dashboard's card (`AccountSectionView`, also iPhone
+landscape) puts the identity inside the card (icon, nickname, plan
+pill, chevron to Provider Detail; the context menu on it), then the
+protagonist (`HeroWindowView`: its title, its figure at 54 pt (a
+`@ScaledMetric`) with "%" and "used"/"left" (`DisplayMode.suffix`)
+beside it, the sparkline and its "Resets in …" on the trailing side, a
+10 pt bar), then the others as one line each in shared columns
+(`CompactWindowRows`: title, a 5 pt bar, figure, bare reset or credits
+amount; a tap on a reset toggles the style, as everywhere), then the
+status tail only when it has something to say (an error, "Sign in
+again", the incident line, or "Updated X ago" once stale:
+`UsageStatusFooter(updated: .whenStale)`), since the Dashboard says when
+it last refreshed once, under its title on iOS and as the window's
+subtitle on the Mac (`DashboardView.lastUpdatedLabel`, the newest
+account's). The small widget and each account of the all-accounts
+widget are the same composition at widget sizes (`WidgetHero`,
+`WidgetCompactRows`), and the medium widget's columns are the menu bar
+popover's (`PopoverAccountBlock`), so a figure looks the same wherever
+it is.
+
 Two more `Shared/ThemeComponents.swift` views follow the same rule for
 other repeated pieces: `UsageStatusFooter` (the error label + "Updated X
-ago" caption under the rate-limit rows — dashboard, provider detail, menu
-bar popover; `showsDividers` defaults on for the two card surfaces, off
-for the menu bar which already brackets the section with its own, and
-`reauthenticate` swaps the error label for the "Sign in again" prompt, see
-"Losing a login" above) and
+ago" caption under an account's rows — the dashboard card, provider
+detail, the menu bar popover; `updated: .whenStale` keeps the caption to a
+stale snapshot, and `reauthenticate` swaps the error label for the "Sign
+in again" prompt, see "Losing a login" above) and
 `DisconnectedPrompt` (the "Sign in to see your usage" text + Connect
 button — dashboard and menu bar, `buttonLabel`/`verticalPadding`
 parametrized per surface, caller still owns the wrapping container).
@@ -1895,7 +1956,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   `AIMeterTests` target (`xcodebuild test -scheme AIMeter`, hosted in
   `AIMeter.app` on either platform, `@testable import AIMeter`), which
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
-  grouped reset line, `UsageFormatting` (the date a far reset shows included), the
+  grouped reset line, which window leads an account card
+  (`AccountCardLayoutTests`), `UsageFormatting` (the date a far reset shows included), the
   feedback row's issue link (`FeedbackSettingsTests`),
   `UsageSnapshot.glanceOptions`, the three families in the catalog and
   what a `ProviderLogin` is of, the slots and glance surfaces of an

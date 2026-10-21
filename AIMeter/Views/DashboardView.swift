@@ -79,7 +79,7 @@ struct DashboardView: View {
         // costs nothing on the other. The finger has been still for the whole
         // press when this flips, so there is never a pan in progress to cut.
         .scrollDisabled(draggingID != nil)
-        .background(Theme.background)
+        .appBackground()
         // Soft tap when the *user* starts a refresh — pull gesture or
         // button alike. Keyed on the request count, not `isRefreshing`:
         // that also flips for the foreground auto-refresh, which would
@@ -122,6 +122,9 @@ struct DashboardView: View {
             ConnectAccountSheet(reconnecting: account)
         }
         #if os(macOS)
+        // When the accounts last refreshed, once, under the window's title
+        // (a card says so itself only once its figures go stale).
+        .navigationSubtitle(lastUpdatedLabel ?? "")
         // The Mac's window already has a title bar that says "AIMeter",
         // so the in-page title and the floating round buttons became the
         // window's toolbar: the title once, Refresh and Settings at its
@@ -173,14 +176,29 @@ struct DashboardView: View {
     }
     #endif
 
+    /// "Updated 2 min ago" for the most recent refresh of any account: the
+    /// one freshness line on the Dashboard. A card whose own figures fall
+    /// behind says so itself (`UsageStatusFooter`, `.whenStale`).
+    var lastUpdatedLabel: String? {
+        model.accounts.compactMap(\.snapshot?.fetchedAt).max().map { UsageFormatting.updatedLabel($0) }
+    }
+
     #if os(iOS)
     private var header: some View {
         ZStack {
             // Small centered app title — present but never competing with
-            // the usage content below.
-            Text(verbatim: "AIMeter")
-                .font(.system(.headline, design: .serif).weight(.semibold))
-                .foregroundStyle(Theme.ink)
+            // the usage content below — and when it last refreshed.
+            VStack(spacing: 2) {
+                Text(verbatim: "AIMeter")
+                    .font(.system(.headline, design: .serif).weight(.semibold))
+                    .foregroundStyle(Theme.ink)
+                if let lastUpdatedLabel {
+                    Text(lastUpdatedLabel)
+                        .font(.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .contentTransition(.opacity)
+                }
+            }
             HStack {
                 headerButtons
             }
@@ -204,7 +222,7 @@ struct DashboardView: View {
     #endif
 
     private var providerSection: some View {
-        VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
+        VStack(alignment: .leading, spacing: 16) {
             if model.needsConnection {
                 Card {
                     VStack(spacing: 14) {
@@ -252,10 +270,16 @@ struct DashboardView: View {
         Button {
             showingConnect = true
         } label: {
-            Label("Add account", systemImage: "plus.circle")
-                .font(Theme.rowTitle)
+            Label("Add account", systemImage: "plus")
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.accent)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 11)
+                .contentShape(Capsule())
+                .glassControl(in: Capsule())
         }
         .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 4)
     }
 }

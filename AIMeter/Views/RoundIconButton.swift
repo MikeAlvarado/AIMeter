@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Floating circular icon button (dashboard header). While busy, the icon
+/// Floating circular icon button (dashboard header), on Liquid Glass from
+/// iOS 26 (`glassControl`, a thin material before). While busy, the icon
 /// plays exactly one full rotation as feedback that a refresh started.
 ///
 /// The spin is a single fixed-duration animation, not tied to how long the
@@ -24,9 +25,9 @@ struct RoundIconButton: View {
                 .font(.body.weight(.medium))
                 .foregroundStyle(Theme.ink)
                 .rotationEffect(.degrees(rotation))
-                .frame(width: 40, height: 40)
-                .background(Theme.card, in: Circle())
-                .shadow(color: Theme.shadowSoft, radius: 10, x: 0, y: 4)
+                .frame(width: 44, height: 44)
+                .contentShape(Circle())
+                .glassControl(in: Circle())
         }
         .buttonStyle(.plain)
         .disabled(isBusy)

@@ -173,7 +173,7 @@ struct PrivacyView: View {
             }
             .padding(20)
         }
-        .background(Theme.background)
+        .appBackground()
         .navigationTitle(String(localized: "Privacy & data"))
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)

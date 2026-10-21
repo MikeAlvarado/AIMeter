@@ -129,7 +129,7 @@ struct WhatsNewSheet: View {
         }
         .scrollBounceBehavior(.basedOnSize)
         .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.bottom } action: { bottomInset = $0 }
-        .background(Theme.background)
+        .appBackground()
         .presentationDetents(contentHeight > 0 ? [.height(contentHeight + bottomInset)] : [.large])
     }
 }

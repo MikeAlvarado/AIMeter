@@ -24,10 +24,10 @@ struct MenuBarView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+        VStack(alignment: .leading, spacing: 10) {
             if peak.isPeak {
                 peakBadgeRow
-                Divider().overlay(Theme.track)
+                    .padding(.horizontal, 6)
             }
             if let incident = model.activeIncident {
                 ServiceStatusBanner(
@@ -41,28 +41,27 @@ struct MenuBarView: View {
             UpdateReadyNotice()
 
             if model.needsConnection {
-                DisconnectedPrompt(buttonLabel: "Connect an account", verticalPadding: 10) {
-                    AppChrome.connect(.add)
+                VStack(spacing: 12) {
+                    DisconnectedPrompt(buttonLabel: "Connect an account", verticalPadding: 10) {
+                        AppChrome.connect(.add)
+                    }
                 }
+                .padding(6)
             } else {
                 accountList
             }
 
-            Divider().overlay(Theme.track)
-
-            // Four icons with their names in the tooltip and for VoiceOver,
-            // instead of one icon among three text buttons.
+            // "Open AIMeter" as the one labeled button, the icons beside it
+            // carrying their names in the tooltip and for VoiceOver.
             HStack(spacing: 14) {
-                // The popover has no navigation stack, so it can't reach
-                // Provider Detail (Forecast, per-account notifications,
-                // disconnect) — this is the only way back to the Dashboard
-                // window that can. `revealMainWindow` reopens it even if
+                // `revealMainWindow` reopens the Dashboard even if
                 // `AppDelegate` closed it at launch (the common
                 // hidden-Dock-icon case), since the scene registers its
                 // reopen hook on first appearance, before any such close.
-                footerButton("Open AIMeter", systemImage: "macwindow") {
-                    AppChrome.revealMainWindow()
-                }
+                // An account's own detail is a click on its block.
+                openAIMeterButton
+
+                Spacer()
 
                 footerButton("Refresh", systemImage: "arrow.clockwise") {
                     Task { await model.refreshAll() }
@@ -79,8 +78,6 @@ struct MenuBarView: View {
                     .keyboardShortcut("d", modifiers: [.command, .shift])
                 }
 
-                Spacer()
-
                 // The popover is its own window with no main menu, so the
                 // two shortcuts a Mac user reaches for blind are declared
                 // here as well as in the app's menus.
@@ -95,10 +92,13 @@ struct MenuBarView: View {
                 }
                 .keyboardShortcut("q", modifiers: .command)
             }
+            .padding(.horizontal, 6)
+            .padding(.top, 2)
         }
-        .padding(14)
-        .frame(width: 320)
-        .background(Theme.background)
+        .padding(10)
+        .frame(width: 340)
+        // No fill of its own: the popover sits on the system's own
+        // material (Liquid Glass on macOS 26), like a menu.
     }
 
     /// The accounts, in a `ScrollView` whose height is the content's own
@@ -112,7 +112,7 @@ struct MenuBarView: View {
     /// was unaffected).
     private var accountList: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Theme.sectionSpacing) {
+            VStack(alignment: .leading, spacing: 4) {
                 let shown = model.glanceAccounts(prefs)
                 if shown.isEmpty {
                     // Every account marked for discreet mode: say so, so
@@ -123,24 +123,19 @@ struct MenuBarView: View {
                         .padding(.vertical, 6)
                 }
                 ForEach(shown) { usage in
-                    AccountSectionView(
-                        usage: usage,
-                        iconSize: 20,
-                        iconCornerRadius: 5,
-                        font: Theme.sectionHeader,
-                        linksToDetail: false,
-                        showsStatusDividers: false,
-                        presentsSheets: false
-                    )
+                    PopoverAccountBlock(usage: usage)
                 }
                 if !model.isDemoMode {
                     addAccountButton
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
                 }
                 if prefs.menuBarShowsClaudeCodeLine, !model.isDemoMode, !prefs.discreetMode, let line = model.claudeCode?.menuBarLine() {
-                    Divider().overlay(Theme.track)
                     Label(line, systemImage: "terminal")
                         .font(Theme.caption)
                         .foregroundStyle(Theme.inkSecondary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
                 }
             }
             .background {
@@ -151,6 +146,22 @@ struct MenuBarView: View {
         }
         .onPreferenceChange(PopoverListHeightKey.self) { listHeight = $0 }
         .frame(height: min(listHeight, Self.maxListHeight))
+    }
+
+    @ViewBuilder
+    private var openAIMeterButton: some View {
+        let button = Button {
+            AppChrome.revealMainWindow()
+        } label: {
+            Text("Open AIMeter")
+                .font(.callout.weight(.medium))
+                .padding(.horizontal, 4)
+        }
+        if #available(macOS 26, *) {
+            button.buttonStyle(.glass)
+        } else {
+            button.buttonStyle(.bordered)
+        }
     }
 
     private func footerButton(_ title: LocalizedStringKey, systemImage: String, isOn: Bool = false, action: @escaping () -> Void) -> some View {
@@ -175,9 +186,10 @@ struct MenuBarView: View {
         Button {
             AppChrome.connect(.add)
         } label: {
-            Label("Add account", systemImage: "plus.circle")
-                .font(Theme.rowTitle)
+            Label("Add account", systemImage: "plus")
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.accent)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

@@ -42,7 +42,13 @@ legacy sentinel if none — rather than each re-deriving it.
 - `AIMeterUsage` ("Usage Limits" in the gallery; small & medium,
   `UsageAccountConfigurationIntent`): header (mark + the picked
   account's nickname) over the account's `WindowSlots`. The small family
-  stacks them as rows with reset lines (`SystemUsageView`); the medium
+  is the app's account card in a small square (`SystemUsageView`, 4.0;
+  see "Account cards" in the repo-root CLAUDE.md): the window
+  `AccountCardLayout` puts first as the protagonist (`WidgetHero`: its
+  short name, the figure at 32 pt with "%", its reset beside it as a bare
+  value with the reset glyph, the live countdown under a day, and a 7 pt
+  bar) and up to two others as one line each in shared columns
+  (`WidgetCompactRows`: name, a 4 pt bar, the figure); the medium
   family (`MediumUsageView`, its own file) lays them out as columns —
   window name, a big figure with the display mode as a one-word suffix
   ("42% left" / "42% used", `DisplayMode.suffix`), the bar, and under it
@@ -69,12 +75,12 @@ legacy sentinel if none — rather than each re-deriving it.
   shows whichever window the shared `glanceMetric` preference points at,
   read against that instance's own picked account. Widget fonts are
   fixed sizes (12/11/9 pt) on purpose — text styles scale with Dynamic
-  Type and overflow the fixed widget height on real devices. Rows sit in
-  equal flexible slices so the layout fills any family height. The
+  Type and overflow the fixed widget height on real devices; every figure
+  is `Theme.figure(size:)`, the app's rounded face. The
   header also shows a small peak-hours badge (see "Peak hours" in the
   repo-root CLAUDE.md — never while the policy is retired, as it is
-  today); Lock Screen accessories don't. Every reset line (`WindowBarRow`,
-  the medium columns, the single widget) is a `ResetLineText` (Shared):
+  today); Lock Screen accessories don't. Every reset line (the
+  protagonist's, the medium columns, the single widget) is a `ResetLineText` (Shared):
   a live `Text(timerInterval:)` countdown, "Resets in 2:23:05", while
   the reset is under a day away in the relative style, else the fixed
   "Resets in 2d 22h" / "Resets at 7:59 PM" / "Resets Oct 31, 7:59 PM"
@@ -109,14 +115,15 @@ legacy sentinel if none — rather than each re-deriving it.
   (`AllAccountsConfigurationIntent`, `AllAccountsLayout`: Standard, the
   default and what a widget placed before the choice existed keeps, or
   Condensed); no account picker, it always shows every connected
-  account). **Standard**: one compact row per account —
+  account). **Standard**: one card's worth per account, with no divider
+  between them —
   `ProviderIdentityView` at the same small size `AIMeterUsage`'s header
   uses, the same always-visible iOS refresh button, and that account's
-  `WindowSlots` rendered as full `WindowBarRow`s — the exact same row
-  `AIMeterUsage` uses, reset lines included (internal, not `private`, in
-  `UsageWidgetViews.swift` specifically so this view can reuse it
-  unchanged rather than re-implementing a second row style). That
-  full-detail row costs real vertical room, so this is capped at the
+  windows as the small widget draws them (`WidgetHero` for the
+  protagonist `AccountCardLayout` picks, `WidgetCompactRows` for the
+  rest; internal, not `private`, in `UsageWidgetViews.swift` so both
+  widgets render an account identically, and as the app's card does).
+  That costs real vertical room, so this is capped at the
   first 2 accounts (registry order — the same order the Dashboard/menu bar
   use, and the one a Dashboard drag-reorder rewrites, which is why a
   reorder reloads timelines; or by urgency with "Order by urgency" on,

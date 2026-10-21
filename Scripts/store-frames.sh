@@ -21,7 +21,7 @@ sed -i '' 's#path: "../../Packages/UsageKit"#path: "'"$ROOT"'/Packages/UsageKit"
 cp "$ROOT/Scripts/StoreFrames/Sources/"*.swift "$BUILD/Sources/"
 # The views the frames draw: copied, never symlinked (SwiftPM misses edits
 # behind a symlink), and the widget views minus their timeline plumbing.
-for f in Theme ThemeComponents ProviderIdentityView ProviderMark PeakBadge ClaudePeakStatus \
+for f in Theme ThemeComponents Surfaces AccountCardLayout ProviderIdentityView ProviderMark PeakBadge ClaudePeakStatus \
          UsageFormatting ResetLine WindowDisplay PreferencesStore PreferencesStore+NotchIsland PreferencesStore+ClaudeSessions PreferencesModel \
          NotchIslandModel NotchIslandModel+Sessions SessionPet SessionPet+Sprites NotchIslandGeometry NotchIslandInteraction AppConfig ProviderCatalog MenuBarLabelModel AppIconChoice; do
   cp "$ROOT/Shared/$f.swift" "$BUILD/Sources/"

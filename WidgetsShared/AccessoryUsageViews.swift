@@ -61,7 +61,7 @@ struct RectangularUsageView: View {
                         .foregroundStyle(.secondary)
                     Spacer()
                     Text(slot.window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--")
-                        .font(.caption.monospacedDigit().weight(.semibold))
+                        .font(.system(.caption, design: .rounded).weight(.semibold).monospacedDigit())
                 }
             }
         }
@@ -92,8 +92,7 @@ struct CornerUsageView: View {
         let window = snapshot.window(for: kind)
         let value = window?.displayedPct(prefs.displayMode)
         Text(value.map { "\(Int($0))%" } ?? "--")
-            .font(.system(size: 22, weight: .semibold))
-            .monospacedDigit()
+            .font(Theme.figure(size: 22))
             .widgetLabel {
                 Gauge(value: min(value ?? 0, 100), in: 0...100) {
                     Text(window?.shortTitle ?? kind.shortName)

@@ -93,7 +93,7 @@ struct ConnectAccountSheet: View {
             .frame(width: 420)
             #endif
         }
-        .background(Theme.background)
+        .appBackground()
         #if os(iOS)
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)

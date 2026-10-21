@@ -42,7 +42,6 @@ struct AllAccountsWidgetView: View {
                     PeakBadge(size: 10, title: peak.title)
                     Spacer(minLength: 0)
                 }
-                Divider().overlay(Theme.track)
             }
             if entry.rows.isEmpty {
                 Text("Open AIMeter to load usage")
@@ -52,11 +51,9 @@ struct AllAccountsWidgetView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 let visible = Array(entry.rows.prefix(Self.maxRows))
-                ForEach(Array(visible.enumerated()), id: \.element.id) { index, row in
-                    if index > 0 {
-                        Divider().overlay(Theme.track)
-                    }
+                ForEach(visible) { row in
                     AccountRow(row: row, prefs: entry.prefs, now: entry.date)
+                        .padding(.bottom, 6)
                 }
                 if entry.rows.count > Self.maxRows {
                     Text("+\(entry.rows.count - Self.maxRows) more")
@@ -71,17 +68,17 @@ struct AllAccountsWidgetView: View {
 }
 
 /// One account's header (name + always-visible manual refresh, iOS only —
-/// see `RefreshAccountIntent`) followed by its windows as full rows —
-/// `WindowBarRow`, the same row `AIMeterUsage` renders, reset lines
-/// included, with the grouped-reset-line rule (`WindowSlots.showsReset`)
-/// every other surface already follows.
+/// see `RefreshAccountIntent`) followed by the app's card composition
+/// (4.0): its most urgent window as the protagonist and the others as
+/// compact lines, `WidgetHero` and `WidgetCompactRows`, the small
+/// widget's own pieces, decided by the same `AccountCardLayout`.
 private struct AccountRow: View {
     let row: AllAccountsEntry.Row
     let prefs: Preferences
     let now: Date
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 5) {
                 ProviderIdentityView(
                     name: row.account.displayName,
@@ -103,19 +100,15 @@ private struct AccountRow: View {
                 #endif
             }
             if let snapshot = row.snapshot {
-                let slots = WindowSlots(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback).slots
-                VStack(alignment: .leading, spacing: 6) {
-                    ForEach(Array(slots.enumerated()), id: \.element.kind) { index, slot in
-                        WindowBarRow(
-                            kind: slot.kind,
-                            window: slot.window,
-                            prefs: prefs,
-                            now: now,
-                            showsReset: WindowSlots.showsReset(at: index, in: slots),
-                            moneySubtitle: prefs.creditsAmountSubtitle(for: slot.kind, snapshot: snapshot)
-                        )
-                    }
-                }
+                let layout = AccountCardLayout(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback)
+                WidgetHero(
+                    kind: layout.hero.kind,
+                    window: layout.hero.window,
+                    prefs: prefs,
+                    now: now,
+                    moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: snapshot)
+                )
+                WidgetCompactRows(slots: layout.others, prefs: prefs)
             } else {
                 Text("No usage data yet")
                     .font(.system(size: 10))

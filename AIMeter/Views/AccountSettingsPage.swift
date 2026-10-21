@@ -139,7 +139,7 @@ struct AccountSettingsPage: View {
             AccountSettingsCards(accountID: accountID, onDisconnect: { dismiss() })
                 .padding(20)
         }
-        .background(Theme.background)
+        .appBackground()
         .navigationTitle(model.usage(for: accountID)?.account.displayName ?? "")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)

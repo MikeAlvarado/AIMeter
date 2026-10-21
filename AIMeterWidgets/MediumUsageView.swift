@@ -65,15 +65,14 @@ private struct WindowColumn: View {
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 if let window {
                     Text("\(Int(window.displayedPct(prefs.displayMode)))%")
-                        .font(.system(size: valueSize, weight: .bold))
-                        .monospacedDigit()
+                        .font(Theme.figure(size: valueSize))
                         .foregroundStyle(Theme.ink)
                     Text(prefs.displayMode.suffix)
                         .font(.system(size: 11))
                         .foregroundStyle(Theme.inkSecondary)
                 } else {
                     Text("--")
-                        .font(.system(size: valueSize, weight: .bold))
+                        .font(Theme.figure(size: valueSize))
                         .foregroundStyle(Theme.inkSecondary)
                 }
             }

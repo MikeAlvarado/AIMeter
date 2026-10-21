@@ -65,7 +65,7 @@ struct SettingsView: View {
             }
             .padding(20)
         }
-        .background(Theme.background)
+        .appBackground()
         .navigationTitle("Settings")
     }
 }

@@ -90,8 +90,7 @@ struct SessionLiveActivity: Widget {
 
     private func percentText(_ state: SessionActivityAttributes.ContentState, size: CGFloat) -> some View {
         Text("\(Int(state.usedPct))%")
-            .font(.system(size: size, weight: .semibold))
-            .monospacedDigit()
+            .font(Theme.figure(size: size))
             .foregroundStyle(Theme.ink)
     }
 
@@ -139,8 +138,7 @@ private struct LockScreenView: View {
                 }
                 Spacer(minLength: 0)
                 Text("\(Int(state.usedPct))%")
-                    .font(.system(size: 16, weight: .bold))
-                    .monospacedDigit()
+                    .font(Theme.figure(size: 16))
                     .foregroundStyle(Theme.ink)
             }
             UsageBarView(value: state.usedPct, tint: UsageWindow.tint(usedPct: state.usedPct, severity: state.severity, usageColors: Preferences.load().usageColors))

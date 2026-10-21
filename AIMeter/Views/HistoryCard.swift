@@ -147,24 +147,37 @@ struct HistoryCard: View {
 /// "rose, reset, rose". Decorative — the row already speaks its value.
 struct Sparkline: View {
     let data: HistoryChartData
+    /// Nil is the quiet secondary trace; the account card's protagonist
+    /// passes its bar's color, which also fills the area under the line
+    /// with a fade and marks the latest point.
+    var tint: Color? = nil
+    var size = CGSize(width: 56, height: 16)
 
     var body: some View {
+        let color = tint ?? Theme.inkSecondary
         Chart(data.points) { point in
             // Unstacked for the same reason as the History card's area.
             AreaMark(x: .value("Time", point.date), y: .value("Used", point.usedPct), stacking: .unstacked)
-                .foregroundStyle(Theme.inkSecondary.opacity(0.14))
+                .foregroundStyle(tint == nil
+                                 ? AnyShapeStyle(color.opacity(0.14))
+                                 : AnyShapeStyle(LinearGradient(colors: [color.opacity(0.16), color.opacity(0)], startPoint: .top, endPoint: .bottom)))
                 .interpolationMethod(.linear)
             LineMark(x: .value("Time", point.date), y: .value("Used", point.usedPct))
-                .foregroundStyle(Theme.inkSecondary.opacity(0.8))
-                .lineStyle(StrokeStyle(lineWidth: 1, lineJoin: .round))
+                .foregroundStyle(color.opacity(tint == nil ? 0.8 : 1))
+                .lineStyle(StrokeStyle(lineWidth: tint == nil ? 1 : 1.8, lineCap: .round, lineJoin: .round))
                 .interpolationMethod(.linear)
+            if tint != nil, point.id == data.points.last?.id {
+                PointMark(x: .value("Time", point.date), y: .value("Used", point.usedPct))
+                    .foregroundStyle(color)
+                    .symbolSize(22)
+            }
         }
         .chartXScale(domain: data.start...data.end)
         .chartYScale(domain: 0...100)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
-        .frame(width: 56, height: 16)
+        .frame(width: size.width, height: size.height)
         .accessibilityHidden(true)
     }
 }

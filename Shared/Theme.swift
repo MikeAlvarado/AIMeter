@@ -25,8 +25,15 @@ enum Theme {
     /// or on the notch island's black.
     static let danger = Color(light: 0xD70015, dark: 0xFF3B30)
 
-    /// Screen background: warm ivory / warm charcoal.
+    /// Screen background: warm ivory / warm charcoal, Claude's own two
+    /// neutrals. A flat fill where a screen has no room for `AppBackground`
+    /// (the widgets); every app screen draws `AppBackground`, which eases
+    /// from `backgroundTop` to `backgroundBottom` around this same tone.
     static let background = Color(light: 0xFAF9F5, dark: 0x262624)
+    /// The top of the app's backdrop: a touch lighter than `background`.
+    static let backgroundTop = Color(light: 0xFCFBF8, dark: 0x2A2927)
+    /// The bottom of the app's backdrop: a touch deeper, so cards float.
+    static let backgroundBottom = Color(light: 0xF3F1EA, dark: 0x1F1E1C)
     /// Card surface.
     static let card = Color(light: 0xFFFFFF, dark: 0x30302E)
     /// Progress bar track and hairlines: warm paper.
@@ -47,6 +54,16 @@ enum Theme {
     static let percent = Font.body.monospacedDigit().weight(.semibold)
     /// Reset line, "Updated X ago", footnotes.
     static let caption = Font.footnote
+    /// Every usage figure, everywhere (4.0): the account card's
+    /// protagonist, the popover's columns, every widget, the Live Activity.
+    /// Rounded, with tabular digits so a changing figure doesn't jitter.
+    /// The app passes its own `@ScaledMetric` so it follows Dynamic Type;
+    /// widgets pass fixed sizes (see `WidgetHeader`).
+    static func figure(size: CGFloat, weight: Font.Weight = .semibold) -> Font {
+        .system(size: size, weight: weight, design: .rounded).monospacedDigit()
+    }
+    /// A compact row's percentage on an account card.
+    static let compactPercent = Font.system(.subheadline, design: .rounded).weight(.semibold).monospacedDigit()
 
     // MARK: - Elevation
 
@@ -55,11 +72,20 @@ enum Theme {
     static let shadowSoft = Color.black.opacity(0.07)
     /// Tight contact shadow that grounds the card edge.
     static let shadowTight = Color.black.opacity(0.04)
+    /// The light along a card's top edge, fading down its sides: what
+    /// makes a surface read as a pane rather than a printed box.
+    static func edgeLight(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? .white.opacity(0.11) : .white.opacity(0.95)
+    }
+    /// The hairline that closes a card's lower edge.
+    static func edgeShade(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? .black.opacity(0.35) : Color(hex: 0x1F1E1D).opacity(0.07)
+    }
 
     // MARK: - Metrics
 
     /// Card corner radius (continuous).
-    static let cardRadius: CGFloat = 20
+    static let cardRadius: CGFloat = 24
     /// Inner padding of cards.
     static let cardPadding: CGFloat = 16
     /// Progress bar height (capsule).

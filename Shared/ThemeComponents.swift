@@ -6,6 +6,11 @@ struct UsageBarView: View {
     /// 0–100; nil renders an empty track (missing window slot).
     let value: Double?
     let tint: Color
+    var height: CGFloat = Theme.barHeight
+    /// The protagonist's bar on an account card: its fill easing into its
+    /// full color from the leading end. Quiet on purpose: no glow, nothing
+    /// that shines (Mike, 2026-10-21).
+    var lit = false
 
     var body: some View {
         GeometryReader { proxy in
@@ -13,12 +18,14 @@ struct UsageBarView: View {
                 Capsule().fill(Theme.track)
                 if let value {
                     Capsule()
-                        .fill(tint)
+                        .fill(lit
+                              ? AnyShapeStyle(LinearGradient(colors: [tint.opacity(0.85), tint], startPoint: .leading, endPoint: .trailing))
+                              : AnyShapeStyle(tint))
                         .frame(width: proxy.size.width * min(max(value, 0), 100) / 100)
                 }
             }
         }
-        .frame(height: Theme.barHeight)
+        .frame(height: height)
         // Decorative: the row already exposes the name and percentage.
         .accessibilityHidden(true)
     }
@@ -81,12 +88,7 @@ struct Card<Content: View>: View {
         }
         .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Theme.card,
-            in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous)
-        )
-        .shadow(color: Theme.shadowSoft, radius: 16, x: 0, y: 8)
-        .shadow(color: Theme.shadowTight, radius: 2, x: 0, y: 1)
+        .cardSurface()
     }
 }
 
@@ -114,16 +116,13 @@ struct SectionFootnote: View {
     }
 }
 
-/// Error label (if the last fetch failed) and "Updated X ago" caption (if
-/// there's a snapshot) — the shared tail of the rate-limit rows on the
-/// dashboard, provider detail, and the menu bar popover. The dashboard and
-/// provider detail cards precede each with a hairline divider;
-/// `showsDividers: false` skips those for the menu bar popover, which
-/// already has its own dividers bracketing this whole section.
+/// Error label (if the last fetch failed) and "Updated X ago" caption — the
+/// shared tail of an account's rows on the dashboard card, provider detail,
+/// and the menu bar popover. No hairlines: spacing alone sets it apart, as
+/// it does every row since 4.0.
 struct UsageStatusFooter: View {
     let snapshot: UsageSnapshot?
     let error: String?
-    var showsDividers = true
     /// Supplied only when the failure was a credential one
     /// (`UsageModel.AccountUsage.needsReauthentication`) — it replaces the
     /// raw endpoint message with an actionable prompt. The raw text is
@@ -143,10 +142,18 @@ struct UsageStatusFooter: View {
     /// typed-errors rule — this only adds the context that makes it
     /// readable as "their outage", not "your account".
     var serviceIncident: String?
+    /// "Updated X ago": `.always` on Provider Detail; `.whenStale` on the
+    /// Dashboard's cards and in the popover, whose own header says when the
+    /// accounts last refreshed, so a card only speaks up once its figures
+    /// fall behind (`UsageSnapshot.isStale`).
+    var updated: UpdatedLine = .always
+
+    enum UpdatedLine {
+        case always, whenStale
+    }
 
     var body: some View {
         if let reauthenticate {
-            if showsDividers { Divider().overlay(Theme.track) }
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Label(String(localized: "Sign-in expired. Usage can't refresh."), systemImage: "exclamationmark.triangle")
                     .font(Theme.caption)
@@ -158,7 +165,6 @@ struct UsageStatusFooter: View {
                     .foregroundStyle(Theme.accent)
             }
         } else if let error {
-            if showsDividers { Divider().overlay(Theme.track) }
             Label(error, systemImage: offline ? "wifi.slash" : "exclamationmark.triangle")
                 .font(Theme.caption)
                 .foregroundStyle(offline ? Theme.inkSecondary : Theme.danger)
@@ -168,8 +174,7 @@ struct UsageStatusFooter: View {
                     .foregroundStyle(Theme.inkSecondary)
             }
         }
-        if let snapshot {
-            if showsDividers { Divider().overlay(Theme.track) }
+        if let snapshot, updated == .always || snapshot.isStale {
             Text(UsageFormatting.updatedLabel(snapshot.fetchedAt))
                 .font(Theme.caption)
                 .foregroundStyle(Theme.inkSecondary)

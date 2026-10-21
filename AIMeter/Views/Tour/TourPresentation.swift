@@ -25,7 +25,7 @@ struct TourWindow: View {
         .frame(width: 460)
         .frame(minHeight: 530)
         .fixedSize(horizontal: false, vertical: true)
-        .background(Theme.background)
+        .appBackground()
         .background(NonRestorableWindow())
         .onDisappear(perform: Tour.finish)
     }
@@ -63,7 +63,7 @@ struct TourCover: View {
             }
             .scrollBounceBehavior(.basedOnSize)
         }
-        .background(Theme.background)
+        .appBackground()
     }
 }
 #endif
