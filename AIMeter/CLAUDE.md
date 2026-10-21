@@ -3,8 +3,8 @@
 - **Dashboard** (on `AppBackground`, see "Surfaces" in the repo-root
   CLAUDE.md): on iOS, floating gear + refresh buttons on Liquid Glass
   (`RoundIconButton`, `glassControl`; refresh icon spins while busy; soft
-  haptic on refresh start) and a small centered serif "AIMeter" title
-  with "Updated X ago" under it, the newest account's refresh
+  haptic on refresh start) and between them, with no app title since
+  4.0, only "Updated X ago", the newest account's refresh
   (`DashboardView.lastUpdatedLabel`); on macOS no in-page header at all,
   that line being the window's subtitle (`navigationSubtitle`) — the window's
   own title bar already says "AIMeter", so Refresh (a small spinner while

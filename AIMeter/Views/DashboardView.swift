@@ -186,18 +186,13 @@ struct DashboardView: View {
     #if os(iOS)
     private var header: some View {
         ZStack {
-            // Small centered app title — present but never competing with
-            // the usage content below — and when it last refreshed.
-            VStack(spacing: 2) {
-                Text(verbatim: "AIMeter")
-                    .font(.system(.headline, design: .serif).weight(.semibold))
-                    .foregroundStyle(Theme.ink)
-                if let lastUpdatedLabel {
-                    Text(lastUpdatedLabel)
-                        .font(.caption)
-                        .foregroundStyle(Theme.inkSecondary)
-                        .contentTransition(.opacity)
-                }
+            // No app title (Mike, 2026-10-21: the cards are the screen);
+            // only when the accounts last refreshed, between the buttons.
+            if let lastUpdatedLabel {
+                Text(lastUpdatedLabel)
+                    .font(.footnote)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .contentTransition(.opacity)
             }
             HStack {
                 headerButtons

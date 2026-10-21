@@ -1816,7 +1816,7 @@ amount; a tap on a reset toggles the style, as everywhere), then the
 status tail only when it has something to say (an error, "Sign in
 again", the incident line, or "Updated X ago" once stale:
 `UsageStatusFooter(updated: .whenStale)`), since the Dashboard says when
-it last refreshed once, under its title on iOS and as the window's
+it last refreshed once, between the header's buttons on iOS and as the window's
 subtitle on the Mac (`DashboardView.lastUpdatedLabel`, the newest
 account's). The small widget and each account of the all-accounts
 widget are the same composition at widget sizes (`WidgetHero`,
