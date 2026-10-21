@@ -62,20 +62,22 @@ struct ExpandedContent: View {
     }
 }
 
-/// Every account in one grid, so their windows sit in the same columns
-/// with the same gap between them, whatever each one reports, and the
-/// grid spanning the island edge to edge: the separator columns are the
-/// only flexible ones and share the spare width evenly, so the first
-/// column starts at the body's left edge and the last ends at its right
-/// one, where the sessions, the dividers and the footer start and end.
-/// Each figure column is as wide as its widest figures; the bars sit in a
-/// row of their own and take the column's width without widening it
-/// (`gridCellUnsizedAxes`), so every bar in a column has the same track.
-/// Headers, dividers and status lines span the grid the same way. The
-/// figures are 12 pt; when the grid would not fit the island's width, 11,
-/// then 10. With two or more accounts, a click anywhere on one puts its
-/// figures in the sneak (and the menu bar's), and the one there now has
-/// its header marked.
+/// Every account in one set of columns, so their windows sit in the same
+/// columns with the same gap between them, whatever each one reports,
+/// and the rows spanning the island edge to edge: the separators share
+/// the spare width evenly, so the first column starts at the body's left
+/// edge and the last ends at its right one, where the sessions, the
+/// dividers and the footer start and end. Each figure column is as wide
+/// as its widest figures, and every bar in a column has that column's
+/// width. Headers, dividers and status lines span the width. The figures
+/// are 12 pt; when they would not fit the island's width, 11, then 10.
+/// With two or more accounts, a click anywhere on one puts its figures in
+/// the sneak (and the menu bar's), and the one there now has its header
+/// marked. Laid out by `IslandColumns`, not a SwiftUI `Grid`: a `Grid`
+/// whose separator columns were the flexible ones laid out wider than
+/// the island it was offered (measured: 451 pt for 366 offered, with one
+/// account of two windows beside one of three), and the island clipped
+/// both ends of every line (3.2.0).
 struct AccountGrid: View {
     let accounts: [NotchIslandModel.Account]
     /// The account the sneak shows.
@@ -83,72 +85,48 @@ struct AccountGrid: View {
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
-            grid(scale: 1)
-            grid(scale: 11 / 12)
-            grid(scale: 10 / 12)
+            columns(scale: 1)
+            columns(scale: 11 / 12)
+            columns(scale: 10 / 12)
         }
     }
 
-    private func grid(scale: CGFloat) -> some View {
+    private func columns(scale: CGFloat) -> some View {
         let columns = accounts.map(\.segments.count).max() ?? 0
         let picks = accounts.count > 1
-        return Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+        return IslandColumns(columns: columns, minimumGap: 10) {
             ForEach(Array(accounts.enumerated()), id: \.element.id) { index, account in
+                let line = index * IslandColumns.linesPerAccount
                 if index > 0 {
                     Rectangle().fill(NotchIslandStyle.hairline).frame(height: 1)
-                        .gridCellUnsizedAxes(.horizontal)
                         .padding(.vertical, 12)
+                        .islandCell(.span, line: line)
                 }
                 AccountHeader(account: account, isSelected: picks && account.id == primaryID, isPickable: picks)
-                    .gridCellUnsizedAxes(.horizontal)
                     .padding(.bottom, 10)
-                GridRow(alignment: .firstTextBaseline) {
-                    ForEach(0..<columns, id: \.self) { column in
-                        let segment = account.segments.indices.contains(column) ? account.segments[column] : nil
-                        if column > 0 {
-                            if segment != nil {
-                                // The separators take the island's spare
-                                // width, evenly: the first column starts at
-                                // the left edge and the last ends at the
-                                // right one, like the sections around it.
-                                Text(verbatim: "|")
-                                    .font(NotchIslandStyle.font(12 * scale))
-                                    .foregroundStyle(NotchIslandStyle.separator)
-                                    .frame(maxWidth: .infinity)
-                                    .picksAccount(account.id, if: picks)
-                            } else {
-                                Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-                            }
-                        }
-                        if let segment {
-                            SegmentText(segment: segment, compact: false, scale: scale)
-                                .accessibilityElement(children: .ignore)
-                                .accessibilityLabel(segment.accessibilityLabel)
-                                .picksAccount(account.id, if: picks)
-                        } else {
-                            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-                        }
+                    .islandCell(.span, line: line + 1)
+                ForEach(Array(account.segments.enumerated()), id: \.offset) { column, segment in
+                    if column > 0 {
+                        Text(verbatim: "|")
+                            .font(NotchIslandStyle.font(12 * scale))
+                            .foregroundStyle(NotchIslandStyle.separator)
+                            .picksAccount(account.id, if: picks)
+                            .islandCell(.separator(column), line: line + 2)
                     }
-                }
-                GridRow {
-                    ForEach(0..<columns, id: \.self) { column in
-                        if column > 0 {
-                            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-                        }
-                        if account.segments.indices.contains(column) {
-                            SegmentBar(segment: account.segments[column])
-                                .gridCellUnsizedAxes(.horizontal)
-                                .padding(.top, 4)
-                                .picksAccount(account.id, if: picks)
-                        } else {
-                            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-                        }
-                    }
+                    SegmentText(segment: segment, compact: false, scale: scale)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(segment.accessibilityLabel)
+                        .picksAccount(account.id, if: picks)
+                        .islandCell(.segment(column), line: line + 2)
+                    SegmentBar(segment: segment)
+                        .padding(.top, 4)
+                        .picksAccount(account.id, if: picks)
+                        .islandCell(.bar(column), line: line + 3)
                 }
                 if account.status != .fresh {
                     AccountStatusLine(account: account)
-                        .gridCellUnsizedAxes(.horizontal)
                         .padding(.top, 10)
+                        .islandCell(.span, line: line + 4)
                 }
             }
         }

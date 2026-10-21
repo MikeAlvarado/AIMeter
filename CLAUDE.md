@@ -158,7 +158,9 @@ below and `AIMeterWatch/CLAUDE.md`.
   and the segment line), `NotchWings.swift` (the `notchCenter` alignment
   guide and `NotchWings`, the layout that keeps the wings centered on the
   notch),
-  `NotchIslandRows.swift` (expanded content: account rows, footer),
+  `NotchIslandRows.swift` (expanded content: account rows, footer) over
+  `NotchIslandColumns.swift` (`IslandColumns`, the layout that puts every
+  account's figures in shared columns),
   `NotchIslandSessions.swift`, `NotchIslandSessionRows.swift` and
   `NotchIslandController+Clearance.swift` (Claude Code's sessions, see
   below) and
@@ -1588,8 +1590,8 @@ the account silently freezes at its last snapshot.
   the wings stay as the header, reaching out to the body's edges, and
   every account gets a row — identity header, the full line (label, percent, `↻` reset) with a 2 pt
   bar under each segment, and a status line only when there is one —
-  all accounts in one grid (`AccountGrid`) spanning the island edge to
-  edge, so their windows share columns, the gaps between them are
+  all accounts in one set of columns (`AccountGrid` over the
+  `IslandColumns` layout) spanning the island edge to edge, so their windows share columns, the gaps between them are
   spread evenly and every bar in a column has that column's width; the
   header, the accounts, the sessions and the footer share one left and
   one right edge (`ExpandedContent.horizontalPadding`). The figures
@@ -1868,7 +1870,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   (`NotchIslandInteractionTests`, the hover delay's clamping included),
   what the user picks for its sneak, a newer permission prompt taking
   over, what a swipe turns through and how one counts
-  (`NotchIslandPicksTests`),
+  (`NotchIslandPicksTests`), its account rows laid out inside the width
+  the island offers, the gaps shared evenly (`NotchIslandColumnsTests`),
   the drawn notch and the pill on a screen without one — heights, the
   pill's gap, radii, row scale, hover region, and their invariants swept
   over every menu bar height, custom height and form

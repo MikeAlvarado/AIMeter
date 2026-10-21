@@ -845,18 +845,26 @@
     `HooksInvitation` line (Install / Not now). `maxBodyHeight` (620) is
     sized for four accounts, the incident notice, five sessions and the
     footer.
-  - The accounts are one SwiftUI `Grid` (`AccountGrid`,
-    `NotchIslandRows.swift`): a row of figures (`SegmentText`) and a row
-    of bars (`SegmentBar`) per account, with the header, dividers and
-    status line spanning it. Everything that should follow the columns
-    rather than set them (the bars, the spanning rows, the empty cells
-    of an account with fewer windows) is `gridCellUnsizedAxes`: with
-    flexible cells instead, `Grid` splits its width into equal columns
-    and a wider column pushed the grid 13 pt past the island's edge
-    (measured). The separators' columns are the flexible ones, so the
-    grid spans the body edge to edge, its first column on the left edge,
-    its last on the right, the gaps even. `ViewThatFits` tries the grid
-    at 12, 11 and 10 pt. One inset, `ExpandedContent.horizontalPadding`
+  - The accounts are one set of columns (`AccountGrid`,
+    `NotchIslandRows.swift`, laid out by `IslandColumns`,
+    `NotchIslandColumns.swift`): per account a divider, the header, a
+    line of figures (`SegmentText`, the separators between them) and a
+    line of bars (`SegmentBar`), and a status line, each view tagged with
+    its line and its cell (`islandCell`: a span across the width, or a
+    figure, a separator or a bar in a column). Each column is as wide as
+    its widest figure; the layout's ideal width is the columns with 10 pt
+    either side of each separator, and offered more, the separators share
+    the extra evenly (`IslandColumns.Metrics`), so the first column sits
+    on the left edge and the last ends on the right one; offered less, it
+    keeps its ideal width and `ViewThatFits` picks a smaller size: 12, 11
+    and 10 pt. A custom layout and not a SwiftUI `Grid`, which is what it
+    was until 3.2.0: with its separator columns flexible, a `Grid`
+    holding an account of two windows beside one of three laid out wider
+    than it was offered (measured: 341 pt ideal, 451 pt for the 366
+    offered, 705 for 1000) and the island cut both ends of every line;
+    before that, flexible cells of its own had split its width into equal
+    columns and pushed it 13 pt past the edge. `NotchIslandColumnsTests`
+    renders the screenshot's two accounts and checks the width. One inset, `ExpandedContent.horizontalPadding`
     (18 pt), gives the header's wings, the accounts, the sessions and the
     footer the same two edges; the footer draws its outer icons against
     them.
