@@ -47,7 +47,7 @@ accounts, "Personal" on the default mark and "Work" on a briefcase):
 `dashboard.png`, `dashboard-dark.png`, `detail-top.png`,
 `detail-week30.png` (History on Week + 30 days), `detail-smart.png`
 (the Smart notifications card), `ipad-dashboard.png`, `ipad-detail.png`,
-`ipad-dashboard-dark.png` (the app's Appearance on Dark), plus `appicon.png` (`AIMeter/Assets.xcassets/AppIcon.appiconset/ios-light.png`)
+`ipad-dashboard-dark.png` (the app's Appearance on Dark), plus `appicon.png` (`Sunset.png` from `node Scripts/AppIcon/render.mjs <dir>`, the icon as iOS draws it)
 and `home-widgets.png` (from `shots`). Capture with
 `xcrun simctl io <udid> screenshot <file>` on a device nobody else is
 using (iPhone 17e and iPad Pro 13" M5 for 2.0 and 3.0); the demo build is a

@@ -1,0 +1,141 @@
+{
+  "fill": {
+    "linear-gradient": [
+      "srgb:1.00000,1.00000,1.00000,1.00000",
+      "srgb:0.91373,0.89020,0.83922,1.00000"
+    ],
+    "orientation": {
+      "start": {
+        "x": 0.5,
+        "y": 0
+      },
+      "stop": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  },
+  "fill-specializations": [
+    {
+      "appearance": "dark",
+      "value": {
+        "linear-gradient": [
+          "srgb:0.20392,0.19608,0.18039,1.00000",
+          "srgb:0.10196,0.09804,0.09412,1.00000"
+        ],
+        "orientation": {
+          "start": {
+            "x": 0.5,
+            "y": 0
+          },
+          "stop": {
+            "x": 0.5,
+            "y": 1
+          }
+        }
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "Line",
+      "layers": [
+        {
+          "name": "fills",
+          "image-name": "fills.svg",
+          "glass": false
+        },
+        {
+          "name": "mark",
+          "image-name": "mark.svg",
+          "glass": true
+        },
+        {
+          "name": "tracks",
+          "image-name": "tracks.svg",
+          "glass": false
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.4
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      },
+      "specular": true
+    },
+    {
+      "name": "Island",
+      "layers": [
+        {
+          "name": "pill",
+          "image-name": "pill.svg",
+          "glass": true
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.55
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.2
+      },
+      "specular": true
+    },
+    {
+      "name": "Ground",
+      "layers": [
+        {
+          "name": "ground-dark",
+          "image-name": "ground-dark.svg",
+          "glass": false,
+          "hidden-specializations": [
+            {
+              "value": true
+            },
+            {
+              "appearance": "dark",
+              "value": false
+            }
+          ]
+        },
+        {
+          "name": "ground",
+          "image-name": "ground.svg",
+          "glass": false,
+          "hidden-specializations": [
+            {
+              "value": false
+            },
+            {
+              "appearance": "dark",
+              "value": true
+            },
+            {
+              "appearance": "tinted",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "shadow": {
+        "kind": "none",
+        "opacity": 0
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      },
+      "specular": false
+    }
+  ],
+  "supported-platforms": {
+    "circles": [
+      "watchOS"
+    ],
+    "squares": "shared"
+  }
+}

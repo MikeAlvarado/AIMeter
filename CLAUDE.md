@@ -212,12 +212,12 @@ below and `AIMeterWatch/CLAUDE.md`.
 - The app icon (see "App icon" under "Design system"):
   `Shared/AppIconChoice.swift` (the four looks and their asset names),
   `AIMeter/Views/AppIconSettings.swift` (Settings' "App icon") and
-  `Scripts/AppIcon/render.mjs`, which draws every icon picture from
-  code: the asset catalog's `AppIcon` (Sunset, with its tinted version,
-  and the Mac's sizes cut to `Scripts/AppIcon/mac-mask.png`, the shape
-  the Mac icon has always had), the iOS alternates
-  `AppIcon-Ivory/-Night/-Pet`, Settings' pictures (`AppIconPreview-*`),
-  the Mac's Dock images (`AppIconDock-*`) and the website's favicons.
+  `Scripts/AppIcon/render.mjs`, which writes every icon from code: the
+  layered Icon Composer documents `AIMeter/AppIcon.icon` (Sunset, the
+  bundle's own, iOS and Mac), `AIMeter/AppIcon-Ivory/-Night/-Pet.icon`
+  (the iOS alternates) and `AIMeterWatch/AppIcon.icon`, and, drawn from
+  them by Xcode's `ictool`, Settings' pictures (`AppIconPreview-*`), the
+  Mac's Dock images (`AppIconDock-*`) and the website's icons.
 - Updates and What's new (see "Updates (macOS) and What's new" below):
   `AIMeter/WhatsNew.json` (each release's notes, eight languages) read
   by `AIMeter/Services/WhatsNew.swift`, drawn by
@@ -1765,16 +1765,26 @@ mascot). iOS switches through `setAlternateIconName` to the alternates
 the asset catalog declares (`ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES`,
 iOS SDKs only) and shows its own notice of the change, which no app can
 skip; `UIApplication.alternateIconName` is the state, so iOS keeps no
-preference. Each look has a grayscale tinted version for a tinted Home
-Screen and no dark one (the user picks the look; Night is the dark
-one). macOS gives an app no way to change its own icon short of
+preference. Since 4.0 (Mike's pick, 2026-10-21) every look is a layered
+Icon Composer document, so the system draws it in Liquid Glass: a
+ground (one for light and one for dark, each a layer shown in its
+appearance only, since `ictool` ignores per-appearance image names), the
+island as glass, the sparkle as glass, the tracks and the bars' fills
+solid (glass darkened them oddly in the dark icon, and a translucent
+white track turned opaque there), and in Pet the cat in front. Xcode
+compiles each into light, dark, clear and tinted icons on 26 and later
+(clear and tinted drop the ground for the system's glass) and into flat
+images for iOS 17 to 25 and macOS 14 to 25 (an `.icns` included), with
+the same look; the alternate icons are documents too. Night lost the
+terracotta glow under its island ("nothing that shines"). macOS gives an app no way to change its own icon short of
 rewriting the bundle, which breaks its code signature (Apple DTS), so
 there the pick is `Preferences.appIcon` and `AppChrome.applyAppIcon`
 sets `NSApp.applicationIconImage` from the Dock image at every launch
 and on every change: the Dock and ⌘Tab show it while AIMeter runs,
-Finder keeps Sunset, and the footnote says so. Every picture comes from
-`Scripts/AppIcon/render.mjs` (node, the website's `sharp`): run it after
-changing a look, never edit the PNGs by hand.
+Finder keeps Sunset, and the footnote says so. Every document and
+picture comes from `Scripts/AppIcon/render.mjs` (node, the website's
+`sharp`, and Xcode's `ictool`): run it after changing a look, never edit
+the documents or the PNGs by hand.
 **Surfaces** (4.0, `Shared/Surfaces.swift`; Mike's brief, 2026-10-21:
 super clean, Liquid Glass, backgrounds as smooth as Claude's iOS app,
 nothing that shines, and one design on the Mac, iOS and the widgets).
@@ -2178,30 +2188,33 @@ every time.
 
 ### The app icon: changing a look, or adding one
 
-The icons are drawn in code; the PNGs are output, never edited by hand.
+The icons are written in code: Icon Composer documents and the pictures
+drawn from them are output, never edited by hand (nor in Icon Composer).
 
-1. Each look is a function in `Scripts/AppIcon/render.mjs` returning a
-   1024-point square SVG, full bleed: `island('dusk' | 'ivory' | 'night',
-   tones)` for Sunset, Ivory and Night, `pet(tones)` for Pet. `tones` is
-   `COLOR` for the icon and `GRAY` for its tinted version (grayscale on
-   black, which iOS tints with the user's color). The pill, the sparkle
-   and the bars are shared, so a change to the island reaches every look.
+1. Each look is an entry in `LOOKS` in `Scripts/AppIcon/render.mjs`: its
+   key, its ground (`GROUNDS`: a light and a dark wash, `dusk`, `ivory`,
+   `night`, `sky`), its pieces (`island()` for Sunset, Ivory and Night,
+   `pet()` for Pet: the pill, the mark, the tracks and rule, the bars'
+   fills, and Pet's cat, each a 1024-point SVG in place on the canvas)
+   and its document's name (`AppIcon` for the bundle's own, else
+   `AppIcon-<Key>`). `document()` stacks them into groups (Pet, Line,
+   Island, Ground, top first) with their glass, shadow and translucency;
+   the pieces are shared, so a change to the island reaches every look.
 2. Review first: `node Scripts/AppIcon/render.mjs <dir>` writes
-   `sheet.png` there (every look in color, tinted, in the Mac's shape,
-   at 120, 87, 60, 40 and 29 px, and at the Mac's 64, 32 and 16).
+   `sheet.png` there (every look in the six iOS appearances, as `ictool`
+   draws them, and on the Mac) and each look's light icon as
+   `<Look>.png`.
 3. Write: `node Scripts/AppIcon/render.mjs` (after `npm --prefix site ci`
-   once, for `sharp`). It replaces in place `AppIcon.appiconset` (Sunset:
-   the opaque iOS 1024, its tinted version, and the ten Mac sizes cut to
-   `Scripts/AppIcon/mac-mask.png`), the Watch app's
-   `AIMeterWatch/Assets.xcassets/AppIcon.appiconset` (the same opaque
-   Sunset; watchOS masks it round), each `AppIcon-<Look>.appiconset` (the
-   iOS alternates, tinted versions included), `AppIconPreview-<Look>`
-   (Settings' pictures), `AppIconDock-<Look>` (the Mac's Dock images, Mac
-   idiom only, so iOS doesn't carry them), and the website's
-   `favicon-32.png`, `apple-touch-icon.png`, `icon-192/512.png` and
-   `src/assets/app-icon.png`.
-4. A new look: an entry in `LOOKS` (its key, its drawing,
-   `alternate: 'AppIcon-<Key>'`), a case in `AppIconChoice` (the
+   once, for `sharp`; Xcode 26 or later, for `ictool`). It replaces in
+   place `AIMeter/<name>.icon` for every look and
+   `AIMeterWatch/AppIcon.icon` (Sunset; watchOS draws it round),
+   `AppIconPreview-<Look>` (Settings' pictures), `AppIconDock-<Look>`
+   (the Mac's Dock images, as macOS draws them, Mac idiom only, so iOS
+   doesn't carry them), and the website's `favicon-32.png` and
+   `src/assets/app-icon.png` (as iOS draws it) and
+   `apple-touch-icon.png`, `icon-192/512.png` (flat, full bleed and
+   opaque: the browser or the system rounds them).
+4. A new look: an entry in `LOOKS`, a case in `AppIconChoice` (the
    alternate's name, the asset suffix, and a label with its comment and
    its translations in all eight languages), the name added to both
    `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=…]` lines in both of
@@ -2209,19 +2222,17 @@ The icons are drawn in code; the PNGs are output, never edited by hand.
    fails until the bundle has the look's picture, its Dock image and, on
    iOS, its declared alternate.
 5. Another default: Sunset is the bundle's own icon by name in four
-   places, which all change together: `render.mjs` (the look with
-   `alternate: null`, and `rendered.Sunset` in `writeAll` for
-   `AppIcon.appiconset` and the website), `AppIconChoice` (the case with
-   no `alternateIconName` or Dock image, and the fallback for an unknown
-   one), the Mac footnote ("Finder keeps Sunset", in eight languages) and
-   the What's New note that introduced the icons. The App Store's icon
-   and the store frames' closing card (`appicon.png`, copied from
-   `ios-light.png`) follow `AppIcon.appiconset`.
+   places, which all change together: `render.mjs` (the look named
+   `AppIcon`, the Watch's and the website's), `AppIconChoice` (the case
+   with no `alternateIconName` or Dock image, and the fallback for an
+   unknown one), the Mac footnote ("Finder keeps Sunset", in eight
+   languages) and the What's New note that introduced the icons. The App
+   Store's icon follows `AIMeter/AppIcon.icon`, and the store frames'
+   closing card (`appicon.png`) is the sheet's `Sunset.png`.
 6. Rules: no orange pixel pet (it reads as Claude Code's mascot) and no
-   third-party mark in any look; the iOS 1024 stays opaque (the script
-   flattens it); the Mac shape is the mask's, never a drawn
-   approximation; and the Mac's footnote in Settings keeps saying only
-   the Dock changes.
+   third-party mark in any look; nothing that glows; colors in a layer
+   are solid (the dark icon makes a translucent one opaque); and the
+   Mac's footnote in Settings keeps saying only the Dock changes.
 
 ### A new pet
 

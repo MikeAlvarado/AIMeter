@@ -1,22 +1,31 @@
 // Renders AIMeter's app icons from code: the notch island in four looks
-// (Sunset, the bundle's own; Ivory, Night and Pet, chosen in Settings),
-// each with its tinted version for iOS, the Mac's sizes inside the Mac
-// icon's shape, the pictures Settings shows, the Dock images the Mac
-// swaps in, and the website's favicons.
+// (Sunset, the bundle's own; Ivory, Night and Pet, chosen in Settings) as
+// Icon Composer documents, layered so the system draws them in Liquid
+// Glass (4.0): a ground for light and one for dark, the island as glass,
+// the sparkle as glass, the bars, and in Pet the cat. Xcode compiles each
+// document into every appearance (light, dark, clear, tinted) and into
+// flat images for systems before 26. From the same documents, through
+// Xcode's own icon renderer (`ictool`), come the pictures Settings shows,
+// the Dock images the Mac swaps in and the website's icons.
 //
 //   node Scripts/AppIcon/render.mjs            write everything in place
 //   node Scripts/AppIcon/render.mjs <dir>      only a review sheet into <dir>
 //
 // Uses the website's own `sharp` (site/node_modules), so run
-// `npm --prefix site ci` first on a fresh clone.
+// `npm --prefix site ci` first on a fresh clone, and Xcode 26 or later
+// (its Icon Composer's `ictool`).
 import { createRequire } from 'node:module'
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const sharp = createRequire(join(ROOT, 'site', 'package.json'))('sharp')
 const S = 1024
+const DEVELOPER = execFileSync('xcode-select', ['-p']).toString().trim()
+const ICTOOL = join(DEVELOPER, '..', 'Applications', 'Icon Composer.app', 'Contents', 'Executables', 'ictool')
 
 // ------------------------------------------------------------ drawing
 const C = { terraHi: '#E8987A', terra: '#D97757', yellow: '#F0BF3A', black: '#050505' }
@@ -26,9 +35,6 @@ const linear = (gid, stops, x1 = 0, y1 = 0, x2 = 0, y2 = 1) =>
   `<linearGradient id="${gid}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${stops.map(([o, c, a = 1]) => `<stop offset="${o}" stop-color="${c}" stop-opacity="${a}"/>`).join('')}</linearGradient>`
 const radial = (gid, stops, cx, cy, r) =>
   `<radialGradient id="${gid}" cx="${cx}" cy="${cy}" r="${r}">${stops.map(([o, c, a = 1]) => `<stop offset="${o}" stop-color="${c}" stop-opacity="${a}"/>`).join('')}</radialGradient>`
-const blur = (fid, sd) => `<filter id="${fid}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="${sd}"/></filter>`
-const dropShadow = (fid, dy, sd, opacity) =>
-  `<filter id="${fid}" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur in="SourceAlpha" stdDeviation="${sd}"/><feOffset dy="${dy}"/><feComponentTransfer><feFuncA type="linear" slope="${opacity}"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>`
 const roundedRect = (x, y, w, h, r) =>
   `M ${x + r} ${y} H ${x + w - r} A ${r} ${r} 0 0 1 ${x + w} ${y + r} V ${y + h - r} A ${r} ${r} 0 0 1 ${x + w - r} ${y + h} H ${x + r} A ${r} ${r} 0 0 1 ${x} ${y + h - r} V ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y} Z`
 /** The app's sparkle: four points, concave sides. */
@@ -36,55 +42,46 @@ function sparkle(cx, cy, R, k = 0.16) {
   const q = R * k
   return `M ${cx} ${cy - R} Q ${cx + q} ${cy - q} ${cx + R} ${cy} Q ${cx + q} ${cy + q} ${cx} ${cy + R} Q ${cx - q} ${cy + q} ${cx - R} ${cy} Q ${cx - q} ${cy - q} ${cx} ${cy - R} Z`
 }
-const svg = (body, defs) => `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}"><defs>${defs}</defs>${body}</svg>`
 
-/** A ground: a wash and a soft light from the top left. */
-function ground(kind) {
+const svg = (body, defs = '') => `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}"><defs>${defs}</defs>${body}</svg>`
+
+// The grounds: a wash and a soft light from the top left; each look has
+// one for light and a deeper one for dark. Clear and tinted icons drop
+// them (the system draws its own glass there).
+const GROUNDS = {
+  dusk: { light: [[0, '#F2A37E'], [0.45, '#B4627A'], [1, '#2F2A55']], dark: [[0, '#4A3346'], [0.5, '#2E2238'], [1, '#121020']] },
+  ivory: { light: [[0, '#FFFFFF'], [0.55, '#F7F4EC'], [1, '#E9E3D6']], dark: [[0, '#34322E'], [1, '#1A1918']] },
+  night: { light: [[0, '#2B2A31'], [1, '#0E0D11']], dark: [[0, '#222127'], [1, '#08080A']] },
+  sky: { light: [[0, '#CFE3F7'], [1, '#8FB6E3']], dark: [[0, '#25344A'], [1, '#111A28']] },
+}
+function ground(stops, light) {
   const g = id('bg'), l = id('lt')
-  const washes = {
-    dusk: [[0, '#F2A37E'], [0.45, '#B4627A'], [1, '#2F2A55']],
-    ivory: [[0, '#FFFFFF'], [0.55, '#F7F4EC'], [1, '#E9E3D6']],
-    night: [[0, '#2B2A31'], [1, '#0E0D11']],
-    sky: [[0, '#CFE3F7'], [1, '#8FB6E3']],
-    tinted: [[0, '#1A1A1A'], [1, '#000000']],
-  }
+  return svg(`<rect width="${S}" height="${S}" fill="url(#${g})"/><rect width="${S}" height="${S}" fill="url(#${l})"/>`,
+    linear(g, stops) + radial(l, [[0, '#FFFFFF', light], [1, '#FFFFFF', 0]], 0.3, 0.12, 0.75))
+}
+
+// The island's colors. The tracks are solid: the system makes a
+// translucent white opaque in the dark icon.
+const T = { pill: C.black, mark: C.terraHi, track: '#2D2C2B', rule: '#464544', first: C.terraHi, second: C.yellow }
+
+/** The pieces of an island: its pill, its mark, its tracks and rule, and its bars' fills. */
+function islandPieces({ x, y, w, h, markX, markR, bars, rule }) {
+  const cy = y + h / 2
   return {
-    defs: linear(g, washes[kind]) + radial(l, [[0, '#FFFFFF', kind === 'tinted' ? 0.06 : 0.28], [1, '#FFFFFF', 0]], 0.3, 0.12, 0.75),
-    body: `<rect width="${S}" height="${S}" fill="url(#${g})"/><rect width="${S}" height="${S}" fill="url(#${l})"/>`,
+    pill: svg(`<path d="${roundedRect(x, y, w, h, h / 2)}" fill="${T.pill}"/>`),
+    mark: svg(`<path d="${sparkle(markX, cy, markR)}" fill="${T.mark}"/>`),
+    tracks: svg(bars.map((b) => `<rect x="${b.x}" y="${cy - 32}" width="${b.w}" height="64" rx="32" fill="${T.track}"/>`).join('') +
+      (rule ? `<rect x="${rule}" y="${cy - 52}" width="6" height="104" rx="3" fill="${T.rule}"/>` : '')),
+    fills: svg(bars.map((b) => `<rect x="${b.x}" y="${cy - 32}" width="${Math.max(64, b.w * b.f)}" height="64" rx="32" fill="${b.color}"/>`).join('')),
   }
 }
 
-// The tones each look draws the island's content in; the tinted one is
-// grayscale, which iOS tints with the user's color.
-const COLOR = { pill: C.black, mark: C.terraHi, track: '#FFFFFF', trackOpacity: 0.16, first: C.terraHi, second: C.yellow, rule: 0.26 }
-const GRAY = { pill: '#2B2B2B', mark: '#FFFFFF', track: '#FFFFFF', trackOpacity: 0.2, first: '#FFFFFF', second: '#BDBDBD', rule: 0.3 }
-
-function bar(x, y, w, h, f, color, tones) {
-  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="${tones.track}" fill-opacity="${tones.trackOpacity}"/>` +
-    `<rect x="${x}" y="${y}" width="${Math.max(h, w * f)}" height="${h}" rx="${h / 2}" fill="${color}"/>`
-}
-
-/** The island: a pill with the sparkle and two bars, the island's line. */
-function island(look, tones) {
-  const bg = ground(tones === GRAY ? 'tinted' : look)
-  let defs = bg.defs, body = bg.body
-  const w = 860, h = 320, x = 82, y = 352, d = roundedRect(x, y, w, h, h / 2)
-  const sh = id('sh')
-  defs += dropShadow(sh, 18, 26, { dusk: 0.42, ivory: 0.26, night: 0.6 }[look])
-  if (look === 'night' && tones === COLOR) {
-    const gb = id('gb'); defs += blur(gb, 60)
-    body += `<path d="${roundedRect(x + 40, y + 40, w - 80, h - 80, 120)}" fill="${C.terra}" opacity="0.35" filter="url(#${gb})"/>`
-  }
-  body += `<g filter="url(#${sh})"><path d="${d}" fill="${tones.pill}"/></g>`
-  if (look === 'night' || tones === GRAY) body += `<path d="${d}" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="4"/>`
-  // The line: the mark, then two windows either side of a rule.
-  const cy = y + h / 2, pad = 94, sx = x + pad + 56
-  body += `<path d="${sparkle(sx, cy, 56)}" fill="${tones.mark}"/>`
-  const b1x = sx + 56 + 44, sepX = x + w / 2 + 80, b1w = sepX - 30 - b1x, b2x = sepX + 36, b2w = x + w - pad - b2x
-  body += bar(b1x, cy - 32, b1w, 64, 0.62, tones.first, tones)
-  body += `<rect x="${sepX}" y="${cy - 52}" width="6" height="104" rx="3" fill="#FFFFFF" fill-opacity="${tones.rule}"/>`
-  body += bar(b2x, cy - 32, b2w, 64, 0.78, tones.second, tones)
-  return svg(body, defs)
+/** The island: a pill with the sparkle and two bars either side of a rule. */
+function island() {
+  const w = 860, h = 320, x = 82, y = 352, pad = 94, sx = x + pad + 56
+  const b1x = sx + 56 + 44, sepX = x + w / 2 + 80, b2x = sepX + 36
+  return islandPieces({ x, y, w, h, markX: sx, markR: 56, rule: sepX,
+    bars: [{ x: b1x, w: sepX - 30 - b1x, f: 0.62, color: T.first }, { x: b2x, w: x + w - pad - b2x, f: 0.78, color: T.second }] })
 }
 
 // The session pet that stands on the island in Pet: the purple cat in
@@ -92,11 +89,10 @@ function island(look, tones) {
 const CAT_COLORS = ['#7F77DD', '#CECBF6', '#F2F1EC', '#121212', '#26215C']
 const CAT = ['.0........0.', '.00......00.', '.0100000010.', '.0000000000.', '002333323300', '003330033300', '000004400000', '.0000000000.', '..00000000..', '..00....00..']
 const mix = (a, b, t) => '#' + [1, 3, 5].map((i) => Math.round(parseInt(a.slice(i, i + 2), 16) + (parseInt(b.slice(i, i + 2), 16) - parseInt(a.slice(i, i + 2), 16)) * t).toString(16).padStart(2, '0')).join('')
-const gray = (hex) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); const l = Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b); const h = l.toString(16).padStart(2, '0'); return `#${h}${h}${h}` }
 
-function blockCat(cx, bottom, P, d, toGray) {
+function blockCat(cx, bottom, P, d) {
   const cells = []
-  CAT.forEach((row, y) => [...row].forEach((ch, x) => { if (ch !== '.') cells.push({ x, y, color: toGray ? gray(CAT_COLORS[+ch]) : CAT_COLORS[+ch] }) }))
+  CAT.forEach((row, y) => [...row].forEach((ch, x) => { if (ch !== '.') cells.push({ x, y, color: CAT_COLORS[+ch] }) }))
   const has = new Set(cells.map((c) => `${c.x},${c.y}`))
   const x0 = Math.round(cx - (CAT[0].length / 2) * P - d / 2), y0 = bottom - CAT.length * P
   let sides = '', tops = '', fronts = ''
@@ -113,128 +109,138 @@ function blockCat(cx, bottom, P, d, toGray) {
 }
 
 /** Pet: the island lower, one bar, the cat standing on it. */
-function pet(tones) {
-  const bg = ground(tones === GRAY ? 'tinted' : 'sky')
-  let defs = bg.defs, body = bg.body
-  const x = 132, y = 610, w = 760, h = 260, d = roundedRect(x, y, w, h, h / 2), sh = id('sh')
-  defs += dropShadow(sh, 18, 26, 0.3)
-  body += `<g filter="url(#${sh})"><path d="${d}" fill="${tones.pill}"/></g>`
-  if (tones === GRAY) body += `<path d="${d}" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="4"/>`
-  body += `<path d="${sparkle(x + 136, y + h / 2, 52)}" fill="${tones.mark}"/>`
-  body += bar(x + 236, y + h / 2 - 32, w - 236 - 84, 64, 0.62, tones.first, tones)
-  body += blockCat(600, y + 4, 30, 18, tones === GRAY)
-  return svg(body, defs)
+function pet() {
+  const x = 132, y = 610, w = 760, h = 260
+  return { ...islandPieces({ x, y, w, h, markX: x + 136, markR: 52, bars: [{ x: x + 236, w: w - 236 - 84, f: 0.62, color: T.first }] }),
+    cat: svg(blockCat(600, y + 4, 30, 18)) }
 }
 
 // ------------------------------------------------------------ the looks
-// `alternate` is the iOS alternate icon's name (the bundle's own has none),
-// and a look with one also gets a Mac Dock image (`AppIconDock-<key>`);
-// both names must match `AppIconChoice`. Sunset is the bundle's own icon:
-// `writeAll` draws AppIcon.appiconset and the website's icons from it.
+// `name` is the document's (and the icon's) name: `AppIcon` is the
+// bundle's own, the others the iOS alternates; a look with an alternate
+// also gets a Mac Dock image (`AppIconDock-<key>`). Every name must match
+// `AppIconChoice`.
 const LOOKS = [
-  { key: 'Sunset', draw: (t) => island('dusk', t), alternate: null },
-  { key: 'Ivory', draw: (t) => island('ivory', t), alternate: 'AppIcon-Ivory' },
-  { key: 'Night', draw: (t) => island('night', t), alternate: 'AppIcon-Night' },
-  { key: 'Pet', draw: (t) => pet(t), alternate: 'AppIcon-Pet' },
+  { key: 'Sunset', ground: 'dusk', pieces: island, name: 'AppIcon' },
+  { key: 'Ivory', ground: 'ivory', pieces: island, name: 'AppIcon-Ivory' },
+  { key: 'Night', ground: 'night', pieces: island, name: 'AppIcon-Night' },
+  { key: 'Pet', ground: 'sky', pieces: pet, name: 'AppIcon-Pet' },
 ]
 
-const png = (svgText) => sharp(Buffer.from(svgText)).png().toBuffer()
-/** iOS's 1024 has no transparency (App Store Connect refuses one that does). */
-const opaque = (buf, size = S) => sharp(buf).resize(size, size).flatten({ background: '#000000' }).png().toBuffer()
-const MASK = join(dirname(fileURLToPath(import.meta.url)), 'mac-mask.png')
-/** The Mac's shape: the art in an 824-point rounded square, 100 points in, the shape the icon has always had. */
-async function macShaped(buf, size) {
-  const inner = await sharp(buf).resize(824, 824).png().toBuffer()
-  const canvas = await sharp({ create: { width: S, height: S, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-    .composite([{ input: inner, left: 100, top: 100 }]).png().toBuffer()
-  const shaped = await sharp(canvas).composite([{ input: MASK, blend: 'dest-in' }]).png().toBuffer()
-  return sharp(shaped).resize(size, size).png().toBuffer()
+/** The Icon Composer document for a look: its assets and its icon.json. */
+function document(look) {
+  const p = look.pieces(), g = GROUNDS[look.ground]
+  const assets = { 'ground.svg': ground(g.light, 0.28), 'ground-dark.svg': ground(g.dark, 0.1), 'pill.svg': p.pill, 'mark.svg': p.mark, 'tracks.svg': p.tracks, 'fills.svg': p.fills }
+  if (p.cat) assets['cat.svg'] = p.cat
+  const hex = (c) => [1, 3, 5].map((i) => (parseInt(c.slice(i, i + 2), 16) / 255).toFixed(5)).join(',')
+  const fill = (stops) => ({ 'linear-gradient': [`srgb:${hex(stops[0][1])},1.00000`, `srgb:${hex(stops[stops.length - 1][1])},1.00000`], orientation: { start: { x: 0.5, y: 0 }, stop: { x: 0.5, y: 1 } } })
+  const groups = []
+  // Top first. The cat stands in front of everything, as solid blocks.
+  if (p.cat) groups.push({ name: 'Pet', layers: [{ name: 'cat', 'image-name': 'cat.svg', glass: false }], shadow: { kind: 'neutral', opacity: 0.45 }, translucency: { enabled: false, value: 0 }, specular: false })
+  groups.push({ name: 'Line', layers: [
+    { name: 'fills', 'image-name': 'fills.svg', glass: false },
+    { name: 'mark', 'image-name': 'mark.svg', glass: true },
+    { name: 'tracks', 'image-name': 'tracks.svg', glass: false },
+  ], shadow: { kind: 'neutral', opacity: 0.4 }, translucency: { enabled: false, value: 0 }, specular: true })
+  groups.push({ name: 'Island', layers: [{ name: 'pill', 'image-name': 'pill.svg', glass: true }], shadow: { kind: 'neutral', opacity: 0.55 }, translucency: { enabled: true, value: 0.2 }, specular: true })
+  // Ivory's image names can't be specialized per appearance (ictool
+  // ignores it), so the dark ground is a layer of its own, each shown in
+  // its appearance only.
+  groups.push({ name: 'Ground', layers: [
+    { name: 'ground-dark', 'image-name': 'ground-dark.svg', glass: false, 'hidden-specializations': [{ value: true }, { appearance: 'dark', value: false }] },
+    { name: 'ground', 'image-name': 'ground.svg', glass: false, 'hidden-specializations': [{ value: false }, { appearance: 'dark', value: true }, { appearance: 'tinted', value: true }] },
+  ], shadow: { kind: 'none', opacity: 0 }, translucency: { enabled: false, value: 0 }, specular: false })
+  const doc = { fill: fill(g.light), 'fill-specializations': [{ appearance: 'dark', value: fill(g.dark) }], groups,
+    'supported-platforms': { circles: ['watchOS'], squares: 'shared' } }
+  return { assets, json: JSON.stringify(doc, null, 2) + '\n' }
+}
+
+function writeDocument(look, dir) {
+  const { assets, json } = document(look)
+  rmSync(dir, { recursive: true, force: true })
+  mkdirSync(join(dir, 'Assets'), { recursive: true })
+  for (const [file, text] of Object.entries(assets)) writeFileSync(join(dir, 'Assets', file), text)
+  writeFileSync(join(dir, 'icon.json'), json)
+}
+
+/** The system's own drawing of a document, through Xcode's `ictool`. */
+function render(doc, platform, rendition, size, out) {
+  execFileSync(ICTOOL, [doc, '--export-image', '--output-file', out, '--platform', platform, '--rendition', rendition, '--width', `${size}`, '--height', `${size}`, '--scale', '1'], { stdio: 'ignore' })
+  return readFileSync(out)
 }
 
 // Written the way Xcode writes them (a space before each colon), so a save in Xcode changes nothing.
 const contents = (images) => JSON.stringify({ images, info: { author: 'xcode', version: 1 } }, null, 2).replace(/": /g, '" : ') + '\n'
-const iosEntries = (light, tinted) => [
-  { filename: light, idiom: 'universal', platform: 'ios', size: '1024x1024' },
-  { appearances: [{ appearance: 'luminosity', value: 'tinted' }], filename: tinted, idiom: 'universal', platform: 'ios', size: '1024x1024' },
-]
-const MAC_SIZES = [[16, 1], [16, 2], [32, 1], [32, 2], [128, 1], [128, 2], [256, 1], [256, 2], [512, 1], [512, 2]]
 
 async function writeAll() {
   const xc = join(ROOT, 'AIMeter', 'Assets.xcassets')
-  const rendered = {}
-  for (const look of LOOKS) rendered[look.key] = { color: await png(look.draw(COLOR)), gray: await png(look.draw(GRAY)) }
-
-  // The bundle's own icon: Sunset, on iOS and every Mac size.
-  const primary = join(xc, 'AppIcon.appiconset')
-  rmSync(primary, { recursive: true, force: true }); mkdirSync(primary)
-  await sharp(await opaque(rendered.Sunset.color)).toFile(join(primary, 'ios-light.png'))
-  await sharp(await opaque(rendered.Sunset.gray)).toFile(join(primary, 'ios-tinted.png'))
-  const macImages = []
-  for (const [pt, scale] of MAC_SIZES) {
-    const name = `mac-${pt}${scale === 2 ? '@2x' : ''}.png`
-    await sharp(await macShaped(rendered.Sunset.color, pt * scale)).toFile(join(primary, name))
-    macImages.push({ filename: name, idiom: 'mac', scale: `${scale}x`, size: `${pt}x${pt}` })
-  }
-  writeFileSync(join(primary, 'Contents.json'), contents([...iosEntries('ios-light.png', 'ios-tinted.png'), ...macImages]))
-  // The Watch app's icon: the same picture, which watchOS masks round itself.
-  const watch = join(ROOT, 'AIMeterWatch', 'Assets.xcassets', 'AppIcon.appiconset')
-  rmSync(watch, { recursive: true, force: true }); mkdirSync(watch, { recursive: true })
-  await sharp(await opaque(rendered.Sunset.color)).toFile(join(watch, 'icon.png'))
-  writeFileSync(join(watch, 'Contents.json'), contents([{ filename: 'icon.png', idiom: 'universal', platform: 'watchos', size: '1024x1024' }]))
+  const scratch = mkdtempSync(join(tmpdir(), 'aimeter-icons-'))
+  // The flat icons these documents replaced (3.1 to 3.2).
+  for (const old of ['AppIcon', 'AppIcon-Ivory', 'AppIcon-Night', 'AppIcon-Pet']) rmSync(join(xc, `${old}.appiconset`), { recursive: true, force: true })
+  rmSync(join(ROOT, 'AIMeterWatch', 'Assets.xcassets', 'AppIcon.appiconset'), { recursive: true, force: true })
 
   for (const look of LOOKS) {
-    // The alternates iOS switches to.
-    if (look.alternate) {
-      const dir = join(xc, `${look.alternate}.appiconset`)
-      rmSync(dir, { recursive: true, force: true }); mkdirSync(dir)
-      await sharp(await opaque(rendered[look.key].color)).toFile(join(dir, 'ios.png'))
-      await sharp(await opaque(rendered[look.key].gray)).toFile(join(dir, 'ios-tinted.png'))
-      writeFileSync(join(dir, 'Contents.json'), contents(iosEntries('ios.png', 'ios-tinted.png')))
-      // The Mac's Dock image for it, in the Mac's shape.
-      const dock = join(xc, `AppIconDock-${look.key}.imageset`)
-      rmSync(dock, { recursive: true, force: true }); mkdirSync(dock)
-      await sharp(await macShaped(rendered[look.key].color, S)).toFile(join(dock, 'dock.png'))
-      writeFileSync(join(dock, 'Contents.json'), contents([{ filename: 'dock.png', idiom: 'mac' }]))
-    }
-    // The picture Settings shows for it, full bleed (the view rounds it).
+    const doc = join(ROOT, 'AIMeter', `${look.name}.icon`)
+    writeDocument(look, doc)
+    // The Watch app's icon: Sunset, which watchOS draws round.
+    if (look.key === 'Sunset') writeDocument(look, join(ROOT, 'AIMeterWatch', 'AppIcon.icon'))
+    // The picture Settings shows for it (the view rounds it again).
+    const ios = render(doc, 'iOS', 'Default', S, join(scratch, `${look.key}-ios.png`))
     const preview = join(xc, `AppIconPreview-${look.key}.imageset`)
     rmSync(preview, { recursive: true, force: true }); mkdirSync(preview)
-    await sharp(rendered[look.key].color).resize(256, 256).flatten({ background: '#000000' }).png().toFile(join(preview, 'preview.png'))
+    await sharp(ios).resize(256, 256).png().toFile(join(preview, 'preview.png'))
     writeFileSync(join(preview, 'Contents.json'), contents([{ filename: 'preview.png', idiom: 'universal' }]))
+    // The Mac's Dock image for an alternate, as macOS draws it.
+    if (look.key !== 'Sunset') {
+      const dock = join(xc, `AppIconDock-${look.key}.imageset`)
+      rmSync(dock, { recursive: true, force: true }); mkdirSync(dock)
+      render(doc, 'macOS', 'Default', S, join(dock, 'dock.png'))
+      writeFileSync(join(dock, 'Contents.json'), contents([{ filename: 'dock.png', idiom: 'mac' }]))
+    }
+    // The website's icons: Sunset. The favicon and the page's picture as
+    // the system draws it; the home-screen and app icons full bleed and
+    // opaque, which the browser or the system rounds itself.
+    if (look.key === 'Sunset') {
+      const site = join(ROOT, 'site')
+      await sharp(ios).resize(32, 32).png().toFile(join(site, 'public/favicon-32.png'))
+      await sharp(ios).resize(512, 512).png().toFile(join(site, 'src/assets/app-icon.png'))
+      const p = look.pieces(), g = GROUNDS[look.ground]
+      const flat = await sharp({ create: { width: S, height: S, channels: 4, background: '#000000' } })
+        .composite([ground(g.light, 0.28), p.pill, p.tracks, p.fills, p.mark].map((s) => ({ input: Buffer.from(s) }))).png().toBuffer()
+      for (const [file, size] of [['public/apple-touch-icon.png', 180], ['public/icon-192.png', 192], ['public/icon-512.png', 512]]) {
+        await sharp(flat).resize(size, size).flatten({ background: '#000000' }).png().toFile(join(site, file))
+      }
+    }
   }
-
-  // The website's icons: Sunset, full bleed.
-  const site = join(ROOT, 'site')
-  for (const [file, size] of [['public/favicon-32.png', 32], ['public/apple-touch-icon.png', 180], ['public/icon-192.png', 192], ['public/icon-512.png', 512], ['src/assets/app-icon.png', 512]]) {
-    await sharp(await opaque(rendered.Sunset.color, size)).toFile(join(site, file))
-  }
-  console.log('wrote the app icons, the alternates, the previews, the Dock images and the site icons')
+  rmSync(scratch, { recursive: true, force: true })
+  console.log('wrote the icon documents, the Watch\'s, the previews, the Dock images and the site icons')
 }
 
-/** A review sheet: every look in color and tinted, the Mac's shape, and small sizes. */
+/** A review sheet: every look in every appearance on iOS, and on the Mac. */
 async function sheet(out) {
   mkdirSync(out, { recursive: true })
-  const round = (size) => Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${size * 0.2237}" fill="#fff"/></svg>`)
-  const masked = async (buf, size) => sharp(buf).resize(size, size).composite([{ input: round(size), blend: 'dest-in' }]).png().toBuffer()
-  const comps = []
+  const scratch = mkdtempSync(join(tmpdir(), 'aimeter-icons-'))
+  const RENDITIONS = ['Default', 'Dark', 'ClearLight', 'ClearDark', 'TintedLight', 'TintedDark']
+  const cell = 220, comps = []
   let text = ''
-  const col = 300
   for (const [i, look] of LOOKS.entries()) {
-    const color = await png(look.draw(COLOR)), grayBuf = await png(look.draw(GRAY))
-    const y = 40 + i * 320
-    comps.push({ input: await masked(color, 260), left: 40, top: y })
-    comps.push({ input: await masked(grayBuf, 260), left: 40 + col, top: y })
-    comps.push({ input: await macShaped(color, 300), left: 20 + 2 * col, top: y - 20 })
-    let x = 40 + 3 * col
-    for (const size of [120, 87, 60, 40, 29]) { comps.push({ input: await masked(color, size), left: x, top: y + 260 - size }); x += size + 24 }
-    for (const size of [64, 32, 16]) { comps.push({ input: await macShaped(color, size), left: x, top: y + 260 - size }); x += size + 24 }
-    text += `<text x="40" y="${y + 290}" font-family="Helvetica Neue" font-size="22" fill="#333">${look.key}</text>`
-    await sharp(color).toFile(join(out, `${look.key}.png`))
+    const doc = join(scratch, `${look.name}.icon`)
+    writeDocument(look, doc)
+    const y = 40 + i * (cell + 50)
+    for (const [j, r] of RENDITIONS.entries()) {
+      const buf = render(doc, 'iOS', r, S, join(scratch, `${look.key}-${r}.png`))
+      if (r === 'Default') await sharp(buf).toFile(join(out, `${look.key}.png`))
+      comps.push({ input: await sharp(buf).resize(cell - 20, cell - 20).png().toBuffer(), left: 40 + j * cell, top: y })
+    }
+    const mac = render(doc, 'macOS', 'Default', S, join(scratch, `${look.key}-mac.png`))
+    comps.push({ input: await sharp(mac).resize(cell - 20, cell - 20).png().toBuffer(), left: 40 + RENDITIONS.length * cell + 20, top: y })
+    text += `<text x="40" y="${y + cell + 12}" font-family="Helvetica Neue" font-size="20" fill="#333">${look.key}</text>`
   }
-  const W = 40 + 3 * col + 120 + 87 + 60 + 40 + 29 + 64 + 32 + 16 + 8 * 24 + 40, H = 40 + LOOKS.length * 320
-  await sharp({ create: { width: W, height: H, channels: 4, background: '#C9C6BF' } })
+  const W = 80 + (RENDITIONS.length + 1) * cell + 20, H = 40 + LOOKS.length * (cell + 50)
+  await sharp({ create: { width: W, height: H, channels: 4, background: '#9A9893' } })
     .composite([...comps, { input: Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${text}</svg>`) }])
     .png().toFile(join(out, 'sheet.png'))
+  rmSync(scratch, { recursive: true, force: true })
   console.log('sheet', join(out, 'sheet.png'))
 }
 
