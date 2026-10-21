@@ -1820,9 +1820,11 @@ it last refreshed once, between the header's buttons on iOS and as the window's
 subtitle on the Mac (`DashboardView.lastUpdatedLabel`, the newest
 account's). The small widget and each account of the all-accounts
 widget are the same composition at widget sizes (`WidgetHero`,
-`WidgetCompactRows`), and the medium widget's columns are the menu bar
-popover's (`PopoverAccountBlock`), so a figure looks the same wherever
-it is.
+`WidgetCompactRows`), Single Limit's bar style is the protagonist alone,
+the condensed all-accounts widget gives each account its protagonist's
+bar with every window's figure under it, and the medium widget's columns
+are the menu bar popover's (`PopoverAccountBlock`), so a figure looks
+the same wherever it is.
 
 Two more `Shared/ThemeComponents.swift` views follow the same rule for
 other repeated pieces: `UsageStatusFooter` (the error label + "Updated X

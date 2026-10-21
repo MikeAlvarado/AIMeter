@@ -2,25 +2,24 @@ import SwiftUI
 import WidgetKit
 import UsageKit
 
-/// The all-accounts widget's condensed layout (Edit Widget → Layout):
-/// one line per account, its name, a bar per window slot in the columns
-/// the slots make, and its first window's figure, under the slots'
-/// names; then the soonest session reset of them all as a live
-/// countdown. Six accounts fit where the standard layout's full rows
-/// hold two; what a line gives up is the reset under each bar and the
-/// iOS refresh button. The columns are kinds: an account's bar sits in
-/// the column of its kind, so two providers' accounts never share a
-/// column by position alone, and a column an account lacks is faded.
+/// The all-accounts widget's condensed layout (Edit Widget → Layout), as
+/// picked on 2026-10-21 from three drawings (variant C): six accounts, one
+/// line each with the account's protagonist (the window
+/// `AccountCardLayout` puts first, as the cards do: its thick bar and its
+/// figure), and under the name every window with its figure in small
+/// text, the protagonist first ("Week 61% · Session 42% · Top model
+/// 18%"). Then the soonest session reset of them all as a live
+/// countdown. What a line gives up for the room is each window's reset
+/// and the iOS refresh button.
 struct CondensedAccountsView: View {
     let entry: AllAccountsEntry
     static let maxRows = 6
-    private static let nameWidth: CGFloat = 64
-    private static let figureWidth: CGFloat = 34
+    private static let nameWidth: CGFloat = 58
+    private static let figureWidth: CGFloat = 40
 
     var body: some View {
         let rows = Array(entry.rows.prefix(Self.maxRows))
-        let columns = Self.columns(of: entry)
-        VStack(alignment: .leading, spacing: 9) {
+        VStack(alignment: .leading, spacing: 0) {
             header
             if entry.rows.isEmpty {
                 Text("Open AIMeter to load usage")
@@ -29,35 +28,26 @@ struct CondensedAccountsView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                captions(columns)
-                ForEach(rows) { row in
-                    line(row, columns: columns)
+                Spacer(minLength: 10)
+                // The lines share the height, the room left over between
+                // them.
+                ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
+                    if index > 0 {
+                        Spacer(minLength: 8)
+                    }
+                    line(row)
                 }
                 if entry.rows.count > Self.maxRows {
                     Text("+\(entry.rows.count - Self.maxRows) more")
                         .font(.system(size: 10))
                         .foregroundStyle(Theme.inkSecondary)
+                        .padding(.top, 6)
                 }
-                Spacer(minLength: 0)
+                Spacer(minLength: 10)
                 footer
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-    }
-
-    /// The columns are the slots of the first account that has three,
-    /// else two; an account with fewer keeps its missing column faded.
-    static func columns(of entry: AllAccountsEntry) -> [UsageWindow.Kind] {
-        let slotKinds = entry.rows.compactMap { row in
-            row.snapshot.map { WindowSlots(snapshot: $0, modelSlotFallback: entry.prefs.modelSlotFallback).slots.map(\.kind) }
-        }
-        return slotKinds.first { $0.count > 2 } ?? slotKinds.first ?? [.session, .weekly]
-    }
-
-    /// The caption over a column: the first shown window of that kind
-    /// names it with its real length ("Month" for a 30-day week).
-    static func caption(for kind: UsageWindow.Kind, in entry: AllAccountsEntry) -> String {
-        entry.rows.lazy.compactMap { $0.snapshot?.window(for: kind) }.first?.shortTitle ?? kind.shortName
     }
 
     private var header: some View {
@@ -75,47 +65,48 @@ struct CondensedAccountsView: View {
         }
     }
 
-    private func captions(_ columns: [UsageWindow.Kind]) -> some View {
-        HStack(spacing: 6) {
-            Color.clear.frame(width: Self.nameWidth, height: 1)
-            ForEach(Array(columns.enumerated()), id: \.offset) { _, kind in
-                Text(Self.caption(for: kind, in: entry))
+    private func line(_ row: AllAccountsEntry.Row) -> some View {
+        let prefs = entry.prefs
+        let layout = AccountCardLayout(snapshot: row.snapshot, modelSlotFallback: prefs.modelSlotFallback)
+        let hero = layout.hero.window
+        let figures = ([layout.hero] + layout.others)
+            .map { "\($0.window?.shortTitle ?? $0.kind.shortName) \(Self.percent($0.window, prefs))" }
+            .joined(separator: "  ·  ")
+        return VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 10) {
+                Text(row.account.displayName)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(Theme.ink)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+                    .frame(width: Self.nameWidth, alignment: .leading)
+                UsageBarView(
+                    value: hero?.displayedPct(prefs.displayMode),
+                    tint: hero?.tint(usageColors: prefs.usageColors) ?? Theme.accent,
+                    height: 7,
+                    lit: true
+                )
+                Text(verbatim: Self.percent(hero, prefs))
+                    .font(Theme.figure(size: 15))
+                    .foregroundStyle(hero == nil ? Theme.inkSecondary : Theme.ink)
+                    .frame(width: Self.figureWidth, alignment: .trailing)
+            }
+            if row.snapshot != nil {
+                Text(verbatim: figures)
                     .font(.system(size: 9))
                     .foregroundStyle(Theme.inkSecondary)
                     .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .minimumScaleFactor(0.85)
+                    .padding(.leading, Self.nameWidth + 10)
             }
-            Color.clear.frame(width: Self.figureWidth, height: 1)
         }
-        .accessibilityHidden(true)
+        // One VoiceOver element per account: its name and every window's
+        // figure; the bar is decorative.
+        .accessibilityElement(children: .combine)
     }
 
-    private func line(_ row: AllAccountsEntry.Row, columns: [UsageWindow.Kind]) -> some View {
-        let slots = row.snapshot.map { WindowSlots(snapshot: $0, modelSlotFallback: entry.prefs.modelSlotFallback).slots } ?? []
-        let mode = entry.prefs.displayMode
-        return HStack(spacing: 6) {
-            Text(row.account.displayName)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Theme.ink)
-                .lineLimit(1)
-                .frame(width: Self.nameWidth, alignment: .leading)
-            ForEach(columns.indices, id: \.self) { index in
-                let slot = slots.first { $0.kind == columns[index] }
-                let window = slot?.window
-                UsageBarView(
-                    value: window?.displayedPct(mode),
-                    tint: window?.tint(usageColors: entry.prefs.usageColors) ?? Theme.accent
-                )
-                .opacity(slot == nil ? 0.35 : 1)
-            }
-            Text(slots.first?.window.map { "\(Int($0.displayedPct(mode)))%" } ?? "--")
-                .font(Theme.figure(size: 11))
-                .foregroundStyle(Theme.ink)
-                .frame(width: Self.figureWidth, alignment: .trailing)
-        }
-        // One VoiceOver element per account: its name and its session's
-        // figure; the bars are decorative.
-        .accessibilityElement(children: .combine)
+    private static func percent(_ window: UsageWindow?, _ prefs: Preferences) -> String {
+        window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--"
     }
 
     @ViewBuilder

@@ -144,15 +144,15 @@ legacy sentinel if none — rather than each re-deriving it.
   saved) and claims the fetch with an in-flight stamp in the App Group
   (`widget.fetchInFlight.<accountID>`, 60 s), so three widgets for one
   account are one fetch — and one refresh-token rotation — per reload.
-  **Condensed** (`CondensedAccountsView`, its own file) fits six: a
-  header (the app's mark, "All Accounts", the peak badge), the slot
-  names over the columns (the window's own short name, "Month" for a
-  30-day week), one line per account with its name, a bar per
-  column (the columns are kinds: the slots of the first account that has
-  three, else two; each account's bar sits in the column of its kind and
-  a kind it lacks keeps the column, faded, so a Claude and a Copilot
-  account never share a column by position alone) and its first
-  window's figure, and under them the soonest session reset of all the
+  **Condensed** (`CondensedAccountsView`, its own file; 4.0, variant C
+  of three Mike reviewed on 2026-10-21, the vertical-bars one rejected)
+  fits six: a header (the app's mark, "All Accounts", the peak badge),
+  then one line per account sharing the height, its name, its
+  protagonist's thick bar (`AccountCardLayout`, as the cards pick it)
+  and figure, and under the name every window with its figure in small
+  text, the protagonist first ("Week 61% · Session 42% · Top model 18%",
+  each window's own short name, so a Claude and a Copilot account never
+  need shared columns), and under them the soonest session reset of all the
   accounts as a bare live countdown ("Next session reset: 1:02:40",
   `ResetLineText(bare:)`). No reset under each bar and no per-account
   refresh button there: that is what a line gives up for the room. Both
@@ -170,15 +170,18 @@ legacy sentinel if none — rather than each re-deriving it.
   distinguishable in the picker. Its header shows the same peak-hours
   badge (hidden while the policy is retired), but only when the picked
   window is `.session` — the only window the documented policy actually
-  affects. A second Edit Widget choice, Style (`SingleUsageStyle`: Bar,
-  the default, or Ring), draws the window as a ring instead
-  (`RingUsageView`): the same header with the display mode on its
-  trailing edge (the bar style names the window there), a 9 pt ring in
-  the window's level color on the bars' track, the figure in its centre
-  over the window's name and its reset as a bare value, the live
-  countdown under a day ("Session · 2:23:05", `ResetLineText(bare:)`
-  over `UsageFormatting.resetValue`, the value the notch island's
-  segments show too). Of the mockup's three ring widgets only this one
+  affects. The bar style (4.0) is the app card's protagonist alone: the
+  window's name over its figure at 40 pt with "%" and "used"/"left", an
+  8 pt bar and the reset line under it. A second Edit Widget choice,
+  Style (`SingleUsageStyle`: Bar, the default, or Ring), draws the window
+  as a ring instead (`RingUsageView`): the header naming the window on
+  its trailing edge, 12 pt of air, a 9 pt ring in the window's level
+  color on the bars' track, and in its centre only the figure ("42%",
+  no "used": Mike's review, 2026-10-21) over its reset as a bare value
+  with the reset glyph, the live countdown under a day
+  (`ResetLineText(bare:)` over `UsageFormatting.resetValue`, the value
+  the notch island's segments show too), kept 20 pt from the stroke on
+  either side. Of the mockup's three ring widgets only this one
   was kept (a small one with a ring per account and a medium one with
   three rings were not; Mike's call, 2026-10-19).
 - A pre-multi-account widget instance's persisted selection
