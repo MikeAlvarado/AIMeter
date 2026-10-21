@@ -4,7 +4,8 @@ import SwiftUI
 /// A session's pixel pet (`SessionPet`), painted from its pixels on the
 /// pets' shared clock, so every pet on screen steps together. The clock
 /// runs only while a pet is shown, which is only while a session works,
-/// waits or just finished; under Reduce Motion the pet stands still. A
+/// waits or just finished; under Reduce Motion, or while the Mac is in
+/// Low Power Mode (`LowPowerMode`), the pet stands still. A
 /// soft glow in its own color, like Vibe Island's pets: on the island's
 /// black a pet reads lit rather than pasted on.
 struct PixelPetView: View {
@@ -16,7 +17,7 @@ struct PixelPetView: View {
 
     var body: some View {
         Group {
-            if reduceMotion {
+            if !LowPowerMode.petsAnimate(reduceMotion: reduceMotion, lowPower: LowPowerMode.shared.isOn) {
                 PetCanvas(pet: pet, pose: pose, tick: 0, pixel: pixel)
             } else {
                 TimelineView(.periodic(from: SessionPet.epoch, by: SessionPet.tickInterval)) { context in
@@ -49,14 +50,15 @@ private struct PetCanvas: View {
 
 /// The yellow "!" of a pet waiting for a permission prompt, in the pets'
 /// pixels: beside the pet rather than over its head, so it always stays
-/// inside the island's bar. It hops on the shared clock.
+/// inside the island's bar. It hops on the shared clock, and holds still
+/// when the pets do.
 struct PixelAlertView: View {
     let pixel: CGFloat
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Group {
-            if reduceMotion {
+            if !LowPowerMode.petsAnimate(reduceMotion: reduceMotion, lowPower: LowPowerMode.shared.isOn) {
                 mark(up: false)
             } else {
                 TimelineView(.periodic(from: SessionPet.epoch, by: SessionPet.tickInterval)) { context in

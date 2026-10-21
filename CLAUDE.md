@@ -1191,7 +1191,7 @@ the account silently freezes at its last snapshot.
   from the session's figure (opt-in, "Show a pet"; see "Live Activity" in
   `AIMeterWidgets/CLAUDE.md`). `PixelPetView` paints
   `SessionPet.pixels` on a shared 8 Hz clock (a `TimelineView`, so it
-  runs only while a pet is shown; still under Reduce Motion), its
+  runs only while a pet is shown; still under Reduce Motion and while the Mac is in Low Power Mode, `LowPowerMode`, which follows `NSProcessInfoPowerStateDidChange` as it changes), its
   canvas in two thirds of the bar on whole device pixels
   (`SessionPet.pixelSize(beside:)`: 1.5 pt on a MacBook's 32 pt notch,
   the body half the bar's height, as on the mockup the pets were

@@ -111,4 +111,15 @@ final class SessionPetTests: XCTestCase {
         XCTAssertEqual(SessionPet.pixelSize(beside: 24, displayScale: 2), 1)
         XCTAssertEqual(SessionPet.pixelSize(beside: 30, displayScale: 1), 1)
     }
+
+    #if os(macOS)
+    /// The pets stand still under Reduce Motion and in Low Power Mode.
+    func testPetsHoldStillInLowPowerModeAndUnderReduceMotion() {
+        XCTAssertTrue(LowPowerMode.petsAnimate(reduceMotion: false, lowPower: false))
+        XCTAssertFalse(LowPowerMode.petsAnimate(reduceMotion: false, lowPower: true))
+        XCTAssertFalse(LowPowerMode.petsAnimate(reduceMotion: true, lowPower: false))
+        XCTAssertFalse(LowPowerMode.petsAnimate(reduceMotion: true, lowPower: true))
+    }
+    #endif
 }
+
