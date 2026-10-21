@@ -1,7 +1,7 @@
 import { animate, motion } from 'motion/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
-import type { Palette } from './theme'
+import { ROUNDED_FONT, surface, type Palette } from './theme'
 
 // The app's pieces as the screens on the page draw them, at the app's own
 // sizes in points (the screen is laid out at 390 × 844 and scaled to fit).
@@ -33,14 +33,15 @@ export function CountUp({ to, delay = 0, suffix = '' }: { to: number; delay?: nu
   )
 }
 
-export function Bar({ value, color, track, delay = 0, height = 6 }: { value: number; color: string; track: string; delay?: number; height?: number }) {
+/** A bar; `lit` is the protagonist's, its fill easing into its color, never glowing. */
+export function Bar({ value, color, track, delay = 0, height = 6, lit = false }: { value: number; color: string; track: string; delay?: number; height?: number; lit?: boolean }) {
   return (
     <div className="w-full overflow-hidden rounded-full" style={{ height, background: track }}>
       <motion.div
         className="h-full rounded-full"
-        style={{ background: color }}
+        style={{ background: lit ? `linear-gradient(90deg, ${color}D9, ${color})` : color }}
         initial={{ width: 0 }}
-        animate={{ width: `${Math.min(100, value)}%`, backgroundColor: color }}
+        animate={{ width: `${Math.min(100, value)}%` }}
         transition={{ duration: 1.1, delay, ease: [0.22, 1, 0.36, 1] }}
       />
     </div>
@@ -49,8 +50,114 @@ export function Bar({ value, color, track, delay = 0, height = 6 }: { value: num
 
 export function Card({ palette, children, className = '' }: { palette: Palette; children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-[20px] p-4 ${className}`} style={{ background: palette.card, boxShadow: '0 1px 2px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.05)' }}>
+    <div className={`rounded-[24px] p-4 ${className}`} style={surface(palette)}>
       {children}
+    </div>
+  )
+}
+
+/**
+ * An account's card (4.0, `AccountSectionView`): its identity inside, the
+ * window closest to its limit large with its trace and its reset, and the
+ * others one line each in shared columns. No hairlines.
+ */
+export function AccountCard({
+  palette,
+  name,
+  icon,
+  plan,
+  hero,
+  rows,
+  spark,
+  delay = 0,
+}: {
+  palette: Palette
+  name: string
+  icon: 'sparkle' | 'briefcase'
+  plan?: string
+  hero: { title: string; used: number; color: string; reset?: string; suffix: string }
+  rows: { title: string; used: number; color: string; reset?: string }[]
+  spark?: number[]
+  delay?: number
+}) {
+  return (
+    <div className="flex flex-col gap-5 rounded-[24px] p-5" style={surface(palette)}>
+      <AccountIdentity palette={palette} name={name} icon={icon} plan={plan} />
+      <div className="flex flex-col gap-[14px]">
+        <div className="flex items-end gap-3">
+          <div className="flex min-w-0 flex-col gap-[2px]">
+            <span className="text-[15px] font-semibold" style={{ color: palette.ink2 }}>
+              {hero.title}
+            </span>
+            <span className="flex items-baseline leading-none whitespace-nowrap" style={{ fontFamily: ROUNDED_FONT }}>
+              <span className="text-[54px] font-semibold tracking-[-0.02em] tabular-nums" style={{ color: palette.ink }}>
+                <CountUp to={hero.used} delay={delay} />
+              </span>
+              <span className="text-[25px] font-semibold" style={{ color: palette.ink2 }}>
+                %
+              </span>
+              <span className="ml-1 text-[15px] font-medium" style={{ color: palette.ink2, fontFamily: 'inherit' }}>
+                {hero.suffix}
+              </span>
+            </span>
+          </div>
+          <span className="flex-1" />
+          <div className="flex flex-col items-end gap-2 pb-[6px]">
+            {spark && <Sparkline points={spark} color={hero.color} width={92} height={30} filled />}
+            {hero.reset && (
+              <span className="text-[13px] font-medium whitespace-nowrap" style={{ color: palette.ink2 }}>
+                {hero.reset}
+              </span>
+            )}
+          </div>
+        </div>
+        <Bar value={hero.used} color={hero.color} track={palette.track} delay={delay} height={10} lit />
+      </div>
+      {rows.length > 0 && (
+        <div className="grid items-center gap-x-3 gap-y-[13px]" style={{ gridTemplateColumns: 'auto minmax(36px, 1fr) auto auto' }}>
+          {rows.map((row, index) => (
+            <CompactRow key={row.title} palette={palette} row={row} delay={delay + 0.08 * (index + 1)} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function CompactRow({ palette, row, delay }: { palette: Palette; row: { title: string; used: number; color: string; reset?: string }; delay: number }) {
+  return (
+    <>
+      <span className="text-[15px] font-medium whitespace-nowrap" style={{ color: palette.ink }}>
+        {row.title}
+      </span>
+      <Bar value={row.used} color={row.color} track={palette.track} delay={delay} height={5} />
+      <span className="text-right text-[15px] font-semibold tabular-nums" style={{ color: palette.ink, fontFamily: ROUNDED_FONT }}>
+        <CountUp to={row.used} delay={delay} suffix="%" />
+      </span>
+      <span className="text-right text-[13px] whitespace-nowrap" style={{ color: palette.ink2 }}>
+        {row.reset ?? ''}
+      </span>
+    </>
+  )
+}
+
+/** The identity at the top of an account's card: the mark, the name, the plan, the chevron. */
+export function AccountIdentity({ palette, name, icon, plan }: { palette: Palette; name: string; icon: 'sparkle' | 'briefcase'; plan?: string }) {
+  return (
+    <div className="flex items-center gap-[10px]">
+      <span className="grid size-[26px] place-items-center rounded-[8px]" style={{ background: `${palette.accent}24`, color: palette.accent }}>
+        {icon === 'sparkle' ? <SparkleGlyph size={14} /> : <BriefcaseGlyph size={14} />}
+      </span>
+      <span className="text-[17px] font-semibold" style={{ color: palette.ink }}>
+        {name}
+      </span>
+      {plan && (
+        <span className="rounded-full px-[10px] py-[2px] text-[12px] font-semibold" style={{ background: `${palette.track}B3`, color: palette.ink2 }}>
+          {plan}
+        </span>
+      )}
+      <span className="flex-1" />
+      <ChevronGlyph color={palette.ink2} />
     </div>
   )
 }
@@ -82,7 +189,7 @@ export function UsageRow({
           {title}
         </span>
         {spark && <Sparkline points={spark} color={palette.ink2} />}
-        <span className="text-[17px] font-semibold tabular-nums" style={{ color: palette.ink }}>
+        <span className="text-[17px] font-semibold tabular-nums" style={{ color: palette.ink, fontFamily: ROUNDED_FONT }}>
           <CountUp to={used} delay={delay} suffix="%" />
         </span>
       </div>
@@ -104,26 +211,6 @@ export function UsageRow({
           )}
         </motion.div>
       )}
-    </div>
-  )
-}
-
-export function AccountHeader({ palette, name, icon, plan, chevron = true }: { palette: Palette; name: string; icon: 'sparkle' | 'briefcase'; plan?: string; chevron?: boolean }) {
-  return (
-    <div className="flex items-center gap-2 px-1">
-      <span className="grid size-[22px] place-items-center rounded-[6px]" style={{ background: `${palette.accent}24`, color: palette.accent }}>
-        {icon === 'sparkle' ? <SparkleGlyph /> : <BriefcaseGlyph />}
-      </span>
-      <span className="text-[15px] font-medium" style={{ color: palette.ink2 }}>
-        {name}
-      </span>
-      {plan && (
-        <span className="rounded-full px-2 py-[1px] text-[12px] font-medium" style={{ background: palette.track, color: palette.ink2 }}>
-          {plan}
-        </span>
-      )}
-      <span className="flex-1" />
-      {chevron && <ChevronGlyph color={palette.ink2} />}
     </div>
   )
 }
@@ -160,14 +247,28 @@ export function Segmented({ palette, options, selected, id }: { palette: Palette
   )
 }
 
-export function Sparkline({ points, color }: { points: number[]; color: string }) {
-  const width = 56
-  const height = 16
-  const max = Math.max(...points, 1)
-  const path = points.map((value, index) => `${index === 0 ? 'M' : 'L'}${(index / (points.length - 1)) * width},${height - (value / max) * (height - 2) - 1}`).join(' ')
+/** A trace of the last 24 hours; `filled` is the protagonist's, in its bar's color with a fade under it and its latest point marked. */
+export function Sparkline({ points, color, width = 56, height = 16, filled = false }: { points: number[]; color: string; width?: number; height?: number; filled?: boolean }) {
+  const max = filled ? 100 : Math.max(...points, 1)
+  const xy = points.map((value, index) => [(index / (points.length - 1)) * width, height - (value / max) * (height - 4) - 2] as const)
+  const path = xy.map(([x, y], index) => `${index === 0 ? 'M' : 'L'}${x},${y}`).join(' ')
+  const last = xy[xy.length - 1] ?? [0, 0]
+  const gid = `spark-${color.replace('#', '')}`
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="mr-1 shrink-0" aria-hidden>
-      <motion.path d={path} fill="none" stroke={color} strokeWidth={1.2} strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease: 'easeOut' }} />
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="mr-1 shrink-0 overflow-visible" aria-hidden>
+      {filled && (
+        <>
+          <defs>
+            <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={color} stopOpacity={0.16} />
+              <stop offset="1" stopColor={color} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <motion.path d={`${path} L${width},${height} L0,${height} Z`} fill={`url(#${gid})`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.6 }} />
+        </>
+      )}
+      <motion.path d={path} fill="none" stroke={color} strokeWidth={filled ? 1.8 : 1.2} strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease: 'easeOut' }} />
+      {filled && <motion.circle cx={last[0]} cy={last[1]} r={2.6} fill={color} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }} />}
     </svg>
   )
 }
@@ -207,9 +308,20 @@ export function ChevronGlyph({ color, back = false }: { color: string; back?: bo
   )
 }
 
+/** A floating round button on Liquid Glass (`glassControl`): translucent, a light rim, a soft shadow. */
 export function RoundButton({ palette, children }: { palette: Palette; children: ReactNode }) {
+  const dark = palette.background === '#262624'
   return (
-    <span className="grid size-[36px] place-items-center rounded-full" style={{ background: palette.card, color: palette.ink, boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+    <span
+      className="grid size-[44px] place-items-center rounded-full backdrop-blur-xl"
+      style={{
+        background: dark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.55)',
+        color: palette.ink,
+        boxShadow: dark
+          ? 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 0.5px rgba(255,255,255,0.10), 0 6px 16px rgba(0,0,0,0.3)'
+          : 'inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(31,30,29,0.08), 0 6px 16px rgba(0,0,0,0.07)',
+      }}
+    >
       {children}
     </span>
   )

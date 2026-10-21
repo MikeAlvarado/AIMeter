@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import type { PhoneCopy } from '../../../i18n/types'
 import { Card, ChevronGlyph, RoundButton, UsageRow } from '../parts'
 import { useTicker } from '../useTicker'
-import { APP, tint } from '../theme'
+import { APP, backdrop, tint } from '../theme'
 import { duration, fill } from './format'
 
 const palette = APP.light
@@ -16,7 +16,7 @@ export function PaceScreen({ copy }: { copy: PhoneCopy }) {
   const tick = useTicker(2600)
   const early = 1019 - (tick % 5) * 7
   return (
-    <div className="absolute inset-0 px-4 pt-[60px]" style={{ background: palette.background }}>
+    <div className="absolute inset-0 px-4 pt-[60px]" style={{ background: backdrop(palette) }}>
       <div className="relative flex items-center justify-center">
         <span className="absolute left-0">
           <RoundButton palette={palette}>
@@ -30,11 +30,10 @@ export function PaceScreen({ copy }: { copy: PhoneCopy }) {
       <span className="mt-7 mb-2 block px-1 text-[15px] font-medium" style={{ color: palette.ink2 }}>
         {copy.rateLimits}
       </span>
-      <Card palette={palette} className="flex flex-col gap-[14px]">
+      <Card palette={palette} className="flex flex-col gap-[18px]">
         <UsageRow palette={palette} title={copy.session} used={42} color={tint(palette, 42)} pace={copy.onPace} reset={fill(copy.resetsIn, '2h 58m')} />
         <UsageRow palette={palette} title={copy.weekly} used={61} color={tint(palette, 61)} pace={copy.ahead} delay={0.15} />
         <UsageRow palette={palette} title={copy.weeklyTopModel} used={18} color={tint(palette, 18)} pace={copy.behind} reset={fill(copy.resetsIn, '3d 3h')} delay={0.3} />
-        <div className="h-px w-full" style={{ background: palette.track }} />
         <span className="text-[13px]" style={{ color: palette.ink2 }}>
           {copy.updatedNow}
         </span>

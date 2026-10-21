@@ -10,3 +10,10 @@ export function duration(minutes: number): string {
   const rest = minutes % 60
   return hours > 0 ? `${hours}h ${rest}m` : `${rest}m`
 }
+
+/** A live widget countdown the way WidgetKit writes it: "2:57:00", "45:00". */
+export function clock(minutes: number): string {
+  const hours = Math.floor(minutes / 60)
+  const rest = String(minutes % 60).padStart(2, '0')
+  return hours > 0 ? `${hours}:${rest}:00` : `${rest}:00`
+}

@@ -64,7 +64,18 @@ instead of tapping through Settings. 3.1 (2026-10-16) took no new
 capture: the app icon changed to the notch island (Sunset), so only
 the closing frame changed, rendered from the 3.0 captures with the new
 `appicon.png`; every other frame, the header and the search card came
-out pixel for pixel as 3.0's. `detail-smart.png` is scrolled so
+out pixel for pixel as 3.0's. 4.0 (2026-10-21) took the whole set again for the
+redesign (the account card with its protagonist, the widgets, the
+layered icon) on the iPhone 17e and the iPad Pro 13" (M5), demo mode
+through the DEBUG `-AIMeterDemo YES` launch argument now in the app;
+`detail-smart.png` is the account's settings page reached from
+Settings → Account settings (demo mode hides Provider Detail's link to
+it), and the iPad's detail frame shows the Spend card's first row only,
+no amount. The set lives in `roadmap/screenshots-4.0/` (local), and the
+README's pictures and the website's `og.png` are cut from it: the
+banner from the header's content band, 1600 × 667, the three others
+from `iphone-02/03/04` at 600 wide, the social card from the search
+card's middle, 1200 × 630. `detail-smart.png` is scrolled so
 the footnote under the alerts starts about two thirds down: the frame
 shows the top two thirds of the capture, and the footnote's sixth line
 names the provider. The website takes no capture from here since 3.0:

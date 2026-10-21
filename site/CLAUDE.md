@@ -142,7 +142,12 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   app's pieces: cards, rows whose bars fill and figures count up as they
   appear, account headers, segmented pills, sparklines, the glyphs),
   `useTicker` (the slow counter the screens move by; still under reduced
-  motion) and `screens/`: `Dashboard`, `Widgets`, `History`, `Pace`,
+  motion) and `screens/` (since 4.0 drawn the way 4.0's app is: the
+  backdrop, `backdrop()`, the cards' surface, `surface()`, the account
+  card with its protagonist, `AccountCard`, the round buttons on glass,
+  every figure in `ROUNDED_FONT`, and the 4.0 widgets: Single Limit as
+  the protagonist alone, Usage Limits small and All Accounts as the
+  card, the medium as columns): `Dashboard`, `Widgets`, `History`, `Pace`,
   `Alerts` and `Accounts`, each the app's own screen in demo mode, its
   names and figures the demo's (the session creeping up while its reset
   counts down, the history drawing each range, the alerts arriving, the

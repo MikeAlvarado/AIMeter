@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import type { PhoneCopy } from '../../../i18n/types'
 import { Card, ChevronGlyph, RoundButton, Segmented } from '../parts'
 import { useTicker } from '../useTicker'
-import { APP } from '../theme'
+import { APP, backdrop } from '../theme'
 
 const palette = APP.light
 const WIDTH = 296
@@ -45,7 +45,7 @@ export function HistoryScreen({ copy }: { copy: PhoneCopy }) {
   const range = useTicker(3200) % RANGES.length
   const data = RANGES[range] ?? RANGES[0]!
   return (
-    <div className="absolute inset-0 px-4 pt-[60px]" style={{ background: palette.background }}>
+    <div className="absolute inset-0 px-4 pt-[60px]" style={{ background: backdrop(palette) }}>
       <div className="relative flex items-center justify-center">
         <span className="absolute left-0">
           <RoundButton palette={palette}>
