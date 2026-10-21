@@ -78,35 +78,60 @@ struct LoopingPhase<Content: View>: View {
 
 /// Three windows filling up, the session past 70 % turning yellow and
 /// then past 85 % red: the app's rows and colors.
+/// An account card as the Dashboard draws it (4.0): the window closest to
+/// its limit large, the others one line each, the lead changing hands as
+/// the figures climb, and the bars turning yellow and red past their lines.
 private struct BarsDemo: View {
     private static let frames: [[Double]] = [[12, 20, 8], [42, 61, 18], [73, 63, 20], [91, 66, 22]]
+    private static var titles: [String] {
+        [String(localized: "5-hour session"), String(localized: "Weekly"), String(localized: "Credits")]
+    }
 
     var body: some View {
         LoopingPhase(count: Self.frames.count) { phase in
             let values = Self.frames[phase]
-            VStack(spacing: 14) {
-                row(String(localized: "5-hour session"), values[0])
-                row(String(localized: "Weekly"), values[1])
-                row(String(localized: "Credits"), values[2])
+            let lead = values.indices.max { values[$0] < values[$1] } ?? 0
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(Self.titles[lead])
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Theme.inkSecondary)
+                        .contentTransition(.opacity)
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text(verbatim: "\(Int(values[lead]))")
+                            .font(Theme.figure(size: 40))
+                            .foregroundStyle(Theme.ink)
+                            .contentTransition(.numericText())
+                        Text(verbatim: "%")
+                            .font(Theme.figure(size: 18))
+                            .foregroundStyle(Theme.inkSecondary)
+                    }
+                    UsageBarView(value: values[lead], tint: tint(values[lead]), height: 9, lit: true)
+                        .padding(.top, 6)
+                }
+                Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 8) {
+                    ForEach(values.indices.filter { $0 != lead }, id: \.self) { index in
+                        GridRow {
+                            Text(Self.titles[index])
+                                .font(.footnote.weight(.medium))
+                                .foregroundStyle(Theme.ink)
+                                .lineLimit(1)
+                            UsageBarView(value: values[index], tint: tint(values[index]), height: 4)
+                            Text(verbatim: "\(Int(values[index]))%")
+                                .font(Theme.figure(size: 13))
+                                .foregroundStyle(Theme.ink)
+                                .contentTransition(.numericText())
+                                .gridColumnAlignment(.trailing)
+                        }
+                    }
+                }
             }
-            .padding(.horizontal, 26)
+            .padding(.horizontal, 28)
         }
     }
 
-    private func row(_ title: String, _ value: Double) -> some View {
-        VStack(spacing: 6) {
-            HStack {
-                Text(title)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Theme.ink)
-                Spacer()
-                Text(verbatim: "\(Int(value))%")
-                    .font(.subheadline.weight(.semibold).monospacedDigit())
-                    .foregroundStyle(Theme.ink)
-                    .contentTransition(.numericText())
-            }
-            UsageBarView(value: value, tint: UsageWindow.tint(usedPct: value, severity: nil, usageColors: true))
-        }
+    private func tint(_ value: Double) -> Color {
+        UsageWindow.tint(usedPct: value, severity: nil, usageColors: true)
     }
 }
 
@@ -134,7 +159,7 @@ private struct WidgetDemo: View {
                 .foregroundStyle(Theme.inkSecondary)
                 .lineLimit(1)
             Text(verbatim: "\(Int(value))%")
-                .font(.system(size: 30, weight: .bold).monospacedDigit())
+                .font(Theme.figure(size: 30))
                 .foregroundStyle(Theme.ink)
                 .contentTransition(.numericText())
             UsageBarView(value: value, tint: UsageWindow.tint(usedPct: value, severity: nil, usageColors: true))

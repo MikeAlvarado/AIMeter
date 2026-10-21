@@ -4,7 +4,7 @@ export const es = {
   meta: {
     title: 'AIMeter: Tus límites de IA, de un vistazo',
     description:
-      'AIMeter te dice cuánto te queda de tu suscripción de IA, justo en el notch de tu Mac y en el iPhone: límites por sesión, semana y modelo, una mascota por cada sesión de código, widgets y la pantalla de bloqueo. Gratis, open source, sin servidor.',
+      'AIMeter te dice cuánto te queda de tus suscripciones de IA, justo en el notch de tu Mac y en el iPhone: límites por sesión, semana y modelo, una mascota por cada sesión de código, widgets y la pantalla de bloqueo. Gratis, open source, sin servidor.',
   },
   nav: {
     features: 'Funciones',
@@ -23,7 +23,7 @@ export const es = {
     pills: ['Gratis', 'Open source', 'Sin cuenta'],
     line1: 'Tus límites de IA,',
     line2: 'justo en el *notch*.',
-    sub: 'Cada límite de tu suscripción de IA y cuándo se reinicia, en el notch de tu Mac. Y en iPhone y iPad, con widgets y la pantalla de bloqueo.',
+    sub: 'Cada límite de tus suscripciones de IA y cuándo se reinicia, en el notch de tu Mac. Y en iPhone y iPad, con widgets y la pantalla de bloqueo.',
     appStore: 'Descárgala en el App Store',
     appStoreSmall: 'Descárgala en el',
     github: 'Ver en GitHub',
@@ -51,8 +51,8 @@ export const es = {
       {
         id: 'limits',
         title: 'Todos tus límites, de un vistazo',
-        body: 'Sesión, semana y modelo de cada cuenta, con su barra, su porcentaje y cuándo se reinicia.',
-        points: ['Restante o usado, tú eliges', 'Plan y topes de gasto'],
+        body: 'Los límites de cada cuenta, el más cercano a agotarse al frente, con su barra, su porcentaje y cuándo se reinicia.',
+        points: ['Más de un servicio de IA', 'Restante o usado, tú eliges'],
         imageAlt: 'Panel con dos cuentas y sus barras de límites.',
       },
       {
@@ -66,7 +66,7 @@ export const es = {
         id: 'history',
         title: 'Cada reinicio, graficado',
         body: 'El uso de cada límite en el último día, semana o mes, con cada reinicio marcado.',
-        points: ['30 días guardados en tu dispositivo', 'Una minigráfica en cada fila'],
+        points: ['30 días guardados en tu dispositivo', 'Una minigráfica en cada tarjeta'],
         imageAlt: 'Gráfica del uso semanal en 30 días con marcas de reinicio.',
       },
       {

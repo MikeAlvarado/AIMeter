@@ -10,7 +10,7 @@ export const GITHUB_BUILD_URL = `${GITHUB_URL}#building`
 export const MAC_DOWNLOAD_URL = `${GITHUB_URL}/releases/latest/download/AIMeter-macOS.zip`
 export const AUTHOR_URL = 'https://mikealvaradol.web.app/'
 export const SUPPORT_EMAIL = 'miguel_l06@hotmail.com'
-export const CURRENT_VERSION = '3.0'
+export const CURRENT_VERSION = '4.0'
 
 export const SECTION_IDS = ['features', 'mac', 'privacy', 'open-source'] as const
 export type SectionId = (typeof SECTION_IDS)[number]

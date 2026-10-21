@@ -4,7 +4,7 @@ export const en = {
   meta: {
     title: 'AIMeter: Your AI limits, at a glance',
     description:
-      'AIMeter shows how much of your AI subscription is left, right in your Mac’s notch and on iPhone: session, weekly and per-model limits, a pet for each coding session, widgets and the Lock Screen. Free, open source, no server.',
+      'AIMeter shows how much of your AI subscriptions is left, right in your Mac’s notch and on iPhone: session, weekly and per-model limits, a pet for each coding session, widgets and the Lock Screen. Free, open source, no server.',
   },
   nav: {
     features: 'Features',
@@ -23,7 +23,7 @@ export const en = {
     pills: ['Free', 'Open source', 'No account'],
     line1: 'Your AI limits,',
     line2: 'right in the *notch*.',
-    sub: 'Every limit of your AI subscription and when it resets, in your Mac’s notch. And on iPhone and iPad, with widgets and the Lock Screen.',
+    sub: 'Every limit of your AI subscriptions and when it resets, in your Mac’s notch. And on iPhone and iPad, with widgets and the Lock Screen.',
     appStore: 'Download on the App Store',
     appStoreSmall: 'Download on the',
     github: 'View on GitHub',
@@ -51,8 +51,8 @@ export const en = {
       {
         id: 'limits',
         title: 'All your limits, one glance',
-        body: 'Session, weekly and per-model limits for every account, each with its bar, percentage and reset.',
-        points: ['Remaining or used, your pick', 'Plan and spend caps'],
+        body: 'Every account’s limits, the one closest to running out up front, each with its bar, percentage and reset.',
+        points: ['More than one AI service', 'Remaining or used, your pick'],
         imageAlt: 'Dashboard with two accounts and their limit bars.',
       },
       {
@@ -66,7 +66,7 @@ export const en = {
         id: 'history',
         title: 'Every reset, charted',
         body: 'Each limit’s usage over the last day, week or month, with every reset marked.',
-        points: ['30 days kept on your device', 'A sparkline on every row'],
+        points: ['30 days kept on your device', 'A trace on every card'],
         imageAlt: 'History chart of weekly usage over 30 days with reset markers.',
       },
       {

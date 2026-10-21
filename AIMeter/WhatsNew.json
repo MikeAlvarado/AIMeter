@@ -1,6 +1,181 @@
 {
   "releases": [
     {
+      "version": "4.0.0",
+      "items": [
+        {
+          "symbol": "person.crop.circle.badge.plus",
+          "title": {
+            "en": "Codex and GitHub Copilot",
+            "es": "Codex y GitHub Copilot",
+            "de": "Codex und GitHub Copilot",
+            "fr": "Codex et GitHub Copilot",
+            "ja": "CodexとGitHub Copilot",
+            "ko": "Codex와 GitHub Copilot",
+            "pt-BR": "Codex e GitHub Copilot",
+            "zh-Hans": "Codex 和 GitHub Copilot"
+          },
+          "detail": {
+            "en": "Add account now asks which service: Claude, Codex (any ChatGPT plan, Free included) or GitHub Copilot. Codex and Copilot sign in with a one-time code you enter on their own page. Each account keeps its own limits, widgets and alerts.",
+            "es": "Agregar cuenta ahora pregunta qué servicio: Claude, Codex (cualquier plan de ChatGPT, incluido el gratuito) o GitHub Copilot. Codex y Copilot se conectan con un código de un solo uso que escribes en su propia página. Cada cuenta conserva sus límites, widgets y alertas.",
+            "de": "Account hinzufügen fragt jetzt nach dem Dienst: Claude, Codex (jeder ChatGPT-Plan, auch Free) oder GitHub Copilot. Codex und Copilot melden sich mit einem Einmalcode an, den du auf ihrer eigenen Seite eingibst. Jeder Account behält seine Limits, Widgets und Hinweise.",
+            "fr": "Ajouter un compte demande maintenant quel service : Claude, Codex (tout forfait ChatGPT, Free compris) ou GitHub Copilot. Codex et Copilot se connectent avec un code à usage unique que vous saisissez sur leur propre page. Chaque compte garde ses limites, ses widgets et ses alertes.",
+            "ja": "「アカウントを追加」でサービスを選べるようになりました。Claude、Codex（無料を含むすべてのChatGPTプラン）、GitHub Copilotです。CodexとCopilotは、それぞれのページで入力するワンタイムコードでサインインします。アカウントごとに上限、ウィジェット、通知が分かれます。",
+            "ko": "이제 계정 추가에서 서비스를 고릅니다. Claude, Codex(무료를 포함한 모든 ChatGPT 요금제), GitHub Copilot입니다. Codex와 Copilot은 각자의 페이지에 입력하는 일회용 코드로 로그인합니다. 계정마다 한도, 위젯, 알림이 따로 유지됩니다.",
+            "pt-BR": "Adicionar conta agora pergunta qual serviço: Claude, Codex (qualquer plano do ChatGPT, incluindo o gratuito) ou GitHub Copilot. Codex e Copilot entram com um código de uso único que você digita na página deles. Cada conta mantém seus limites, widgets e alertas.",
+            "zh-Hans": "“添加账户”现在会先问你选哪个服务：Claude、Codex（任意 ChatGPT 方案，含免费版）或 GitHub Copilot。Codex 和 Copilot 用一次性代码登录，在它们自己的页面输入即可。每个账户都有自己的额度、小组件和提醒。"
+          }
+        },
+        {
+          "symbol": "rectangle.stack",
+          "title": {
+            "en": "A new look",
+            "es": "Una nueva cara",
+            "de": "Ein neuer Look",
+            "fr": "Un nouveau look",
+            "ja": "新しいデザイン",
+            "ko": "새로운 모습",
+            "pt-BR": "Um novo visual",
+            "zh-Hans": "全新外观"
+          },
+          "detail": {
+            "en": "Each account's card leads with the limit closest to running out, large, and lists the others one line each. Liquid Glass, a calmer background and no dividers, on iPhone, iPad and Mac.",
+            "es": "La tarjeta de cada cuenta pone en grande el límite más cercano a agotarse y deja los demás en una línea cada uno. Liquid Glass, un fondo más tranquilo y sin separadores, en iPhone, iPad y Mac.",
+            "de": "Die Karte jedes Accounts zeigt das Limit, das am ehesten ausläuft, groß und die übrigen je in einer Zeile. Liquid Glass, ein ruhigerer Hintergrund und keine Trennlinien, auf iPhone, iPad und Mac.",
+            "fr": "La carte de chaque compte met en grand la limite la plus proche d'être atteinte et liste les autres sur une ligne chacune. Liquid Glass, un fond plus calme et plus de séparateurs, sur iPhone, iPad et Mac.",
+            "ja": "各アカウントのカードは、上限に最も近いものを大きく表示し、ほかは1行ずつ並べます。Liquid Glass、落ち着いた背景、区切り線なし。iPhone、iPad、Macで。",
+            "ko": "계정 카드마다 한도에 가장 가까운 항목을 크게 보여 주고, 나머지는 한 줄씩 나열합니다. Liquid Glass, 차분한 배경, 구분선 없이 iPhone, iPad, Mac에서.",
+            "pt-BR": "O cartão de cada conta mostra em destaque o limite mais perto de acabar e lista os outros em uma linha cada. Liquid Glass, um fundo mais calmo e sem divisórias, no iPhone, iPad e Mac.",
+            "zh-Hans": "每个账户的卡片都把最接近用完的额度放大显示，其余各占一行。Liquid Glass、更沉静的背景、不再有分隔线，iPhone、iPad 和 Mac 一致。"
+          }
+        },
+        {
+          "symbol": "rectangle.3.group",
+          "title": {
+            "en": "Widgets, redrawn",
+            "es": "Widgets renovados",
+            "de": "Widgets, neu gezeichnet",
+            "fr": "Des widgets redessinés",
+            "ja": "ウィジェットを一新",
+            "ko": "새로 그린 위젯",
+            "pt-BR": "Widgets redesenhados",
+            "zh-Hans": "重新绘制的小组件"
+          },
+          "detail": {
+            "en": "The small, Single Limit and All Accounts widgets lead with the same figure as the app's card. The condensed All Accounts layout now shows every window's figure too.",
+            "es": "Los widgets pequeño, Límite individual y Todas las cuentas ponen al frente la misma cifra que la tarjeta de la app. El diseño compacto de Todas las cuentas ahora muestra también la cifra de cada ventana.",
+            "de": "Die Widgets Klein, Einzelnes Limit und Alle Accounts zeigen vorne dieselbe Zahl wie die Karte der App. Das kompakte Layout von Alle Accounts zeigt jetzt auch die Zahl jedes Fensters.",
+            "fr": "Les widgets petit, Limite unique et Tous les comptes mettent en avant le même chiffre que la carte de l'app. La disposition condensée de Tous les comptes affiche aussi le chiffre de chaque fenêtre.",
+            "ja": "小サイズ、単一の上限、すべてのアカウントの各ウィジェットが、アプリのカードと同じ数値を大きく表示します。すべてのアカウントのコンパクト表示では、各ウインドウの数値も表示されます。",
+            "ko": "작은 위젯, 단일 한도, 모든 계정 위젯이 앱 카드와 같은 수치를 앞세웁니다. 모든 계정의 간결한 레이아웃에서도 이제 각 기간의 수치를 보여 줍니다.",
+            "pt-BR": "Os widgets pequeno, Limite único e Todas as contas destacam o mesmo número do cartão do app. O layout compacto de Todas as contas agora também mostra o número de cada janela.",
+            "zh-Hans": "小号、单项额度和所有账户小组件都以与应用卡片相同的数字为主。所有账户的紧凑布局现在也会显示每个周期的数字。"
+          }
+        },
+        {
+          "symbol": "app.badge",
+          "title": {
+            "en": "The icon in Liquid Glass",
+            "es": "El ícono en Liquid Glass",
+            "de": "Das Symbol in Liquid Glass",
+            "fr": "L'icône en Liquid Glass",
+            "ja": "Liquid Glassのアイコン",
+            "ko": "Liquid Glass 아이콘",
+            "pt-BR": "O ícone em Liquid Glass",
+            "zh-Hans": "Liquid Glass 图标"
+          },
+          "detail": {
+            "en": "Every look of the icon is now built in layers, so iOS 26 and macOS 26 draw it in glass, with dark, clear and tinted versions.",
+            "es": "Todas las versiones del ícono ahora están hechas por capas, así que iOS 26 y macOS 26 las dibujan en cristal, con versiones oscura, transparente y teñida.",
+            "de": "Jede Variante des Symbols besteht jetzt aus Ebenen, sodass iOS 26 und macOS 26 sie in Glas zeichnen, mit dunkler, klarer und getönter Version.",
+            "fr": "Chaque style de l'icône est désormais construit en calques : iOS 26 et macOS 26 la dessinent en verre, avec des versions sombre, transparente et teintée.",
+            "ja": "すべてのアイコンがレイヤー構成になり、iOS 26とmacOS 26ではガラスとして描かれます。ダーク、クリア、カラーの各バージョン付きです。",
+            "ko": "모든 아이콘 스타일이 레이어로 구성되어 iOS 26과 macOS 26에서 유리처럼 그려집니다. 다크, 투명, 틴트 버전도 함께입니다.",
+            "pt-BR": "Todas as versões do ícone agora são feitas em camadas, então o iOS 26 e o macOS 26 as desenham em vidro, com versões escura, transparente e tingida.",
+            "zh-Hans": "每种图标样式现在都由图层构成，iOS 26 和 macOS 26 会以玻璃效果绘制，并提供深色、透明和着色版本。"
+          }
+        },
+        {
+          "symbol": "menubar.rectangle",
+          "title": {
+            "en": "The menu bar panel",
+            "es": "El panel de la barra de menús",
+            "de": "Das Menüleisten-Panel",
+            "fr": "Le panneau de la barre des menus",
+            "ja": "メニューバーのパネル",
+            "ko": "메뉴 막대 패널",
+            "pt-BR": "O painel da barra de menus",
+            "zh-Hans": "菜单栏面板"
+          },
+          "detail": {
+            "en": "The menu bar popover shows each account's windows side by side, on the system's own material. Click an account to open its details.",
+            "es": "El panel de la barra de menús muestra las ventanas de cada cuenta lado a lado, sobre el material del sistema. Haz clic en una cuenta para abrir su detalle.",
+            "de": "Das Menüleisten-Popover zeigt die Fenster jedes Accounts nebeneinander, auf dem Material des Systems. Klicke auf einen Account, um seine Details zu öffnen.",
+            "fr": "Le popover de la barre des menus affiche les fenêtres de chaque compte côte à côte, sur le matériau du système. Cliquez sur un compte pour ouvrir son détail.",
+            "ja": "メニューバーのポップオーバーに、各アカウントのウインドウが横に並びます。背景はシステムの素材です。アカウントをクリックすると詳細が開きます。",
+            "ko": "메뉴 막대 팝오버에 각 계정의 기간이 시스템 재질 위에 나란히 표시됩니다. 계정을 클릭하면 세부 정보가 열립니다.",
+            "pt-BR": "O popover da barra de menus mostra as janelas de cada conta lado a lado, sobre o material do sistema. Clique em uma conta para abrir os detalhes.",
+            "zh-Hans": "菜单栏弹出窗口在系统自身的材质上并排显示每个账户的周期。点按账户即可打开详细信息。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "leaf",
+          "title": {
+            "en": "Pets rest in Low Power Mode",
+            "es": "Las mascotas descansan en Modo de bajo consumo",
+            "de": "Haustiere ruhen im Stromsparmodus",
+            "fr": "Les compagnons se reposent en mode Économie d'énergie",
+            "ja": "低電力モードではペットが休みます",
+            "ko": "저전력 모드에서는 펫이 쉽니다",
+            "pt-BR": "Os bichinhos descansam no Modo Pouca Energia",
+            "zh-Hans": "低电量模式下宠物会休息"
+          },
+          "detail": {
+            "en": "While the Mac is in Low Power Mode, the session pets beside the notch stand still.",
+            "es": "Mientras la Mac está en Modo de bajo consumo, las mascotas de las sesiones junto al notch se quedan quietas.",
+            "de": "Solange der Mac im Stromsparmodus ist, bleiben die Haustiere der Sessions neben der Notch still stehen.",
+            "fr": "Tant que le Mac est en mode Économie d'énergie, les compagnons des sessions à côté de l'encoche restent immobiles.",
+            "ja": "Macが低電力モードの間、ノッチ横のセッションのペットは動きを止めます。",
+            "ko": "Mac이 저전력 모드인 동안 노치 옆 세션 펫이 움직이지 않습니다.",
+            "pt-BR": "Enquanto o Mac está no Modo Pouca Energia, os bichinhos das sessões ao lado do notch ficam parados.",
+            "zh-Hans": "Mac 处于低电量模式时，刘海旁的会话宠物会保持静止。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "rectangle.inset.filled",
+          "title": {
+            "en": "The open island fits",
+            "es": "La isla abierta cabe completa",
+            "de": "Die offene Insel passt",
+            "fr": "L'île ouverte tient en entier",
+            "ja": "開いたアイランドに収まります",
+            "ko": "열린 아일랜드에 딱 맞게",
+            "pt-BR": "A ilha aberta cabe inteira",
+            "zh-Hans": "展开的岛完整显示"
+          },
+          "detail": {
+            "en": "Every account's row stays inside the open notch island, whatever windows the accounts have.",
+            "es": "La fila de cada cuenta se queda dentro de la isla del notch abierta, tengan las cuentas las ventanas que tengan.",
+            "de": "Die Zeile jedes Accounts bleibt innerhalb der geöffneten Notch-Insel, egal welche Fenster die Accounts haben.",
+            "fr": "La ligne de chaque compte reste dans l'île de l'encoche ouverte, quelles que soient les fenêtres des comptes.",
+            "ja": "アカウントのウインドウ構成に関係なく、各アカウントの行が開いたノッチアイランドの中に収まります。",
+            "ko": "계정에 어떤 기간이 있든 각 계정의 행이 열린 노치 아일랜드 안에 머뭅니다.",
+            "pt-BR": "A linha de cada conta fica dentro da ilha do notch aberta, sejam quais forem as janelas das contas.",
+            "zh-Hans": "无论账户有哪些周期，每个账户的行都会留在展开的刘海岛内。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        }
+      ]
+    },
+    {
       "version": "3.2.0",
       "items": [
         {

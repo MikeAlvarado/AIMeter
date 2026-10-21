@@ -19,7 +19,7 @@ enum TourText {
 
     static func detail(_ feature: TourFeature) -> String {
         switch feature {
-        case .welcome: String(localized: "Your AI subscription's limits at a glance: every window, how much is left, and when it resets.")
+        case .welcome: String(localized: "Your AI subscriptions' limits at a glance: every window, how much is left, and when it resets.")
         case .widgets: String(localized: "Touch and hold the Home Screen, tap Edit, then Add Widget, and pick AIMeter. The Lock Screen has one too.")
         case .alerts: String(localized: "Allow notifications, then choose in each account which alerts you want: near a limit, an early run-out, a reset.")
         case .colors: String(localized: "Bars turn yellow above 70% used and red above 85%, so you see a limit coming.")

@@ -2305,6 +2305,53 @@
         }
       }
     },
+    "Your AI subscriptions' limits at a glance: every window, how much is left, and when it resets." : {
+      "comment" : "Tour, first step: what AIMeter is.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Limits deiner KI-Abos auf einen Blick: jedes Fenster, wie viel übrig ist und wann es zurückgesetzt wird."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los límites de tus suscripciones de IA de un vistazo: cada ventana, cuánto te queda y cuándo se reinicia."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les limites de vos abonnements IA en un coup d’œil : chaque fenêtre, ce qu’il en reste et quand elle se réinitialise."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIサブスクリプションの上限をひと目で。ウインドウごとの残りと、リセットされる時刻がわかります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여러 AI 구독의 한도를 한눈에 보세요. 기간마다 남은 양과 재설정 시점을 알려 줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os limites das suas assinaturas de IA num relance: cada janela, quanto resta e quando ela reinicia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一眼看清各个 AI 订阅的额度：每个周期还剩多少，何时重置。"
+          }
+        }
+      }
+    },
     "Your code: %@" : {
       "localizations" : {
         "de" : {
@@ -4932,53 +4979,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "欢迎使用 AIMeter"
-          }
-        }
-      }
-    },
-    "Your AI subscription's limits at a glance: every window, how much is left, and when it resets." : {
-      "comment" : "Tour, first step: what AIMeter is.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Limits deines KI-Abos auf einen Blick: jedes Fenster, wie viel übrig ist und wann es zurückgesetzt wird."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Los límites de tu suscripción de IA de un vistazo: cada ventana, cuánto te queda y cuándo se reinicia."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les limites de votre abonnement IA en un coup d’œil : chaque fenêtre, ce qu’il en reste et quand elle se réinitialise."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIサブスクリプションの上限をひと目で。ウインドウごとの残りと、リセットされる時刻がわかります。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI 구독의 한도를 한눈에 보세요. 기간마다 남은 양과 재설정 시점을 알려 줍니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Os limites da sua assinatura de IA num relance: cada janela, quanto resta e quando ela reinicia."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一眼看清 AI 订阅的额度：每个周期还剩多少，何时重置。"
           }
         }
       }
