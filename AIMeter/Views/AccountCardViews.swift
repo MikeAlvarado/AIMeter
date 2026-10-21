@@ -49,7 +49,7 @@ struct HeroWindowView: View {
     }
 
     private var figure: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 2) {
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
             if let window {
                 Text(verbatim: "\(Int(window.displayedPct(prefs.displayMode)))")
                     .font(Theme.figure(size: figureSize))

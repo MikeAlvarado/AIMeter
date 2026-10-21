@@ -51,16 +51,22 @@ struct AllAccountsWidgetView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 let visible = Array(entry.rows.prefix(Self.maxRows))
-                ForEach(visible) { row in
+                // The accounts share the height: the first at the top, the
+                // last at the bottom, the room left over between them.
+                ForEach(Array(visible.enumerated()), id: \.element.id) { index, row in
+                    if index > 0 {
+                        Spacer(minLength: 14)
+                    }
                     AccountRow(row: row, prefs: entry.prefs, now: entry.date)
-                        .padding(.bottom, 6)
                 }
                 if entry.rows.count > Self.maxRows {
                     Text("+\(entry.rows.count - Self.maxRows) more")
                         .font(.system(size: 10))
                         .foregroundStyle(Theme.inkSecondary)
                 }
-                Spacer(minLength: 0)
+                if visible.count < 2 {
+                    Spacer(minLength: 0)
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -78,7 +84,7 @@ private struct AccountRow: View {
     let now: Date
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 5) {
                 ProviderIdentityView(
                     name: row.account.displayName,
@@ -106,8 +112,10 @@ private struct AccountRow: View {
                     window: layout.hero.window,
                     prefs: prefs,
                     now: now,
-                    moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: snapshot)
+                    moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: snapshot),
+                    figureSize: 34
                 )
+                .padding(.bottom, 4)
                 WidgetCompactRows(slots: layout.others, prefs: prefs)
             } else {
                 Text("No usage data yet")

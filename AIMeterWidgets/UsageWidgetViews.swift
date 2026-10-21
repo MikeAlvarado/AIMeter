@@ -121,15 +121,16 @@ struct SystemUsageView: View {
         let layout = AccountCardLayout(snapshot: snapshot, modelSlotFallback: prefs.modelSlotFallback)
         VStack(alignment: .leading, spacing: 0) {
             WidgetHeader(snapshot: snapshot, date: date, accountID: accountID, accountName: accountName, accountIcon: accountIcon)
-            Spacer(minLength: 6)
+            Spacer(minLength: 8)
             WidgetHero(
                 kind: layout.hero.kind,
                 window: layout.hero.window,
                 prefs: prefs,
                 now: date,
-                moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: snapshot)
+                moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: snapshot),
+                figureSize: 28
             )
-            Spacer(minLength: 6)
+            Spacer(minLength: 8)
             WidgetCompactRows(slots: Array(layout.others.prefix(2)), prefs: prefs)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -145,6 +146,9 @@ struct WidgetHero: View {
     let prefs: Preferences
     let now: Date
     let moneySubtitle: String?
+    /// 28 pt in the small family, larger where a family has the height
+    /// (the all-accounts widget).
+    var figureSize: CGFloat = 28
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -152,17 +156,17 @@ struct WidgetHero: View {
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Theme.inkSecondary)
                 .lineLimit(1)
-            HStack(alignment: .firstTextBaseline, spacing: 1) {
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
                 if let window {
                     Text(verbatim: "\(Int(window.displayedPct(prefs.displayMode)))")
-                        .font(Theme.figure(size: 32))
+                        .font(Theme.figure(size: figureSize))
                         .foregroundStyle(Theme.ink)
                     Text(verbatim: "%")
-                        .font(Theme.figure(size: 15))
+                        .font(Theme.figure(size: figureSize * 0.46))
                         .foregroundStyle(Theme.inkSecondary)
                 } else {
                     Text(verbatim: "--")
-                        .font(Theme.figure(size: 32))
+                        .font(Theme.figure(size: figureSize))
                         .foregroundStyle(Theme.inkSecondary)
                 }
                 Spacer(minLength: 4)

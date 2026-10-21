@@ -45,7 +45,7 @@ legacy sentinel if none — rather than each re-deriving it.
   is the app's account card in a small square (`SystemUsageView`, 4.0;
   see "Account cards" in the repo-root CLAUDE.md): the window
   `AccountCardLayout` puts first as the protagonist (`WidgetHero`: its
-  short name, the figure at 32 pt with "%", its reset beside it as a bare
+  short name, the figure at 28 pt with "%", its reset beside it as a bare
   value with the reset glyph, the live countdown under a day, and a 7 pt
   bar) and up to two others as one line each in shared columns
   (`WidgetCompactRows`: name, a 4 pt bar, the figure); the medium
@@ -120,10 +120,12 @@ legacy sentinel if none — rather than each re-deriving it.
   `ProviderIdentityView` at the same small size `AIMeterUsage`'s header
   uses, the same always-visible iOS refresh button, and that account's
   windows as the small widget draws them (`WidgetHero` for the
-  protagonist `AccountCardLayout` picks, `WidgetCompactRows` for the
+  protagonist `AccountCardLayout` picks, its figure at 34 pt here, `WidgetCompactRows` for the
   rest; internal, not `private`, in `UsageWidgetViews.swift` so both
   widgets render an account identically, and as the app's card does).
-  That costs real vertical room, so this is capped at the
+  The two accounts share the height, the first at the top and the last
+  at the bottom, the room left over between them. That costs real
+  vertical room, so this is capped at the
   first 2 accounts (registry order — the same order the Dashboard/menu bar
   use, and the one a Dashboard drag-reorder rewrites, which is why a
   reorder reloads timelines; or by urgency with "Order by urgency" on,
