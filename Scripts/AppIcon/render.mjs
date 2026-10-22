@@ -24,6 +24,9 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const sharp = createRequire(join(ROOT, 'site', 'package.json'))('sharp')
 const S = 1024
+// An app icon's shape inside its canvas on the Mac: 824 of 1024, 100 in.
+const DOCK_SHAPE = 824
+const DOCK_INSET = (S - DOCK_SHAPE) / 2
 const DEVELOPER = execFileSync('xcode-select', ['-p']).toString().trim()
 const ICTOOL = join(DEVELOPER, '..', 'Applications', 'Icon Composer.app', 'Contents', 'Executables', 'ictool')
 
@@ -190,11 +193,18 @@ async function writeAll() {
     rmSync(preview, { recursive: true, force: true }); mkdirSync(preview)
     await sharp(ios).resize(256, 256).png().toFile(join(preview, 'preview.png'))
     writeFileSync(join(preview, 'Contents.json'), contents([{ filename: 'preview.png', idiom: 'universal' }]))
-    // The Mac's Dock image for an alternate, as macOS draws it.
+    // The Mac's Dock image for an alternate, as macOS draws it: `ictool`
+    // fills the whole canvas with the icon, while an app's icon sits in
+    // the middle 824 points of its 1024 with 100 transparent around it
+    // (measured on the bundle's own and System Settings'), so the shape is
+    // drawn at 824 and set there. Full bleed, it stood a size larger than
+    // every other icon in the Dock (Mike, 2026-10-22).
     if (look.key !== 'Sunset') {
       const dock = join(xc, `AppIconDock-${look.key}.imageset`)
       rmSync(dock, { recursive: true, force: true }); mkdirSync(dock)
-      render(doc, 'macOS', 'Default', S, join(dock, 'dock.png'))
+      const shape = render(doc, 'macOS', 'Default', DOCK_SHAPE, join(scratch, `${look.key}-dock.png`))
+      await sharp({ create: { width: S, height: S, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+        .composite([{ input: shape, left: DOCK_INSET, top: DOCK_INSET }]).png().toFile(join(dock, 'dock.png'))
       writeFileSync(join(dock, 'Contents.json'), contents([{ filename: 'dock.png', idiom: 'mac' }]))
     }
     // The website's icons: Sunset. The favicon and the page's picture as

@@ -2225,7 +2225,9 @@ drawn from them are output, never edited by hand (nor in Icon Composer).
    `AIMeterWatch/AppIcon.icon` (Sunset; watchOS draws it round),
    `AppIconPreview-<Look>` (Settings' pictures), `AppIconDock-<Look>`
    (the Mac's Dock images, as macOS draws them, Mac idiom only, so iOS
-   doesn't carry them), and the website's `favicon-32.png` and
+   doesn't carry them; the shape at 824 of the 1024 canvas, 100 in, where
+   macOS puts every app's icon, since `ictool` draws it full bleed and
+   4.0 to 4.1.0 stood a size larger than the rest of the Dock), and the website's `favicon-32.png` and
    `src/assets/app-icon.png` (as iOS draws it) and
    `apple-touch-icon.png`, `icon-192/512.png` (flat, full bleed and
    opaque: the browser or the system rounds them).

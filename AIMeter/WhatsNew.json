@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "4.1.1",
+      "items": [
+        {
+          "symbol": "dock.rectangle",
+          "title": {
+            "en": "The Dock icon, at its size",
+            "es": "El ícono del Dock, a su tamaño",
+            "de": "Das Dock-Symbol in seiner Größe",
+            "fr": "L'icône du Dock, à sa taille",
+            "ja": "Dock のアイコンを正しいサイズに",
+            "ko": "Dock 아이콘을 제 크기로",
+            "pt-BR": "O ícone do Dock, no tamanho certo",
+            "zh-Hans": "程序坞图标恢复正常大小"
+          },
+          "detail": {
+            "en": "With the Ivory, Night or Pet icon, AIMeter now stands in the Dock at the same size as every other app, instead of a size larger.",
+            "es": "Con el ícono Marfil, Noche o Mascota, AIMeter ahora se ve en el Dock del mismo tamaño que las demás apps, en lugar de una talla más grande.",
+            "de": "Mit dem Symbol Elfenbein, Nacht oder Pixeltier hat AIMeter im Dock jetzt dieselbe Größe wie alle anderen Apps statt eine Nummer größer.",
+            "fr": "Avec l'icône Ivoire, Nuit ou Compagnon, AIMeter apparaît désormais dans le Dock à la même taille que les autres apps, au lieu d'une taille au-dessus.",
+            "ja": "アイボリー、夜、ペットのアイコンでも、AIMeter は Dock でほかのアプリと同じサイズで表示されるようになりました。これまでは一回り大きく表示されていました。",
+            "ko": "아이보리, 밤, 펫 아이콘을 사용해도 이제 AIMeter가 Dock에서 다른 앱과 같은 크기로 보입니다. 이전에는 한 단계 더 크게 보였습니다.",
+            "pt-BR": "Com o ícone Marfim, Noite ou Bichinho, o AIMeter agora aparece no Dock do mesmo tamanho que os outros apps, em vez de um tamanho maior.",
+            "zh-Hans": "使用象牙白、夜晚或宠物图标时，AIMeter 在程序坞中现在与其他 App 大小一致，而不再大一号。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        }
+      ]
+    },
+    {
       "version": "4.1.0",
       "items": [
         {
