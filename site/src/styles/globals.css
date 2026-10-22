@@ -40,7 +40,6 @@
 
   --text-hero: clamp(2.6rem, 1.2rem + 4.6vw, 5rem);
   --text-section: clamp(2.4rem, 1.4rem + 3vw, 3.8rem);
-  --text-statement: clamp(2rem, 1rem + 3.4vw, 3.6rem);
 
   --animate-grain: grain 0.8s steps(1, end) infinite;
 
@@ -167,8 +166,9 @@ body {
   opacity: 1;
 }
 
-/* The dark sections' ground, under their "+" grid (`PlusGrid`): no glow
-   from above, only a faint warmth low behind what the section shows. */
+/* The dark sections' ground, under the hero's code field (`CodeField`) and
+   the closing's "+" grid (`PlusGrid`): no glow from above, only a faint
+   warmth low behind what the section shows. */
 @utility night-ground {
   background-color: var(--color-night);
   background-image:

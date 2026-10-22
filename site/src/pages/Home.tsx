@@ -6,7 +6,6 @@ import { Hero } from '../components/sections/Hero'
 import { Mac } from '../components/sections/Mac'
 import { OpenSource } from '../components/sections/OpenSource'
 import { Privacy } from '../components/sections/Privacy'
-import { Statement } from '../components/sections/Statement'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useLanguage } from '../hooks/useLanguage'
 import { scrollToSection } from '../lib/scroll'
@@ -27,7 +26,6 @@ export function Home() {
     <main className="flex flex-col">
       <Hero />
       <div className="bg-bg relative">
-        <Statement />
         <Features />
         <Mac />
         <Privacy />

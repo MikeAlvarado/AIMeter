@@ -4,7 +4,7 @@ export const en = {
   meta: {
     title: 'AIMeter: Your AI limits, at a glance',
     description:
-      'AIMeter shows how much of your AI subscriptions is left, right in your Mac’s notch and on iPhone: session, weekly and per-model limits, a pet for each coding session, widgets and the Lock Screen. Free, open source, no server.',
+      'AIMeter shows how much of your AI subscriptions is left, right in your Mac’s notch and on iPhone, iPad and Apple Watch: session, weekly and per-model limits, a pet for each coding session, widgets and the Lock Screen. Free, open source, no server.',
   },
   nav: {
     features: 'Features',
@@ -20,16 +20,16 @@ export const en = {
     home: 'AIMeter home',
   },
   hero: {
-    pills: ['Free', 'Open source', 'No account'],
+    pills: ['Free', 'Open source', 'No sign-up'],
     line1: 'Your AI limits,',
     line2: 'right in the *notch*.',
-    sub: 'Every limit of your AI subscriptions and when it resets, in your Mac’s notch. And on iPhone and iPad, with widgets and the Lock Screen.',
+    sub: 'How much of each AI limit is left and when it resets, in your Mac’s notch. On iPhone, iPad and Apple Watch too, with widgets and the Lock Screen.',
     appStore: 'Download on the App Store',
     appStoreSmall: 'Download on the',
     github: 'View on GitHub',
     macDownload: 'Download for Mac',
     macDownloadSmall: 'Download for',
-    platforms: 'iPhone · iPad · Mac',
+    platforms: 'iPhone · iPad · Apple Watch · Mac',
     version: 'Version',
     phoneAlt: 'AIMeter dashboard on iPhone: two accounts, each with session, weekly and model limits as bars with reset countdowns.',
   },
@@ -41,7 +41,6 @@ export const en = {
       { pill: 'Needs you', title: 'Know the moment a session needs you.' },
     ],
   },
-  statement: 'Every limit you pay for, in one place. No server, no account, no analytics.',
   features: {
     heading: 'What it *does*',
     sub: 'Straight from your provider’s own numbers.',
@@ -87,7 +86,7 @@ export const en = {
         id: 'accounts',
         title: 'Every account, its own icon',
         body: 'As many accounts as you like, each with its own name and icon, everywhere.',
-        points: ['Drag to reorder', 'Dark mode included'],
+        points: ['Drag to reorder', 'Or let urgency order them'],
         imageAlt: 'Dashboard in dark mode with two accounts and custom icons.',
       },
     ],
@@ -132,7 +131,7 @@ export const en = {
   },
   mac: {
     heading: 'Any Mac, *any screen*',
-    sub: 'No notch? AIMeter draws one at the top of your display, or a pill in the menu bar. Prefer an icon? Pick one of six styles.',
+    sub: 'No notch? AIMeter draws one at the top of your display, or a pill in the menu bar. Rather have an icon there? Pick one of six styles.',
     styles: ['Gauge with the number', 'Gauge only', 'Number only', 'Bar', 'Battery', 'Two or three windows side by side'],
     extras: ['Optional Dock icon', 'Opens at login', 'Updates itself', 'Keyboard shortcuts'],
     note: 'Not on the Mac App Store: a zip notarized by Apple, for macOS 14 or later.',
@@ -144,7 +143,7 @@ export const en = {
     sub: 'Every claim here is verifiable in the code.',
     points: [
       { title: 'No server, no account', body: 'Your usage goes from your provider to your device, with nothing in between.' },
-      { title: 'Tokens stay in the Keychain', body: 'Encrypted by the system. AIMeter asks for a read-only scope, never one that runs prompts.' },
+      { title: 'Tokens stay in the Keychain', body: 'Encrypted by the system. AIMeter only uses them to read your usage, never to send a prompt.' },
       { title: 'No analytics, no tracking', body: 'No analytics, ads or crash reporting, in the app or on this site.' },
       { title: 'Yours to delete', body: 'Disconnecting an account deletes its token and history. Nothing is in the cloud unless you turn on iCloud sync, and that is yours to turn off.' },
     ],
@@ -163,7 +162,7 @@ export const en = {
     github: 'Star it on GitHub',
   },
   closing: {
-    eyebrow: 'Free on the App Store for iPhone and iPad, and a download for the Mac.',
+    eyebrow: 'Free on the App Store for iPhone, iPad and Apple Watch, and a download for the Mac.',
     heading: 'Your limits, *on your terms*.',
     appStore: 'Download on the App Store',
     github: 'View the source',
@@ -178,7 +177,7 @@ export const en = {
     description: 'What AIMeter reads, what it stores on your device, and what never leaves it.',
     intro:
       'AIMeter has no server and no account of its own. It reads your usage from your AI provider with the login you grant it, keeps a copy on your device so widgets can render, and sends nothing anywhere else. This page lists every data flow so you can check each one against the source.',
-    updated: 'Last updated: 19 October 2026',
+    updated: 'Last updated: 22 October 2026',
     sections: [
       {
         heading: 'What leaves your device',
@@ -258,7 +257,7 @@ export const en = {
       {
         heading: 'Contact and trademarks',
         paragraphs: [
-          'Questions go to the support page. AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic. “Claude” and “Anthropic” are trademarks of Anthropic, PBC, used only to identify the service whose usage the app displays.',
+          'Questions go to the support page. AIMeter is an independent open source project (MIT). It is not affiliated with, endorsed by, or sponsored by Anthropic, OpenAI or GitHub. “Claude” and “Anthropic” are trademarks of Anthropic, PBC; “ChatGPT”, “Codex” and “OpenAI” of OpenAI; “GitHub” and “GitHub Copilot” of GitHub, Inc.; each used only to identify the service whose usage the app displays.',
         ],
       },
     ],
@@ -267,18 +266,18 @@ export const en = {
     title: 'Support',
     description: 'How to connect an account, what the alerts mean, and where to ask for help.',
     intro: 'AIMeter is built and maintained by one person, in the open. Most answers are below; anything else is a GitHub issue or an email away.',
-    updated: 'For AIMeter 3.2',
+    updated: 'For AIMeter 4.1',
     sections: [
       {
         heading: 'Connecting on iPhone and iPad',
         paragraphs: [
-          'Tap Connect. AIMeter opens your provider’s sign-in page in your browser (any sign-in method works), you approve, copy the code it shows and paste it back. Optionally give the account a nickname; you can rename it later from the card’s menu. The token is stored in the Keychain and the app keeps it refreshed on its own.',
+          'Tap Connect and pick the service. Claude opens its sign-in page in your browser (any sign-in method works): you approve, copy the code it shows and paste it back. Codex and GitHub Copilot show a one-time code that you enter on the service’s own page, in your browser. Optionally give the account a nickname; you can rename it later in its settings. The token is stored in the Keychain and the app keeps it refreshed on its own.',
         ],
       },
       {
         heading: 'Connecting on the Mac',
         paragraphs: [
-          'Zero setup for your first account if Claude Code is installed and logged in: AIMeter reads the login it already keeps, read-only, and never modifies it. Any further account, or a Mac without the CLI, signs in the same way as on iPhone. Add account on the dashboard repeats the flow per login.',
+          'Zero setup for your first account if Claude Code is installed and logged in: AIMeter reads the login it already keeps, read-only, and never modifies it. Any further account, or a Mac without the CLI, signs in the same way as on iPhone; with the Codex CLI signed in, the Connect sheet can read its login the same way. Add Account, on the Dashboard or with + in Settings, Accounts, repeats the flow per login.',
         ],
       },
       {
@@ -292,7 +291,7 @@ export const en = {
     faqs: [
       {
         q: 'The card says “Sign in again”. What happened?',
-        a: 'The provider rotates the refresh token on every use, so a login shared with another client (the CLI on another machine, a second Mac) can stop working for AIMeter. Tap Sign in again on the card: it repairs the account in place, so its history, alerts and already-placed widgets keep working. Do not disconnect and re-add; that creates a new account and orphans all of it.',
+        a: 'The provider rotates the refresh token on every use, so a login shared with another client (the CLI on another machine, a second Mac) can stop working for AIMeter. Tap Sign in again on the card or in the account’s settings: it repairs the account in place, so its history, alerts and already-placed widgets keep working. Do not disconnect and re-add; that creates a new account and orphans all of it.',
       },
       {
         q: 'My widget shows “updated 2 h ago”.',
@@ -316,23 +315,23 @@ export const en = {
       },
       {
         q: 'What does the third row show?',
-        a: 'The real per-model window when your plan reports one. When it does not, the row can be hidden, or show your usage credits instead, from the account’s detail screen (“Third usage row”). Auto picks for you.',
+        a: 'The real per-model window when your plan reports one. When it does not, the row can be hidden, or show your usage credits instead, from Settings, Usage rows (on iPhone under Appearance, on the Mac in General). Auto picks for you.',
       },
       {
         q: 'Does the app see my conversations?',
-        a: 'No. It calls two read-only endpoints, your usage windows and your profile, with a token that cannot run prompts. The optional Mac feature that reads the CLI’s local logs decodes only token counts, never content. The notch’s session view reads only what each log record is and when it was written, plus each session’s title and folder.',
+        a: 'No. It only reads your usage (and, for Claude, your profile, to name your plan), and never sends a prompt. The optional Mac feature that reads the CLI’s local logs decodes only token counts, never content. The notch’s session view reads only what each log record is and when it was written, plus each session’s title and folder.',
       },
       {
         q: 'How do I delete my data?',
-        a: 'Disconnect the account from its detail screen. That deletes its token, snapshot, history and preferences from the device. There is no server-side copy.',
+        a: 'Open the account’s settings (in Settings, or with the settings button on its page) and choose Disconnect, which asks first. That deletes its token, snapshot, history and preferences from the device, and its history from iCloud if sync is on. There is no server-side copy.',
       },
       {
         q: 'Which languages does it speak?',
         a: 'English, Spanish, German, French, Japanese, Korean, Brazilian Portuguese and Simplified Chinese, following the device language.',
       },
       {
-        q: 'Is AIMeter affiliated with the provider?',
-        a: 'No. It is an independent open source project, and it reads an undocumented endpoint that may change at any time. The app says so in its own Privacy screen.',
+        q: 'Is AIMeter affiliated with Anthropic, OpenAI or GitHub?',
+        a: 'No. It is an independent open source project, and it reads endpoints that are not publicly documented and may change at any time. The app says so in its own Privacy screen.',
       },
     ],
     contactHeading: 'Still stuck?',

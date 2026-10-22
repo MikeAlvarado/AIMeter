@@ -10,7 +10,7 @@ export function Mac() {
   const ref = useRevealOnScroll<HTMLDivElement>()
   return (
     <section id="mac" className="px-inset-sm nav:px-inset nav:py-32 py-20">
-      <div ref={ref} className="nav:flex-row nav:gap-16 mx-auto flex max-w-6xl flex-col gap-10">
+      <div ref={ref} className="nav:flex-row-reverse nav:gap-16 mx-auto flex max-w-6xl flex-col gap-10">
         <div data-reveal className="nav:basis-[40%] flex flex-col gap-4">
           <MixedHeading text={t.mac.heading} className="text-section leading-[1.02]" />
           <p className="text-ink-2 max-w-md text-lg">{t.mac.sub}</p>

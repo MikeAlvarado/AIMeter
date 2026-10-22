@@ -42,8 +42,8 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   demo takes the rest. On a phone the GitHub link is left to the end of
   the page, so the two downloads fit on one row. Measured to fit at
   1512×862, 1440×900, 1280×720, 1920×1080, 768×1024 and 390×844. It
-  scrolls away with the page; behind all of it, the "+" grid, `PlusGrid`), `Statement` (word-by-word brighten driven
-  by `useScrollProgress`), `Features` (what the app does, in one place:
+  scrolls away with the page; behind all of it, since 4.1, a field of
+  code a click ripples, `CodeField`), `Features` (what the app does, in one place:
   the six features and one iPhone whose screen is drawn live, the chosen
   feature's, see `components/phone` below. From the `tab` breakpoint up
   the features are a vertical tab list beside the phone, hairline rows
@@ -101,7 +101,7 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   App Store; it links to `MAC_DOWNLOAD_URL`, the newest release's
   `AIMeter-macOS.zip`, a name every release keeps so the link never
   needs a bump), `GitHubLink`, `BrandIcons` (Apple and GitHub paths from Simple Icons,
-  CC0), `GrainOverlay`, `DotGrid`, `Pill`, `MenuBarStrip`,
+  CC0), `GrainOverlay`, `Pill`, `MenuBarStrip`,
   `PlusGrid` (the dark sections' ground since 3.0, after Mike's own
   portfolio header, in place of the glow from above they had, which
   read as the design reference the page started from: a grid of faint
@@ -112,7 +112,17 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   the demo too, written straight to the cells, never through state; the
   grid is calmer behind the section's words, `calm`, an ellipse mask.
   With no pointer a few cells twinkle every 600 ms; with reduced motion
-  it stays still. The closing has it behind its words, not the footer),
+  it stays still. Since 4.1 only the closing has it, behind its words,
+  not the footer), `CodeField` (the hero's ground since 4.1, Mike's
+  call on 2026-10-22, after the hero of his midflight product page,
+  rebuilt for the night ground: a canvas of faint monospace letters and
+  digits, 12 × 17 pt cells, shown in patches by a smooth random field; a
+  click anywhere on the hero drops into it like a drop of water, a
+  splash where it lands, a crest in `ember-2` that spreads, scrambles the
+  code it passes and fades, and fainter blush swells that run out over
+  the patches, about 3.6 s in all, up to four at once. It draws only
+  while a ripple lives, follows the hero's size, fades toward the
+  bottom, and with reduced motion stays still),
   and
   `NotchDemo`, the notch island at work the way a product's own demo
   shows it: a MacBook (a near-black bezel, the hinge and the base with
@@ -157,8 +167,7 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   copy; when a screen changes in the app, its drawing changes with it.
 - `src/hooks/` — `useLanguage`, `useLocalStorage`
   (`useSyncExternalStore`, cross-tab), `useMediaQuery`,
-  `usePrefersReducedMotion`, `useScrolledPast`, `useScrollProgress`
-  (rAF, writes styles, never sets state), `useRevealOnScroll`
+  `usePrefersReducedMotion`, `useScrolledPast`, `useRevealOnScroll`
   (IntersectionObserver one-shot reveal of `[data-reveal]` children;
   reduced motion shows everything at once), `useDocumentMeta` (title +
   description per route).
@@ -168,8 +177,9 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   (`Shared/Theme.swift`): terracotta accent on warm ivory, warm charcoal
   in dark mode via `prefers-color-scheme`. The hero and the closing
   section stand on `night-ground` (the night colors from top to bottom,
-  a faint warmth low behind what they show, no glow from above) with
-  the "+" grid over it, in both schemes. Breakpoints: `pad` (37.5rem, a
+  a faint warmth low behind what they show, no glow from above), the
+  hero with the code field over it and the closing with the "+" grid,
+  in both schemes. Breakpoints: `pad` (37.5rem, a
   tablet held upright; below it, a phone), `tab` and `nav`; the
   `arrows` variant (a mouse, or a tablet) shows the features carousel's
   arrows, and `edge-fade-b` fades an element's bottom edge on an eased

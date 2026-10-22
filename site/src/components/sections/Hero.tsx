@@ -5,10 +5,10 @@ import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { easeOutExpo, easeOutSoft } from '../../lib/easing'
 import { CURRENT_VERSION } from '../../lib/site'
 import { AppStoreBadge } from '../ui/AppStoreBadge'
+import { CodeField } from '../ui/CodeField'
 import { GitHubLink } from '../ui/GitHubLink'
 import { GrainOverlay } from '../ui/GrainOverlay'
 import { MacDownloadBadge } from '../ui/MacDownloadBadge'
-import { PlusGrid } from '../ui/PlusGrid'
 import { MixedHeading } from '../ui/MixedHeading'
 import { NotchDemo } from '../ui/NotchDemo'
 import { Pill } from '../ui/Pill'
@@ -18,7 +18,8 @@ import { Pill } from '../ui/Pill'
  * under them the notch island at work (`NotchDemo`), the iPhone app beside
  * it, all of it in the first screen: the words take what they need, their
  * size and gaps following the screen's height, and the demo the room left.
- * Full bleed, flush with the window's sides and top.
+ * Full bleed, flush with the window's sides and top, on the night ground
+ * with a field of code behind it that a click ripples (`CodeField`).
  */
 export function Hero() {
   const { t } = useLanguage()
@@ -33,7 +34,7 @@ export function Hero() {
   return (
     <section id="top">
       <div ref={heroRef} className="night-ground relative overflow-hidden text-ivory">
-        <PlusGrid track={heroRef} />
+        <CodeField track={heroRef} />
         <GrainOverlay className="opacity-[0.06]" />
         {/* One screen tall (a height of its own, so the demo's room is known): the words above take what they need, the demo the rest. */}
         <div className="nav:px-14 relative mx-auto flex h-[100svh] min-h-[36rem] w-full max-w-6xl flex-col px-4 pt-[clamp(5.5rem,12svh,8rem)] pb-[clamp(0.75rem,2svh,1.5rem)]">
@@ -52,7 +53,7 @@ export function Hero() {
                 className="text-ivory text-[clamp(2.4rem,min(1.2rem+3.4vw,7svh),4.25rem)] leading-[1.02] [text-shadow:0_0_40px_rgba(243,217,204,0.25)]"
               />
             </motion.div>
-            <motion.p {...enter(0.45)} className="text-blush/85 mt-[clamp(0.75rem,1.6svh,1.25rem)] max-w-[40rem] text-[clamp(1rem,0.9rem+0.3vw,1.125rem)] leading-relaxed">
+            <motion.p {...enter(0.45)} className="text-blush/85 mt-[clamp(0.75rem,1.6svh,1.25rem)] max-w-[40rem] text-[clamp(1rem,0.9rem+0.3vw,1.125rem)] leading-relaxed text-pretty">
               {t.hero.sub}
             </motion.p>
             {/* On a phone the source link waits for the page's end, so the opening fits. */}

@@ -4,7 +4,7 @@ export const es = {
   meta: {
     title: 'AIMeter: Tus límites de IA, de un vistazo',
     description:
-      'AIMeter te dice cuánto te queda de tus suscripciones de IA, justo en el notch de tu Mac y en el iPhone: límites por sesión, semana y modelo, una mascota por cada sesión de código, widgets y la pantalla de bloqueo. Gratis, open source, sin servidor.',
+      'AIMeter te dice cuánto te queda de tus suscripciones de IA, justo en el notch de tu Mac y en el iPhone, el iPad y el Apple Watch: límites por sesión, semana y modelo, una mascota por cada sesión de código, widgets y la pantalla de bloqueo. Gratis, open source, sin servidor.',
   },
   nav: {
     features: 'Funciones',
@@ -20,16 +20,16 @@ export const es = {
     home: 'Inicio de AIMeter',
   },
   hero: {
-    pills: ['Gratis', 'Open source', 'Sin cuenta'],
+    pills: ['Gratis', 'Open source', 'Sin registro'],
     line1: 'Tus límites de IA,',
     line2: 'justo en el *notch*.',
-    sub: 'Cada límite de tus suscripciones de IA y cuándo se reinicia, en el notch de tu Mac. Y en iPhone y iPad, con widgets y la pantalla de bloqueo.',
+    sub: 'Cuánto te queda de cada límite de IA y cuándo se reinicia, en el notch de tu Mac. También en iPhone, iPad y Apple Watch, con widgets y la pantalla de bloqueo.',
     appStore: 'Descárgala en el App Store',
     appStoreSmall: 'Descárgala en el',
     github: 'Ver en GitHub',
     macDownload: 'Descargar para Mac',
     macDownloadSmall: 'Descargar para',
-    platforms: 'iPhone · iPad · Mac',
+    platforms: 'iPhone · iPad · Apple Watch · Mac',
     version: 'Versión',
     phoneAlt: 'Panel de AIMeter en iPhone: dos cuentas, cada una con límites de sesión, semana y modelo como barras con cuenta regresiva.',
   },
@@ -41,7 +41,6 @@ export const es = {
       { pill: 'Te necesita', title: 'Entérate cuando una sesión te necesita.' },
     ],
   },
-  statement: 'Cada límite por el que pagas, en un solo lugar. Sin servidor, sin cuenta, sin analíticas.',
   features: {
     heading: 'Lo que *hace*',
     sub: 'Todo viene directo de los números de tu proveedor.',
@@ -58,7 +57,7 @@ export const es = {
       {
         id: 'widgets',
         title: 'Widgets que llevan la cuenta',
-        body: 'Widgets chico, mediano y grande, la pantalla de bloqueo y una Live Activity con la cuenta regresiva.',
+        body: 'Widgets chico, mediano y grande, la pantalla de bloqueo, una Live Activity con la cuenta regresiva y complicaciones del Apple Watch.',
         points: ['Una cuenta o todas', 'En iPhone se actualizan solos'],
         imageAlt: 'Pantalla de inicio con los widgets chico, mediano y grande de AIMeter.',
       },
@@ -71,7 +70,7 @@ export const es = {
       },
       {
         id: 'alerts',
-        title: 'Alertas antes de la pared',
+        title: 'Avisos antes de toparte',
         body: 'Avisos locales cuando te acercas a un límite, cuando lo alcanzas o cuando se reinicia antes.',
         points: ['Tu propio umbral', 'Sin servicio push'],
         imageAlt: 'Interruptores de notificaciones de una cuenta.',
@@ -87,7 +86,7 @@ export const es = {
         id: 'accounts',
         title: 'Cada cuenta, su propio ícono',
         body: 'Todas las cuentas que quieras, cada una con su nombre y su ícono, en todas partes.',
-        points: ['Arrastra para reordenar', 'Modo oscuro incluido'],
+        points: ['Arrastra para reordenar', 'O deja que la urgencia las ordene'],
         imageAlt: 'Panel en modo oscuro con dos cuentas e íconos personalizados.',
       },
     ],
@@ -132,7 +131,7 @@ export const es = {
   },
   mac: {
     heading: 'Cualquier Mac, *cualquier pantalla*',
-    sub: '¿Sin notch? AIMeter dibuja uno arriba de tu pantalla, o una pastilla en la barra de menús. ¿Prefieres un ícono? Elige entre seis estilos.',
+    sub: '¿Sin notch? AIMeter dibuja uno arriba de tu pantalla, o una pastilla en la barra de menús. ¿Prefieres un ícono ahí? Elige entre seis estilos.',
     styles: ['Medidor con el número', 'Solo medidor', 'Solo número', 'Barra', 'Batería', 'Dos o tres ventanas lado a lado'],
     extras: ['Ícono del Dock opcional', 'Abre al iniciar sesión', 'Se actualiza sola', 'Atajos de teclado'],
     note: 'Fuera de la Mac App Store: un zip notarizado por Apple, para macOS 14 o posterior.',
@@ -141,10 +140,10 @@ export const es = {
   },
   privacy: {
     heading: 'Privada *por diseño*',
-    sub: 'Cada afirmación de aquí se puede verificar en el código.',
+    sub: 'Todo lo que dice aquí se puede comprobar en el código.',
     points: [
       { title: 'Sin servidor, sin cuenta', body: 'Tu uso va de tu proveedor a tu dispositivo, sin nada en medio.' },
-      { title: 'Los tokens viven en el llavero', body: 'Cifrados por el sistema. AIMeter pide un permiso de solo lectura, nunca uno que ejecute prompts.' },
+      { title: 'Los tokens viven en el llavero', body: 'Cifrados por el sistema. AIMeter solo los usa para leer tu uso, nunca para enviar un prompt.' },
       { title: 'Sin analíticas, sin rastreo', body: 'Ni analíticas, ni anuncios, ni reportes de fallos, en la app ni en este sitio.' },
       { title: 'Tuyo para borrarlo', body: 'Desconectar una cuenta borra su token y su historial. En la nube no hay nada, salvo que actives la sincronización con iCloud, que puedes apagar cuando quieras.' },
     ],
@@ -163,7 +162,7 @@ export const es = {
     github: 'Dale una estrella en GitHub',
   },
   closing: {
-    eyebrow: 'Gratis en el App Store para iPhone y iPad, y para descargar en el Mac.',
+    eyebrow: 'Gratis en el App Store para iPhone, iPad y Apple Watch, y como descarga para el Mac.',
     heading: 'Tus límites, *en tus términos*.',
     appStore: 'Descárgala en el App Store',
     github: 'Ver el código',
@@ -178,7 +177,7 @@ export const es = {
     description: 'Qué lee AIMeter, qué guarda en tu dispositivo y qué nunca sale de él.',
     intro:
       'AIMeter no tiene servidor ni cuenta propia. Lee tu uso de tu proveedor de IA con el inicio de sesión que le concedes, guarda una copia en tu dispositivo para que los widgets puedan dibujarla y no envía nada a ningún otro lado. Esta página enumera cada flujo de datos para que puedas cotejarlo con el código fuente.',
-    updated: 'Última actualización: 19 de octubre de 2026',
+    updated: 'Última actualización: 22 de octubre de 2026',
     sections: [
       {
         heading: 'Qué sale de tu dispositivo',
@@ -258,7 +257,7 @@ export const es = {
       {
         heading: 'Contacto y marcas',
         paragraphs: [
-          'Las dudas van a la página de soporte. AIMeter es un proyecto open source independiente (MIT). No está afiliado, avalado ni patrocinado por Anthropic. “Claude” y “Anthropic” son marcas de Anthropic, PBC, usadas únicamente para identificar el servicio cuyo uso muestra la app.',
+          'Las dudas van a la página de soporte. AIMeter es un proyecto open source independiente (MIT). No está afiliado, avalado ni patrocinado por Anthropic, OpenAI ni GitHub. “Claude” y “Anthropic” son marcas de Anthropic, PBC; “ChatGPT”, “Codex” y “OpenAI”, de OpenAI; “GitHub” y “GitHub Copilot”, de GitHub, Inc.; cada una usada únicamente para identificar el servicio cuyo uso muestra la app.',
         ],
       },
     ],
@@ -267,18 +266,18 @@ export const es = {
     title: 'Soporte',
     description: 'Cómo conectar una cuenta, qué significan las alertas y dónde pedir ayuda.',
     intro: 'AIMeter la construye y mantiene una sola persona, a la vista de todos. La mayoría de las respuestas están abajo; lo demás está a un issue de GitHub o un correo de distancia.',
-    updated: 'Para AIMeter 3.2',
+    updated: 'Para AIMeter 4.1',
     sections: [
       {
         heading: 'Conectar en iPhone y iPad',
         paragraphs: [
-          'Toca Conectar. AIMeter abre la página de inicio de sesión de tu proveedor en tu navegador (sirve cualquier método de acceso), apruebas, copias el código que te muestra y lo pegas de vuelta. Si quieres, ponle un nombre a la cuenta; puedes cambiarlo después desde el menú de la tarjeta. El token se guarda en el llavero y la app lo mantiene renovado por su cuenta.',
+          'Toca Conectar y elige el servicio. Claude abre su página de inicio de sesión en tu navegador (sirve cualquier método de acceso): apruebas, copias el código que te muestra y lo pegas de vuelta. Codex y GitHub Copilot te muestran un código de un solo uso que escribes en la página del propio servicio, en tu navegador. Si quieres, ponle un nombre a la cuenta; puedes cambiarlo después en sus ajustes. El token se guarda en el llavero y la app lo mantiene renovado por su cuenta.',
         ],
       },
       {
         heading: 'Conectar en el Mac',
         paragraphs: [
-          'Cero configuración para tu primera cuenta si Claude Code está instalado y con sesión iniciada: AIMeter lee el inicio de sesión que ya guarda, en solo lectura, y nunca lo modifica. Cualquier cuenta adicional, o un Mac sin la CLI, inicia sesión igual que en iPhone. “Agregar cuenta” en el panel repite el flujo por cada inicio de sesión.',
+          'Cero configuración para tu primera cuenta si Claude Code está instalado y con sesión iniciada: AIMeter lee el inicio de sesión que ya guarda, en solo lectura, y nunca lo modifica. Cualquier cuenta adicional, o un Mac sin la CLI, inicia sesión igual que en iPhone; con la CLI de Codex con sesión iniciada, la hoja de Conectar también puede leer su inicio de sesión. “Agregar cuenta”, en el panel o con + en Ajustes, Cuentas, repite el flujo por cada inicio de sesión.',
         ],
       },
       {
@@ -291,8 +290,8 @@ export const es = {
     faqHeading: 'Preguntas frecuentes',
     faqs: [
       {
-        q: 'La tarjeta dice “Iniciar sesión de nuevo”. ¿Qué pasó?',
-        a: 'El proveedor rota el token de renovación en cada uso, así que un inicio de sesión compartido con otro cliente (la CLI en otra máquina, un segundo Mac) puede dejar de funcionar para AIMeter. Toca “Iniciar sesión de nuevo” en la tarjeta: repara la cuenta en su lugar, así que su historial, sus alertas y los widgets ya colocados siguen funcionando. No desconectes y vuelvas a agregar; eso crea una cuenta nueva y deja huérfano todo lo anterior.',
+        q: 'La tarjeta dice “Volver a iniciar sesión”. ¿Qué pasó?',
+        a: 'El proveedor rota el token de renovación en cada uso, así que un inicio de sesión compartido con otro cliente (la CLI en otra máquina, un segundo Mac) puede dejar de funcionar para AIMeter. Toca “Volver a iniciar sesión” en la tarjeta o en los ajustes de la cuenta: repara la cuenta en su lugar, así que su historial, sus alertas y los widgets ya colocados siguen funcionando. No desconectes y vuelvas a agregar; eso crea una cuenta nueva y deja huérfano todo lo anterior.',
       },
       {
         q: 'Mi widget dice “actualizado hace 2 h”.',
@@ -304,7 +303,7 @@ export const es = {
       },
       {
         q: '¿Qué son las mascotas junto al notch?',
-        a: 'Cada sesión de Claude Code en curso en esa Mac tiene una mascota de píxeles: camina mientras la sesión trabaja, se agita junto a un ! amarillo cuando necesita tu permiso y se duerme unos segundos cuando termina. El conteo del otro lado del notch dice cuántas sesiones hay. Detén el cursor en el notch para ver el nombre de la sesión y qué está haciendo, o haz clic para ver todas las sesiones y tu uso. En Ajustes, la pestaña Claude Code apaga las mascotas, el nombre o toda la función, e instala los hooks opcionales que avisan a AIMeter en cuanto una sesión pide permiso.',
+        a: 'Cada sesión de Claude Code en curso en ese Mac tiene una mascota de píxeles: camina mientras la sesión trabaja, se agita junto a un ! amarillo cuando necesita tu permiso y se duerme unos segundos cuando termina. El conteo del otro lado del notch dice cuántas sesiones hay. Detén el cursor en el notch para ver el nombre de la sesión y qué está haciendo, o haz clic para ver todas las sesiones y tu uso. En Ajustes, la pestaña Claude Code apaga las mascotas, el nombre o toda la función, e instala los hooks opcionales que avisan a AIMeter en cuanto una sesión pide permiso.',
       },
       {
         q: '¿Dónde está el tutorial?',
@@ -316,23 +315,23 @@ export const es = {
       },
       {
         q: '¿Qué muestra la tercera fila?',
-        a: 'La ventana real por modelo cuando tu plan la reporta. Cuando no, la fila se puede ocultar o mostrar tus créditos de uso, desde la pantalla de detalle de la cuenta (“Tercera fila de uso”). “Auto” decide por ti.',
+        a: 'La ventana real por modelo cuando tu plan la reporta. Cuando no, la fila se puede ocultar o mostrar tus créditos de uso, desde Ajustes, Filas de uso (en iPhone dentro de Apariencia; en el Mac, en General). “Auto” decide por ti.',
       },
       {
         q: '¿La app ve mis conversaciones?',
-        a: 'No. Llama a dos endpoints de solo lectura, tus ventanas de uso y tu perfil, con un token que no puede ejecutar prompts. La función opcional de Mac que lee los registros locales de la CLI decodifica solo conteos de tokens, nunca contenido. La vista de sesiones del notch lee solo qué es cada registro y cuándo se escribió, más el título y la carpeta de cada sesión.',
+        a: 'No. Solo lee tu uso (y, en Claude, tu perfil, para nombrar tu plan), y nunca envía un prompt. La función opcional de Mac que lee los registros locales de la CLI decodifica solo conteos de tokens, nunca contenido. La vista de sesiones del notch lee solo qué es cada registro y cuándo se escribió, más el título y la carpeta de cada sesión.',
       },
       {
         q: '¿Cómo borro mis datos?',
-        a: 'Desconecta la cuenta desde su pantalla de detalle. Eso borra su token, registro, historial y preferencias del dispositivo. No existe copia en ningún servidor.',
+        a: 'Abre los ajustes de la cuenta (en Ajustes, o con el botón de ajustes de su página) y elige Desconectar, que pregunta primero. Eso borra su token, registro, historial y preferencias del dispositivo, y su historial de iCloud si la sincronización está activa. No existe copia en ningún servidor.',
       },
       {
         q: '¿En qué idiomas está?',
         a: 'Inglés, español, alemán, francés, japonés, coreano, portugués de Brasil y chino simplificado, según el idioma del dispositivo.',
       },
       {
-        q: '¿AIMeter está afiliada al proveedor?',
-        a: 'No. Es un proyecto open source independiente, y lee un endpoint no documentado que puede cambiar en cualquier momento. La app lo dice en su propia pantalla de Privacidad.',
+        q: '¿AIMeter está afiliada a Anthropic, OpenAI o GitHub?',
+        a: 'No. Es un proyecto open source independiente, y lee endpoints que no están documentados públicamente y pueden cambiar en cualquier momento. La app lo dice en su propia pantalla de Privacidad.',
       },
     ],
     contactHeading: '¿Sigues atorado?',

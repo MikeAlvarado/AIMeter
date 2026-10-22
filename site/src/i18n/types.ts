@@ -110,7 +110,6 @@ export interface Dictionary {
     label: string
     scenes: [DemoScene, DemoScene, DemoScene]
   }
-  statement: string
   features: {
     heading: string
     sub: string
