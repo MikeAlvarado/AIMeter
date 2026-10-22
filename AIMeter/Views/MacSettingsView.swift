@@ -2,18 +2,27 @@
 import SwiftUI
 import UsageKit
 
-/// The Mac's Settings window: the sections the iOS sheet stacks in one
-/// list (`SettingsSections.swift`), spread over toolbar tabs the way a
-/// Mac app's settings are — General, Accounts, the two glance surfaces,
-/// This Mac and Privacy & data — at a fixed width, so rows, pills and
-/// switches never stretch across a wide window. Every toggle in it is a
-/// trailing switch (`SettingsSwitchToggleStyle`).
+/// The Mac's Settings window, at most six tabs (Mike's reorganization,
+/// 2026-10-22, after a fresh review: seven didn't fit in French or
+/// German, and "This Mac" next to "General" was a distinction nobody
+/// makes): General (startup, updates, the Dock, how the numbers look,
+/// refreshing, notifications, then AIMeter itself), Accounts (a list and
+/// the selected account, `MacAccountsSettingsPage`), the two glance
+/// surfaces, Claude Code (only where it has run on this Mac, and never in
+/// the demo) and Privacy & data (iCloud and export over the explanation).
+/// Built from the section views the iOS sheet uses
+/// (`SettingsSections.swift`), at a fixed width so rows, pills and
+/// switches never stretch across a wide window (the Accounts tab is wider:
+/// a list beside a detail). Every toggle in it is a trailing switch
+/// (`SettingsSwitchToggleStyle`).
 struct MacSettingsView: View {
     @Environment(UsageModel.self) private var model
     @State private var tab: Tab = Self.launchTab ?? .general
+    /// The account the Accounts tab shows (the first while none is).
+    @State private var accountSelection: String?
 
     enum Tab: String, Hashable {
-        case general, accounts, notchIsland, menuBar, thisMac, privacy
+        case general, accounts, menuBar, notchIsland, claudeCode, privacy
     }
 
     /// `DEBUG` only: `-AIMeterSettingsTab <tab>` (a `Tab` raw value) opens
@@ -28,39 +37,43 @@ struct MacSettingsView: View {
     }
 
     /// Wide enough for the menu bar previews and the island's wings, the
-    /// same at every tab so the window keeps its width while switching.
+    /// same at every tab but Accounts, so the window keeps its width while
+    /// switching between them.
     static let width: CGFloat = 540
     /// The long tabs scroll inside this; the short ones are their
     /// content's own height.
     static let scrollingHeight: CGFloat = 620
+
+    /// Claude Code's tab: only where Claude Code has run (its logs folder
+    /// exists), and never in the demo, which has nothing to configure.
+    private var showsClaudeCode: Bool {
+        !model.isDemoMode && Tour.claudeCodePresent
+    }
 
     var body: some View {
         TabView(selection: $tab) {
             page(scrolls: true) { GeneralSettingsPage() }
                 .tabItem { Label("General", systemImage: "gearshape") }
                 .tag(Tab.general)
-            page(scrolls: true) { MacAccountsSettingsPage() }
+            MacAccountsSettingsPage(selection: $accountSelection)
                 .tabItem { Label("Accounts", systemImage: "person.crop.circle") }
                 .tag(Tab.accounts)
-            page(scrolls: true) {
-                NotchIslandSettings()
-                // Claude Code's sessions are what the island shows beside
-                // the notch, so their card is here. The demo has none to
-                // configure (it shows fabricated sessions).
-                if !model.isDemoMode {
-                    SettingsGap()
-                    ClaudeSessionsSettings()
-                }
-            }
-            .tabItem { Label("Notch island", systemImage: "laptopcomputer") }
-            .tag(Tab.notchIsland)
             page(scrolls: false) { MenuBarSettings() }
                 .tabItem { Label("Menu bar", systemImage: "menubar.rectangle") }
                 .tag(Tab.menuBar)
-            page(scrolls: true) { ThisMacSettingsPage() }
-                .tabItem { Label("This Mac", systemImage: "desktopcomputer") }
-                .tag(Tab.thisMac)
-            PrivacyView()
+            page(scrolls: true) { NotchIslandSettings() }
+                .tabItem { Label("Notch island", systemImage: "laptopcomputer") }
+                .tag(Tab.notchIsland)
+            if showsClaudeCode {
+                page(scrolls: true) {
+                    ClaudeSessionsSettings()
+                    SettingsGap()
+                    ClaudeCodeSettings()
+                }
+                .tabItem { Label("Claude Code", systemImage: "terminal") }
+                .tag(Tab.claudeCode)
+            }
+            PrivacyView(showsDataControls: true)
                 .frame(width: Self.width, height: Self.scrollingHeight)
                 .tabItem { Label("Privacy & data", systemImage: "lock.shield") }
                 .tag(Tab.privacy)
@@ -85,8 +98,11 @@ struct MacSettingsView: View {
     }
 }
 
-/// General: the iOS list's sections that are general and not the Mac's
-/// own (those are This Mac's) nor an account's (Accounts).
+/// General: what AIMeter does on this Mac (starting at login, updating,
+/// its Dock icon), how your numbers look, how often they refresh, which
+/// notifications you get, and at the end AIMeter itself (the tour,
+/// feedback, the source, the demo). The demo leads instead while nothing
+/// is connected or while it is on.
 private struct GeneralSettingsPage: View {
     @Environment(UsageModel.self) private var model
 
@@ -95,24 +111,26 @@ private struct GeneralSettingsPage: View {
             DemoModeSettings()
             SettingsGap()
         }
+        StartupSettings()
+        SettingsGap()
+        UpdatesSettings()
+        SettingsGap()
+        DockSettings()
+        SettingsGap()
         AppearanceSettings()
         SettingsGap()
         AppIconSettings()
-        SettingsGap()
-        UsageRowsSettings()
-        if PeakNotificationsSettings.isOffered {
+        if UsageRowsSettings.isOffered(model) {
             SettingsGap()
-            PeakNotificationsSettings()
+            UsageRowsSettings()
         }
         SettingsGap()
         BackgroundRefreshSettings()
         SettingsGap()
         ServiceStatusSettings()
-        SettingsGap()
-        CloudSyncSettings()
-        if ExportSettings.isOffered(model) {
+        if PeakNotificationsSettings.isOffered {
             SettingsGap()
-            ExportSettings()
+            PeakNotificationsSettings()
         }
         SettingsGap()
         TourSettings()
@@ -127,27 +145,8 @@ private struct GeneralSettingsPage: View {
     }
 }
 
-/// This Mac: what this computer does on its own — hiding the icons,
-/// opening at login, updating itself, and reading Claude Code's logs.
-private struct ThisMacSettingsPage: View {
-    @Environment(UsageModel.self) private var model
-
-    var body: some View {
-        HidingSettings()
-        SettingsGap()
-        StartupSettings()
-        SettingsGap()
-        UpdatesSettings()
-        // The demo has no logs to read (its coding sessions are fabricated).
-        if !model.isDemoMode {
-            SettingsGap()
-            ClaudeCodeSettings()
-        }
-    }
-}
-
 /// "Claude Code usage": reading the CLI's local logs for token counts,
-/// and the popover's line. In the This Mac tab.
+/// and the popover's line. In the Claude Code tab, under its sessions.
 struct ClaudeCodeSettings: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs

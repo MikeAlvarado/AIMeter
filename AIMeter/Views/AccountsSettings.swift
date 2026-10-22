@@ -1,47 +1,109 @@
 import SwiftUI
 import UsageKit
 
-/// Settings' account list (iOS): one row per account, each opening its
-/// own page (`AccountSettingsPage`). The general sections around it never
-/// repeat what a page holds.
+/// Settings' accounts card: one row per account (its mark, name and plan,
+/// the service under it, or "Sign in again" when its login stopped
+/// working), each opening its own settings (`AccountSettingsCards`), then
+/// "Add account" and, with two or more, "Order by urgency". On iOS a row
+/// pushes the account's page and "Add account" opens the Connect sheet
+/// over Settings; the Mac's Accounts tab is a list and a detail pane
+/// instead (`MacAccountsSettingsPage`), which draws the same rows.
 struct AccountListSettings: View {
     @Environment(UsageModel.self) private var model
-
-    static func isOffered(_ model: UsageModel) -> Bool {
-        !model.accounts.isEmpty
-    }
+    @State private var connecting = false
 
     var body: some View {
-        SectionHeader(title: String(localized: "Account settings"))
+        SectionHeader(title: String(localized: "Accounts"))
         Card {
-            ForEach(Array(model.accounts.enumerated()), id: \.element.id) { index, usage in
-                if index > 0 {
-                    Divider().overlay(Theme.track)
-                }
-                NavigationLink {
-                    AccountSettingsPage(accountID: usage.id)
-                } label: {
-                    HStack(spacing: 10) {
-                        ProviderIdentityView(
-                            name: usage.account.displayName,
-                            iconSize: 24,
-                            iconCornerRadius: 6,
-                            font: Theme.rowTitle,
-                            nameColor: Theme.ink,
-                            planName: usage.snapshot?.planName,
-                            icon: usage.account.icon
-                        )
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Theme.inkSecondary)
+            VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                ForEach(model.accounts) { usage in
+                    if usage.id != model.accounts.first?.id {
+                        Divider().overlay(Theme.track)
                     }
-                    .contentShape(Rectangle())
+                    NavigationLink {
+                        AccountSettingsPage(accountID: usage.id)
+                    } label: {
+                        AccountListRow(usage: usage, chevron: true)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
+                if model.accounts.isEmpty {
+                    Text("No account connected.")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+                // In demo mode a connection would land under the fabricated
+                // accounts (the Dashboard's "Add account" hides there too).
+                if !model.isDemoMode {
+                    Divider().overlay(Theme.track)
+                    Button {
+                        connecting = true
+                    } label: {
+                        Label("Add account", systemImage: "plus")
+                            .font(Theme.rowTitle)
+                            .foregroundStyle(Theme.accent)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+                if AccountOrderToggle.isOffered(model) {
+                    Divider().overlay(Theme.track)
+                    AccountOrderToggle()
+                }
             }
         }
-        SectionFootnote(text: String(localized: "Each account's notifications, Live Activity, name and icon."))
+        .sheet(isPresented: $connecting) {
+            ConnectAccountSheet()
+        }
+        SectionFootnote(text: AccountOrderToggle.isOffered(model)
+            ? String(localized: "Each account's notifications, Live Activity, name and icon, and disconnecting it.") + " " + AccountOrderToggle.footnote
+            : String(localized: "Each account's notifications, Live Activity, name and icon, and disconnecting it."))
+    }
+}
+
+/// One account in Settings: its mark, its name with the plan beside it,
+/// and under them the service it belongs to, or "Sign in again" in red
+/// while its login doesn't work. The row's control (a link, a button, the
+/// Mac list's selection) reads as one element to VoiceOver.
+struct AccountListRow: View {
+    let usage: UsageModel.AccountUsage
+    var chevron = false
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ProviderMark(size: 28, cornerRadius: 7, icon: usage.account.icon)
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text(verbatim: usage.account.displayName)
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                        .lineLimit(1)
+                    if let plan = usage.snapshot?.planName {
+                        PlanPill(name: plan, compact: true)
+                    }
+                }
+                if usage.needsReauthentication {
+                    Text("Sign in again")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.danger)
+                } else {
+                    Text(verbatim: ProviderCatalog.displayName(for: usage.account.providerID))
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .lineLimit(1)
+                }
+            }
+            Spacer(minLength: 0)
+            if chevron {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.inkSecondary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -50,7 +112,20 @@ struct AccountListSettings: View {
 /// CLAUDE.md), so they are general settings and live here rather than on
 /// an account's page.
 struct UsageRowsSettings: View {
+    @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
+
+    /// The third row's fallback reaches every account with a session or a
+    /// week, Claude's and Codex's (Codex reports spend too), never one of
+    /// Copilot's quotas: the section shows unless every account is
+    /// Copilot's (and with none yet, or in the demo).
+    static func applies(toFamilies providerIDs: [String], demo: Bool) -> Bool {
+        demo || providerIDs.isEmpty || providerIDs.contains { $0 != CopilotProvider.providerID }
+    }
+
+    static func isOffered(_ model: UsageModel) -> Bool {
+        applies(toFamilies: model.accounts.map(\.account.providerID), demo: model.isDemoMode)
+    }
 
     var body: some View {
         @Bindable var prefs = prefs
@@ -71,7 +146,12 @@ struct UsageRowsSettings: View {
                 .tint(Theme.accent)
             }
         }
-        SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line."))
+        // The Claude example only to someone with a Claude account.
+        if model.isDemoMode || ProviderCatalog.familiesToDescribe(connected: model.accounts.map(\.account.providerID)).contains(ClaudeProvider.providerID) {
+            SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own (e.g. Fable 5 on Claude Pro). Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line."))
+        } else {
+            SectionFootnote(text: String(localized: "Some plans don't include a per-model limit of their own. Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line."))
+        }
     }
 }
 
@@ -103,64 +183,6 @@ struct GlanceMetricSettings: View {
             SegmentedPill(options: options.map { ($0, $0.shortName) }, selection: $prefs.glanceMetric)
         }
         SectionFootnote(text: String(localized: "Which usage window the Lock Screen circular widget shows, whichever account it is set to. The options are what your accounts report."))
-    }
-}
-#endif
-
-#if os(macOS)
-/// The Mac Settings window's Accounts tab: what concerns the accounts as
-/// a whole (their order, discreet mode, the main one), then one account's
-/// own settings under a picker, the same cards the account's page shows.
-struct MacAccountsSettingsPage: View {
-    @Environment(UsageModel.self) private var model
-    @State private var pickedID: String?
-
-    /// The picked account while it is still connected, else the first.
-    private var selectedID: String? {
-        if let pickedID, model.accounts.contains(where: { $0.id == pickedID }) { return pickedID }
-        return model.accounts.first?.id
-    }
-
-    var body: some View {
-        if AccountOrderSettings.isOffered(model) {
-            AccountOrderSettings()
-            SettingsGap()
-        }
-        if DiscreetModeSettings.isOffered(model) {
-            DiscreetModeSettings()
-            SettingsGap()
-        }
-        if model.accounts.count > 1 {
-            SectionHeader(title: String(localized: "Main account"))
-            Card {
-                PrimaryAccountPicker()
-            }
-            SettingsGap()
-        }
-        SectionHeader(title: String(localized: "Account settings"))
-        if let selectedID {
-            if model.accounts.count > 1 {
-                Card {
-                    HStack {
-                        Text("Account")
-                            .font(Theme.rowTitle)
-                            .foregroundStyle(Theme.ink)
-                        Spacer()
-                        Picker("Account", selection: Binding(get: { selectedID }, set: { pickedID = $0 })) {
-                            ForEach(model.accounts) { usage in
-                                Text(usage.account.displayName).tag(usage.id)
-                            }
-                        }
-                        .labelsHidden()
-                        .fixedSize()
-                        .tint(Theme.accent)
-                    }
-                }
-            }
-            AccountSettingsCards(accountID: selectedID, onDisconnect: { pickedID = nil })
-        } else {
-            SectionFootnote(text: String(localized: "No account connected."))
-        }
     }
 }
 #endif

@@ -18,14 +18,11 @@ struct MenuBarSettings: View {
         SectionHeader(title: String(localized: "Menu bar"))
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                // Whether it is there at all comes first: someone who
+                // wants the icon gone looks for it here.
+                MenuBarVisibilityToggle()
+                Divider().overlay(Theme.track)
                 preview
-                if prefs.notchIslandEnabled, !prefs.statusItemVisible {
-                    // Right under the preview: why the item it shows isn't
-                    // in the menu bar right now.
-                    Label(String(localized: "Hidden while the notch island is on."), systemImage: "eye.slash")
-                        .font(Theme.caption)
-                        .foregroundStyle(Theme.inkSecondary)
-                }
                 Divider().overlay(Theme.track)
 
                 if model.accounts.count > 1 {

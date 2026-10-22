@@ -2,11 +2,13 @@
 import SwiftUI
 import UsageKit
 
-/// "Discreet mode" (Settings → Accounts, macOS): the one switch. Which
-/// accounts it hides is each account's own setting
-/// (`DiscreetAccountSettings`, on the account's page), so the general
-/// card and the per-account one never repeat each other. The eye in the
-/// popover's footer and ⌘⇧D flip the same switch.
+/// "Discreet mode" (Settings → Accounts, under the list, macOS): the one
+/// switch, and under it which accounts it hides, or that none is marked
+/// yet. Each account is marked on its own settings
+/// (`DiscreetAccountSettings`, Mike's call, 2026-10-22), and the line here
+/// says so, so turning the switch on with nothing marked never looks like
+/// it did nothing. Discreet Mode in the popover's footer and ⌘⇧D flip the
+/// same switch.
 struct DiscreetModeSettings: View {
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
@@ -15,19 +17,38 @@ struct DiscreetModeSettings: View {
         !model.accounts.isEmpty
     }
 
+    private var hiddenNames: [String] {
+        model.accounts
+            .filter { prefs.discreetAccountIDs.contains($0.id) }
+            .map(\.account.displayName)
+    }
+
     var body: some View {
         @Bindable var prefs = prefs
 
         SectionHeader(title: String(localized: "Discreet mode"))
         Card {
-            Toggle(isOn: $prefs.discreetMode) {
-                Text("Discreet mode")
-                    .font(Theme.rowTitle)
-                    .foregroundStyle(Theme.ink)
+            VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                Toggle(isOn: $prefs.discreetMode) {
+                    Text("Discreet mode")
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                }
+                .tint(Theme.accent)
+                Divider().overlay(Theme.track)
+                Group {
+                    if hiddenNames.isEmpty {
+                        Text("No account is marked to hide yet: turn on Hide in discreet mode in an account's settings.")
+                    } else {
+                        Text("Hides \(hiddenNames.formatted(.list(type: .and)))")
+                    }
+                }
+                .font(Theme.caption)
+                .foregroundStyle(Theme.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
-            .tint(Theme.accent)
         }
-        SectionFootnote(text: String(localized: "While it is on, the accounts marked for it in their own settings leave the menu bar and the notch island, and Claude Code's sessions leave the island: what a glance at your screen at work would otherwise see. The Dashboard and the widgets keep showing everything. The eye in the menu bar popover and ⌘⇧D turn it on and off."))
+        SectionFootnote(text: String(localized: "While it is on, the accounts marked for it leave the menu bar and the notch island, and Claude Code's sessions leave the island: what a glance at your screen at work would otherwise see. The Dashboard and the widgets keep showing everything. Discreet Mode in the menu bar popover and ⌘⇧D turn it on and off."))
     }
 }
 
@@ -50,7 +71,7 @@ struct DiscreetAccountSettings: View {
             }
             .tint(Theme.accent)
         }
-        SectionFootnote(text: String(localized: "While discreet mode is on, this account leaves the menu bar and the notch island. The mode itself is switched in Accounts, with the eye in the menu bar popover, or with ⌘⇧D."))
+        SectionFootnote(text: String(localized: "While discreet mode is on, this account leaves the menu bar and the notch island. The switch is under the accounts list, in the menu bar popover and on ⌘⇧D."))
     }
 }
 #endif

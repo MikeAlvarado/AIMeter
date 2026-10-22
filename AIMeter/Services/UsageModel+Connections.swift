@@ -99,10 +99,18 @@ extension UsageModel {
         await refresh(accountID: accountID)
     }
 
-    func disconnect(accountID: String) {
-        guard let service = services[accountID] else { return }
+    /// Whether the account is gone: a failed cascade leaves it connected
+    /// with the error on its card, and the page that asked stays open.
+    @discardableResult
+    func disconnect(accountID: String) -> Bool {
+        guard let service = services[accountID] else { return false }
         do {
             try service.disconnect()
+            #if os(macOS)
+            // Its discreet-mode mark goes with it: the id can come back
+            // (the Claude Code mirror is always "claude") and would inherit it.
+            AppEnvironment.prefs?.setDiscreet(false, accountID: accountID)
+            #endif
             if service.account.credentialStrategy == .autoDetected, service.account.providerID == ClaudeProvider.providerID {
                 // See `Preferences.autoDetectDeclined`: without this the
                 // CLI login comes right back on the next launch. Only
@@ -122,10 +130,12 @@ extension UsageModel {
                 // needs, so re-issue them reading as they always have.
                 relabelPendingNotifications()
             }
+            return true
         } catch {
             if let index = index(for: accountID) {
                 accounts[index].lastError = error.localizedDescription
             }
+            return false
         }
     }
 

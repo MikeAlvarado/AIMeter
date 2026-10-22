@@ -177,9 +177,12 @@
   (the policy is retired); a **Forecast** card (`ForecastCard`) listing
   any of that account's windows projected to run out early or an
   all-clear row; Spend and Extra usage cards (label/value rows, currency
-  formatted) for this account; and, last, an **Account settings** row
-  (`AccountSettingsLink`, hidden in demo mode) pushing the account's own
-  settings page (below) in the same navigation stack on both platforms.
+  formatted) for this account; and, in the toolbar, an **Account
+  settings** button (`slider.horizontal.3`, a `NavigationLink` to an
+  `AccountSettingsRoute`) pushing the account's own settings page (below)
+  in the same navigation stack on both platforms, the demo's accounts
+  included. Until 4.1 it was a row at the end of the page, which went
+  unfound (Mike, 2026-10-22).
   Until 3.2 the per-account toggles (reset and smart notifications, the
   Live Activity, name, icon, disconnect) and three global ones (the Lock
   Screen widget's window, the third usage row, the credit amounts) sat
@@ -191,206 +194,244 @@
   `Scripts/StoreFrames/CLAUDE.md`) is therefore taken on the account's
   page from 3.2 on.
 - **Account settings** (`AccountSettingsCards`, `AccountSettingsPage.swift`,
-  both platforms): one account's own settings and nothing general. An
-  **Account** card (hidden in demo mode) — a Name row showing the current
-  nickname, and tapping it opens the same rename alert the Dashboard
-  header's context menu uses (see "Renaming" above), and an Icon row
-  opening the icon picker, one card between them (`Card` stacks its rows
-  itself: handed them loose, it drew three cards from 1.6 to 3.0.1); the
-  per-window reset notification toggles (`NotificationTogglesCard`) and
-  a **Smart notifications** card (`SmartNotificationTogglesCard`, one
-  toggle per `SmartAlert` case in declaration order: Near-limit warnings
-  with a threshold slider, Limit reached, Run-out warnings, Early-reset
-  alerts, and Sign-in alerts — all five scoped to this one account, and
-  Sign-in alerts the only toggle in the app that starts **on**, for the
-  reason documented on `NotificationPreferences.reauthAlertsEnabled`); on
-  iOS only, a "Live Activity" card (`LiveActivityCard` — see
-  `AIMeterWidgets/CLAUDE.md`): a toggle for this account's Session
-  countdown on the Lock Screen/Dynamic Island, off by default, and while
-  it is on, "Show a pet" (the account's pixel pet beside the countdown,
-  drawn next to the words; also off by default); on macOS only, a
-  "Discreet mode" card with "Hide in discreet mode"
-  (`DiscreetAccountSettings`, see "Discreet mode" in the repo-root
-  CLAUDE.md); and a disconnect button (hidden in demo mode; the demo
-  leaves through Settings' Demo card). Reached three ways, all to the
-  same cards: pushed from Settings' account list on iOS
-  (`AccountListSettings`, one row per account), pushed from the end of
-  Provider Detail on both platforms (`AccountSettingsLink`, a value,
-  `AccountSettingsRoute`, in the Dashboard's stack), and in the Mac
-  Settings window's Accounts tab under an account picker
-  (`MacAccountsSettingsPage`), where disconnecting picks the first
-  remaining account; `onDisconnect` lets the Settings list's page pop.
-  In the Dashboard's stack the page doesn't pop itself: whenever an
-  account goes away, from anywhere, `ContentView` resets the stack's
-  path to the Dashboard, since the Provider Detail under the page has
-  nothing left to show. Until 4.0.1 the page popped onto that empty
+  both platforms): one account's own settings and nothing general. While
+  its login doesn't work (`needsReauthentication`), a card first with
+  "Sign-in expired" and **Sign in again**, which opens
+  `ConnectAccountSheet(reconnecting:)` right there (Settings' row for the
+  account says "Sign in again" in red, and this is where it leads); then
+  an **Account** card (hidden in demo mode) — a Name row showing the
+  current nickname, and tapping it opens the same rename alert the
+  Dashboard header's context menu uses (see "Renaming" above), and an
+  Icon row opening the icon picker, one card between them (`Card` stacks
+  its rows itself: handed them loose, it drew three cards from 1.6 to
+  3.0.1); the per-window reset notification toggles
+  (`NotificationTogglesCard`) and a **Smart notifications** card
+  (`SmartNotificationTogglesCard`, one toggle per `SmartAlert` case in
+  declaration order: Near-limit warnings with a threshold slider, Limit
+  reached, Run-out warnings, Early-reset alerts, and Sign-in alerts —
+  all five scoped to this one account, and Sign-in alerts the only toggle
+  in the app that starts **on**, for the reason documented on
+  `NotificationPreferences.reauthAlertsEnabled`); on iOS only, a "Live
+  Activity" card (`LiveActivityCard` — see `AIMeterWidgets/CLAUDE.md`): a
+  toggle for this account's Session countdown on the Lock Screen/Dynamic
+  Island, off by default, and while it is on, "Show a pet" (the account's
+  pixel pet beside the countdown, drawn next to the words; also off by
+  default); and a disconnect button (hidden in demo mode; the demo leaves
+  through Settings' Demo card); on the Mac, before it, "Hide in discreet
+  mode" (`DiscreetAccountSettings`), whether discreet mode hides this
+  account. Disconnecting asks first
+  (`DisconnectConfirmation`, a `confirmationDialog` anchored to the
+  control that asks, so iPad's popover points at it; the Mac's "−" uses
+  the same): "Disconnect Claude?", and that AIMeter forgets its sign-in
+  and deletes its usage history (in iCloud too, if sync is on) and its
+  alerts, while the account with the service isn't touched.
+  `UsageModel.disconnect` returns whether the account is gone, and only
+  then does the page move on: a failed cascade leaves the account, its
+  error on its card, and the page open. The cascade also clears the
+  account's discreet-mode mark (macOS), since the id can come back (the
+  Claude Code mirror is always `"claude"`). Reached three ways, all to
+  the same cards: pushed from Settings' accounts card on iOS
+  (`AccountListSettings`), pushed from Provider Detail's toolbar on both
+  platforms (a value, `AccountSettingsRoute`, in
+  the Dashboard's stack), and the detail pane of the Mac Settings
+  window's Accounts tab (`MacAccountsSettingsPage`), where disconnecting
+  selects the first remaining account; `onDisconnect` lets the Settings
+  list's page pop. In the Dashboard's stack the page doesn't pop itself:
+  whenever an account goes away, from anywhere, `ContentView` resets the
+  stack's path to the Dashboard, since the Provider Detail under the page
+  has nothing left to show. Until 4.0.1 the page popped onto that empty
   detail, titled with a provider's name (it read as another account),
   and the page was pushed by destination inside a path-bound stack,
   which could leave the stack stuck (Mike, 2026-10-21; measured after
   the fix with a scripted connect, push and disconnect of the Codex CLI
-  mirror: the path went from 2 to 0 and the app kept answering). Peak-hours alerts are the one exception to "an
-  account's alerts on its page": a single toggle in the general
-  Settings, not repeated per account, since the policy is Claude-wide,
-  not account-specific — see "Settings" below and "Peak hours" in the
-  repo-root CLAUDE.md (hidden today: the policy is retired).
-- **Settings**: the general settings only, built from one view per
-  section (`SettingsSections.swift`: `DemoModeSettings`,
+  mirror: the path went from 2 to 0 and the app kept answering).
+  Peak-hours alerts are the one exception to "an account's alerts on its
+  page": a single toggle in the general Settings, not repeated per
+  account, since the policy is Claude-wide, not account-specific — see
+  "Peak hours" in the repo-root CLAUDE.md (hidden today: the policy is
+  retired).
+- **Settings** (reorganized for 4.1, Mike's call on 2026-10-22 after a
+  fresh review of the 4.0 layout): the general settings, built from one
+  view per section (`SettingsSections.swift`: `DemoModeSettings`,
   `AppearanceSettings` — the appearance / display mode / reset style
   pills and the "Usage colors" switch —, `PeakNotificationsSettings`,
   `ServiceStatusSettings`, `BackgroundRefreshSettings`,
   `PrivacyLinkSettings`, `OpenSourceSettings`; `AccountsSettings.swift`:
-  `AccountListSettings`, `UsageRowsSettings`, iOS's
-  `GlanceMetricSettings` and the Mac's `MacAccountsSettingsPage`; and
-  `AccountOrderSettings`, `DiscreetModeSettings`, `CloudSyncSettings`,
-  `ExportSettings` and `FeedbackSettings` in files of their own; each
-  draws its header, card and footnote and never the gap around itself),
-  which the two platforms arrange differently. An account's own settings
-  are its page (see "Account settings" above), and no setting is in
-  both. **iOS** (`SettingsView`, a sheet with Done, a `NavigationStack`
-  so the account pages push) stacks them in one list: while `isDemoMode`
-  is true, or while nothing is connected, the "Demo mode" section (Exit
-  Demo with its footnote, or View Demo) leads it, above everything else;
-  then appearance / display mode / usage colors / reset style, the "App
-  icon" card (`AppIconSettings`: the four looks as pictures with their
-  names, the one in use ringed in the accent; on the Mac a footnote says
-  only the Dock changes, see "App icon" in the repo-root CLAUDE.md),
-  "Usage rows" (`UsageRowsSettings`: the Auto/Hidden/Credits pill for the
-  third-slot fallback, default Auto, and the "Show credit amounts"
-  toggle, off by default, for the Credits row's money subtitle — both one
-  shared value for every account, which is why they are general), "Lock
-  Screen widget" (`GlanceMetricSettings`, iOS only: the `glanceMetric`
-  pill, which window the circular gauge reads for whichever account a
-  widget instance is set to, its options the union of what the accounts
-  report; the Mac's equivalent is the "Window" row of its Menu bar and
-  Notch island tabs), an "Accounts" card (`AccountOrderSettings`, 2+
-  accounts only: "Order by urgency", `Preferences.ordersByUrgency`, off
-  by default, mirrored into the model through `setOrdersByUrgency`; see
-  "Order by urgency" in the repo-root CLAUDE.md), the "Account settings"
-  list (`AccountListSettings`: one row per account, identity and plan
-  pill, pushing its page), a "Notifications" card with the one Peak-hours
-  alerts toggle (the single exception to "no account alerts here":
-  peak-hours is one Claude-wide policy with nothing account-specific to
-  scope it to; see "Peak hours" in the repo-root CLAUDE.md — the whole
-  card is gated on `ClaudePeakSchedule.current` being non-nil, so it
-  doesn't render while the policy is retired), the refresh cadence menu,
-  then a "Service status" card with the one "Check service status"
-  toggle (`Preferences.checksServiceStatus`, default on; its `onChange`
-  mirrors the value into the model through `setChecksServiceStatus`,
-  same shape as the refresh-cadence handler) — how often a refresh runs
-  before what else it checks, all app-wide — an "iCloud" card
-  (`CloudSyncSettings`: the one "Sync preferences and history" switch,
-  `Preferences.cloudSync`, off by default, mirrored into the model
-  through `setCloudSync(enabled:)` the way the status check is; see
-  "iCloud sync" in the repo-root CLAUDE.md), an "Export" card
-  (`ExportSettings`, only with an account connected and never in demo
-  mode: "Export as CSV" and "Export as JSON", every account's history and
-  last snapshot as one file, `UsageExport` over `UsageModel.usageExport`;
-  on iOS each row is a `ShareLink` whose `Transferable` writes the file
-  only once a destination is picked, on the Mac a `fileExporter` save
-  panel; see "Usage history" in the repo-root CLAUDE.md for the file), a
-  "Privacy & data" link, "Show the tour" (`TourSettings`, see "Tour"
-  below), "Send feedback" (`FeedbackSettings`, its own file: a new issue
-  in the project's GitHub repository with the running version and system
-  already in its text, `issueURL`; GitHub rather than mail, so no address
-  lives in the app and nothing is sent until the user posts it), an
-  "Open Source" row (GitHub mark, opens the repo URL), and — for a
-  connected install — the "Demo mode" card last. **macOS**
-  (`MacSettingsView`, the Settings scene) spreads the general sections
-  over toolbar tabs, the way a Mac app's settings are, at a fixed 540 pt
-  width so rows, pills and previews never stretch across a wide window
-  (the long tabs scroll inside 620 pt, the short ones are their content's
-  height), and every toggle in it is a trailing switch
-  (`SettingsSwitchToggleStyle`, `.settingsSwitch`, defined there; the
-  Dashboard's navigation stack sets it too, so an account page's toggles
-  match — the Mac default was a checkbox before the title). The tabs,
-  grouped by what the user sees rather than by where a setting comes
-  from (Mike's reorganization, 2026-10-19): **General** — the iOS list's
-  general sections except the Privacy link and the two iOS-only cards:
-  Demo, Appearance, App icon, Usage rows, (Peak notifications),
-  Background refresh, Service status, iCloud, Export, Show the tour,
-  Send feedback, Open Source, Demo; **Accounts**
-  (`MacAccountsSettingsPage`) — "Order by urgency" (2+ accounts),
-  "Discreet mode" (the switch alone, `DiscreetModeSettings`; which
-  accounts it hides is each account's own setting), "Main account" (2+
-  accounts: `PrimaryAccountPicker`, the one home of
-  `Preferences.primaryAccountID` since 3.2 — the Menu bar and Notch
-  island tabs carry `MainAccountNote` under their previews instead of
-  repeating the menu), then "Account settings": an account picker (2+
-  accounts, a labeled menu) over `AccountSettingsCards` for the picked
-  account, or "No account connected."; **Notch island**
-  (`NotchIslandSettings`, two cards, plus Claude Code's "Sessions" card,
-  `ClaudeSessionsSettings`, absent in demo mode, since the sessions are
-  what the island shows beside the notch. The first: a live preview of
-  the **peek** — what hovering shows — as this screen draws it (the real
-  notch's silhouette, or the drawn notch or pill at the chosen height),
-  from the same `NotchIslandModel.current` the panel draws (a session's
-  name there is cut short to the card, `previewWing`); "Show usage in the
-  notch", whose setter goes through `PreferencesModel.setNotchIsland(enabled:)`
-  and `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left / Right
-  pill, only on a Mac with a notch; the shared `MetricChips` under a
-  "Windows" title; "Peek on hover" with its "Hover delay" slider (0–1 s,
-  only while on); "Hide from screenshots and recordings"; and a footnote
-  that states the status-item coupling. The second, "Screens without a
-  notch" (shown on every Mac, since a MacBook closed on a monitor is
-  one): the Style pill (Notch / Pill, with a one-line caption for each),
-  Height (Menu bar / Custom, with a 20–44 pt slider while custom), "Hide
-  until hovered" and "Hide in full screen", and a footnote saying when
-  they apply. The sliders quantize in their binding rather than with
-  `step:`, which draws a tick per step. The Sessions card (see "Claude
-  Code sessions" in the repo-root CLAUDE.md): "Show sessions in the
-  notch", with "The notch island is off." under it while it is; "Notify
-  when a session needs you", when a session asks for permission (its
-  caption adds "once the hooks below are in" while they aren't), which
-  asks for the permission and shows the same denied row as the
-  notification cards; and "Permission prompts" with Install or Remove,
-  the hooks' failure in red under it; each switch restarts the monitor
-  through `AppChrome.updateClaudeSessions`; "A pet for each session",
-  under the first while it is on, with "Off, a spinner and a count
-  instead." under it, and "Show the session's name" under that, with
-  "Beside the notch while the island is closed. Hovering shows it either
-  way.", and under that, while it is on, "Avoid covering the menu bar",
-  which asks macOS for the Accessibility permission when switched on
-  (the system's own prompt), but only while it never worked for AIMeter
-  (`AccessibilityState.mayPrompt`), and, while the permission is
-  missing, shows what to do with an Open Settings button to that pane:
-  "Allow AIMeter in Privacy & Security, Accessibility." for a permission
-  never given, or, for one a copy signed another way holds (System
-  Settings shows AIMeter on and macOS still doesn't trust this copy),
-  "This copy of AIMeter needs Accessibility again. In System Settings,
-  remove AIMeter with − if it's in the list, then add it with +." (the
-  list may not show it at all once the permission was reset); the
-  permission is re-checked whenever the app comes forward); **Menu bar**
-  (`MenuBarSettings`: a live preview of the status item label on a light
-  and a dark strip, rendered from the very same `MenuBarLabelModel.current`
-  the `MenuBarExtra` uses, so the preview is the truth, with a "Hidden
-  while the notch island is on." note right under it while the island
-  has the icon hidden (it says why the previewed item isn't in the menu
-  bar) and the main-account note with 2+ accounts; the Style menu
-  (`MenuBarStyle`); the window pill for single styles or the
-  multi-select window chips for `multi` (1–3, options' order kept),
-  under a "Window" or "Windows" title so the choice never reads as one
-  more style or account control; then the "Yellow above 70%, red above
-  85%" (only while usage colors are on), "Reset countdown" (not for
-  `multi`) and "Account name" (2+ only) toggles; the footnote also
-  points at the Shortcuts-app route to a system-wide key); **This Mac**
-  (`ThisMacSettingsPage`, what this computer does on its own, from
-  `MacChromeSettings.swift` and `UpdateViews.swift`): "Hiding AIMeter"
-  (`HidingSettings`: Hide Dock icon / Hide menu bar icon, with a warning
-  row once both are hidden and the island is off), "Startup"
-  (`StartupSettings`: Open at Login, with a pending-approval row and a
-  nudge when the Dock icon is hidden but the login item is off),
-  "Updates" (`UpdatesSettings`, `UpdateViews.swift`: "Check for updates
-  automatically", the updater's state with "Check Now" or, once one is
-  ready, "Restart to Update", and a footnote saying when it installs)
-  and "Claude Code usage" (`ClaudeCodeSettings`, absent in demo mode:
-  "Read Claude Code's local usage logs", off by default, whose
-  `onChange` drives `UsageModel.claudeCode?.setEnabled`, and, once on,
-  "Show today's total in the menu bar"); and **Privacy & data**
-  (`PrivacyView` itself, a tab rather than a pushed screen). `DEBUG`
-  only: the `-AIMeterSettingsTab <tab>` launch argument (a
-  `MacSettingsView.Tab` raw value: `general`, `accounts`, `notchIsland`,
-  `menuBar`, `thisMac`, `privacy`) opens Settings on that tab a second
-  after launch, so each tab can be checked or captured without a click.
+  `AccountListSettings`, `AccountListRow`, `UsageRowsSettings` and iOS's
+  `GlanceMetricSettings`; `MacAccountsSettings.swift`; and
+  `AccountOrderToggle`,
+  `DiscreetModeSettings`, `CloudSyncSettings`, `ExportSettings` and
+  `FeedbackSettings` in files of their own; each draws its header, card
+  and footnote and never the gap around itself), which the two platforms
+  arrange in the same groups: the accounts; how the numbers look; the
+  widgets (iOS); refreshing and data; AIMeter itself (no notifications
+  group: every alert is an account's, on its page, so it only listed the
+  accounts again). The
+  rules: each setting lives in one place (general ones in Settings, an
+  account's on its page, which Settings' rows lead to); only what applies
+  shows (the services you have: Privacy & data describes how each family
+  connects and what it can reach only for the families connected, all
+  three with none or in the demo, `ProviderCatalog.familiesToDescribe`;
+  "Usage rows" unless every account is Copilot's, since its fallback
+  reaches every account with a session or a week, Claude's and Codex's,
+  `UsageRowsSettings.applies`, its Fable example only with a Claude
+  account; Claude Code's cards and the Accessibility privacy row only
+  where Claude Code has run, `Tour.claudeCodePresent`; order and the
+  glance account with two or more accounts); what deletes data asks
+  first and says what goes; every menu says what it is for.
+  - **iOS** (`SettingsView`, a sheet with Done, a `NavigationStack`):
+    one screen. While `isDemoMode` is true, or while nothing is
+    connected, the "Demo mode" card leads it. Then the accounts card
+    (`AccountListSettings`: one `AccountListRow` per account, its mark,
+    its name with the plan pill (`PlanPill`, shared with
+    `ProviderIdentityView`), and under them its service, or "Sign in
+    again" in red while its login doesn't work, each pushing its page;
+    "Add account", which opens `ConnectAccountSheet` over Settings
+    (hidden in demo mode); "Order by urgency" as the card's last row with
+    2+ accounts, `AccountOrderToggle`, `Preferences.ordersByUrgency`,
+    mirrored into the model through `setOrdersByUrgency`); the one
+    Peak-hours toggle under it while a schedule is in force (none today);
+    then one card of rows, each pushing a screen of its sections
+    (`SettingsGroupLink`): **Appearance** (appearance, display mode,
+    usage colors, reset style; the "App icon" card, `AppIconSettings`:
+    the four looks as pictures with their names, the one in use ringed in
+    the accent; "Usage rows", `UsageRowsSettings`: the Auto/Hidden/Credits
+    pill for the third-slot fallback, default Auto, and "Show credit
+    amounts", off by default, both one shared value for every account),
+    **Widgets** (the "Lock Screen widget" pill, `GlanceMetricSettings`:
+    which window the circular gauge reads for whichever account a widget
+    instance is set to, its options the union of what the accounts
+    report; and how to add a widget, since the app can't place one),
+    **Refresh & data** (the refresh cadence, "Check service
+    status" (`Preferences.checksServiceStatus`, default on, mirrored into
+    the model through `setChecksServiceStatus`), iCloud
+    (`CloudSyncSettings`: "Sync preferences and history",
+    `Preferences.cloudSync`, off by default, mirrored through
+    `setCloudSync(enabled:)`; see "iCloud sync" in the repo-root
+    CLAUDE.md), Export (`ExportSettings`, only with an account and never
+    in demo mode: "Export as CSV" and "Export as JSON", each a
+    `ShareLink` whose `Transferable` writes the file only once a
+    destination is picked; see "Usage history" in the repo-root CLAUDE.md
+    for the file) and the "Privacy & data" link) and **About** ("Show the
+    tour", `TourSettings`, see "Tour" below; "Send feedback",
+    `FeedbackSettings`: a new issue in the project's GitHub repository
+    with the running version and system already in its text, nothing sent
+    until the user posts it; "Open Source", the GitHub mark, the
+    repository; and, for a connected install, the "Demo mode" card).
+  - **macOS** (`MacSettingsView`, the Settings scene): at most six
+    toolbar tabs (seven didn't fit in French or German, and "This Mac"
+    next to "General" was a distinction nobody makes), at a fixed 540 pt
+    width so rows, pills and previews never stretch (the long tabs scroll
+    inside 620 pt, the short ones are their content's height), the
+    Accounts tab wider. Every toggle in it is a trailing switch
+    (`SettingsSwitchToggleStyle`, `.settingsSwitch`, defined there; the
+    Dashboard's navigation stack sets it too, so an account page's
+    toggles match). **General**: the Demo card first while it leads;
+    "Startup" (`StartupSettings`: Open at Login, with a pending-approval
+    row and a nudge when the Dock icon is hidden but the login item is
+    off), "Updates" (`UpdatesSettings`, `UpdateViews.swift`: "Check for
+    updates automatically", the updater's state with "Check Now" or,
+    once one is ready, "Restart to Update", and a footnote saying when it
+    installs), "Dock" (`DockSettings`, `MacChromeSettings.swift`: Hide
+    Dock icon, with `HiddenEverywhereWarning` once both icons are hidden
+    and the island is off), Appearance, App icon (a footnote says only
+    the Dock changes, see "App icon" in the repo-root CLAUDE.md), Usage
+    rows, the refresh cadence, Service status, Peak notifications while
+    offered, then Show
+    the tour, Send feedback, Open Source and the Demo card. **Accounts**
+    (`MacAccountsSettingsPage`, 760 pt wide, as the Mac's own account
+    settings are: Mail, Calendar, Internet Accounts): on the left the
+    accounts (`AccountListRow`s, the selected one on the accent wash)
+    with + and − under them (+ opens `ConnectAccountSheet` over Settings,
+    − asks through `DisconnectConfirmation`; both hidden in demo mode),
+    and under those what concerns all of them: "Order by urgency" (2+),
+    "Menu bar and island" (2+: `PrimaryAccountPicker`, the one home of
+    `Preferences.primaryAccountID` since 3.2; the Menu bar and Notch
+    island cards carry `MainAccountNote` under their previews instead of
+    repeating the menu) and "Discreet mode" (`DiscreetModeSettings`: the
+    switch, and under it which accounts it hides, "Hides Work", or, with
+    none marked, where to mark them, so turning it on never looks like it
+    did nothing; each account is marked on its own settings, Mike's call
+    on 2026-10-22, after a version with a checkbox per account in this
+    card); on the right the
+    selected account (the first while none is), its identity and service
+    over `AccountSettingsCards`; each pane scrolls on its own, and the
+    detail back to its top for each account, so neither the list nor a
+    way back is ever out of sight. The selection lives in
+    `MacSettingsView` (`accountSelection`). Until 4.1 the tab was the
+    general account settings with one account's cards under a second
+    "Account" menu, Disconnect at the bottom (Mike, 2026-10-22: "it makes
+    no sense that you can't"), and briefly a list whose row swapped the
+    tab's content behind a "‹ Accounts" button that scrolled away.
+    **Menu bar** (`MenuBarSettings`: "Show in menu bar" first, the
+    `MenuBarVisibilityToggle`, with "Hidden while the notch island is
+    on." under it while the island has the icon hidden, and the
+    everywhere-hidden warning; then a live preview of the status item
+    label on a light and a dark strip, rendered from the very same
+    `MenuBarLabelModel.current` the `MenuBarExtra` uses, so the preview
+    is the truth, the main-account note with 2+ accounts; the Style menu
+    (`MenuBarStyle`); the window pill for single styles or the
+    multi-select window chips for `multi` (1–3, options' order kept),
+    under a "Window" or "Windows" title; then the "Yellow above 70%, red
+    above 85%" (only while usage colors are on), "Reset countdown" (not
+    for `multi`) and "Account name" (2+ only) toggles; the footnote also
+    points at the Shortcuts-app route to a system-wide key). **Notch
+    island** (`NotchIslandSettings`, two cards. The first: a live preview
+    of the **peek** — what hovering shows — as this screen draws it (the
+    real notch's silhouette, or the drawn notch or pill at the chosen
+    height), from the same `NotchIslandModel.current` the panel draws (a
+    session's name there is cut short to the card, `previewWing`); "Show
+    usage in the notch", whose setter goes through
+    `PreferencesModel.setNotchIsland(enabled:)` and
+    `AppChrome.setNotchIsland(enabled:)`; the Both sides / Left / Right
+    pill, only on a Mac with a notch; the shared `MetricChips` under a
+    "Windows" title; "Peek on hover" with its "Hover delay" slider (0–1
+    s, only while on); "Hide from screenshots and recordings"; and a
+    footnote that states the status-item coupling. The second, "Screens
+    without a notch" (shown on every Mac, since a MacBook closed on a
+    monitor is one): the Style pill (Notch / Pill, with a one-line
+    caption for each), Height (Menu bar / Custom, with a 20–44 pt slider
+    while custom), "Hide until hovered" and "Hide in full screen", and a
+    footnote saying when they apply. The sliders quantize in their
+    binding rather than with `step:`, which draws a tick per step).
+    **Claude Code** (only where Claude Code has run on this Mac,
+    `Tour.claudeCodePresent`, and never in the demo, which has nothing to
+    configure): the "Sessions" card (`ClaudeSessionsSettings`, see
+    "Claude Code sessions" in the repo-root CLAUDE.md): "Show sessions in
+    the notch", with "The notch island is off." under it while it is;
+    "Notify when a session needs you", when a session asks for permission
+    (its caption adds "once the hooks below are in" while they aren't),
+    which asks for the permission and shows the same denied row as the
+    notification cards; and "Permission prompts" with Install or Remove,
+    the hooks' failure in red under it; each switch restarts the monitor
+    through `AppChrome.updateClaudeSessions`; "A pet for each session",
+    under the first while it is on, with "Off, a spinner and a count
+    instead." under it, and "Show the session's name" under that, with
+    "Beside the notch while the island is closed. Hovering shows it
+    either way.", and under that, while it is on, "Avoid covering the
+    menu bar", which asks macOS for the Accessibility permission when
+    switched on (the system's own prompt), but only while it never worked
+    for AIMeter (`AccessibilityState.mayPrompt`), and, while the
+    permission is missing, shows what to do with an Open Settings button
+    to that pane: "Allow AIMeter in Privacy & Security, Accessibility."
+    for a permission never given, or, for one a copy signed another way
+    holds (System Settings shows AIMeter on and macOS still doesn't trust
+    this copy), "This copy of AIMeter needs Accessibility again. In
+    System Settings, remove AIMeter with − if it's in the list, then add
+    it with +." (the list may not show it at all once the permission was
+    reset); the permission is re-checked whenever the app comes forward);
+    then "Claude Code usage" (`ClaudeCodeSettings`: "Read Claude Code's
+    local usage logs", off by default, whose `onChange` drives
+    `UsageModel.claudeCode?.setEnabled`, and, once on, "Show today's
+    total in the menu bar"). Until 4.1 the Sessions card sat in the Notch
+    island tab and the usage card in This Mac. **Privacy & data**
+    (`PrivacyView(showsDataControls: true)`: the iCloud and Export cards
+    over the explanation, which is the same screen iOS links to from
+    "Refresh & data"). `DEBUG` only: the `-AIMeterSettingsTab <tab>`
+    launch argument (a `MacSettingsView.Tab` raw value: `general`,
+    `accounts`, `menuBar`, `notchIsland`, `claudeCode`, `privacy`) opens
+    Settings on that tab a second after launch, so each tab can be
+    checked or captured without a click.
 - **Privacy & data** (`PrivacyView`): private-by-default rows (on-device,
   Keychain, no tracking, the opt-in iCloud sync and what it carries, on
   iOS the Watch, and on macOS the opt-in Claude Code log reading,
@@ -406,7 +447,12 @@
   Copilot's quota endpoint, whose answer carries the user id, with no
   scope asked for) + the anonymous status-page check of each family and
   where to turn it off, and the independence/MIT/trademark footer naming
-  all three companies. Every claim must stay true to the code — the
+  all three companies. Only the services connected are described (all
+  three with none, or in the demo: `ProviderCatalog.familiesToDescribe`),
+  and the Claude Code rows and the Accessibility row only where Claude
+  Code has run (`Tour.claudeCodePresent`). On the Mac it is a Settings
+  tab, with the iCloud and Export cards above it (`showsDataControls`).
+  Every claim must stay true to the code — the
   scope chip in particular must match `ClaudeOAuth.scope`, and the
   Copilot text the empty `CopilotDeviceAuth.scope`.
 - The GitHub mark is a bundled PNG (`Shared/Media.xcassets/GitHubIcon`,
@@ -1028,8 +1074,9 @@
     an affordance too). With both icons hidden and no island the
     dashboard is the app's sole affordance, so launching has to produce
     it or the app would be unreachable — that combination is the one
-    case where a launch legitimately shows a window; `HidingSettings`'
-    `isFullyHidden` warning follows the same three-way rule.
+    case where a launch legitimately shows a window; Settings'
+    `HiddenEverywhereWarning` (the Dock card in General, the Menu bar
+    tab) follows the same three-way rule.
   - Re-entry when everything is hidden is **relaunching the app**
     (Finder/Spotlight/`open -a`), which fires
     `applicationShouldHandleReopen` — verified to arrive with no Dock icon

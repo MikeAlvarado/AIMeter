@@ -1,14 +1,15 @@
 import SwiftUI
 import UsageKit
 
-/// One account's own settings and nothing general: its name and icon,
-/// its notifications, on iOS its Live Activity, on the Mac whether
-/// discreet mode hides it, and disconnecting it. Every general setting
+/// One account's own settings and nothing general: signing in again when
+/// its login stopped working, its name and icon, its notifications, on
+/// iOS its Live Activity, on the Mac whether discreet mode hides it, and
+/// disconnecting it. Every general setting
 /// lives in Settings' other sections, so nothing is in two places
 /// (Mike's rule, 2026-10-19). Shown on the account's page
 /// (`AccountSettingsPage`, pushed from Settings' account list and from
 /// the end of Provider Detail) and in the Mac Settings window's Accounts
-/// tab under its account picker (`MacAccountsSettingsPage`).
+/// tab's detail pane (`MacAccountsSettingsPage`).
 struct AccountSettingsCards: View {
     let accountID: String
     /// Called once the account is disconnected, so a pushed page can pop
@@ -19,6 +20,8 @@ struct AccountSettingsCards: View {
     @State private var showingRename = false
     @State private var renameDraft = ""
     @State private var showingIconPicker = false
+    @State private var confirmingDisconnect = false
+    @State private var reconnecting: ConnectedAccount?
 
     private var usage: UsageModel.AccountUsage? {
         model.usage(for: accountID)
@@ -32,6 +35,28 @@ struct AccountSettingsCards: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // A login that stopped working comes first: Settings' row for
+            // the account says "Sign in again", and this is where it leads.
+            if let usage, usage.needsReauthentication, !model.isDemoMode {
+                Card {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label(String(localized: "Sign-in expired. Usage can't refresh."), systemImage: "exclamationmark.triangle")
+                            .font(Theme.caption)
+                            .foregroundStyle(Theme.danger)
+                        Button {
+                            reconnecting = usage.account
+                        } label: {
+                            Text("Sign in again")
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(Theme.accent)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                SettingsGap()
+            }
             if !model.isDemoMode {
                 // The discoverable route to the same rename and icon the
                 // Dashboard header's context menu offers — a context menu
@@ -106,9 +131,10 @@ struct AccountSettingsCards: View {
 
             if !model.isDemoMode {
                 SettingsGap()
+                // Disconnecting deletes the account's history and alerts
+                // on this device, so it asks first.
                 Button(role: .destructive) {
-                    model.disconnect(accountID: accountID)
-                    onDisconnect?()
+                    confirmingDisconnect = true
                 } label: {
                     Text("Disconnect \(accountName)")
                         .font(.body.weight(.medium))
@@ -116,12 +142,54 @@ struct AccountSettingsCards: View {
                         .padding(.vertical, 12)
                         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous))
                 }
+                .disconnectConfirmation(accountID: accountID, isPresented: $confirmingDisconnect) {
+                    onDisconnect?()
+                }
             }
         }
         .sheet(isPresented: $showingIconPicker) {
             AccountIconPicker(accountID: accountID)
         }
+        .sheet(item: $reconnecting) { account in
+            ConnectAccountSheet(reconnecting: account)
+        }
         .renameAccountAlert(for: accountID, isPresented: $showingRename, name: $renameDraft)
+    }
+}
+
+/// Asks before disconnecting an account, saying what goes with it, and
+/// calls `onDone` only once it is gone (a failed cascade leaves it, its
+/// error on its card). Anchored to the control that asks, so iPad's
+/// popover points at it. The account page's button and the Mac's "−"
+/// both use it.
+struct DisconnectConfirmation: ViewModifier {
+    let accountID: String
+    @Binding var isPresented: Bool
+    let onDone: () -> Void
+    @Environment(UsageModel.self) private var model
+
+    func body(content: Content) -> some View {
+        let name = model.usage(for: accountID)?.account.displayName ?? ""
+        content.confirmationDialog(
+            Text("Disconnect \(name)?"),
+            isPresented: $isPresented,
+            titleVisibility: .visible
+        ) {
+            Button("Disconnect", role: .destructive) {
+                if model.disconnect(accountID: accountID) {
+                    onDone()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("AIMeter forgets its sign-in and deletes its usage history (in iCloud too, if sync is on) and its alerts. Your account with the service isn't touched.")
+        }
+    }
+}
+
+extension View {
+    func disconnectConfirmation(accountID: String, isPresented: Binding<Bool>, onDone: @escaping () -> Void) -> some View {
+        modifier(DisconnectConfirmation(accountID: accountID, isPresented: isPresented, onDone: onDone))
     }
 }
 
@@ -158,34 +226,4 @@ struct AccountSettingsPage: View {
 /// the Dashboard after a disconnect is one reset of it.
 struct AccountSettingsRoute: Hashable {
     let accountID: String
-}
-
-/// The row at the end of Provider Detail that leads to the page above:
-/// the data screen keeps no setting of its own.
-struct AccountSettingsLink: View {
-    let accountID: String
-
-    var body: some View {
-        Card {
-            NavigationLink(value: AccountSettingsRoute(accountID: accountID)) {
-                HStack(spacing: 12) {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Theme.accent)
-                        .frame(width: 28, height: 28)
-                        .background(Theme.accentWash, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    Text("Account settings")
-                        .font(.body.weight(.medium))
-                        .foregroundStyle(Theme.ink)
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.inkSecondary)
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-        }
-        SectionFootnote(text: String(localized: "Its notifications, name and icon, and disconnecting."))
-    }
 }

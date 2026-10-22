@@ -42,4 +42,24 @@ final class ProviderCatalogTests: XCTestCase {
         XCTAssertTrue(bundle.credentials is ClaudeAutoCredentialSource)
     }
     #endif
+
+    /// Settings and Privacy & data talk only about the families connected,
+    /// in the picker's order; with none, about every family.
+    func testOnlyConnectedFamiliesAreDescribed() {
+        XCTAssertEqual(ProviderCatalog.familiesToDescribe(connected: []), ProviderCatalog.providerIDs)
+        XCTAssertEqual(ProviderCatalog.familiesToDescribe(connected: ["claude", "claude"]), ["claude"])
+        XCTAssertEqual(ProviderCatalog.familiesToDescribe(connected: ["copilot", "claude"]), ["claude", "copilot"])
+        XCTAssertEqual(ProviderCatalog.familiesToDescribe(connected: ["unknown"]), ProviderCatalog.providerIDs)
+    }
+
+    /// "Usage rows" shows wherever its fallback reaches an account: any
+    /// with a session or a week (Claude's, Codex's), never only Copilot's
+    /// quotas; with nothing connected and in the demo, always.
+    func testUsageRowsShowUnlessEveryAccountIsCopilots() {
+        XCTAssertTrue(UsageRowsSettings.applies(toFamilies: [], demo: false))
+        XCTAssertTrue(UsageRowsSettings.applies(toFamilies: ["codex"], demo: false))
+        XCTAssertTrue(UsageRowsSettings.applies(toFamilies: ["copilot", "claude"], demo: false))
+        XCTAssertFalse(UsageRowsSettings.applies(toFamilies: ["copilot"], demo: false))
+        XCTAssertTrue(UsageRowsSettings.applies(toFamilies: ["copilot"], demo: true))
+    }
 }

@@ -20,6 +20,16 @@ nonisolated enum ProviderCatalog {
     /// sheet's picker lists them.
     static let providerIDs = [ClaudeProvider.providerID, CodexProvider.providerID, CopilotProvider.providerID]
 
+    /// The families Settings and Privacy & data talk about: those the
+    /// connected accounts belong to, in the picker's order, so someone
+    /// without Copilot reads nothing about Copilot (Mike, 2026-10-22).
+    /// With nothing connected, every family, since then the text is what
+    /// someone reads before choosing one.
+    static func familiesToDescribe(connected providerIDs: [String]) -> [String] {
+        let connected = Self.providerIDs.filter(providerIDs.contains)
+        return connected.isEmpty ? Self.providerIDs : connected
+    }
+
     /// Plain-text name shown for accounts of this family — nominative use
     /// only, never a logo (see "Design system" in the repo-root CLAUDE.md).
     static func displayName(for providerID: String) -> String {

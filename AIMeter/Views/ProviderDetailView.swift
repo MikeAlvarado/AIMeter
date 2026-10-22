@@ -2,9 +2,9 @@ import SwiftUI
 import UsageKit
 
 /// Claude detail: what the account shows — the same windows in full,
-/// its history, forecast, spend and extra usage — and, at the end, the
-/// way to its own settings (`AccountSettingsPage`: notifications, name
-/// and icon, disconnecting), which live there and nowhere else. The
+/// its history, forecast, spend and extra usage — and, in its toolbar,
+/// the way to its own settings (`AccountSettingsPage`: notifications,
+/// name and icon, disconnecting), which live there and nowhere else. The
 /// cards it composes live in `ProviderDetailCards.swift` (Peak,
 /// Forecast, raw detail rows).
 struct ProviderDetailView: View {
@@ -81,15 +81,6 @@ struct ProviderDetailView: View {
                         .padding(.top, Theme.sectionSpacing - 10)
                     DetailRowsCard(rows: ProviderDetailRows.extraUsage(extra))
                 }
-
-                // The account's own settings are a page of their own; the
-                // demo's accounts have none worth a page (Exit Demo is in
-                // Settings).
-                if !model.isDemoMode {
-                    SectionHeader(title: String(localized: "Account settings"))
-                        .padding(.top, Theme.sectionSpacing - 10)
-                    AccountSettingsLink(accountID: accountID)
-                }
             }
             .padding(20)
         }
@@ -103,5 +94,15 @@ struct ProviderDetailView: View {
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
+        // The account's own settings, a tap away from its card (Mike,
+        // 2026-10-22: a row at the end of the page went unfound).
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                NavigationLink(value: AccountSettingsRoute(accountID: accountID)) {
+                    Label("Account settings", systemImage: "slider.horizontal.3")
+                }
+                .help(Text("Account settings"))
+            }
+        }
     }
 }

@@ -108,7 +108,7 @@ below and `AIMeterWatch/CLAUDE.md`.
   `SessionPet+Sprites.swift` (the hand-drawn pixels, which
   `Scripts/pets-preview.sh` draws into one PNG), all pure and tested,
   and `AIMeter/Views/ClaudeSessionsSettings.swift` (the
-  "Sessions" card of Settings' Notch island tab), with
+  "Sessions" card of Settings' Claude Code tab), with
   `Shared/AccessibilityState.swift` (pure, tested) and
   `AIMeter/Services/AccessibilityAccess.swift`, the one place the
   Accessibility permission is read and asked for. The same pets stand in
@@ -136,10 +136,12 @@ below and `AIMeterWatch/CLAUDE.md`.
   `MenuBarSettings.swift`. The macOS Settings window is
   `MacSettingsView.swift` (the tabs, and the trailing-switch toggle style)
   over `SettingsSections.swift` (one view per section, shared with the iOS
-  sheet's `SettingsView`) and `MacChromeSettings.swift` (the Hiding and
-  Startup sections of its This Mac tab); an account's own settings are
-  `AccountSettingsPage.swift` (`AccountSettingsCards`, the page, and
-  Provider Detail's row to it) over the account sections in
+  sheet's `SettingsView`), `MacChromeSettings.swift` (General's Startup
+  and Dock sections, the Menu bar tab's "Show in menu bar"),
+  and `MacAccountsSettings.swift` (the Accounts tab: the list with + and
+  − beside the selected account's settings); an account's own settings
+  are `AccountSettingsPage.swift` (`AccountSettingsCards`, the page, and
+  the route Provider Detail's toolbar pushes) over the account sections in
   `AccountsSettings.swift` (the iOS account list, the usage rows, the
   Lock Screen widget's window, the Mac's Accounts tab), see "Account
   settings" in `AIMeter/CLAUDE.md`. The
@@ -1032,7 +1034,7 @@ the account silently freezes at its last snapshot.
   this — it is not a bill", the folder read, and — when Claude Code's own
   `cost-state` totals exist for fully-priced sessions — how far the table
   is from them, the early warning that the table went stale). Settings →
-  This Mac → "Claude Code usage" holds the toggle (and "Show today's
+  Claude Code → "Claude Code usage" holds the toggle (and "Show today's
   total in the menu bar", one `Claude Code today: 300K · ≈ $2.00` line under the popover's
   accounts); Privacy & data has its row. `UsageModel.claudeCode` owns
   the model and rescans it on every refresh sweep while enabled; off
@@ -1342,7 +1344,7 @@ the account silently freezes at its last snapshot.
   just applies the shared `glanceMetric` to that account's snapshot; macOS
   has no per-instance mechanism (`MenuBarExtra` is a single scene), so a
   new paired preference, `primaryAccountID` (`Shared/PreferencesStore.swift`,
-  Settings → Accounts → "Main account", `PrimaryAccountPicker`, once
+  Settings → Accounts → "Menu bar and island", `PrimaryAccountPicker`, once
   since 3.2 (the Menu bar and Notch island cards note it under their
   previews, `MainAccountNote`), or a click or a swipe on the island
   itself, see "Notch island"), picks which account the one status
@@ -1381,7 +1383,7 @@ the account silently freezes at its last snapshot.
   different third-row fallback behavior) that hasn't come up.
 - Order by urgency (3.2, `Preferences.ordersByUrgency`, key
   `pref.ordersByUrgency`, default **false**; Settings → "Accounts",
-  `AccountOrderSettings`, offered with 2+ accounts, mirrored into
+  `AccountOrderToggle`, offered with 2+ accounts, mirrored into
   `UsageModel.ordersByUrgency` through `setOrdersByUrgency` like the
   status check): the account closest to a limit first, everywhere
   accounts are listed. `AccountOrder` (Shared, pure, tested) says how:
@@ -1511,8 +1513,8 @@ the account silently freezes at its last snapshot.
   `UserDefaults.bool(forKey:)` reports `false` for an unwritten key and
   would silently flip them. Unlike `glanceMetric` (which reads one
   account's windows) these are provider-agnostic app chrome and surface
-  in app-wide Settings (`MacSettingsView`'s This Mac and Menu bar tabs:
-  `HidingSettings`, `MenuBarSettings`). The label itself is computed once per state change
+  in app-wide Settings (`MacSettingsView`'s General and Menu bar tabs:
+  `DockSettings`, `MenuBarVisibilityToggle`, `MenuBarSettings`). The label itself is computed once per state change
   by `MenuBarLabelModel` (Shared, pure) and only drawn by `MenuBarLabel`:
   the gauge styles are the variable-value SF Symbol as always, `bar` and
   `battery` are rendered to an `NSImage` with `ImageRenderer` (a status
@@ -1523,8 +1525,9 @@ the account silently freezes at its last snapshot.
   value(s) stay in the tooltip and the accessibility label.
 - Discreet mode (macOS, 3.2; `Preferences.discreetMode`, off by
   default, and `discreetAccountIDs`, the accounts marked for it; Settings
-  → Accounts → "Discreet mode", `DiscreetModeSettings`, the switch
-  alone, each account's "Hide in discreet mode" on its own settings page
+  → Accounts → "Discreet mode", `DiscreetModeSettings`, the switch and
+  a line naming the accounts it hides (or, with none marked yet, where to
+  mark them), each account's "Hide in discreet mode" on its own settings
   (`DiscreetAccountSettings`), the "Discreet Mode" switch in the menu
   bar popover's footer and ⌘⇧D in the Usage menu (and the popover),
   all one switch): for a screen others can see, at work. While it
@@ -1999,7 +2002,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   own newer change kept at launch, a value this build doesn't know
   left alone, foreign and misfiled envelopes ignored, and what leaves
   the store with the switch or with an account (`CloudSyncTests`),
-  `ProviderCatalog`, `UsageModel`'s naming/ordering/demo paths, the
+  `ProviderCatalog` (which families Privacy & data describes, and when
+  "Usage rows" shows), `UsageModel`'s naming/ordering/demo paths, the
   urgency order and the model applying it over the registry's
   (`AccountOrderTests`), discreet mode's keys, which accounts the glance
   surfaces keep and the primary they fall back to (`DiscreetModeTests`), the

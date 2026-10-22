@@ -33,12 +33,24 @@ struct ProviderIdentityView: View {
             .lineLimit(1)
             .minimumScaleFactor(0.8)
         if let planName {
-            Text(planName.capitalized)
-                .font(compactPill ? .caption2.weight(.semibold) : .caption.weight(.semibold))
-                .foregroundStyle(Theme.inkSecondary)
-                .padding(.horizontal, compactPill ? 7 : 10)
-                .padding(.vertical, compactPill ? 1.5 : 3)
-                .background(Theme.track.opacity(0.7), in: Capsule())
+            PlanPill(name: planName, compact: compactPill)
         }
+    }
+}
+
+/// The plan pill beside an account's name ("Pro", "Max"): drawn here and
+/// in Settings' account rows, which put it beside the name over a second
+/// line of their own.
+struct PlanPill: View {
+    let name: String
+    var compact = false
+
+    var body: some View {
+        Text(name.capitalized)
+            .font(compact ? .caption2.weight(.semibold) : .caption.weight(.semibold))
+            .foregroundStyle(Theme.inkSecondary)
+            .padding(.horizontal, compact ? 7 : 10)
+            .padding(.vertical, compact ? 1.5 : 3)
+            .background(Theme.track.opacity(0.7), in: Capsule())
     }
 }

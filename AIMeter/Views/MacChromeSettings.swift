@@ -2,21 +2,17 @@
 import SwiftUI
 import UsageKit
 
-/// How AIMeter presents itself on the Mac, beyond the two glance
-/// surfaces (`NotchIslandSettings`, `MenuBarSettings`, each a tab of its
-/// own): whether the status item and Dock icon are shown at all, and
-/// whether the app starts at login. Both sections sit in the General tab
-/// of `MacSettingsView`.
-///
-/// All app-wide chrome, not provider data, so it lives in Settings rather
-/// than in Claude's Provider Detail.
-struct HidingSettings: View {
+/// The Dock icon (General): whether AIMeter shows one at all. Hiding the
+/// menu bar icon is the first row of the Menu bar tab
+/// (`MenuBarVisibilityToggle`), where someone who wants it gone looks for
+/// it; until 4.1 both sat in a "Hiding AIMeter" card of the This Mac tab.
+struct DockSettings: View {
     @Environment(PreferencesModel.self) private var prefs
 
     var body: some View {
         @Bindable var prefs = prefs
 
-        SectionHeader(title: String(localized: "Hiding AIMeter"))
+        SectionHeader(title: String(localized: "Dock"))
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                 Toggle(isOn: $prefs.hideDockIcon) {
@@ -25,22 +21,9 @@ struct HidingSettings: View {
                         .foregroundStyle(Theme.ink)
                 }
                 .tint(Theme.accent)
-
-                Divider().overlay(Theme.track)
-
-                Toggle(isOn: Binding(
-                    get: { !prefs.statusItemVisible },
-                    set: { prefs.statusItemVisible = !$0 }
-                )) {
-                    Text("Hide menu bar icon")
-                        .font(Theme.rowTitle)
-                        .foregroundStyle(Theme.ink)
-                }
-                .tint(Theme.accent)
-
-                if isFullyHidden {
+                if HiddenEverywhereWarning.applies(prefs) {
                     Divider().overlay(Theme.track)
-                    hiddenWarning
+                    HiddenEverywhereWarning()
                 }
             }
         }
@@ -59,16 +42,44 @@ struct HidingSettings: View {
         }
         SectionFootnote(text: String(localized: "AIMeter keeps running and refreshing your usage either way. Hiding only changes what you see. Quit still quits."))
     }
+}
 
-    /// With both icons off and no island there is no visible UI at all,
-    /// so the one way back in has to be spelled out *before* the user is
-    /// looking at an empty screen wondering what happened. The island
-    /// counts as visible UI: its footer opens the Dashboard.
-    private var isFullyHidden: Bool {
+/// The Menu bar tab's first row: whether the status item is there at all
+/// (`statusItemVisible`), with why it is off while the notch island has
+/// taken its place, and the warning once nothing at all is visible.
+struct MenuBarVisibilityToggle: View {
+    @Environment(PreferencesModel.self) private var prefs
+
+    var body: some View {
+        @Bindable var prefs = prefs
+
+        Toggle(isOn: $prefs.statusItemVisible) {
+            Text("Show in menu bar")
+                .font(Theme.rowTitle)
+                .foregroundStyle(Theme.ink)
+        }
+        .tint(Theme.accent)
+        if prefs.notchIslandEnabled, !prefs.statusItemVisible {
+            Label(String(localized: "Hidden while the notch island is on."), systemImage: "eye.slash")
+                .font(Theme.caption)
+                .foregroundStyle(Theme.inkSecondary)
+        }
+        if HiddenEverywhereWarning.applies(prefs) {
+            HiddenEverywhereWarning()
+        }
+    }
+}
+
+/// With both icons off and no island there is no visible UI at all, so
+/// the one way back in has to be spelled out *before* the user is looking
+/// at an empty screen wondering what happened. The island counts as
+/// visible UI: its footer opens the Dashboard.
+struct HiddenEverywhereWarning: View {
+    static func applies(_ prefs: PreferencesModel) -> Bool {
         prefs.hideDockIcon && !prefs.statusItemVisible && !prefs.notchIslandEnabled
     }
 
-    private var hiddenWarning: some View {
+    var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Image(systemName: "eye.slash")
                 .font(.footnote.weight(.semibold))

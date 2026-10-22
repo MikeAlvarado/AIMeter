@@ -280,52 +280,6 @@
         }
       }
     },
-    "AIMeter has no server and no account of its own. Usage is read directly from each provider and cached on this device so widgets can show it. Nothing is sent anywhere else. The peak-hours indicator is computed the same way: from a fixed schedule and the clock, with no extra network call." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter hat keinen Server und keinen eigenen Account. Die Nutzung wird direkt von jedem Anbieter gelesen und auf diesem Gerät zwischengespeichert, damit Widgets sie anzeigen können. Nichts wird anderswohin gesendet. Die Stoßzeiten-Anzeige wird genauso berechnet: aus einem festen Zeitplan und der Uhr, ohne zusätzlichen Netzwerkaufruf."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de cada proveedor y se guarda en caché en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro sitio. El indicador de horas punta se calcula igual: a partir de un horario fijo y el reloj, sin ninguna llamada de red adicional."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter n'a ni serveur ni compte propre. L'utilisation est lue directement auprès de chaque fournisseur et mise en cache sur cet appareil pour que les widgets puissent l'afficher. Rien n'est envoyé ailleurs. L'indicateur d'heures de pointe est calculé de la même façon : à partir d'un horaire fixe et de l'horloge, sans appel réseau supplémentaire."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter にはサーバーも独自のアカウントもありません。使用量は各プロバイダから直接読み取り、ウィジェットが表示できるようこのデバイスにキャッシュします。他の場所には何も送信しません。ピーク時間の表示も同じ方法で、固定スケジュールと時計から計算し、追加のネットワーク通信はありません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter에는 서버도 자체 계정도 없습니다. 사용량은 각 제공업체에서 직접 읽어 위젯이 표시할 수 있도록 이 기기에 캐시됩니다. 다른 곳으로는 아무것도 보내지 않습니다. 피크 시간 표시도 같은 방식으로, 고정된 일정과 시계로만 계산하며 추가 네트워크 호출이 없습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O AIMeter não tem servidor nem conta própria. O uso é lido diretamente de cada provedor e guardado em cache neste dispositivo para que os widgets possam mostrá-lo. Nada é enviado para outro lugar. O indicador de horário de pico é calculado do mesmo jeito: a partir de um horário fixo e do relógio, sem nenhuma chamada de rede extra."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter 没有服务器，也没有自己的账户。用量直接从各个提供方读取并缓存在本设备上，供小组件显示。不会向其他任何地方发送。高峰时段指示也以同样方式计算：基于固定时间表和时钟，无需额外网络请求。"
-          }
-        }
-      }
-    },
     "AIMeter is an independent app, not affiliated with Anthropic, OpenAI or GitHub. It only reads your own usage limits, never sends prompts or spends your plan's usage, and your sign-in tokens stay on this device." : {
       "localizations" : {
         "de" : {
@@ -1430,6 +1384,100 @@
         }
       }
     },
+    "Hide in discreet mode" : {
+      "comment" : "An account's settings (macOS): the switch that hides this account while discreet mode is on.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im diskreten Modus verbergen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar en modo discreto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer en mode discret"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモードで隠す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드에서 숨기기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar no modo discreto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在低调模式下隐藏"
+          }
+        }
+      }
+    },
+    "Hides %@" : {
+      "comment" : "Settings, discreet mode card (macOS): the accounts the mode hides, as a list (e.g. 'Hides Personal and Work').",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blendet %@ aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculta %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masque %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 숨김"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculta %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏 %@"
+          }
+        }
+      }
+    },
     "Month" : {
       "localizations" : {
         "de" : {
@@ -1611,6 +1659,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更多账户"
+          }
+        }
+      }
+    },
+    "No account is marked to hide yet: turn on Hide in discreet mode in an account's settings." : {
+      "comment" : "Settings, discreet mode card (macOS): no account is marked for the mode yet.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch ist kein Account zum Ausblenden markiert: Schalte „Im diskreten Modus ausblenden“ in den Einstellungen eines Accounts ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay cuentas marcadas para ocultar: activa Ocultar en modo discreto en los ajustes de una cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun compte n’est encore marqué à masquer : activez Masquer en mode discret dans les réglages d’un compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非表示にするアカウントはまだありません。アカウントの設定で「控えめモードで非表示」をオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 숨길 계정이 없습니다. 계정 설정에서 비공개 모드에서 숨기기를 켜세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma conta marcada para ocultar ainda: ative Ocultar no modo discreto nos ajustes de uma conta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有标记要隐藏的账户：请在账户设置中打开“在低调模式下隐藏”。"
           }
         }
       }
@@ -2399,6 +2494,100 @@
         }
       }
     },
+    "While discreet mode is on, this account leaves the menu bar and the notch island. The switch is under the accounts list, in the menu bar popover and on ⌘⇧D." : {
+      "comment" : "An account's settings, discreet mode footnote (macOS).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solange der diskrete Modus an ist, verschwindet dieser Account aus der Menüleiste und der Notch-Insel. Der Schalter ist unter der Account-Liste, im Menüleisten-Popover und auf ⌘⇧D."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mientras el modo discreto está activado, esta cuenta desaparece de la barra de menús y de la isla del notch. El interruptor está bajo la lista de cuentas, en el menú de la barra de menús y en ⌘⇧D."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tant que le mode discret est activé, ce compte quitte la barre des menus et l’îlot de l’encoche. L’interrupteur est sous la liste des comptes, dans le menu de la barre des menus et sur ⌘⇧D."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控えめモードがオンの間、このアカウントはメニューバーとノッチアイランドから消えます。スイッチはアカウント一覧の下、メニューバーのポップオーバー、⌘⇧D にあります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비공개 모드가 켜져 있는 동안 이 계정은 메뉴 막대와 노치 아일랜드에서 사라집니다. 스위치는 계정 목록 아래, 메뉴 막대 팝오버, ⌘⇧D에 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enquanto o modo discreto estiver ligado, esta conta some da barra de menus e da ilha do notch. O interruptor fica abaixo da lista de contas, no menu da barra de menus e em ⌘⇧D."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低调模式开启时，此账户会从菜单栏和刘海岛中消失。开关在账户列表下方、菜单栏弹出窗口中，以及 ⌘⇧D。"
+          }
+        }
+      }
+    },
+    "While it is on, the accounts marked for it leave the menu bar and the notch island, and Claude Code's sessions leave the island: what a glance at your screen at work would otherwise see. The Dashboard and the widgets keep showing everything. Discreet Mode in the menu bar popover and ⌘⇧D turn it on and off." : {
+      "comment" : "Settings, discreet mode card footnote (macOS).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solange er an ist, verschwinden die dafür markierten Accounts aus der Menüleiste und der Notch-Insel, und die Sitzungen von Claude Code aus der Insel: was ein Blick auf deinen Bildschirm bei der Arbeit sonst sähe. Das Dashboard und die Widgets zeigen weiter alles. Der diskrete Modus im Menüleisten-Popover und ⌘⇧D schalten ihn ein und aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mientras está activado, las cuentas marcadas para él desaparecen de la barra de menús y de la isla del notch, y las sesiones de Claude Code desaparecen de la isla: lo que un vistazo a tu pantalla en el trabajo vería. El panel y los widgets siguen mostrando todo. El modo discreto del menú de la barra de menús y ⌘⇧D lo activan y desactivan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tant qu’il est activé, les comptes marqués pour lui quittent la barre des menus et l’îlot de l’encoche, et les sessions de Claude Code quittent l’îlot : ce qu’un coup d’œil à votre écran au travail verrait sinon. Le tableau de bord et les widgets continuent de tout afficher. Le mode discret du menu de la barre des menus et ⌘⇧D l’activent et le désactivent."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンの間、対象にしたアカウントはメニューバーとノッチアイランドから、Claude Code のセッションはアイランドから消えます。職場で画面をのぞかれても見えないように。ダッシュボードとウィジェットはすべてを表示したままです。メニューバーのポップオーバーの控えめモードと ⌘⇧D でオン・オフできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜져 있는 동안 대상으로 표시한 계정은 메뉴 막대와 노치 아일랜드에서, Claude Code 세션은 아일랜드에서 사라집니다. 직장에서 화면을 흘끗 보더라도 보이지 않습니다. 대시보드와 위젯은 계속 모든 것을 보여줍니다. 메뉴 막대 팝오버의 비공개 모드와 ⌘⇧D로 켜고 끕니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enquanto estiver ligado, as contas marcadas para ele somem da barra de menus e da ilha do notch, e as sessões do Claude Code somem da ilha: o que uma olhada na sua tela no trabalho veria. O painel e os widgets continuam mostrando tudo. O modo discreto do menu da barra de menus e ⌘⇧D ligam e desligam."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，标记的账户会从菜单栏和刘海岛中消失，Claude Code 的会话也会从岛中消失：也就是在公司被人瞥见屏幕时能看到的内容。仪表板和小组件仍会显示全部。菜单栏弹出窗口中的低调模式和 ⌘⇧D 可以开关它。"
+          }
+        }
+      }
+    },
     "Your AI subscriptions' limits at a glance: every window, how much is left, and when it resets." : {
       "comment" : "Tour, first step: what AIMeter is.",
       "localizations" : {
@@ -2586,53 +2775,6 @@
         }
       }
     },
-    "This Mac" : {
-      "comment" : "Settings (macOS): the tab with what this computer does on its own.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dieser Mac"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este Mac"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce Mac"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このMac"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 Mac"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este Mac"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此 Mac"
-          }
-        }
-      }
-    },
     "Usage rows" : {
       "comment" : "Settings: the card with the third row's fallback and the credit amounts.",
       "localizations" : {
@@ -2727,53 +2869,6 @@
         }
       }
     },
-    "Hide in discreet mode" : {
-      "comment" : "An account's settings (macOS): the switch that hides this account while discreet mode is on.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Im diskreten Modus verbergen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ocultar en modo discreto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masquer en mode discret"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "控えめモードで隠す"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비공개 모드에서 숨기기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ocultar no modo discreto"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在低调模式下隐藏"
-          }
-        }
-      }
-    },
     "Shows the main account, chosen in Accounts." : {
       "comment" : "Settings (macOS): the note under the Menu bar and Notch island previews with two or more accounts.",
       "localizations" : {
@@ -2817,194 +2912,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示主账户，在“账户”中选择。"
-          }
-        }
-      }
-    },
-    "Each account's notifications, Live Activity, name and icon." : {
-      "comment" : "Settings (iOS): the footnote under the account list.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Mitteilungen, die Live-Aktivität, der Name und das Symbol jedes Accounts."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las notificaciones, la actividad en vivo, el nombre y el ícono de cada cuenta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les notifications, l'activité en direct, le nom et l'icône de chaque compte."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "各アカウントの通知、ライブアクティビティ、名前とアイコン。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "각 계정의 알림, 실시간 현황, 이름과 아이콘."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As notificações, a Atividade ao Vivo, o nome e o ícone de cada conta."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "每个账户的通知、实时活动、名称和图标。"
-          }
-        }
-      }
-    },
-    "Its notifications, name and icon, and disconnecting." : {
-      "comment" : "Provider Detail: the footnote under the Account settings row.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seine Mitteilungen, Name und Symbol, und das Trennen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sus notificaciones, su nombre y su ícono, y desconectarla."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ses notifications, son nom et son icône, et sa déconnexion."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通知、名前とアイコン、接続解除。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "알림, 이름과 아이콘, 연결 해제."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suas notificações, nome e ícone, e desconectar."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "它的通知、名称和图标，以及断开连接。"
-          }
-        }
-      }
-    },
-    "While it is on, the accounts marked for it in their own settings leave the menu bar and the notch island, and Claude Code's sessions leave the island: what a glance at your screen at work would otherwise see. The Dashboard and the widgets keep showing everything. The eye in the menu bar popover and ⌘⇧D turn it on and off." : {
-      "comment" : "Settings (macOS), Accounts tab: the footnote under the discreet mode switch.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solange er an ist, verschwinden die in ihren eigenen Einstellungen dafür markierten Accounts aus der Menüleiste und der Notch-Insel, und die Sitzungen von Claude Code aus der Insel: was ein Blick auf deinen Bildschirm bei der Arbeit sonst sähe. Das Dashboard und die Widgets zeigen weiter alles. Das Auge im Menüleisten-Popover und ⌘⇧D schalten ihn ein und aus."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mientras está activado, las cuentas marcadas en sus propios ajustes desaparecen de la barra de menús y de la isla del notch, y las sesiones de Claude Code desaparecen de la isla: lo que un vistazo a tu pantalla en el trabajo vería. El panel y los widgets siguen mostrando todo. El ojo en el menú de la barra de menús y ⌘⇧D lo activan y desactivan."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tant qu'il est activé, les comptes cochés dans leurs propres réglages quittent la barre des menus et l'îlot de l'encoche, et les sessions de Claude Code quittent l'îlot : ce qu'un coup d'œil à votre écran au travail verrait sinon. Le tableau de bord et les widgets continuent de tout afficher. L'œil dans le menu de la barre des menus et ⌘⇧D l'activent et le désactivent."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オンの間、各アカウントの設定で選んだアカウントはメニューバーとノッチアイランドから、Claude Code のセッションはアイランドから消えます。職場で画面をのぞかれても見えないように。ダッシュボードとウィジェットはすべてを表示したままです。メニューバーのポップオーバーの目のアイコンと ⌘⇧D でオン・オフできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "켜져 있는 동안 각 계정 설정에서 표시한 계정은 메뉴 막대와 노치 아일랜드에서, Claude Code 세션은 아일랜드에서 사라집니다. 직장에서 화면을 흘끗 보더라도 보이지 않습니다. 대시보드와 위젯은 계속 모든 것을 보여줍니다. 메뉴 막대 팝오버의 눈 아이콘과 ⌘⇧D로 켜고 끕니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enquanto estiver ligado, as contas marcadas nos seus próprios ajustes somem da barra de menus e da ilha do notch, e as sessões do Claude Code somem da ilha: o que uma olhada na sua tela no trabalho veria. O painel e os widgets continuam mostrando tudo. O olho no menu da barra de menus e ⌘⇧D ligam e desligam."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启后，在各自设置中勾选的账户会从菜单栏和刘海岛中消失，Claude Code 的会话也会从岛中消失：也就是在公司被人瞥见屏幕时能看到的内容。仪表板和小组件仍会显示全部。菜单栏弹出窗口中的眼睛图标和 ⌘⇧D 可以开关它。"
-          }
-        }
-      }
-    },
-    "While discreet mode is on, this account leaves the menu bar and the notch island. The mode itself is switched in Accounts, with the eye in the menu bar popover, or with ⌘⇧D." : {
-      "comment" : "An account's settings (macOS): the footnote under Hide in discreet mode.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solange der diskrete Modus an ist, verschwindet dieser Account aus der Menüleiste und der Notch-Insel. Der Modus selbst wird unter Accounts, mit dem Auge im Menüleisten-Popover oder mit ⌘⇧D geschaltet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Con el modo discreto activado, esta cuenta desaparece de la barra de menús y de la isla del notch. El modo se activa en Cuentas, con el ojo en el menú de la barra de menús o con ⌘⇧D."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tant que le mode discret est activé, ce compte quitte la barre des menus et l'îlot de l'encoche. Le mode lui-même s'active dans Comptes, avec l'œil du menu de la barre des menus ou avec ⌘⇧D."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "控えめモードがオンの間、このアカウントはメニューバーとノッチアイランドから消えます。モード自体は「アカウント」、メニューバーのポップオーバーの目のアイコン、または ⌘⇧D で切り替えます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비공개 모드가 켜져 있는 동안 이 계정은 메뉴 막대와 노치 아일랜드에서 사라집니다. 모드 자체는 계정에서, 메뉴 막대 팝오버의 눈 아이콘으로, 또는 ⌘⇧D로 켜고 끕니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Com o modo discreto ligado, esta conta some da barra de menus e da ilha do notch. O modo em si é ligado em Contas, com o olho no menu da barra de menus ou com ⌘⇧D."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启低调模式后，此账户会从菜单栏和刘海岛中消失。模式本身在“账户”中、通过菜单栏弹出窗口中的眼睛图标或 ⌘⇧D 开关。"
           }
         }
       }
@@ -25236,6 +25143,664 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下载的文件不是发布说明中的版本。"
+          }
+        }
+      }
+    },
+    "Disconnect %@?" : {
+      "comment" : "The title of the confirmation before disconnecting an account; the placeholder is its nickname.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ trennen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Desconectar %@?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecter %@ ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の接続を解除しますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@의 연결을 해제할까요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconectar %@?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要断开 %@ 吗？"
+          }
+        }
+      }
+    },
+    "Disconnect" : {
+      "comment" : "The destructive button of the confirmation before disconnecting an account.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trennen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconectar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続を解除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결 해제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconectar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "断开连接"
+          }
+        }
+      }
+    },
+    "AIMeter has no server and no account of its own. Usage is read directly from each provider and cached on this device so widgets can show it. Nothing is sent anywhere else." : {
+      "comment" : "Privacy & data: the first row's text.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter hat keinen Server und keinen eigenen Account. Die Nutzung wird direkt von jedem Anbieter gelesen und auf diesem Gerät zwischengespeichert, damit Widgets sie anzeigen können. Nichts wird anderswohin gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de cada proveedor y se guarda en caché en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro sitio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter n'a ni serveur ni compte propre. L'utilisation est lue directement auprès de chaque fournisseur et mise en cache sur cet appareil pour que les widgets puissent l'afficher. Rien n'est envoyé ailleurs."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter にはサーバーも独自のアカウントもありません。使用量は各プロバイダから直接読み取り、ウィジェットが表示できるようこのデバイスにキャッシュします。他の場所には何も送信しません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter에는 서버도 자체 계정도 없습니다. 사용량은 각 제공업체에서 직접 읽어 위젯이 표시할 수 있도록 이 기기에 캐시됩니다. 다른 곳으로는 아무것도 보내지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter não tem servidor nem conta própria. O uso é lido diretamente de cada provedor e guardado em cache neste dispositivo para que os widgets possam mostrá-lo. Nada é enviado para outro lugar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 没有服务器，也没有自己的账户。用量直接从各个提供方读取并缓存在本设备上，供小组件显示。不会向其他任何地方发送。"
+          }
+        }
+      }
+    },
+    "Some plans don't include a per-model limit of their own. Auto shows your spend/credits there only when enabled on your account; Hidden and Credits force it off or on. When the Credits row shows, \"Show credit amounts\" adds its $ used and limit under the row in place of a reset line." : {
+      "comment" : "Settings, Usage rows: the footnote when no Claude account is connected (no Claude example).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manche Pläne haben kein eigenes Modell-Limit. Auto zeigt dort deine Ausgaben/Credits nur, wenn sie in deinem Account aktiviert sind; Ausgeblendet und Credits erzwingen aus oder an. Wenn die Credits-Zeile angezeigt wird, ergänzt „Credit-Beträge anzeigen“ verbrauchte $ und Limit unter der Zeile anstelle einer Reset-Angabe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunos planes no incluyen un límite propio por modelo. Auto muestra ahí tu gasto/créditos solo si tu cuenta lo tiene habilitado; Oculto y Créditos lo desactivan o activan de forma forzada. Cuando la fila de Créditos se muestra, \"Mostrar montos de créditos\" agrega el $ usado y el límite bajo la fila en lugar de una línea de reinicio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certains forfaits n'ont pas de limite par modèle. Auto y affiche vos dépenses/crédits seulement s'ils sont activés sur votre compte ; Masqué et Crédits forcent l'affichage ou non. Quand la ligne Crédits apparaît, « Afficher les montants de crédits » ajoute les $ utilisés et la limite sous la ligne à la place d'une réinitialisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル別の上限がないプランもあります。自動はアカウントで有効な場合のみ支出/クレジットを表示し、非表示とクレジットは強制的にオフまたはオンにします。クレジット行が表示されているとき、「クレジット額を表示」をオンにするとリセット行の代わりに使用額と上限額が表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일부 요금제에는 모델별 한도가 없습니다. 자동은 계정에서 활성화된 경우에만 지출/크레딧을 표시하고, 숨김과 크레딧은 강제로 끄거나 켭니다. 크레딧 행이 표시될 때 \"크레딧 금액 표시\"를 켜면 초기화 줄 대신 사용 금액과 한도가 행 아래에 표시됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alguns planos não têm um limite próprio por modelo. Auto mostra ali seus gastos/créditos só se estiverem ativados na sua conta; Oculto e Créditos forçam desligado ou ligado. Quando a linha Créditos aparece, \"Mostrar valores de créditos\" adiciona o $ usado e o limite abaixo da linha no lugar do reinício."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有些套餐没有单独的按模型额度。自动仅在你的账户已启用时显示消费/额度金；隐藏和额度金则强制关闭或开启。显示额度金行时，\"显示额度金金额\"会在该行下方显示已用金额和上限，以代替重置行。"
+          }
+        }
+      }
+    },
+    "AIMeter forgets its sign-in and deletes its usage history (in iCloud too, if sync is on) and its alerts. Your account with the service isn't touched." : {
+      "comment" : "The message of the confirmation before disconnecting an account.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter vergisst seine Anmeldung und löscht seinen Nutzungsverlauf (auch in iCloud, falls die Synchronisierung an ist) und seine Hinweise. Dein Account beim Dienst bleibt unberührt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter olvida su inicio de sesión y borra su historial de uso (también en iCloud, si la sincronización está activada) y sus alertas. Tu cuenta en el servicio no se toca."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter oublie sa connexion et supprime son historique d'utilisation (dans iCloud aussi, si la synchronisation est activée) et ses alertes. Votre compte auprès du service n'est pas touché."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter はこのアカウントのサインイン情報を削除し、使用履歴（同期がオンなら iCloud 上のものも）と通知も削除します。サービス側のアカウントには影響しません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter가 이 계정의 로그인 정보를 지우고 사용 기록(동기화가 켜져 있으면 iCloud의 기록도)과 알림을 삭제합니다. 서비스의 계정 자체에는 영향이 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter esquece o login dela e apaga o histórico de uso (no iCloud também, se a sincronização estiver ligada) e os alertas. Sua conta no serviço não é afetada."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 会忘记它的登录信息，并删除它的使用记录（如果开启了同步，iCloud 中的也会删除）和提醒。你在该服务上的账户不受影响。"
+          }
+        }
+      }
+    },
+    "Each account's notifications, Live Activity, name and icon, and disconnecting it." : {
+      "comment" : "iOS Settings: the footnote under the account list.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Mitteilungen, die Live-Aktivität, der Name und das Symbol jedes Accounts, und ihn trennen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notificaciones, la actividad en vivo, el nombre y el ícono de cada cuenta, y desconectarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications, l'activité en direct, le nom et l'icône de chaque compte, et sa déconnexion."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各アカウントの通知、ライブアクティビティ、名前とアイコン、接続の解除。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "각 계정의 알림, 실시간 현황, 이름과 아이콘, 그리고 연결 해제."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações, a Atividade ao Vivo, o nome e o ícone de cada conta, e desconectá-la."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个账户的通知、实时活动、名称和图标，以及断开连接。"
+          }
+        }
+      }
+    },
+    "Menu bar and island" : {
+      "comment" : "Mac Settings, Accounts: the header over the menu that picks the account the menu bar and the notch island show.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menüleiste und Insel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra de menús e isla"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barre des menus et îlot"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーとアイランド"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메뉴 막대와 아일랜드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra de menus e ilha"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏与刘海岛"
+          }
+        }
+      }
+    },
+    "Dock" : {
+      "comment" : "Mac Settings, General: the header of the Dock icon section.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dock"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dock"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dock"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dock"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dock"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dock"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "程序坞"
+          }
+        }
+      }
+    },
+    "Show in menu bar" : {
+      "comment" : "Mac Settings, Menu bar tab: the first switch, whether the icon is in the menu bar at all.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In der Menüleiste anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en la barra de menús"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher dans la barre des menus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーに表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메뉴 막대에 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar na barra de menus"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在菜单栏中显示"
+          }
+        }
+      }
+    },
+    "Widgets" : {
+      "comment" : "iOS Settings: the group with the Lock Screen widget's window and how to add one.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィジェット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위젯"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小组件"
+          }
+        }
+      }
+    },
+    "Refresh & data" : {
+      "comment" : "iOS Settings: the group with how often AIMeter refreshes, the service status check, iCloud, export and Privacy & data.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisierung & Daten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualización y datos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualisation et données"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新とデータ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로 고침 및 데이터"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualização e dados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新与数据"
+          }
+        }
+      }
+    },
+    "About" : {
+      "comment" : "iOS Settings: the group with the tour, feedback, the source and the demo.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À propos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "情報"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정보"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobre"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于"
+          }
+        }
+      }
+    },
+    "Add a widget" : {
+      "comment" : "iOS Settings, Widgets: the header of how to add one.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widget hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar un widget"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un widget"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィジェットを追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위젯 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar um widget"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加小组件"
+          }
+        }
+      }
+    },
+    "Touch and hold your Home Screen or Lock Screen, tap Edit, then Add Widget, and search for AIMeter. Each widget can show any of your accounts: touch and hold it, then Edit Widget." : {
+      "comment" : "iOS Settings, Widgets: how to add one.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lege den Finger auf den Home-Bildschirm oder den Sperrbildschirm, tippe auf Bearbeiten, dann auf Widget hinzufügen, und suche nach AIMeter. Jedes Widget kann jeden deiner Accounts zeigen: Lege den Finger darauf und tippe auf Widget bearbeiten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantén presionada la pantalla de inicio o la pantalla bloqueada, toca Editar, luego Agregar widget, y busca AIMeter. Cada widget puede mostrar cualquiera de tus cuentas: mantenlo presionado y toca Editar widget."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez longuement l'écran d'accueil ou l'écran verrouillé, touchez Modifier, puis Ajouter un widget, et cherchez AIMeter. Chaque widget peut afficher n'importe lequel de vos comptes : touchez-le longuement, puis Modifier le widget."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホーム画面またはロック画面を長押しし、「編集」、「ウィジェットを追加」の順にタップして AIMeter を検索します。各ウィジェットにはどのアカウントでも表示できます。ウィジェットを長押しして「ウィジェットを編集」をタップしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈 화면이나 잠금 화면을 길게 누르고 편집, 위젯 추가를 차례로 탭한 다음 AIMeter를 검색하세요. 각 위젯에는 어느 계정이든 표시할 수 있습니다. 위젯을 길게 누르고 위젯 편집을 탭하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque e segure a Tela de Início ou a Tela Bloqueada, toque em Editar, depois em Adicionar Widget, e busque AIMeter. Cada widget pode mostrar qualquer uma das suas contas: toque e segure nele e toque em Editar Widget."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住主屏幕或锁定屏幕，轻点“编辑”，然后轻点“添加小组件”，再搜索 AIMeter。每个小组件都可以显示你的任意账户：按住它，然后轻点“编辑小组件”。"
           }
         }
       }

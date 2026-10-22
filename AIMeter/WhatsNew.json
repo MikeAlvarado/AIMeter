@@ -1,6 +1,158 @@
 {
   "releases": [
     {
+      "version": "4.1.0",
+      "items": [
+        {
+          "symbol": "person.2",
+          "title": {
+            "en": "Your accounts, first in Settings",
+            "es": "Tus cuentas, primero en Ajustes",
+            "de": "Deine Accounts zuerst in den Einstellungen",
+            "fr": "Vos comptes en tête des réglages",
+            "ja": "設定の最初にアカウント",
+            "ko": "설정 맨 위에 계정",
+            "pt-BR": "Suas contas primeiro nos Ajustes",
+            "zh-Hans": "设置中账户排在最前"
+          },
+          "detail": {
+            "en": "Each account opens its own settings from Settings: its alerts, its name and icon, signing in again when it needs it, and disconnecting, which now asks first and says what goes.",
+            "es": "Cada cuenta abre sus propios ajustes desde Ajustes: sus avisos, su nombre e ícono, volver a iniciar sesión cuando hace falta y desconectarla, que ahora pregunta primero y dice qué se borra.",
+            "de": "Jeder Account öffnet seine eigenen Einstellungen direkt aus den Einstellungen: seine Mitteilungen, Name und Symbol, erneutes Anmelden, wenn nötig, und Trennen, das jetzt zuerst nachfragt und sagt, was gelöscht wird.",
+            "fr": "Chaque compte ouvre ses propres réglages depuis les réglages : ses alertes, son nom et son icône, la reconnexion quand il le faut, et la déconnexion, qui demande désormais d'abord et dit ce qui disparaît.",
+            "ja": "各アカウントの設定を設定画面から直接開けます。通知、名前とアイコン、必要なときの再サインイン、そして接続解除。接続解除は先に確認し、何が消えるかを伝えます。",
+            "ko": "각 계정의 설정을 설정에서 바로 열 수 있습니다. 알림, 이름과 아이콘, 필요할 때 다시 로그인, 연결 해제까지. 연결 해제는 이제 먼저 묻고 무엇이 삭제되는지 알려줍니다.",
+            "pt-BR": "Cada conta abre os próprios ajustes direto dos Ajustes: os alertas, o nome e o ícone, entrar de novo quando precisar e desconectar, que agora pergunta antes e diz o que será apagado.",
+            "zh-Hans": "每个账户都能从设置中直接打开自己的设置：提醒、名称和图标、需要时重新登录，以及断开连接。断开连接现在会先询问，并说明会删除什么。"
+          }
+        },
+        {
+          "symbol": "list.bullet.rectangle",
+          "title": {
+            "en": "Settings on one screen",
+            "es": "Ajustes en una sola pantalla",
+            "de": "Einstellungen auf einem Bildschirm",
+            "fr": "Les réglages sur un seul écran",
+            "ja": "設定を1つの画面に",
+            "ko": "설정을 한 화면에",
+            "pt-BR": "Ajustes em uma só tela",
+            "zh-Hans": "设置合为一屏"
+          },
+          "detail": {
+            "en": "Your accounts on top with Add account, then Appearance, Widgets, Refresh & data and About, each one tap away.",
+            "es": "Tus cuentas arriba con Agregar cuenta, y luego Apariencia, Widgets, Actualización y datos, y Acerca de, cada uno a un toque.",
+            "de": "Deine Accounts oben mit „Account hinzufügen“, darunter Darstellung, Widgets, Aktualisierung & Daten und Info, jeweils einen Tipp entfernt.",
+            "fr": "Vos comptes en haut avec Ajouter un compte, puis Apparence, Widgets, Actualisation et données, et À propos, chacun à un toucher.",
+            "ja": "上にアカウントと「アカウントを追加」、その下に外観、ウィジェット、更新とデータ、情報。どれもワンタップです。",
+            "ko": "맨 위에 계정과 계정 추가, 그 아래 화면 표시, 위젯, 새로 고침 및 데이터, 정보가 있어 한 번에 탭할 수 있습니다.",
+            "pt-BR": "Suas contas no topo com Adicionar conta, depois Aparência, Widgets, Atualização e dados, e Sobre, cada um a um toque.",
+            "zh-Hans": "账户和“添加账户”在最上方，下面是外观、小组件、刷新与数据和关于，轻点一下即可进入。"
+          },
+          "platforms": [
+            "iOS"
+          ]
+        },
+        {
+          "symbol": "macwindow",
+          "title": {
+            "en": "Fewer, clearer tabs",
+            "es": "Menos pestañas, más claras",
+            "de": "Weniger, klarere Tabs",
+            "fr": "Moins d'onglets, plus clairs",
+            "ja": "タブを少なく、わかりやすく",
+            "ko": "더 적고 명확한 탭",
+            "pt-BR": "Menos abas, mais claras",
+            "zh-Hans": "更少、更清晰的标签页"
+          },
+          "detail": {
+            "en": "Accounts lists them beside the one you pick, with + and −. Open at Login, Updates and the Dock are in General, Show in menu bar in the Menu bar tab, and Claude Code has a tab of its own wherever it runs.",
+            "es": "Cuentas las muestra junto a la que eliges, con + y −. Abrir al iniciar sesión, Actualizaciones y el Dock están en General, Mostrar en la barra de menús en su pestaña, y Claude Code tiene una pestaña propia donde se usa.",
+            "de": "Accounts listet sie neben dem gewählten, mit + und −. Bei der Anmeldung öffnen, Updates und das Dock sind unter Allgemein, In der Menüleiste anzeigen im Tab Menüleiste, und Claude Code hat einen eigenen Tab, wo es läuft.",
+            "fr": "Comptes les liste à côté de celui que vous choisissez, avec + et −. Ouvrir à la connexion, les mises à jour et le Dock sont dans Général, Afficher dans la barre des menus dans l'onglet Barre des menus, et Claude Code a son propre onglet là où il tourne.",
+            "ja": "アカウントでは一覧の横に選んだアカウントが表示され、+ と − があります。ログイン時に開く、アップデート、Dock は一般に、メニューバーに表示はメニューバーのタブに移り、Claude Code は使っている Mac で専用のタブを持ちます。",
+            "ko": "계정 탭은 목록 옆에 선택한 계정을 보여주며 +와 −가 있습니다. 로그인 시 열기, 업데이트, Dock은 일반에, 메뉴 막대에 표시는 메뉴 막대 탭에 있고, Claude Code는 실행되는 Mac에서 자체 탭을 가집니다.",
+            "pt-BR": "Contas mostra a lista ao lado da conta escolhida, com + e −. Abrir ao iniciar sessão, Atualizações e o Dock estão em Geral, Mostrar na barra de menus na aba Barra de menus, e o Claude Code tem uma aba própria onde é usado.",
+            "zh-Hans": "账户标签页在列表旁显示所选账户，并带有 + 和 −。登录时打开、更新和程序坞位于通用，在菜单栏中显示位于菜单栏标签页，Claude Code 在运行它的 Mac 上有自己的标签页。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "slider.horizontal.3",
+          "title": {
+            "en": "Settings from the account",
+            "es": "Ajustes desde la cuenta",
+            "de": "Einstellungen vom Account aus",
+            "fr": "Les réglages depuis le compte",
+            "ja": "アカウントから設定へ",
+            "ko": "계정에서 바로 설정으로",
+            "pt-BR": "Ajustes a partir da conta",
+            "zh-Hans": "从账户进入设置"
+          },
+          "detail": {
+            "en": "An account's page has a settings button at the top, so its alerts are a tap away from its numbers.",
+            "es": "La página de una cuenta tiene un botón de ajustes arriba, así que sus avisos están a un toque de sus números.",
+            "de": "Die Seite eines Accounts hat oben eine Einstellungstaste, so sind seine Mitteilungen einen Tipp von seinen Zahlen entfernt.",
+            "fr": "La page d'un compte a un bouton de réglages en haut : ses alertes sont à un toucher de ses chiffres.",
+            "ja": "アカウントのページの上部に設定ボタンがあり、数字からワンタップで通知を設定できます。",
+            "ko": "계정 페이지 상단에 설정 버튼이 있어 수치에서 한 번 탭으로 알림에 갈 수 있습니다.",
+            "pt-BR": "A página de uma conta tem um botão de ajustes no topo, então os alertas ficam a um toque dos números.",
+            "zh-Hans": "账户页面顶部有设置按钮，从数字轻点一下即可进入提醒。"
+          }
+        },
+        {
+          "symbol": "eye.slash",
+          "title": {
+            "en": "Discreet mode says what it hides",
+            "es": "El modo discreto dice qué oculta",
+            "de": "Der diskrete Modus sagt, was er ausblendet",
+            "fr": "Le mode discret dit ce qu'il masque",
+            "ja": "控えめモードが隠すものを表示",
+            "ko": "비공개 모드가 숨기는 항목을 알려줌",
+            "pt-BR": "O modo discreto diz o que oculta",
+            "zh-Hans": "低调模式会说明隐藏了什么"
+          },
+          "detail": {
+            "en": "Under its switch, the accounts it hides, or where to mark them: in each account's settings.",
+            "es": "Bajo su interruptor, las cuentas que oculta, o dónde marcarlas: en los ajustes de cada cuenta.",
+            "de": "Unter dem Schalter stehen die Accounts, die er ausblendet, oder wo man sie markiert: in den Einstellungen jedes Accounts.",
+            "fr": "Sous son interrupteur, les comptes qu'il masque, ou l'endroit où les marquer : dans les réglages de chaque compte.",
+            "ja": "スイッチの下に、隠すアカウント、またはその指定場所（各アカウントの設定）が表示されます。",
+            "ko": "스위치 아래에 숨기는 계정이나 표시할 위치(각 계정의 설정)가 나타납니다.",
+            "pt-BR": "Abaixo do interruptor, as contas que ele oculta, ou onde marcá-las: nos ajustes de cada conta.",
+            "zh-Hans": "开关下方会显示它隐藏的账户，或在哪里标记：在每个账户的设置中。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "checkmark.shield",
+          "title": {
+            "en": "Only what you use",
+            "es": "Solo lo que usas",
+            "de": "Nur, was du nutzt",
+            "fr": "Seulement ce que vous utilisez",
+            "ja": "使うものだけ",
+            "ko": "사용하는 것만",
+            "pt-BR": "Só o que você usa",
+            "zh-Hans": "只显示你在用的"
+          },
+          "detail": {
+            "en": "Privacy & data and Settings describe only the services you connected.",
+            "es": "Privacidad y datos y Ajustes describen solo los servicios que conectaste.",
+            "de": "Datenschutz & Daten und die Einstellungen beschreiben nur die Dienste, die du verbunden hast.",
+            "fr": "Confidentialité et données et les réglages ne décrivent que les services que vous avez connectés.",
+            "ja": "プライバシーとデータ、そして設定では、接続したサービスだけを説明します。",
+            "ko": "개인정보 보호 및 데이터와 설정에서는 연결한 서비스만 설명합니다.",
+            "pt-BR": "Privacidade e dados e os Ajustes descrevem só os serviços que você conectou.",
+            "zh-Hans": "隐私与数据和设置只介绍你已连接的服务。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.0.1",
       "items": [
         {
