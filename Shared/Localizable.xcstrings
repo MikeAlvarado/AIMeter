@@ -613,7 +613,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Añadir una cuenta"
+            "value" : "Agregar una cuenta"
           }
         },
         "fr" : {
@@ -10619,7 +10619,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Añadir cuenta…"
+            "value" : "Agregar cuenta…"
           }
         },
         "fr" : {
@@ -11037,7 +11037,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIMeter nunca se añade solo a tus ítems de inicio. Si activas «Abrir al iniciar sesión» en los ajustes, se registra en macOS, que te pedirá aprobarlo, y al desactivarlo se elimina. Lo único que hace al arrancar es leer tu uso."
+            "value" : "AIMeter nunca se agrega solo a tus ítems de inicio. Si activas «Abrir al iniciar sesión» en los ajustes, se registra en macOS, que te pedirá aprobarlo, y al desactivarlo se elimina. Lo único que hace al arrancar es leer tu uso."
           }
         },
         "fr" : {
@@ -13816,7 +13816,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para un atajo global, añade \"Refresh Usage\" o \"Show Usage\" en la app Atajos y asígnale una tecla ahí; no requiere permisos extra."
+            "value" : "Para un atajo global, agrega \"Refresh Usage\" o \"Show Usage\" en la app Atajos y asígnale una tecla ahí; no requiere permisos extra."
           }
         },
         "fr" : {
@@ -15105,7 +15105,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto. Los avisos de sesión te dicen cuándo Claude deja de aceptar el inicio de sesión guardado de esta cuenta: la única alerta activada por defecto, porque si no, nada te avisaría de que los números dejaron de actualizarse."
+            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto. Los avisos de inicio de sesión te dicen cuándo Claude deja de aceptar el inicio de sesión guardado de esta cuenta: la única alerta activada por defecto, porque si no, nada te avisaría de que los números dejaron de actualizarse."
           }
         },
         "fr" : {
@@ -19506,7 +19506,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avisos de sesión"
+            "value" : "Avisos de inicio de sesión"
           }
         },
         "fr" : {

@@ -82,9 +82,15 @@ struct DeviceCodeConnectView: View {
                     Button {
                         openURL(prompt.verificationURL)
                     } label: {
+                        // One line inside the capsule's ends: a longer
+                        // translation shrinks a little rather than run into
+                        // them (Spanish's did, on an iPhone 17).
                         Label(openLabel, systemImage: "safari")
                             .font(.body.weight(.semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
                             .frame(maxWidth: .infinity)
+                            .padding(.horizontal, 18)
                             .padding(.vertical, 13)
                             .contentShape(Capsule())
                     }
