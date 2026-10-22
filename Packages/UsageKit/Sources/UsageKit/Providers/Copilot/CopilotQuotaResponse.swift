@@ -78,6 +78,26 @@ extension CopilotQuotaResponse {
         }
     }
 
+    /// The account has no Copilot at all: its SKU says "no_access".
+    var hasNoCopilot: Bool {
+        accessTypeSku?.lowercased().contains("no_access") == true
+    }
+
+    /// What the quota fields said, for an answer with nothing to meter:
+    /// "chat: has_quota true, unlimited false, 0/200; …", or "no
+    /// quota_snapshots".
+    var quotaSummary: String {
+        guard let quotaSnapshots, !quotaSnapshots.isEmpty else {
+            return "no quota_snapshots (sku \(accessTypeSku ?? "none"), plan \(copilotPlan ?? "none"))"
+        }
+        return quotaSnapshots.keys.sorted().map { id in
+            let snapshot = quotaSnapshots[id]!
+            func text(_ value: Bool?) -> String { value.map { $0 ? "true" : "false" } ?? "nil" }
+            func number(_ value: Double?) -> String { value.map { String(Int($0)) } ?? "nil" }
+            return "\(id): has_quota \(text(snapshot.hasQuota)), unlimited \(text(snapshot.unlimited)), \(number(snapshot.remaining))/\(number(snapshot.entitlement))"
+        }.joined(separator: "; ")
+    }
+
     /// A quota the plan actually meters: not unlimited, not absent.
     static func isMetered(_ snapshot: Snapshot) -> Bool {
         snapshot.unlimited != true && snapshot.hasQuota != false && (snapshot.entitlement ?? 0) > 0

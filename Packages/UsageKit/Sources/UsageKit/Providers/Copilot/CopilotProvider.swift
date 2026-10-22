@@ -64,8 +64,16 @@ public struct CopilotProvider: UsageProvider {
         }
 
         let windows = decoded.usageWindows()
+        // A GitHub account without Copilot: no quotas at all, and a SKU
+        // that says so (measured 2026-10-21 on a login whose account had
+        // no Copilot: `access_type_sku` "no_access", no `quota_snapshots`).
+        if windows.isEmpty, decoded.hasNoCopilot {
+            throw UsageError.noPlan(Self.providerDisplayName)
+        }
         guard !windows.isEmpty else {
-            throw UsageError.invalidResponse("no metered quotas in response")
+            // Says what came instead, quota fields only (the typed-errors
+            // rule; the rest of the answer names the user).
+            throw UsageError.invalidResponse("no metered quotas in response: \(decoded.quotaSummary)")
         }
 
         // The answer carries the user's id; kept with the login so the

@@ -14,6 +14,11 @@ public enum UsageError: Error, Equatable, Sendable {
     case httpError(statusCode: Int, body: String?)
     /// The response arrived but could not be interpreted.
     case invalidResponse(String)
+    /// The login works but its account has no plan with limits to show
+    /// (a GitHub account without Copilot, `access_type_sku` "no_access"):
+    /// signing in with another account is the way out. The associated
+    /// value is the provider's display name.
+    case noPlan(String)
     case storage(String)
 }
 
@@ -37,7 +42,7 @@ extension UsageError {
         switch self {
         case .notAuthenticated, .tokenExpired, .credentialsNotFound:
             return true
-        case .rateLimited, .httpError, .invalidResponse, .storage:
+        case .rateLimited, .httpError, .invalidResponse, .storage, .noPlan:
             return false
         }
     }
@@ -69,6 +74,8 @@ extension UsageError: LocalizedError {
             return String(localized: "Unexpected response: \(detail)", bundle: .module)
         case .storage(let detail):
             return String(localized: "Storage error: \(detail)", bundle: .module)
+        case .noPlan(let provider):
+            return String(localized: "This account has no \(provider) plan. Disconnect it and sign in with the account that has one.", bundle: .module)
         }
     }
 }

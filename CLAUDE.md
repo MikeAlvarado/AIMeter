@@ -124,9 +124,9 @@ below and `AIMeterWatch/CLAUDE.md`.
   `NotificationTogglesCards.swift` (both notification cards). An account's
   card (Dashboard, landscape) is `AccountSectionView.swift` over
   `AccountCardViews.swift` (`HeroWindowView`, the protagonist, and
-  `CompactWindowRows`, the rest), and the macOS menu bar popover's block
-  is `PopoverAccountBlock.swift`; see "Account cards" under "Design
-  system". The Dashboard is `DashboardView.swift` plus
+  `CompactWindowRows`, the rest), and the macOS menu bar popover's card
+  is `PopoverAccountRow.swift`, its footer `PopoverMenuItems.swift`; see
+  "Account cards" under "Design system". The Dashboard is `DashboardView.swift` plus
   `DashboardView+Reorder.swift` (the hold-and-drag reorder, whose state
   stays on the view — internal `@State`, for the same reason as above) and
   `RoundIconButton.swift`. The macOS status item is `MenuBarLabel.swift`
@@ -939,8 +939,9 @@ the account silently freezes at its last snapshot.
   window as a full row. The account card (Dashboard, landscape, the small
   and all-accounts widgets) gives its protagonist the full line and each
   compact row its own bare value in a column of its own ("2h 58m", the
-  widgets' compact rows none: no room); the side-by-side columns (the
-  medium widget, the menu bar popover) show each column's own (see
+  widgets' compact rows none: no room; the menu bar popover's card is
+  the same); the medium widget's side-by-side columns show each
+  column's own (see
   `AIMeterWidgets/CLAUDE.md`). Credits has
   no reset date, so `showCreditsAmount` (off by default, Settings →
   "Usage rows")
@@ -1524,9 +1525,9 @@ the account silently freezes at its last snapshot.
   default, and `discreetAccountIDs`, the accounts marked for it; Settings
   → Accounts → "Discreet mode", `DiscreetModeSettings`, the switch
   alone, each account's "Hide in discreet mode" on its own settings page
-  (`DiscreetAccountSettings`), the eye in the menu bar popover's
-  footer (crossed and in the accent while on) and ⌘⇧D in the Usage
-  menu, all one switch): for a screen others can see, at work. While it
+  (`DiscreetAccountSettings`), the "Discreet Mode" switch in the menu
+  bar popover's footer and ⌘⇧D in the Usage menu (and the popover),
+  all one switch): for a screen others can see, at work. While it
   is on, the marked accounts leave the Mac's three glance surfaces at
   once, since all three draw from `UsageModel.glanceAccounts(prefs)`
   (`UsageModel+Discreet.swift`, pure, tested): the status item
@@ -1798,10 +1799,14 @@ that (and on the Watch) the solid card with a light along its top edge
 (`Theme.edgeLight`), a hairline below (`edgeShade`) and a two-layer
 shadow; 24 pt continuous corners (`Theme.cardRadius`). Floating controls
 (the Dashboard's round buttons, "Add account") take `.glassControl(in:)`:
-interactive glass on 26, a thin material before; the popover's "Open
-AIMeter" is the system's `.glass` button style there. No hairline
-separates rows anywhere since 4.0 (rows, the status tail, the popover's
-blocks: spacing alone), and nothing glows: the protagonist's bar eases
+interactive glass on 26, a thin material before. The menu bar popover
+is the system's own glass, clear on macOS 26 and later, and text over
+clear glass needs a dimming layer (Apple's guidance; 4.0.0 had none and
+whatever window sat under the popover made it unreadable): the app's
+background lies over it at 78 % (solid under Reduce Transparency), and
+each account sits on a solid card. No hairline separates rows anywhere
+since 4.0 (rows, the status tail: spacing alone; the popover's footer,
+a menu, keeps a menu's separators between its groups), and nothing glows: the protagonist's bar eases
 into its color with no halo. Every usage figure, in the app, the
 widgets, the Live Activity, the Lock Screen and the Watch, is
 `Theme.figure(size:)`: SF Rounded, semibold, tabular digits. Widgets keep
@@ -1832,9 +1837,15 @@ account's). The small widget and each account of the all-accounts
 widget are the same composition at widget sizes (`WidgetHero`,
 `WidgetCompactRows`), Single Limit's bar style is the protagonist alone,
 the condensed all-accounts widget gives each account its protagonist's
-bar with every window's figure under it, and the medium widget's columns
-are the menu bar popover's (`PopoverAccountBlock`), so a figure looks
-the same wherever it is.
+bar with every window's figure under it, and the menu bar popover's
+cards (4.0.1, `PopoverAccountRow`) are the Dashboard's at its size: the
+identity on top, the protagonist on the left (its short title, the
+figure at 30 pt, its lit bar, "Resets in …" under it) and the others on
+the right, starting on the protagonist's title line, as the compact
+row's pieces (name, 5 pt bar, figure, bare reset) on fixed columns the
+same in every card (`PopoverCompactRow`), every name short ("Session",
+"Week", "Top model") on both sides, so a figure looks the same wherever
+it is and the cards line up down the popover.
 
 Two more `Shared/ThemeComponents.swift` views follow the same rule for
 other repeated pieces: `UsageStatusFooter` (the error label + "Updated X
@@ -1921,11 +1932,11 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   (`AIMeterApp.commands`) carries them so they are discoverable — ⌘R
   Refresh All, ⌘N Add Account…, ⌘⇧U Used/Remaining, ⌘⇧A relative/absolute
   reset times, ⌘⇧D Discreet Mode (a `Toggle`, checked while on; see
-  "Discreet mode" under "Presentation rules"). ⌘R is declared there and on the popover's Refresh button
+  "Discreet mode" under "Presentation rules"). ⌘R is declared there and on the popover's "Refresh All"
   (the popover is its own window with no main menu), never on the
-  Dashboard's own button as well: both firing was the bug. The popover
-  also declares ⌘, and ⌘Q on its Settings…/Quit buttons for the same
-  reason. "Add Account…" reaches the Dashboard's Connect sheet through
+  Dashboard's own button as well: both firing was the bug. The popover's
+  footer also declares ⌘N, ⇧⌘D, ⌘, and ⌘Q on its "Add Account…",
+  "Discreet Mode", "Settings…" and "Quit AIMeter" for the same reason. "Add Account…" reaches the Dashboard's Connect sheet through
   `AppChrome.connect(.add)` (see "macOS menu bar" in `AIMeter/CLAUDE.md`),
   the same bridge shape as `AppChrome.openDashboard`. There is no global hotkey of the app's own
   (see "macOS hiding & re-entry" in `AIMeter/CLAUDE.md`); the sanctioned

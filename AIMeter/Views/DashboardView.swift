@@ -93,6 +93,9 @@ struct DashboardView: View {
         .navigationDestination(for: String.self) { accountID in
             ProviderDetailView(accountID: accountID)
         }
+        .navigationDestination(for: AccountSettingsRoute.self) { route in
+            AccountSettingsPage(accountID: route.accountID, dismissesOnDisconnect: false)
+        }
         #if os(macOS)
         .navigationDestination(for: ClaudeCodeUsageRoute.self) { _ in
             ClaudeCodeUsageView()

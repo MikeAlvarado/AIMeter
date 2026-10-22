@@ -215,11 +215,20 @@
   leaves through Settings' Demo card). Reached three ways, all to the
   same cards: pushed from Settings' account list on iOS
   (`AccountListSettings`, one row per account), pushed from the end of
-  Provider Detail on both platforms (`AccountSettingsLink`, in the
-  Dashboard window's stack on the Mac), and in the Mac Settings window's
-  Accounts tab under an account picker (`MacAccountsSettingsPage`),
-  where disconnecting picks the first remaining account; `onDisconnect`
-  lets a pushed page pop. Peak-hours alerts are the one exception to "an
+  Provider Detail on both platforms (`AccountSettingsLink`, a value,
+  `AccountSettingsRoute`, in the Dashboard's stack), and in the Mac
+  Settings window's Accounts tab under an account picker
+  (`MacAccountsSettingsPage`), where disconnecting picks the first
+  remaining account; `onDisconnect` lets the Settings list's page pop.
+  In the Dashboard's stack the page doesn't pop itself: whenever an
+  account goes away, from anywhere, `ContentView` resets the stack's
+  path to the Dashboard, since the Provider Detail under the page has
+  nothing left to show. Until 4.0.1 the page popped onto that empty
+  detail, titled with a provider's name (it read as another account),
+  and the page was pushed by destination inside a path-bound stack,
+  which could leave the stack stuck (Mike, 2026-10-21; measured after
+  the fix with a scripted connect, push and disconnect of the Codex CLI
+  mirror: the path went from 2 to 0 and the app kept answering). Peak-hours alerts are the one exception to "an
   account's alerts on its page": a single toggle in the general
   Settings, not repeated per account, since the policy is Claude-wide,
   not account-specific — see "Settings" below and "Peak hours" in the
@@ -555,41 +564,75 @@
   while the provider reports an incident (same rule as the Dashboard's),
   then **every**
   connected account that discreet mode leaves (`UsageModel.glanceAccounts`;
-  all of them marked, a "Hidden in discreet mode" line instead) as a
-  panel block (4.0, `PopoverAccountBlock`, 340 pt wide, on the system's
-  own material with no fill of its own — Liquid Glass on macOS 26): the
-  identity on one line, then the account's `WindowSlots` side by side as
-  columns (short name, the figure at 19 pt in `Theme.figure`, a 4 pt bar,
-  the bare reset or credits amount), the medium widget's layout, so four
-  accounts fit without scrolling; the status tail under them only when
-  it has something to say. The block under the pointer lights up (ink at
-  7 %, a chevron appears) and a click opens that account's Provider
-  Detail in the Dashboard window (`AppChrome.openAccount`: the window's
-  `NavigationStack` path lives in `ContentView`, which registers
-  `AppChrome.presentAccount` on appear, the same bridge shape as
-  `presentConnect`, a request made while the window is closed waiting in
-  `pendingAccount`). No reorder affordance: the popover follows the
-  registry order the Dashboard writes. The list sits inside a
-  height-capped `ScrollView` so a handful of accounts still fit and more
-  scrolls, then an "Add account" row — then, only with "Show today's
+  all of them marked, a "Hidden in discreet mode" line instead), under
+  one "Updated X ago" line (the newest account's), each as a card
+  (4.0.1, `PopoverAccountRow`; Mike's ask, 2026-10-21: the new iPhone's
+  card, one window on the left and the other two on the right): the
+  identity on top (mark, nickname, plan pill), then the protagonist
+  (`AccountCardLayout.hero`) on the left, 124 pt wide (its short title,
+  the figure at 30 pt with "%" and "used"/"left", a 6 pt lit bar,
+  "Resets in …" under it), and the others on the right, their first
+  line on the protagonist's title line (`.firstTextBaseline`), as
+  `PopoverCompactRow`: the Dashboard's compact row (name, a 5 pt bar,
+  figure, bare reset) on fixed columns (56, flexible, 34, 46 pt), the
+  same in every card, so bars, figures and resets line up from one
+  account to the next; every name is the short one ("Session", "Week",
+  "Fable", "Premium") on both sides. An account with one window has the
+  protagonist across the card. (Mike's review, 2026-10-21: the long
+  "5-hour session" beside the short "Session", a right column floating
+  at the protagonist's middle, and each card's columns at their own x
+  read as unfinished.) The status tail under them only when
+  it has something to say. 400 pt wide. The popover is the system's own
+  glass, clear on macOS 26 and later, so the app's background lies over
+  it at 78 % (solid under Reduce Transparency) and each card is a solid
+  `Theme.card`: 4.0.0 drew straight on the clear glass, and with a
+  window behind the popover its secondary text could not be read. The
+  card under the pointer darkens a little and a click opens that
+  account's Provider Detail in the Dashboard window
+  (`AppChrome.openAccount`: the window's `NavigationStack` path lives in
+  `ContentView`, which registers `AppChrome.presentAccount` on appear,
+  the same bridge shape as `presentConnect`, a request made while the
+  window is closed waiting in `pendingAccount`). No reorder affordance:
+  the popover follows the registry order the Dashboard writes. The list
+  sits inside a height-capped `ScrollView` (480 pt) so a handful of
+  accounts still fit and more scrolls; while more is below, the list
+  fades out along its bottom 44 pt (a mask, so the glass shows through)
+  and a chevron there scrolls to the end, both gone once the end is in
+  sight (the list's bottom measured with `onGeometryChange` in the
+  scroll view's space); then, only with "Show today's
   total in the menu bar" on and something to show, one `Claude Code
-  today: …` line (`ClaudeCodeUsageModel.menuBarLine`) — (the "Add
-  account" row has the same copy as the Dashboard's own — this is the
-  only way to add another account once the Dock icon is hidden, since
-  the Dashboard window stays closed by default in that case; see "macOS
-  hiding & re-entry" below), then a footer with no divider above it:
-  "Open AIMeter" as the one labeled button (`.glass` on macOS 26,
-  `.bordered` before; `AppChrome.revealMainWindow()`) on the left, and on
-  the right four icon-only buttons, each with its full name in `.help`
-  and the accessibility label (`FooterIconButtonStyle`: ink, dimmed while
-  pressed, faint while disabled): Refresh, with an account connected the
-  discreet-mode eye (`eye`, or `eye.slash.fill` in the accent while on;
-  ⌘⇧D; the same switch as Settings' card and the Usage menu's "Discreet
-  Mode", see "Discreet mode" in the repo-root CLAUDE.md), Settings and
-  Quit (`power`). "Open AIMeter" reopens the Dashboard window even after
-  `AppDelegate` closed it at launch, because the scene registers the
-  reopen hook on first appearance, before that close ever runs.
-  "Refresh" calls `refreshAll()` (every account, concurrently). The popover
+  today: …` line (`ClaudeCodeUsageModel.menuBarLine`); then the footer,
+  which reads like a menu (`PopoverMenuItems.swift`: one item a line,
+  its shortcut at the trailing edge, lit under the pointer like the
+  cards, separators between the groups): "Open AIMeter"
+  (`AppChrome.revealMainWindow()`), "Refresh All" ⌘R, "Add Account…" ⌘N
+  (hidden in demo mode; once an account is connected the only way to
+  add another from the menu bar, since the Dashboard window stays
+  closed by default while the Dock icon is hidden; see "macOS hiding &
+  re-entry" below); "Discreet Mode" ⇧⌘D (with an account connected; the
+  same switch as Settings' card and the Usage menu's, see "Discreet
+  mode" in the repo-root CLAUDE.md) and "Open at Login" as switches
+  (`PopoverMenuToggle`, the whole line flips it; Open at Login reads
+  `LoginItemManager` live, re-read each time the popover opens); then
+  "Settings…" ⌘, and "Quit AIMeter" ⌘Q. "Open AIMeter" reopens the
+  Dashboard window even after `AppDelegate` closed it at launch, because
+  the scene registers the reopen hook on first appearance, before that
+  close ever runs. Anything the popover opens closes it on the way
+  (`AppChrome.closeMenuBarPopover`, called by every `AppChrome` route
+  that brings a window of the app forward: the Dashboard, an account,
+  Connect, Settings, the update window, the tour): a window of its own
+  app coming forward doesn't dismiss a `MenuBarExtra` window, so until
+  4.0.1 the popover stayed open in front of the Settings window it had
+  just opened, as the notch island once did. It closes through SwiftUI's
+  own `dismiss`, which the popover hands to `AppChrome` on appear
+  (`dismissMenuBarPopover`; its window, through `WindowReader`, only
+  says whether it is open). Measured on macOS 27 with clicks on the real
+  status item: `close()` on the window, and `performClick` on the status
+  item's button, both left the item thinking the popover was open, so
+  the next click did nothing and it took two to open again; with
+  `dismiss` one click opens it after Settings, an account or Open
+  AIMeter.
+  "Refresh All" calls `refreshAll()` (every account, concurrently). The popover
   presents **no sheets of its own**: a sheet attached to a `MenuBarExtra`
   window renders clipped and floating beside it, so "Connect", "Add
   account" and an account's "Sign in again" all go through

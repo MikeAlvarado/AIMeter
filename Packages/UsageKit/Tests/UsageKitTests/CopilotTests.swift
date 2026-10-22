@@ -105,6 +105,20 @@ final class CopilotProviderTests: XCTestCase {
         }
     }
 
+    func testAnAccountWithoutCopilotSaysSoAndOtherEmptyAnswersSayWhatCame() async throws {
+        let transport = RoutedTransport()
+        transport.route(url: CopilotProvider.quotaEndpoint, responses: [
+            // Measured 2026-10-21 on a login whose GitHub account has no Copilot.
+            (200, #"{"id":1,"access_type_sku":"no_access","copilot_plan":"individual"}"#, [:]),
+            (200, #"{"access_type_sku":"copilot_pro","quota_snapshots":{"chat":{"unlimited":true,"has_quota":true,"entitlement":0,"remaining":0}}}"#, [:]),
+        ])
+        let provider = CopilotProvider(credentialSource: StubCopilotSource(credentials: CopilotCredentials(accessToken: "t")), transport: transport)
+        await assertThrows(UsageError.noPlan("GitHub Copilot")) { _ = try await provider.fetchUsage() }
+        await assertThrows(UsageError.invalidResponse("no metered quotas in response: chat: has_quota true, unlimited true, 0/0")) {
+            _ = try await provider.fetchUsage()
+        }
+    }
+
     private func fixtureBody(_ name: String) throws -> String {
         try XCTUnwrap(String(data: fixtureData(name), encoding: .utf8))
     }

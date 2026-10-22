@@ -198,6 +198,7 @@ enum AppChrome {
     }
 
     static func revealMainWindow() {
+        closeMenuBarPopover()
         // Prefer an existing window: ordering it front keeps the user's
         // place instead of building a second one beside it.
         if let existing = dashboardWindows.first {
@@ -207,6 +208,34 @@ enum AppChrome {
         }
         NSApp.activate(ignoringOtherApps: true)
     }
+
+    /// The menu bar popover's window while it is open, set by the popover
+    /// itself (`MenuBarView`, through `WindowReader`).
+    static weak var menuBarPopoverWindow: NSWindow?
+
+    /// Closes the menu bar popover. Every route that opens a window of the
+    /// app's (the Dashboard, an account, Connect, Settings, the update
+    /// window, the tour) calls it first: the popover is not dismissed by a
+    /// window of its own app coming forward, so it stayed open over the
+    /// window it had just opened, Settings behind it (Mike, 2026-10-21;
+    /// the island had the same bug and closes itself on the way).
+    ///
+    /// It is closed through SwiftUI's own `dismiss`, which the popover
+    /// hands over on appear (`dismissMenuBarPopover`): `close()` on its
+    /// window put it away but left the status item thinking it was open,
+    /// so the next click only "closed" it again and it took two to open
+    /// (measured on macOS 27).
+    static func closeMenuBarPopover() {
+        guard let window = menuBarPopoverWindow, window.isVisible else { return }
+        if let dismissMenuBarPopover {
+            dismissMenuBarPopover()
+        } else {
+            window.close()
+        }
+    }
+
+    /// The popover's `dismiss` action, set by `MenuBarView` on appear.
+    static var dismissMenuBarPopover: (() -> Void)?
 
     static func closeDashboardWindows() {
         dashboardWindows.forEach { $0.close() }
@@ -219,6 +248,7 @@ enum AppChrome {
     static var openSettingsAction: (() -> Void)?
 
     static func openSettings() {
+        closeMenuBarPopover()
         if let openSettingsAction {
             openSettingsAction()
         } else {
@@ -238,6 +268,7 @@ enum AppChrome {
 
     static func openUpdateWindow() {
         if let openUpdateWindowAction {
+            closeMenuBarPopover()
             openUpdateWindowAction()
             NSApp.activate(ignoringOtherApps: true)
         } else {
@@ -270,6 +301,7 @@ enum AppChrome {
 
     static func openTourWindow() {
         if let openTourWindowAction {
+            closeMenuBarPopover()
             openTourWindowAction()
             NSApp.activate(ignoringOtherApps: true)
         } else {

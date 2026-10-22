@@ -17,10 +17,11 @@ struct ProviderDetailView: View {
         model.usage(for: accountID)
     }
 
-    /// The nickname, or the provider's name while the account is gone
-    /// (the screen is mid-dismiss after a disconnect).
+    /// The nickname, or nothing while the account is gone (the stack is
+    /// on its way back to the Dashboard after a disconnect): a provider's
+    /// name there read as another account's screen.
     private var accountName: String {
-        usage?.account.displayName ?? ProviderCatalog.displayName(for: ProviderCatalog.defaultProviderID)
+        usage?.account.displayName ?? ""
     }
 
     var body: some View {

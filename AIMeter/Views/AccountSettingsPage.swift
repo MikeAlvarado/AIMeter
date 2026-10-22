@@ -130,13 +130,18 @@ struct AccountSettingsCards: View {
 /// (both platforms, in the Dashboard's navigation stack).
 struct AccountSettingsPage: View {
     let accountID: String
+    /// Whether disconnecting pops this page. In the Dashboard's stack it
+    /// doesn't: the stack goes back to the Dashboard itself once the
+    /// account is gone (`ContentView`), since the Provider Detail under
+    /// this page has nothing left to show.
+    var dismissesOnDisconnect = true
 
     @Environment(UsageModel.self) private var model
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ScrollView {
-            AccountSettingsCards(accountID: accountID, onDisconnect: { dismiss() })
+            AccountSettingsCards(accountID: accountID, onDisconnect: dismissesOnDisconnect ? { dismiss() } : nil)
                 .padding(20)
         }
         .appBackground()
@@ -147,6 +152,14 @@ struct AccountSettingsPage: View {
     }
 }
 
+/// The value the Dashboard's stack pushes for an account's settings page
+/// (`DashboardView`'s `navigationDestination`): a value, like Provider
+/// Detail's, so the stack's path holds the whole stack and going back to
+/// the Dashboard after a disconnect is one reset of it.
+struct AccountSettingsRoute: Hashable {
+    let accountID: String
+}
+
 /// The row at the end of Provider Detail that leads to the page above:
 /// the data screen keeps no setting of its own.
 struct AccountSettingsLink: View {
@@ -154,9 +167,7 @@ struct AccountSettingsLink: View {
 
     var body: some View {
         Card {
-            NavigationLink {
-                AccountSettingsPage(accountID: accountID)
-            } label: {
+            NavigationLink(value: AccountSettingsRoute(accountID: accountID)) {
                 HStack(spacing: 12) {
                     Image(systemName: "slider.horizontal.3")
                         .font(.system(size: 13, weight: .semibold))

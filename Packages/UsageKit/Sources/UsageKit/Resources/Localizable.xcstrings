@@ -414,6 +414,53 @@
           }
         }
       }
+    },
+    "This account has no %@ plan. Disconnect it and sign in with the account that has one." : {
+      "comment" : "Shown on an account whose login works but has no plan with limits (a GitHub account without Copilot). The placeholder is the provider's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Account hat keinen %@-Plan. Trenne ihn und melde dich mit dem Account an, der einen hat."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cuenta no tiene un plan de %@. Desconéctala e inicia sesión con la cuenta que sí lo tiene."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce compte n'a pas de forfait %@. Déconnectez-le et connectez-vous avec le compte qui en a un."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアカウントには%@のプランがありません。接続を解除し、プランのあるアカウントでサインインしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 계정에는 %@ 플랜이 없습니다. 연결을 해제하고 플랜이 있는 계정으로 로그인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta conta não tem um plano do %@. Desconecte-a e entre com a conta que tem um."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此账户没有 %@ 方案。请断开连接，并用有方案的账户登录。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

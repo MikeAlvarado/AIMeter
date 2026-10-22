@@ -100,6 +100,17 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .automatic)
                 #endif
         }
+        // An account disconnected (from its own settings page, Settings,
+        // or the Mac's Settings window): back to the Dashboard, since the
+        // detail and the settings page in the stack have nothing left to
+        // show. Before 4.0.1 the settings page popped onto an empty
+        // Provider Detail titled with a provider's name, which read as
+        // another account, and the stack could stick (Mike, 2026-10-21).
+        .onChange(of: model.accounts.map(\.account.accountID)) { old, new in
+            if !Set(old).isSubset(of: Set(new)), !path.isEmpty {
+                path = NavigationPath()
+            }
+        }
         #if os(macOS)
         // A click on an account in the menu bar popover opens its detail
         // here (`AppChrome.openAccount`).

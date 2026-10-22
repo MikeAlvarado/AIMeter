@@ -78,3 +78,14 @@ the model.
   `login`, `quota_id`s and tracking ids redacted, the numeric `id`
   replaced by 4242). Paid shapes are tested from inline JSON on the
   same schema until a paid account is probed.
+  The Free capture was probed again on 2026-10-21 (same shape).
+- A GitHub account without Copilot answers 200 with
+  `access_type_sku` "no_access" and no `quota_snapshots` (measured
+  2026-10-21: the login in AIMeter was another GitHub account than the
+  one with Copilot Free). That is `UsageError.noPlan("GitHub Copilot")`,
+  "This account has no GitHub Copilot plan. Disconnect it and sign in
+  with the account that has one.", not a parsing failure. Any other
+  answer with nothing to meter stays `invalidResponse`, now saying what
+  the quota fields held (`CopilotQuotaResponse.quotaSummary`: each id's
+  `has_quota`, `unlimited` and remaining/entitlement, nothing that names
+  the user), so the next surprise can be read off the card.

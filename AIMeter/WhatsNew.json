@@ -1,6 +1,135 @@
 {
   "releases": [
     {
+      "version": "4.0.1",
+      "items": [
+        {
+          "symbol": "menubar.rectangle",
+          "title": {
+            "en": "The menu bar, readable again",
+            "es": "La barra de menús, legible otra vez",
+            "de": "Die Menüleiste ist wieder lesbar",
+            "fr": "La barre des menus, à nouveau lisible",
+            "ja": "メニューバーが再び読みやすく",
+            "ko": "메뉴 막대를 다시 읽기 쉽게",
+            "pt-BR": "A barra de menus, legível de novo",
+            "zh-Hans": "菜单栏重新清晰可读"
+          },
+          "detail": {
+            "en": "The popover has its own background over the glass again, so a window behind it no longer shows through its text.",
+            "es": "El popover vuelve a tener su propio fondo sobre el vidrio, así que la ventana que está detrás ya no se transparenta en su texto.",
+            "de": "Das Popover hat wieder einen eigenen Hintergrund über dem Glas, sodass ein Fenster dahinter nicht mehr durch den Text scheint.",
+            "fr": "Le popover retrouve son propre fond sous le verre : une fenêtre placée derrière ne transparaît plus dans son texte.",
+            "ja": "ポップオーバーがガラスの上に独自の背景を持つようになり、後ろのウインドウが文字に透けなくなりました。",
+            "ko": "팝오버가 다시 유리 위에 자체 배경을 가지므로 뒤에 있는 윈도우가 텍스트에 비치지 않습니다.",
+            "pt-BR": "O popover volta a ter um fundo próprio sobre o vidro, então a janela atrás dele não aparece mais através do texto.",
+            "zh-Hans": "弹出窗口在玻璃上重新有了自己的背景，后面的窗口不会再透过文字显现。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "rectangle.split.2x1",
+          "title": {
+            "en": "Each account as a card",
+            "es": "Cada cuenta como tarjeta",
+            "de": "Jeder Account als Karte",
+            "fr": "Chaque compte en carte",
+            "ja": "アカウントごとのカード",
+            "ko": "계정마다 카드로",
+            "pt-BR": "Cada conta como um cartão",
+            "zh-Hans": "每个账户一张卡片"
+          },
+          "detail": {
+            "en": "The popover shows each account the way the iPhone does: the limit closest to running out large on the left, the others beside it. Its footer reads like a menu, with its shortcuts and switches for Discreet Mode and Open at Login.",
+            "es": "El popover muestra cada cuenta como el iPhone: el límite más cerca de agotarse en grande a la izquierda y los demás a su lado. Su pie se lee como un menú, con sus atajos e interruptores para el modo discreto y Abrir al iniciar sesión.",
+            "de": "Das Popover zeigt jeden Account wie das iPhone: das Limit, das am ehesten ausläuft, groß links, die anderen daneben. Der Bereich darunter liest sich wie ein Menü, mit Kurzbefehlen und Schaltern für den diskreten Modus und „Bei der Anmeldung öffnen“.",
+            "fr": "Le popover présente chaque compte comme l'iPhone : la limite la plus proche d'être atteinte en grand à gauche, les autres à côté. Son pied se lit comme un menu, avec ses raccourcis et des interrupteurs pour le mode discret et Ouvrir à la connexion.",
+            "ja": "ポップオーバーはiPhoneと同じように各アカウントを表示します。上限に最も近いものを左に大きく、ほかをその横に。下部はメニューのように並び、ショートカットと、控えめモードとログイン時に開くのスイッチがあります。",
+            "ko": "팝오버가 iPhone처럼 각 계정을 보여 줍니다. 한도에 가장 가까운 항목을 왼쪽에 크게, 나머지는 그 옆에 표시합니다. 하단은 메뉴처럼 단축키와 함께 표시되며 비공개 모드와 로그인 시 열기 스위치가 있습니다.",
+            "pt-BR": "O popover mostra cada conta como o iPhone: o limite mais perto de acabar em destaque à esquerda e os outros ao lado. O rodapé funciona como um menu, com atalhos e chaves para o modo discreto e Abrir ao iniciar sessão.",
+            "zh-Hans": "弹出窗口像 iPhone 一样显示每个账户：最接近用完的额度在左侧放大显示，其余在旁边。底部像菜单一样排列，带有快捷键，以及低调模式和登录时打开的开关。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "macwindow",
+          "title": {
+            "en": "Out of the way",
+            "es": "Se quita del camino",
+            "de": "Aus dem Weg",
+            "fr": "Hors du chemin",
+            "ja": "じゃまになりません",
+            "ko": "방해하지 않게",
+            "pt-BR": "Sai da frente",
+            "zh-Hans": "不再挡路"
+          },
+          "detail": {
+            "en": "The popover now closes when it opens Settings, AIMeter or an account, instead of staying in front of the window it just opened.",
+            "es": "El popover ahora se cierra cuando abre Ajustes, AIMeter o una cuenta, en lugar de quedarse delante de la ventana que acaba de abrir.",
+            "de": "Das Popover schließt sich jetzt, wenn es die Einstellungen, AIMeter oder einen Account öffnet, statt vor dem gerade geöffneten Fenster stehen zu bleiben.",
+            "fr": "Le popover se ferme désormais quand il ouvre les Réglages, AIMeter ou un compte, au lieu de rester devant la fenêtre qu'il vient d'ouvrir.",
+            "ja": "ポップオーバーは設定、AIMeter、アカウントを開くと閉じるようになり、開いたウインドウの前に残らなくなりました。",
+            "ko": "이제 팝오버가 설정, AIMeter 또는 계정을 열면 닫히므로 방금 연 윈도우 앞에 남아 있지 않습니다.",
+            "pt-BR": "Agora o popover se fecha ao abrir os Ajustes, o AIMeter ou uma conta, em vez de ficar na frente da janela que acabou de abrir.",
+            "zh-Hans": "弹出窗口现在打开设置、AIMeter 或某个账户时会自动关闭，不再停留在刚打开的窗口前面。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "arrow.uturn.backward",
+          "title": {
+            "en": "Back home after a disconnect",
+            "es": "De vuelta al inicio al desconectar",
+            "de": "Nach dem Trennen zurück zur Übersicht",
+            "fr": "Retour à l'accueil après une déconnexion",
+            "ja": "接続解除後は最初の画面へ",
+            "ko": "연결 해제 후 처음 화면으로",
+            "pt-BR": "De volta ao início ao desconectar",
+            "zh-Hans": "断开连接后回到首页"
+          },
+          "detail": {
+            "en": "Disconnecting an account from its settings takes you back to your accounts, instead of an empty screen that could stop responding.",
+            "es": "Desconectar una cuenta desde sus ajustes te regresa a tus cuentas, en lugar de dejarte en una pantalla vacía que podía dejar de responder.",
+            "de": "Wenn du einen Account in seinen Einstellungen trennst, kehrst du zu deinen Accounts zurück statt zu einem leeren Bildschirm, der hängen bleiben konnte.",
+            "fr": "Déconnecter un compte depuis ses réglages vous ramène à vos comptes, au lieu d'un écran vide qui pouvait cesser de répondre.",
+            "ja": "アカウントの設定から接続を解除すると、応答しなくなることのある空の画面ではなく、アカウントの一覧に戻ります。",
+            "ko": "계정 설정에서 연결을 해제하면 응답하지 않을 수 있던 빈 화면 대신 계정 목록으로 돌아갑니다.",
+            "pt-BR": "Desconectar uma conta pelos ajustes dela leva você de volta às suas contas, em vez de uma tela vazia que podia parar de responder.",
+            "zh-Hans": "在账户设置中断开连接后会回到账户列表，而不是停在可能无响应的空白页面。"
+          }
+        },
+        {
+          "symbol": "person.crop.circle.badge.questionmark",
+          "title": {
+            "en": "GitHub accounts without Copilot",
+            "es": "Cuentas de GitHub sin Copilot",
+            "de": "GitHub-Accounts ohne Copilot",
+            "fr": "Comptes GitHub sans Copilot",
+            "ja": "Copilotのない GitHub アカウント",
+            "ko": "Copilot이 없는 GitHub 계정",
+            "pt-BR": "Contas do GitHub sem Copilot",
+            "zh-Hans": "没有 Copilot 的 GitHub 账户"
+          },
+          "detail": {
+            "en": "Signing in with a GitHub account that has no Copilot plan now says so, and how to fix it, instead of an unexpected-response error.",
+            "es": "Si entras con una cuenta de GitHub sin plan de Copilot, ahora te lo dice y cómo arreglarlo, en lugar de un error de respuesta inesperada.",
+            "de": "Meldest du dich mit einem GitHub-Account ohne Copilot-Plan an, sagt AIMeter das jetzt, samt Lösung, statt einen Fehler zu einer unerwarteten Antwort zu zeigen.",
+            "fr": "Se connecter avec un compte GitHub sans forfait Copilot l'indique désormais, avec la marche à suivre, au lieu d'une erreur de réponse inattendue.",
+            "ja": "Copilotのプランがない GitHub アカウントでサインインすると、予期しない応答のエラーではなく、その旨と対処法が表示されるようになりました。",
+            "ko": "Copilot 플랜이 없는 GitHub 계정으로 로그인하면 예기치 않은 응답 오류 대신 그 사실과 해결 방법을 알려 줍니다.",
+            "pt-BR": "Entrar com uma conta do GitHub sem plano do Copilot agora avisa isso e como resolver, em vez de um erro de resposta inesperada.",
+            "zh-Hans": "使用没有 Copilot 方案的 GitHub 账户登录时，现在会直接说明并告诉你如何解决，而不是显示意外响应的错误。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.0.0",
       "items": [
         {
