@@ -89,17 +89,24 @@ below and `AIMeterWatch/CLAUDE.md`.
   incremental reader, aggregates).
 - `AIMeter/Services/ClaudeSessions/` (macOS): Claude Code's sessions in
   the notch island, see "Claude Code sessions" below.
-  `ClaudeSessionMonitor` (the observable state the island reads),
-  `DemoSessions` (what it reads instead in demo mode),
-  `ClaudeSessionLogWatcher` (FSEvents on `~/.claude/projects`, reading
-  only the bytes added), `ClaudeHookListener` (the hooks' Unix socket)
-  and `ClaudeCodeHooks` (the one-click install into
-  `~/.claude/settings.json`); the rules are UsageKit's
-  `Providers/Claude/ClaudeCode/ClaudeCodeSession.swift` (the record and
-  hook-event shapes) and `ClaudeCodeSessionTracker.swift`. The views:
+  `ClaudeSessionMonitor` (the observable state the island reads; its
+  `+Answers.swift`, the island's buttons, and `+Notifications.swift`,
+  the "needs you" notice), `DemoSessions` (what it reads instead in demo
+  mode), `ClaudeSessionLogWatcher` (FSEvents on `~/.claude/projects`,
+  reading only the bytes added), `ClaudeHookListener` (the hooks' Unix
+  socket), `ClaudeCodeHooks` (the one-click install into
+  `~/.claude/settings.json`, in its two modes) and
+  `ClaudeSessionOpener` (which app a session opens in); the rules are
+  UsageKit's `Providers/Claude/ClaudeCode/ClaudeCodeSession.swift` (the
+  record, hook-event and permission-request shapes),
+  `ClaudeCodeSessionTracker.swift` and `ClaudeCodeTurn.swift` (a turn's
+  steps, edits and plan). The views:
   `AIMeter/Views/NotchIsland/NotchIslandSessions.swift` (what sits
   beside the notch), `NotchIslandSessionRows.swift` (the expanded
-  island's rows, the hooks invitation), `PixelPetView.swift` (the pets,
+  island's rows, the hooks invitation), `NotchIslandSessionCard.swift`
+  (the session in the sneak with its steps and buttons) over
+  `Shared/NotchIslandModel+Steps.swift` (pure, tested),
+  `PixelPetView.swift` (the pets,
   their "!" and their group) and `NotchIslandController+Clearance.swift`
   (where the menu bar's own items are) over
   `Shared/NotchIslandModel+Sessions.swift`,
@@ -1096,12 +1103,46 @@ the account silently freezes at its last snapshot.
     six events (`UserPromptSubmit`, `PermissionRequest`, `Notification`,
     `Stop`, `StopFailure`, `SessionEnd`) each get one `async` command
     (Claude Code never waits for it) that posts the event's JSON with
-    `/usr/bin/curl` to `~/Library/Application Support/AIMeter/claude-hooks.sock`,
-    only while that socket exists, and always exits 0.
+    `/usr/bin/curl` to `~/Library/Application Support/AIMeter/claude-hooks.sock`
+    (`/claude-hook?ppid=$PPID`: the Claude Code process the hook runs
+    under, which says what app or terminal the session lives in), only
+    while that socket exists, and always exits 0.
     `ClaudeHookListener`, an `NWListener` on that Unix socket (nothing
     listens on the network, and only this user can connect), decodes
     the event's name, session, folder, agent and notification kind and
-    nothing else. The hooks add what the log can't say: a permission
+    nothing else. That is the watching mode; "Answer from the island"
+    (`claudeSessionsAnswers`, off by default, Settings → Claude Code,
+    with "AIMeter receives nothing. All of this stays on your Mac." under
+    it while on; Mike's call, 2026-10-23: optional, permissions first)
+    switches the entries to the answering mode
+    (`ClaudeCodeHooks.Mode.answering`; the monitor rewrites them, since
+    the switch is the consent, and turning it off, or the island's
+    sessions off, puts the watching entries back): `PermissionRequest`'s
+    command is synchronous (`timeout` 600) and posts to
+    `/claude-permission`, whose connection the listener keeps open until
+    the island answers (Approve, Deny, or Stop, which denies with
+    `interrupt`) and then prints Claude Code's documented
+    `hookSpecificOutput` decision; and a synchronous `PreToolUse` command
+    (matcher `*`, `/claude-pretool`, answered at once) prints
+    `{"continue":false}` for a session the user stopped, which ends its
+    turn before its next tool (Claude Code can't be stopped mid-reply,
+    and has no pause for a running session). Measured on 2026-10-23 with
+    Claude Code 2.1.306: its own prompt shows while the hook waits, and
+    whichever is answered first decides (the hook's allow closed the
+    open prompt and ran the command); the stop ended the turn before the
+    second of three tools. The desktop app's path was measured on
+    2026-10-24 with its own bundled Claude Code (2.1.308, launched with
+    its flags, `--input-format stream-json --permission-prompt-tool=stdio`,
+    by a stand-in for the app that never answered its prompt): Approve in
+    the island ran the command and Claude Code sent the app a
+    `control_cancel_request`, which is what closes the app's own prompt;
+    Deny reached the session as "Denied from AIMeter." A hook that prints nothing (AIMeter closed,
+    the prompt answered in Claude Code, which the log then shows and the
+    monitor answers the connection empty) leaves Claude Code to decide,
+    so a closed AIMeter changes nothing. Only that request's tool, and
+    the one field of its input that says what it does (a command, a file,
+    an address, `ClaudeCodePermissionAsk`), is decoded, held while the
+    prompt is open and never kept. The hooks add what the log can't say: a permission
     prompt (`PermissionRequest`, open until the agent that asked writes
     its log again, so another subagent's work never clears it) and a
     turn's start and end the moment they happen. Hooks never see a user
@@ -1236,7 +1277,55 @@ the account silently freezes at its last snapshot.
   folder after a title) and "Working for 3m", "Needs permission" or
   "Done 2m ago": active
   ones first by the start of their turn, then those that finished in
-  the last ten minutes. A "working" session silent for 30 minutes is
+  the last ten minutes. The session in the sneak opens up into a card
+  (`SessionCard`, after the agent status component Mike liked,
+  2026-10-23), set apart from the rows like a spotlight (Mike's ask,
+  2026-10-24: "super claro lo que le dio click"): a lit panel with an
+  edge in the accent (no yellow on the card or its controls, Mike's
+  call, 2026-10-24: a sober app), that flashes when a session
+  is clicked into it (each session is its own card, the old one fading
+  out before the new one fades in; the rows trade places at once), its
+  name and the turn's running time, a headline of what it does right
+  now ("Running a command", "On this step for 1:26"; "Needs permission"
+  with what it asks; "Finished", "Done in 13s · 6 edits"), six
+  segments, the three steps before the one under way (each with its
+  time; the headline is the one under way) and a footer, every part one fixed size so nothing
+  moves as a step is added (the window holds three, the new one rolls in
+  at the bottom and the oldest leaves at the top; the segment under way
+  is the accent at 38 % with a light passing over it every 2.2 s, since
+  no step's end can be known). A step is a kind of action from the
+  names of the tools the turn calls (`ClaudeCodeTurn.Action`: thinking,
+  reading, editing, running a command, searching, the web, an agent,
+  the browser, another tool; tools of one kind in a row are one step,
+  "Reading · 3"; a subagent's work is the step that started it), never
+  what they were given; the desktop app's plan tool
+  (`mcp__ccd_turn__update_plan`) gives "Step 3 of 7" from its steps'
+  statuses alone, else the count grows ("12 steps"). The footer says
+  how far along it is, "Done in 13s · 6 edits" once it ended, and, with
+  "Answer from the island" on, Stop (or Approve and Deny, with what the
+  prompt asks about in yellow in place of the last step), which the card
+  keeps on one session while the island is open (`Sessions.cardID`: the
+  lead's when it opened, then the row the user clicks, whatever the lead
+  does meanwhile) and which ignore a click for 0.6 s after the card
+  changes what it shows: during the test on 2026-10-24 the lead moved to
+  another session whose turn had just started, between a look and a
+  click, and that session got the Stop; and "Open in
+  Claude Work" (`ClaudeSessionOpener`): a desktop app keeps a record per
+  session in its own Application Support folder
+  (`claude-code-sessions/…/local_<id>.json`, of which only `sessionId`
+  and `cliSessionId` are decoded), and that app is sent
+  `claude://code/continue?session=local_<id>` (two copies, Claude and
+  Claude Work, both answer `claude://`, so the link goes to the one the
+  folder names; measured on 2026-10-23); a session from a terminal comes
+  forward through the first app among its Claude Code process's
+  ancestors. While a session works, the peek names its step instead of
+  "Working for 3m", in a fixed width so the island keeps its size, each
+  new step rolling in from below, and every row says it too ("Editing ·
+  3m"). In demo mode, whose sessions carry fabricated steps
+  (`DemoUsageData.claudeSessions`) and a fabricated prompt
+  (`claudeSessionAsks`: Bash, "npm run db:migrate"), Approve, Deny and
+  Stop act on the demo's sessions (`DemoSessions`) and never reach Claude
+  Code; "Open in" doesn't show there. A "working" session silent for 30 minutes is
   dropped as a crash. While the hooks aren't installed the section ends
   with a one-line invitation (Install, or "Not now":
   `claudeSessionsHooksDismissed`). An optional "needs you" notification
@@ -1409,7 +1498,8 @@ the account silently freezes at its last snapshot.
   `claudeSessionsAvoidsMenus` (default false),
   `claudeSessionsAccessibilityConfirmed` (default false, set the first
   time the Accessibility permission works),
-  `claudeSessionsNotify` (default false) and
+  `claudeSessionsNotify` (default false), `claudeSessionsAnswers`
+  (default false, "Answer from the island") and
   `claudeSessionsHooksDismissed` (default false), whose keys and loading
   live in `Shared/PreferencesStore+ClaudeSessions.swift` — see "Claude
   Code sessions" above.
@@ -1974,7 +2064,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   captured response — mapping tests assert against it;
   `AIMETER_LIVE_TEST=1` enables an opt-in live test;
   `ClaudeCodeSessionTests` pins the session rules on the measured record
-  shapes; `CodexTests` and `CopilotTests` pin the two other families'
+  shapes, `ClaudeCodeTurnTests` a turn's steps, edits and the desktop
+  app's plan, and what a permission request decodes; `CodexTests` and `CopilotTests` pin the two other families'
   mapping, sign-in and provider rules on their fixtures, `QuotaKindTests`
   the quota kind's keys and the length a periodic window advances a
   missing reset by, and `StatuspageSourceTests` the shared status reader
@@ -2046,12 +2137,13 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   index) plus the token/USD formatters, and Claude Code's sessions: the
   preferences, when the Accessibility prompt may show and what a copy
   that lost the permission is told, the mark, count and rows, the hooks' edits to Claude
-  Code's settings, whose log a path is, and a hook request's body, a
-  negative length included (`ClaudeSessionsTests`, with the demo's sessions and the pets their ids
+  Code's settings in both modes, the permission answers and the stop in
+  Claude Code's shape, whose log a path is, and a hook request's body, a
+  negative length included, its path and process (`ClaudeSessionsTests`, with the demo's sessions and the pets their ids
   deal, which the website's videos show, the room a drawn row's name
   gets, and which changes the "needs you" notification announces or
   takes back; nothing there opens the socket or
-  touches `~/.claude`), and the pets: every combination reachable and distinct,
+  touches `~/.claude`), a turn's card (the newest steps and their durations, the six segments with and without a plan, how it ended, and the step the peek names, `SessionStepsTests`), and the pets: every combination reachable and distinct,
   an id's pet pinned, the deal's uniqueness and order independence (and
   that more sessions than pets still deal),
   every creature, accessory and pose inside its canvas on every tick,

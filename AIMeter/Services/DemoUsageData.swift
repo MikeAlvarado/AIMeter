@@ -195,15 +195,37 @@ enum DemoUsageData {
     /// headphones and a bunny with a bow at work, a ghost in a beanie done
     /// a moment ago. Ordered the way the tracker orders real ones: the
     /// active by the start of their turn, then the finished.
+    /// What the demo's waiting session asks permission for.
+    static let claudeSessionAsks: [String: ClaudeCodePermissionAsk] = [
+        "demo-170": ClaudeCodePermissionAsk(sessionId: "demo-170", toolName: "Bash", subject: "npm run db:migrate"),
+    ]
+
     static func claudeSessions(now: Date = Date()) -> [ClaudeCodeSessionActivity] {
-        func session(_ id: String, _ title: String?, _ project: String, _ state: ClaudeCodeSessionActivity.State) -> ClaudeCodeSessionActivity {
-            ClaudeCodeSessionActivity(id: id, customTitle: title, project: project, state: state, lastActivity: now)
+        func session(_ id: String, _ title: String?, _ project: String, _ state: ClaudeCodeSessionActivity.State, _ turn: ClaudeCodeTurn) -> ClaudeCodeSessionActivity {
+            var session = ClaudeCodeSessionActivity(id: id, customTitle: title, project: project, state: state, lastActivity: now)
+            session.turn = turn
+            return session
+        }
+        /// A turn that started `minutes` ago, its steps `seconds` apart.
+        func turn(_ minutes: Double, _ steps: [(ClaudeCodeTurn.Action, Int, Double)], edits: Int = 0, plan: [ClaudeCodeTurn.PlanStatus]? = nil) -> ClaudeCodeTurn {
+            let start = now.addingTimeInterval(-minutes * 60)
+            var at = start
+            let made = steps.map { action, count, seconds in
+                defer { at = at.addingTimeInterval(seconds) }
+                return ClaudeCodeTurn.Step(action: action, start: at, count: count)
+            }
+            return ClaudeCodeTurn(start: start, steps: made, edits: edits, plan: plan)
         }
         return [
-            session("demo-170", "Refactor the API client", "backend", .needsPermission(since: now.addingTimeInterval(-6 * 60))),
-            session("demo-54", "Ship the onboarding", "my-app", .working(since: now.addingTimeInterval(-3 * 60))),
-            session("demo-203", nil, "website", .working(since: now.addingTimeInterval(-60))),
-            session("demo-70", "Write the release notes", "docs", .finished(at: now.addingTimeInterval(-2 * 60))),
+            session("demo-170", "Refactor the API client", "backend", .needsPermission(since: now.addingTimeInterval(-6 * 60)),
+                    turn(6, [(.reading, 4, 40), (.searching, 2, 25), (.editing, 3, 200), (.running, 1, 0)], edits: 3)),
+            session("demo-54", "Ship the onboarding", "my-app", .working(since: now.addingTimeInterval(-3 * 60)),
+                    turn(3, [(.thinking, 1, 12), (.reading, 3, 30), (.editing, 2, 70), (.running, 1, 0)], edits: 2,
+                         plan: [.completed, .completed, .inProgress, .pending, .pending])),
+            session("demo-203", nil, "website", .working(since: now.addingTimeInterval(-60)),
+                    turn(1, [(.thinking, 1, 9), (.reading, 2, 0)])),
+            session("demo-70", "Write the release notes", "docs", .finished(at: now.addingTimeInterval(-2 * 60)),
+                    turn(2.25, [(.reading, 2, 4), (.editing, 3, 9)], edits: 3)),
         ]
     }
     #endif

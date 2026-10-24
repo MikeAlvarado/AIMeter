@@ -24,6 +24,9 @@ public struct ClaudeCodeSessionActivity: Sendable, Identifiable {
     public var state: State
     /// The newest record or hook event seen for it.
     public var lastActivity: Date
+    /// The turn under way, or the last one: its steps, its edits, its
+    /// plan. Nil until the session has started one in AIMeter's sight.
+    public var turn: ClaudeCodeTurn?
     /// The time of the newest record or event that decided `state`. An
     /// older record, read late (one file of a session read after another,
     /// or the log catching up with a hook), never overrides it.
@@ -61,7 +64,7 @@ extension ClaudeCodeSessionActivity: Equatable {
     /// writing its log doesn't republish an unchanged list.
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id && lhs.customTitle == rhs.customTitle && lhs.aiTitle == rhs.aiTitle
-            && lhs.project == rhs.project && lhs.state == rhs.state
+            && lhs.project == rhs.project && lhs.state == rhs.state && lhs.turn == rhs.turn
     }
 }
 
@@ -98,6 +101,11 @@ public struct ClaudeCodeSessionRecord: Decodable, Equatable, Sendable {
         public let contentKinds: [String]
         /// The content is a plain string, the way a typed prompt is stored.
         public let isPlainText: Bool
+        /// The tools the reply calls, by name (`ClaudeCodeTurn.Action`
+        /// sorts them into steps). What a tool is given, its input, is
+        /// never decoded, but for the desktop app's plan tool, whose items'
+        /// status alone is read (`ToolUse.plan`).
+        public let tools: [ToolUse]
 
         enum CodingKeys: String, CodingKey {
             case stopReason = "stop_reason", content
@@ -105,12 +113,30 @@ public struct ClaudeCodeSessionRecord: Decodable, Equatable, Sendable {
 
         private struct Item: Decodable {
             let type: String?
+            let tool: ToolUse?
+
+            enum CodingKeys: String, CodingKey { case type, id, name, input }
+
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                type = try? container.decodeIfPresent(String.self, forKey: .type)
+                guard type == "tool_use", let name = try? container.decode(String.self, forKey: .name) else {
+                    tool = nil
+                    return
+                }
+                let id = (try? container.decode(String.self, forKey: .id)) ?? ""
+                let plan = name == ClaudeCodeTurn.planTool
+                    ? (try? container.decode(ToolUse.PlanInput.self, forKey: .input))?.update
+                    : nil
+                tool = ToolUse(id: id, name: name, plan: plan)
+            }
         }
 
-        public init(stopReason: String?, contentKinds: [String], isPlainText: Bool = false) {
+        public init(stopReason: String?, contentKinds: [String], isPlainText: Bool = false, tools: [ToolUse] = []) {
             self.stopReason = stopReason
             self.contentKinds = contentKinds
             self.isPlainText = isPlainText
+            self.tools = tools
         }
 
         public init(from decoder: Decoder) throws {
@@ -118,10 +144,65 @@ public struct ClaudeCodeSessionRecord: Decodable, Equatable, Sendable {
             stopReason = try container.decodeIfPresent(String.self, forKey: .stopReason)
             if let items = try? container.decodeIfPresent([Item].self, forKey: .content) {
                 contentKinds = items.compactMap(\.type)
+                tools = items.compactMap(\.tool)
                 isPlainText = false
             } else {
                 isPlainText = container.contains(.content)
                 contentKinds = isPlainText ? ["text"] : []
+                tools = []
+            }
+        }
+    }
+
+    /// One tool a reply calls: its id (a streamed reply is written as
+    /// several identical lines, so the id is what counts it once) and its
+    /// name. For the plan tool only, what the call does to the plan.
+    public struct ToolUse: Equatable, Sendable {
+        public let id: String
+        public let name: String
+        public let plan: PlanUpdate?
+
+        public init(id: String, name: String, plan: PlanUpdate? = nil) {
+            self.id = id
+            self.name = name
+            self.plan = plan
+        }
+
+        /// The desktop app's plan tool, as its calls are shaped (measured
+        /// on 2026-10-23 over this Mac's logs): a whole plan
+        /// (`items`, each with a `status`), `advance` (the step in progress
+        /// is done, the next starts), or `done` (step numbers, from 1)
+        /// with the one to `start`. Each item's text is never decoded.
+        public enum PlanUpdate: Equatable, Sendable {
+            case set([PlanStatus])
+            case advance
+            case mark(done: [Int], start: Int?)
+        }
+
+        public enum PlanStatus: Equatable, Sendable {
+            case pending, inProgress, completed
+        }
+
+        struct PlanInput: Decodable {
+            private struct Item: Decodable { let status: String? }
+            private let items: [Item]?
+            private let advance: Bool?
+            private let done: [Int]?
+            private let start: Int?
+
+            var update: PlanUpdate? {
+                if let items {
+                    return .set(items.map { item in
+                        switch item.status {
+                        case "completed": .completed
+                        case "in_progress": .inProgress
+                        default: .pending
+                        }
+                    })
+                }
+                if advance == true { return .advance }
+                if done != nil || start != nil { return .mark(done: done ?? [], start: start) }
+                return nil
             }
         }
     }
@@ -227,5 +308,69 @@ public struct ClaudeCodeHookEvent: Decodable, Equatable, Sendable {
         self.cwd = cwd
         self.agentId = agentId
         self.notificationType = notificationType
+    }
+}
+
+/// A permission prompt the island can answer ("Answer from the island",
+/// off by default): the session and agent asking, the tool, and what it
+/// would do, the one part of a tool's input ever decoded (a command, a
+/// file, an address), so the user knows what they approve. Only the hook
+/// that waits for AIMeter's answer sends it, it is held in memory while
+/// the prompt is open, and nothing of it is kept.
+public struct ClaudeCodePermissionAsk: Decodable, Equatable, Sendable {
+    public let sessionId: String
+    public let agentId: String?
+    public let toolName: String
+    /// What the tool would do, cut to `maxSubject` characters; nil for a
+    /// tool whose input has none of the fields shown.
+    public let subject: String?
+
+    static let maxSubject = 300
+
+    enum CodingKeys: String, CodingKey {
+        case sessionId = "session_id", agentId = "agent_id", toolName = "tool_name", toolInput = "tool_input"
+    }
+
+    /// The fields of a tool's input that say what it does, in order of
+    /// preference; nothing else of the input is declared.
+    private struct Input: Decodable {
+        let command: String?
+        let filePath: String?
+        let notebookPath: String?
+        let url: String?
+        let query: String?
+        let pattern: String?
+
+        enum CodingKeys: String, CodingKey {
+            case command, filePath = "file_path", notebookPath = "notebook_path", url, query, pattern
+        }
+
+        var subject: String? {
+            [command, filePath, notebookPath, url, query, pattern].lazy.compactMap { $0 }.first { !$0.isEmpty }
+        }
+    }
+
+    public init(sessionId: String, agentId: String? = nil, toolName: String, subject: String? = nil) {
+        self.sessionId = sessionId
+        self.agentId = agentId
+        self.toolName = toolName
+        self.subject = subject
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        sessionId = try container.decode(String.self, forKey: .sessionId)
+        agentId = try container.decodeIfPresent(String.self, forKey: .agentId)
+        toolName = try container.decodeIfPresent(String.self, forKey: .toolName) ?? ""
+        let subject = (try? container.decodeIfPresent(Input.self, forKey: .toolInput))?.subject
+        self.subject = subject.map { text in
+            let line = text.split(whereSeparator: \.isNewline).joined(separator: " ")
+            return line.count > Self.maxSubject ? String(line.prefix(Self.maxSubject)) + "…" : line
+        }
+    }
+
+    /// The hook event it also is, for the session's state.
+    public var event: ClaudeCodeHookEvent {
+        ClaudeCodeHookEvent(hookEventName: "PermissionRequest", sessionId: sessionId, agentId: agentId)
     }
 }

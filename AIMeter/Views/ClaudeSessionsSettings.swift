@@ -101,10 +101,15 @@ struct ClaudeSessionsSettings: View {
                 }
                 Divider().overlay(Theme.track)
                 hooksRow
+                if prefs.claudeSessionsEnabled {
+                    Divider().overlay(Theme.track)
+                    answersRow
+                }
             }
         }
         .onChange(of: prefs.claudeSessionsEnabled) { _, _ in AppChrome.updateClaudeSessions() }
         .onChange(of: prefs.claudeSessionsNotify) { _, _ in AppChrome.updateClaudeSessions() }
+        .onChange(of: prefs.claudeSessionsAnswers) { _, _ in AppChrome.updateClaudeSessions() }
         .task {
             monitor.refreshHooksState()
             accessibilityTrusted = AccessibilityAccess.check(prefs: prefs) == .granted
@@ -191,6 +196,9 @@ struct ClaudeSessionsSettings: View {
                 Spacer(minLength: 0)
                 if monitor.hooksInstalled {
                     Button(String(localized: "Remove")) {
+                        // Answering needs the hooks: without them it is off.
+                        prefs.claudeSessionsAnswers = false
+                        AppChrome.updateClaudeSessions()
                         monitor.removeHooks()
                     }
                     .buttonStyle(.bordered)
@@ -208,6 +216,32 @@ struct ClaudeSessionsSettings: View {
                 Label(error, systemImage: "exclamationmark.triangle")
                     .font(Theme.caption)
                     .foregroundStyle(Theme.danger)
+            }
+        }
+    }
+
+    /// "Answer from the island", off by default: the hooks' answering
+    /// mode, installed when it is switched on (`ClaudeSessionMonitor`), and
+    /// under it, while on, what it means for the user's data.
+    private var answersRow: some View {
+        @Bindable var prefs = prefs
+        return VStack(alignment: .leading, spacing: 6) {
+            Toggle(isOn: $prefs.claudeSessionsAnswers) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Answer from the island")
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                    Text("Approve or deny a session's permission prompts and stop a session from the island. Claude Code still asks in its own window too, and the first answer counts.")
+                        .font(Theme.caption)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+            }
+            .tint(Theme.accent)
+            if prefs.claudeSessionsAnswers {
+                Label(String(localized: "AIMeter receives nothing. All of this stays on your Mac."), systemImage: "lock.fill")
+                    .font(Theme.caption)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

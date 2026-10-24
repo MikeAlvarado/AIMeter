@@ -4,6 +4,268 @@
     "" : {
 
     },
+    "%lld edits" : {
+      "comment" : "How many times a finished Claude Code turn changed a file, after \"Done in 13s\" in the notch island.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld edit"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld edits"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld edición"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ediciones"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Änderung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Änderungen"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld modification"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld modifications"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld件の編集"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "편집 %lld개"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld edição"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld edições"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 处编辑"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld steps" : {
+      "comment" : "How many steps a Claude Code session's turn has taken, in the notch island.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld step"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld steps"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld paso"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld pasos"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Schritt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Schritte"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld étape"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld étapes"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lldステップ"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld단계"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld etapa"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld etapas"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 步"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld-day window" : {
       "localizations" : {
         "de" : {
@@ -510,6 +772,53 @@
         }
       }
     },
+    "AIMeter receives nothing. All of this stays on your Mac." : {
+      "comment" : "Shown under \"Answer from the island\" while it is on: nothing about the sessions leaves the Mac.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter no recibe nada. Todo esto se queda en tu Mac."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter empfängt nichts. All das bleibt auf deinem Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter ne reçoit rien. Tout reste sur votre Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterは何も受け取りません。すべてこのMacに残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter는 아무것도 받지 않습니다. 모든 정보는 Mac에 남습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter não recebe nada. Tudo fica no seu Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 不会收到任何内容。所有信息都留在你的 Mac 上。"
+          }
+        }
+      }
+    },
     "AIMeter shows you a one-time code. Open ChatGPT's device page, sign in and enter the code; the account connects as soon as you approve. Any ChatGPT plan works, Free included." : {
       "localizations" : {
         "de" : {
@@ -644,6 +953,194 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加账户"
+          }
+        }
+      }
+    },
+    "Answer from the island" : {
+      "comment" : "Settings switch (Claude Code tab): answer a Claude Code session's permission prompts and stop it from the notch island.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responder desde la isla"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus der Insel antworten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répondre depuis l’îlot"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイランドから応答"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아일랜드에서 응답"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responder pela ilha"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从刘海岛回应"
+          }
+        }
+      }
+    },
+    "Answer in Claude" : {
+      "comment" : "Under \"Needs permission\" on the notch island's card when the island can't answer the prompt itself: answer it in the Claude app or terminal.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde en Claude"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Claude antworten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répondez dans Claude"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claudeで応答してください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude에서 응답하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responda no Claude"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在 Claude 中回应"
+          }
+        }
+      }
+    },
+    "Approve" : {
+      "comment" : "Button in the notch island: allows what a Claude Code session asks permission for.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprobar"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlauben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "허용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprovar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "批准"
+          }
+        }
+      }
+    },
+    "Approve or deny a session's permission prompts and stop a session from the island. Claude Code still asks in its own window too, and the first answer counts." : {
+      "comment" : "Caption under \"Answer from the island\".",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprueba o deniega los permisos que pide una sesión y detén una sesión desde la isla. Claude Code también sigue preguntando en su propia ventana, y cuenta la primera respuesta."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berechtigungsanfragen einer Sitzung erlauben oder ablehnen und eine Sitzung stoppen, direkt aus der Insel. Claude Code fragt weiterhin auch im eigenen Fenster, und die erste Antwort zählt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez ou refusez les demandes d’autorisation d’une session et arrêtez une session depuis l’îlot. Claude Code demande toujours aussi dans sa propre fenêtre, et la première réponse compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションの許可リクエストの許可や拒否、セッションの停止をアイランドから行えます。Claude Codeも自分のウインドウで尋ね、先に答えたほうが有効になります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아일랜드에서 세션의 권한 요청을 허용하거나 거부하고 세션을 중지합니다. Claude Code도 자체 윈도우에서 계속 묻고, 먼저 한 응답이 적용됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprove ou negue os pedidos de permissão de uma sessão e pare uma sessão pela ilha. O Claude Code continua perguntando na própria janela, e vale a primeira resposta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在刘海岛中批准或拒绝会话的权限请求，或停止会话。Claude Code 仍会在自己的窗口中询问，以先给出的回答为准。"
           }
         }
       }
@@ -1200,6 +1697,53 @@
         }
       }
     },
+    "Deny" : {
+      "comment" : "Button in the notch island: refuses what a Claude Code session asks permission for.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denegar"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ablehnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refuser"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒否"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "거부"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒绝"
+          }
+        }
+      }
+    },
     "Device code sign-in has to be allowed in ChatGPT: Settings, Security, \"Allow device code login\"." : {
       "localizations" : {
         "de" : {
@@ -1246,6 +1790,53 @@
         }
       }
     },
+    "Done in %@" : {
+      "comment" : "A Claude Code turn ended, and how long it took (\"13s\", \"1m 15s\"), in the notch island.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminó en %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig in %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé en %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@で完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 만에 완료"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído em %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用时 %@ 完成"
+          }
+        }
+      }
+    },
     "Each one is the sign-in flow the provider's own tools use; AIMeter only receives the token the provider hands back." : {
       "localizations" : {
         "de" : {
@@ -1288,6 +1879,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每一种都是提供方自家工具所用的登录流程；AIMeter 只接收提供方返回的令牌。"
+          }
+        }
+      }
+    },
+    "Editing" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeitet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "編集中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집하는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在编辑"
+          }
+        }
+      }
+    },
+    "Finished" : {
+      "comment" : "Headline of the notch island's session card once its turn ended.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminó"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已完成"
           }
         }
       }
@@ -1710,6 +2395,53 @@
         }
       }
     },
+    "On this step for" : {
+      "comment" : "Before a running timer (\"1:42\") under the step a Claude Code session is on, in the notch island.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En este paso desde hace"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei diesem Schritt seit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur cette étape depuis"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このステップの経過時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 단계 진행 시간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nesta etapa há"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此步骤已进行"
+          }
+        }
+      }
+    },
     "Open %@ in AIMeter" : {
       "comment" : "Tooltip on an account in the macOS menu bar popover; a click opens that account's detail in the Dashboard window. %@ is the account's nickname.",
       "localizations" : {
@@ -1845,6 +2577,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开 GitHub 设备页面"
+          }
+        }
+      }
+    },
+    "Open in %@" : {
+      "comment" : "Button in the notch island: brings up the app a Claude Code session runs in (\"Claude Work\", \"Terminal\").",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In %@ öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@で開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에서 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir no %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 %@ 中打开"
           }
         }
       }
@@ -2034,6 +2813,53 @@
         }
       }
     },
+    "Reading" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leyendo"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liest"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み込み中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "읽는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lendo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在读取"
+          }
+        }
+      }
+    },
     "Reads the login Codex keeps in ~/.codex, without changing it. Or sign in below with a code of your own." : {
       "localizations" : {
         "de" : {
@@ -2076,6 +2902,147 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "读取 Codex 保存在 ~/.codex 中的登录，不做任何更改。或者在下方用你自己的代码登录。"
+          }
+        }
+      }
+    },
+    "Running a command" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutando un comando"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Führt einen Befehl aus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécute une commande"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コマンドを実行中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "명령 실행 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Executando um comando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在运行命令"
+          }
+        }
+      }
+    },
+    "Searching" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucht"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검색하는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在搜索"
+          }
+        }
+      }
+    },
+    "Searching the web" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando en la web"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucht im Web"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherche sur le web"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Webを検索中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "웹 검색 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando na web"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在搜索网页"
           }
         }
       }
@@ -2218,6 +3185,100 @@
         }
       }
     },
+    "Stop" : {
+      "comment" : "Button in the notch island: stops a Claude Code session before its next step.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stoppen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
+          }
+        }
+      }
+    },
+    "Stopping…" : {
+      "comment" : "The notch island's Stop button once pressed, until the session stops.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deteniendo…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird gestoppt…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêt…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止中…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중지하는 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parando…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在停止…"
+          }
+        }
+      }
+    },
     "That sign-in is for another service than this account." : {
       "localizations" : {
         "de" : {
@@ -2356,6 +3417,53 @@
         }
       }
     },
+    "Thinking" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pensando"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denkt nach"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réfléchit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "考え中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "생각하는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pensando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在思考"
+          }
+        }
+      }
+    },
     "Try again" : {
       "localizations" : {
         "de" : {
@@ -2444,6 +3552,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用此 Mac 上 Codex 的登录"
+          }
+        }
+      }
+    },
+    "Using a tool" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usando una herramienta"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzt ein Werkzeug"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilise un outil"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツールを使用中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구 사용 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usando uma ferramenta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在使用工具"
+          }
+        }
+      }
+    },
+    "Using the browser" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usando el navegador"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzt den Browser"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilise le navigateur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラウザを使用中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "브라우저 사용 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usando o navegador"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在使用浏览器"
           }
         }
       }
@@ -2584,6 +3786,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开启后，标记的账户会从菜单栏和刘海岛中消失，Claude Code 的会话也会从岛中消失：也就是在公司被人瞥见屏幕时能看到的内容。仪表板和小组件仍会显示全部。菜单栏弹出窗口中的低调模式和 ⌘⇧D 可以开关它。"
+          }
+        }
+      }
+    },
+    "Working with an agent" : {
+      "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajando con un agente"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitet mit einem Agenten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Travaille avec un agent"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エージェントと作業中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "에이전트와 작업 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabalhando com um agente"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在与代理协作"
           }
         }
       }
@@ -7851,49 +9100,49 @@
         }
       }
     },
-    "To show which Claude Code sessions are working in the notch island, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is and when it was written, plus each session's title and folder: never your prompts or the replies. It keeps nothing and sends nothing anywhere; turn it off in Settings. If you install the optional hooks, Claude Code passes each event to AIMeter over a private connection on this Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest." : {
+    "To show which Claude Code sessions are working in the notch island and what each is doing, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is, when it was written and the names of the tools Claude uses, plus each session's title and folder: never your prompts, the replies or what a tool is given. To open a session in the right app, it reads only the two ids in the record each Claude app keeps for it. It keeps nothing and sends nothing anywhere; turn it off in Settings. If you install the optional hooks, Claude Code passes each event to AIMeter over a private connection on this Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest. With \"Answer from the island\" on, a permission prompt also shows the command, file or address it asks about, only while it is open." : {
       "comment" : "Privacy & data row text for the Claude Code sessions.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um auf der Notch-Insel zu zeigen, welche Claude-Code-Sitzungen arbeiten, verfolgt AIMeter die Sitzungsprotokolle in ~/.claude/projects und liest nur, was jeder Eintrag ist und wann er geschrieben wurde, dazu Titel und Ordner jeder Sitzung: nie deine Prompts oder die Antworten. Es speichert nichts und sendet nichts irgendwohin; du kannst es in den Einstellungen ausschalten. Wenn du die optionalen Hooks installierst, gibt Claude Code jedes Ereignis über eine private Verbindung auf diesem Mac, die nur dein Benutzerkonto erreicht, an AIMeter weiter; AIMeter liest, um welche Sitzung es geht und was passiert ist, und verwirft den Rest."
+            "value" : "Um auf der Notch-Insel zu zeigen, welche Claude-Code-Sitzungen arbeiten und was jede gerade tut, verfolgt AIMeter die Sitzungsprotokolle in ~/.claude/projects und liest nur, was jeder Eintrag ist, wann er geschrieben wurde und die Namen der Werkzeuge, die Claude nutzt, dazu Titel und Ordner jeder Sitzung: nie deine Prompts, die Antworten oder das, was ein Werkzeug erhält. Um eine Sitzung in der richtigen App zu öffnen, liest es nur die zwei Kennungen aus dem Eintrag, den jede Claude-App für sie führt. Es speichert nichts und sendet nichts irgendwohin; du kannst es in den Einstellungen ausschalten. Wenn du die optionalen Hooks installierst, gibt Claude Code jedes Ereignis über eine private Verbindung auf diesem Mac, die nur dein Benutzerkonto erreicht, an AIMeter weiter; AIMeter liest, um welche Sitzung es geht und was passiert ist, und verwirft den Rest. Mit \"Aus der Insel antworten\" zeigt eine Berechtigungsanfrage zusätzlich den Befehl, die Datei oder die Adresse, um die es geht, nur solange sie offen ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para mostrar en la isla del notch qué sesiones de Claude Code están trabajando, AIMeter sigue los registros de sesión en ~/.claude/projects y solo lee qué es cada registro y cuándo se escribió, además del título y la carpeta de cada sesión: nunca tus prompts ni las respuestas. No guarda nada ni envía nada a ningún lado; puedes desactivarlo en Ajustes. Si instalas los hooks opcionales, Claude Code le pasa cada evento a AIMeter por una conexión privada en este Mac a la que solo tu cuenta tiene acceso; AIMeter lee de qué sesión se trata y qué pasó, y descarta el resto."
+            "value" : "Para mostrar en la isla del notch qué sesiones de Claude Code están trabajando y qué hace cada una, AIMeter sigue los registros de sesión en ~/.claude/projects y solo lee qué es cada registro, cuándo se escribió y los nombres de las herramientas que usa Claude, además del título y la carpeta de cada sesión: nunca tus prompts, las respuestas ni lo que recibe una herramienta. Para abrir una sesión en la app correcta, solo lee los dos identificadores del registro que cada app de Claude guarda de ella. No guarda nada ni envía nada a ningún lado; puedes desactivarlo en Ajustes. Si instalas los hooks opcionales, Claude Code le pasa cada evento a AIMeter por una conexión privada en este Mac a la que solo tu cuenta tiene acceso; AIMeter lee de qué sesión se trata y qué pasó, y descarta el resto. Con \"Responder desde la isla\" activado, un permiso pendiente también muestra el comando, el archivo o la dirección por la que pregunta, solo mientras está abierto."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour montrer dans l’îlot de l’encoche quelles sessions Claude Code travaillent, AIMeter suit les journaux de session de ~/.claude/projects et ne lit que la nature de chaque entrée et l'heure à laquelle elle a été écrite, ainsi que le titre et le dossier de chaque session : jamais vos prompts ni les réponses. Il ne garde rien et n'envoie rien nulle part ; vous pouvez le désactiver dans les Réglages. Si vous installez les hooks facultatifs, Claude Code transmet chaque événement à AIMeter par une connexion privée sur ce Mac, accessible à votre seul compte ; AIMeter lit de quelle session il s'agit et ce qui s'est passé, et ignore le reste."
+            "value" : "Pour montrer dans l’îlot de l’encoche quelles sessions Claude Code travaillent et ce que fait chacune, AIMeter suit les journaux de session de ~/.claude/projects et ne lit que la nature de chaque entrée, l'heure à laquelle elle a été écrite et le nom des outils qu'utilise Claude, ainsi que le titre et le dossier de chaque session : jamais vos prompts, les réponses ni ce que reçoit un outil. Pour ouvrir une session dans la bonne app, il ne lit que les deux identifiants de l'entrée que chaque app Claude garde pour elle. Il ne garde rien et n'envoie rien nulle part ; vous pouvez le désactiver dans les Réglages. Si vous installez les hooks facultatifs, Claude Code transmet chaque événement à AIMeter par une connexion privée sur ce Mac, accessible à votre seul compte ; AIMeter lit de quelle session il s'agit et ce qui s'est passé, et ignore le reste. Avec « Répondre depuis l’îlot » activé, une demande d'autorisation montre aussi la commande, le fichier ou l'adresse concernés, seulement tant qu'elle est ouverte."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ノッチアイランドに作業中のClaude Codeセッションを表示するため、AIMeterは~/.claude/projectsのセッションログを追い、各記録の種類と書き込まれた時刻、そして各セッションのタイトルとフォルダだけを読み取ります。プロンプトや返答は読みません。何も保存せず、どこにも送信しません。設定でオフにできます。オプションのフックをインストールすると、Claude Codeはこのアカウントだけが使えるこのMac上の専用の接続で各イベントをAIMeterに渡します。AIMeterはどのセッションで何が起きたかだけを読み取り、残りは破棄します。"
+            "value" : "ノッチアイランドに作業中のClaude Codeセッションと各セッションの作業内容を表示するため、AIMeterは~/.claude/projectsのセッションログを追い、各記録の種類と書き込まれた時刻、Claudeが使うツールの名前、そして各セッションのタイトルとフォルダだけを読み取ります。プロンプトや返答、ツールに渡される内容は読みません。セッションを正しいアプリで開くため、各Claudeアプリがそのセッションについて保存している記録からは2つのIDだけを読み取ります。何も保存せず、どこにも送信しません。設定でオフにできます。オプションのフックをインストールすると、Claude Codeはこのアカウントだけが使えるこのMac上の専用の接続で各イベントをAIMeterに渡します。AIMeterはどのセッションで何が起きたかだけを読み取り、残りは破棄します。「アイランドから応答」をオンにすると、許可リクエストが開いている間だけ、対象のコマンド、ファイル、またはアドレスも表示します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "노치 아일랜드에 작업 중인 Claude Code 세션을 표시하기 위해 AIMeter는 ~/.claude/projects의 세션 로그를 따라가며 각 기록의 종류와 작성 시각, 그리고 각 세션의 제목과 폴더만 읽습니다. 프롬프트나 답변은 절대 읽지 않습니다. 아무것도 저장하거나 보내지 않으며, 설정에서 끌 수 있습니다. 선택 사항인 훅을 설치하면 Claude Code는 이 Mac에서 사용자 계정만 접근할 수 있는 비공개 연결로 각 이벤트를 AIMeter에 전달하며, AIMeter는 어떤 세션에서 무슨 일이 있었는지만 읽고 나머지는 버립니다."
+            "value" : "노치 아일랜드에 작업 중인 Claude Code 세션과 각 세션이 하는 일을 표시하기 위해 AIMeter는 ~/.claude/projects의 세션 로그를 따라가며 각 기록의 종류와 작성 시각, Claude가 사용하는 도구의 이름, 그리고 각 세션의 제목과 폴더만 읽습니다. 프롬프트, 답변, 도구에 전달되는 내용은 절대 읽지 않습니다. 세션을 올바른 앱에서 열기 위해 각 Claude 앱이 세션마다 보관하는 기록에서 두 개의 ID만 읽습니다. 아무것도 저장하거나 보내지 않으며, 설정에서 끌 수 있습니다. 선택 사항인 훅을 설치하면 Claude Code는 이 Mac에서 사용자 계정만 접근할 수 있는 비공개 연결로 각 이벤트를 AIMeter에 전달하며, AIMeter는 어떤 세션에서 무슨 일이 있었는지만 읽고 나머지는 버립니다. '아일랜드에서 응답'을 켜면 권한 요청이 열려 있는 동안에만 요청 대상인 명령, 파일 또는 주소도 표시합니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para mostrar na ilha do notch quais sessões do Claude Code estão trabalhando, o AIMeter acompanha os registros de sessão em ~/.claude/projects e lê apenas o que é cada registro e quando foi escrito, além do título e da pasta de cada sessão: nunca seus prompts nem as respostas. Ele não guarda nada e não envia nada a lugar nenhum; você pode desativar isso nos Ajustes. Se você instalar os hooks opcionais, o Claude Code passa cada evento ao AIMeter por uma conexão privada neste Mac que só a sua conta alcança; o AIMeter lê de qual sessão se trata e o que aconteceu, e descarta o resto."
+            "value" : "Para mostrar na ilha do notch quais sessões do Claude Code estão trabalhando e o que cada uma está fazendo, o AIMeter acompanha os registros de sessão em ~/.claude/projects e lê apenas o que é cada registro, quando foi escrito e os nomes das ferramentas que o Claude usa, além do título e da pasta de cada sessão: nunca seus prompts, as respostas nem o que uma ferramenta recebe. Para abrir uma sessão no app certo, lê apenas os dois identificadores do registro que cada app do Claude guarda dela. Não guarda nada nem envia nada para lugar nenhum; você pode desativar nos Ajustes. Se você instalar os hooks opcionais, o Claude Code passa cada evento ao AIMeter por uma conexão privada neste Mac que só a sua conta acessa; o AIMeter lê de qual sessão se trata e o que aconteceu, e descarta o resto. Com \"Responder pela ilha\" ativado, um pedido de permissão também mostra o comando, o arquivo ou o endereço em questão, só enquanto está aberto."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "为了在刘海岛中显示哪些 Claude Code 会话正在工作，AIMeter 会跟踪 ~/.claude/projects 中的会话日志，只读取每条记录的类型和写入时间，以及每个会话的标题和文件夹，从不读取你的提示词或回复。它不保存任何内容，也不向任何地方发送；你可以在设置中关闭。如果你安装了可选的 hooks，Claude Code 会通过这台 Mac 上只有你的账户才能访问的私有连接把每个事件交给 AIMeter；AIMeter 只读取事件属于哪个会话、发生了什么，其余一概丢弃。"
+            "value" : "为了在刘海岛中显示哪些 Claude Code 会话正在工作以及每个会话在做什么，AIMeter 会跟踪 ~/.claude/projects 中的会话日志，只读取每条记录的类型、写入时间和 Claude 使用的工具名称，以及每个会话的标题和文件夹：绝不读取你的提示、回复或传给工具的内容。为了在正确的 App 中打开会话，它只读取每个 Claude App 为该会话保存的记录中的两个 ID。它不保存任何内容，也不向任何地方发送；你可以在设置中关闭。如果你安装了可选的 hooks，Claude Code 会通过这台 Mac 上只有你的账户能访问的私有连接把每个事件传给 AIMeter；AIMeter 只读取事件属于哪个会话以及发生了什么，其余内容都会丢弃。开启“从刘海岛回应”后，权限请求还会显示所涉及的命令、文件或地址，仅在请求未处理时显示。"
           }
         }
       }

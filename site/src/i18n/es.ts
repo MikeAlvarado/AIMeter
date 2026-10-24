@@ -177,7 +177,7 @@ export const es = {
     description: 'Qué lee AIMeter, qué guarda en tu dispositivo y qué nunca sale de él.',
     intro:
       'AIMeter no tiene servidor ni cuenta propia. Lee tu uso de tu proveedor de IA con el inicio de sesión que le concedes, guarda una copia en tu dispositivo para que los widgets puedan dibujarla y no envía nada a ningún otro lado. Esta página enumera cada flujo de datos para que puedas cotejarlo con el código fuente.',
-    updated: 'Última actualización: 22 de octubre de 2026',
+    updated: 'Última actualización: 23 de octubre de 2026',
     sections: [
       {
         heading: 'Qué sale de tu dispositivo',
@@ -217,7 +217,7 @@ export const es = {
       {
         heading: 'Sesiones de la línea de comandos en el notch (Mac)',
         paragraphs: [
-          'Encendido mientras la isla del notch lo está, y se apaga con un interruptor en Ajustes. Para mostrar qué sesiones de Claude Code están trabajando, esperando tu permiso o terminadas, AIMeter sigue los registros de sesión en ~/.claude/projects y solo lee qué es cada registro y cuándo se escribió, además del título y la carpeta de cada sesión: nunca prompts, respuestas ni entradas de herramientas. No guarda nada ni envía nada a ningún lado. Si instalas los hooks opcionales, AIMeter agrega una entrada por evento a ~/.claude/settings.json (respalda el archivo antes y conserva todo lo demás), y Claude Code le pasa cada evento a AIMeter por una conexión privada en ese Mac a la que solo tu cuenta tiene acceso; AIMeter lee de qué sesión se trata y qué pasó, y descarta el resto. “Quitar” saca esas entradas de nuevo. La función no existe en iOS.',
+          'Encendido mientras la isla del notch lo está, y se apaga con un interruptor en Ajustes. Para mostrar qué sesiones de Claude Code están trabajando, esperando tu permiso o terminadas, AIMeter sigue los registros de sesión en ~/.claude/projects y solo lee qué es cada registro, cuándo se escribió y los nombres de las herramientas que usa Claude (y, del plan de la app de escritorio, solo si cada paso está hecho), además del título y la carpeta de cada sesión: nunca prompts, respuestas ni lo que recibe una herramienta. Para abrir una sesión en la copia correcta de Claude, solo lee los dos identificadores del registro que cada app de Claude guarda de ella. No guarda nada ni envía nada a ningún lado. Si instalas los hooks opcionales, AIMeter agrega una entrada por evento a ~/.claude/settings.json (respalda el archivo antes y conserva todo lo demás), y Claude Code le pasa cada evento a AIMeter por una conexión privada en ese Mac a la que solo tu cuenta tiene acceso; AIMeter lee de qué sesión se trata y qué pasó, y descarta el resto. “Quitar” saca esas entradas de nuevo. “Responder desde la isla”, apagado por defecto, hace que el hook del permiso espere tu respuesta en la isla y que un segundo hook revise antes de cada herramienta si detuviste la sesión; solo entonces un permiso pendiente muestra el comando, el archivo o la dirección por la que pregunta, mientras está abierto y sin guardarlo. Nada de esto sale de tu Mac. La función no existe en iOS.',
         ],
       },
       {
@@ -303,7 +303,7 @@ export const es = {
       },
       {
         q: '¿Qué son las mascotas junto al notch?',
-        a: 'Cada sesión de Claude Code en curso en ese Mac tiene una mascota de píxeles: camina mientras la sesión trabaja, se agita junto a un ! amarillo cuando necesita tu permiso y se duerme unos segundos cuando termina. El conteo del otro lado del notch dice cuántas sesiones hay. Detén el cursor en el notch para ver el nombre de la sesión y qué está haciendo, o haz clic para ver todas las sesiones y tu uso. En Ajustes, la pestaña Claude Code apaga las mascotas, el nombre o toda la función, e instala los hooks opcionales que avisan a AIMeter en cuanto una sesión pide permiso.',
+        a: 'Cada sesión de Claude Code en curso en ese Mac tiene una mascota de píxeles: camina mientras la sesión trabaja, se agita junto a un ! amarillo cuando necesita tu permiso y se duerme unos segundos cuando termina. El conteo del otro lado del notch dice cuántas sesiones hay. Detén el cursor en el notch para ver el nombre de la sesión y qué está haciendo, o haz clic para ver todas las sesiones y tu uso: la sesión al frente muestra sus pasos (“Paso 3 de 7” cuando la app de escritorio lleva un plan) y se abre en la copia correcta de Claude. En Ajustes, la pestaña Claude Code apaga las mascotas, el nombre o toda la función, e instala los hooks opcionales que avisan a AIMeter en cuanto una sesión pide permiso. Con “Responder desde la isla” encendido, también puedes aprobar, denegar o detener una sesión desde la isla.',
       },
       {
         q: '¿Dónde está el tutorial?',

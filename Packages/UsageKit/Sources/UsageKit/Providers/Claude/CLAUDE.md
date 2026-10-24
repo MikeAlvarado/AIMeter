@@ -221,8 +221,21 @@ on 2026-10-14 over every log on the development Mac (Claude Code
   `subtype`, `timestamp`, `sessionId`, `agentId`, `isSidechain`,
   `isMeta`, `isApiErrorMessage`, `cwd`, `interruptedMessageId`,
   `customTitle` / `aiTitle` (the title records), `message.stop_reason`,
-  the `type` of each `message.content` item (or "a plain string"), and
-  the *presence* of `promptSource`.
+  the `type` of each `message.content` item (or "a plain string"), the
+  `id` and `name` of each `tool_use` item, and the *presence* of
+  `promptSource`. A `tool_use` item is `caller`, `id`, `input`, `name`,
+  `type` (measured 2026-10-23); its `input` is never decoded, but for
+  the desktop app's plan tool, `mcp__ccd_turn__update_plan`, whose input
+  is a whole plan (`items`, each `content` and `status`: `pending`,
+  `in_progress`, `completed`; `scope` `first_task`, `continuation`, …),
+  `{"advance": true}` (the step in progress is done, the next starts), or
+  `done` (step numbers from 1) with `start`: only each item's `status`
+  and those three are decoded, never an item's text. The CLI's own task
+  tools have never appeared in this Mac's logs, so none is read.
+  `ClaudeCodeTurn` builds a turn's steps from the names
+  (`ClaudeCodeTurn.Action`), counting a streamed reply's repeated lines
+  once by the tool's `id`; the desktop app's other `mcp__ccd_turn__`
+  tools (`wrap_up`) are bookkeeping, not a step.
 - A turn: a prompt (`user`, plain-string content or `image`+`text`
   items, with `promptSource`: `sdk`, `typed`, `queued`, or `system` for
   a task notification, and `origin.kind` `human` / `task-notification`),
@@ -262,3 +275,17 @@ on 2026-10-14 over every log on the development Mac (Claude Code
   interrupt, and nothing fires when a prompt is answered: the asking
   agent's next record says it. `SubagentStop` is not used (it also fires
   for Claude Code's own internal agents after a turn).
+- Answering from the island (the app's answering mode, see "Claude Code
+  sessions" in the repo-root CLAUDE.md): a synchronous
+  `PermissionRequest` hook sends the same JSON with `tool_name` and
+  `tool_input`, decoded as `ClaudeCodePermissionAsk` (`session_id`,
+  `agent_id`, `tool_name`, and of the input only `command`, `file_path`,
+  `notebook_path`, `url`, `query` or `pattern`, the first present, on
+  one line and cut to 300 characters), and prints
+  `{"hookSpecificOutput":{"hookEventName":"PermissionRequest","decision":{"behavior":"allow"}}}`
+  (or `deny` with a `message`, and `interrupt: true` to stop). A
+  synchronous `PreToolUse` hook (its `session_id` alone is decoded)
+  prints `{"continue":false,"stopReason":…}` to end a turn before its
+  next tool. Measured with Claude Code 2.1.306 (2026-10-23): the
+  terminal's own prompt shows while the hook waits, and whichever
+  answers first decides.

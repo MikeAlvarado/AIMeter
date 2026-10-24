@@ -23,6 +23,15 @@ extension NotchIslandModel {
             /// "Working for 3m", "Needs permission", "Done 2m ago".
             let detail: String
             let pet: SessionPet
+            /// The turn's steps, for the expanded island's card.
+            var turn: Turn? = nil
+
+            /// What the session is doing now, the step under way ("Editing"),
+            /// while it works; the peek shows it.
+            var action: String? {
+                guard status == .working, let step = turn?.steps.last, step.duration == nil else { return nil }
+                return step.label
+            }
 
             var pose: SessionPet.Pose {
                 switch status {
@@ -183,12 +192,20 @@ extension NotchIslandModel {
         static func row(for session: ClaudeCodeSessionActivity, pet: SessionPet, now: Date) -> Row {
             let status: Row.Status
             let detail: String
+            let turn = Turn(session.turn, finishedAt: session.finishedAt, now: now)
             switch session.state {
             case .working(let since):
                 status = .working
-                detail = now.timeIntervalSince(since) < 60
-                    ? String(localized: "Working")
-                    : String(localized: "Working for \(UsageFormatting.relativeString(from: since, to: now))")
+                // What it is doing, when its steps say: "Editing · 3m".
+                if let step = turn?.steps.last, step.duration == nil {
+                    detail = now.timeIntervalSince(since) < 60
+                        ? step.label
+                        : "\(step.label) · \(UsageFormatting.relativeString(from: since, to: now))"
+                } else {
+                    detail = now.timeIntervalSince(since) < 60
+                        ? String(localized: "Working")
+                        : String(localized: "Working for \(UsageFormatting.relativeString(from: since, to: now))")
+                }
             case .needsPermission:
                 status = .waiting
                 detail = String(localized: "Needs permission")
@@ -204,7 +221,8 @@ extension NotchIslandModel {
                 project: session.title == nil ? nil : session.project,
                 status: status,
                 detail: detail,
-                pet: pet
+                pet: pet,
+                turn: turn
             )
         }
     }

@@ -7,6 +7,11 @@ import UsageKit
 /// the hooks aren't installed, the one-click invitation to install them.
 struct SessionsSection: View {
     let sessions: NotchIslandModel.Sessions
+    /// The session whose card shows, fixed while the island is open: the
+    /// sneak's lead when it opened, then whichever row the user clicks. The
+    /// lead changes on its own as turns start and end, and a card that
+    /// changed under the pointer took a Stop meant for another session.
+    @State private var pinned: String?
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
     private var monitor: ClaudeSessionMonitor { .shared }
@@ -21,13 +26,33 @@ struct SessionsSection: View {
             // With two or more at work, a click on one puts it in the sneak,
             // and the one there is marked.
             let picks = sessions.rotation.count > 1
-            ForEach(sessions.rows) { row in
+            // The session in the sneak opens up into its card, its steps
+            // and what can be done about it; the others stay rows.
+            let cardID = NotchIslandModel.Sessions.cardID(rows: sessions.rows, lead: sessions.lead?.id, pinned: pinned)
+            let card = sessions.rows.first { $0.id == cardID }
+            if let card, let turn = card.turn {
+                // One card in its place: the session leaving fades out
+                // before the one clicked in fades in, the two never drawn
+                // over each other, and the new one's edge flashes.
+                ZStack {
+                    SessionCard(row: card, turn: turn, showsPet: sessions.showsPets)
+                        .id(card.id)
+                        .transition(.notchSwap)
+                }
+                .animation(.smooth(duration: 0.3), value: card.id)
+                .padding(.bottom, 4)
+            }
+            ForEach(sessions.rows.filter { $0.id != card?.id }) { row in
                 SessionRowView(
                     row: row,
                     showsPet: sessions.showsPets,
-                    isSelected: picks && row.id == sessions.lead?.id,
-                    isPickable: picks && row.status != .finished
+                    isSelected: picks && card == nil && row.id == sessions.lead?.id,
+                    isPickable: picks && row.status != .finished,
+                    onPick: { pinned = row.id }
                 )
+                // A row trading places with the card swaps at once: faded,
+                // the two names showed over each other for a moment.
+                .transaction { $0.animation = nil }
             }
             if sessions.moreCount > 0 {
                 Text("\(sessions.moreCount) more")
@@ -39,6 +64,12 @@ struct SessionsSection: View {
                     .padding(.top, 2)
             }
         }
+        .onAppear { pinned = NotchIslandModel.Sessions.cardID(rows: sessions.rows, lead: sessions.lead?.id, pinned: nil) }
+        .onChange(of: cardID) { _, id in if id != nil, pinned != id { pinned = id } }
+    }
+
+    private var cardID: String? {
+        NotchIslandModel.Sessions.cardID(rows: sessions.rows, lead: sessions.lead?.id, pinned: pinned)
     }
 }
 
@@ -49,6 +80,10 @@ struct SessionRowView: View {
     var isSelected = false
     /// A click puts it in the sneak (`NotchIslandActions.pickSession`).
     var isPickable = false
+    /// "Working for 3m" on the trailing edge; the card says it its own way.
+    var showsDetail = true
+    /// Called with the click that picks it, after `pickSession`.
+    var onPick: (() -> Void)? = nil
     @Environment(\.notchIslandActions) private var actions
     @State private var isHovering = false
 
@@ -57,12 +92,18 @@ struct SessionRowView: View {
 
     var body: some View {
         if isPickable, let actions {
-            content
-                .background { IslandRowHighlight(isSelected: isSelected, isHovering: isHovering) }
-                .contentShape(Rectangle())
-                .onHover { isHovering = $0 }
-                .onTapGesture { actions.pickSession(row.id) }
-                .accessibilityAddTraits(.isButton)
+            // A button, not a tap gesture: VoiceOver's press (and any
+            // accessibility press) reaches it too.
+            Button {
+                actions.pickSession(row.id)
+                onPick?()
+            } label: {
+                content
+                    .background { IslandRowHighlight(isSelected: isSelected, isHovering: isHovering) }
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .onHover { isHovering = $0 }
         } else {
             content
                 .background { IslandRowHighlight(isSelected: isSelected, isHovering: false) }
@@ -96,11 +137,13 @@ struct SessionRowView: View {
             .lineLimit(1)
             .truncationMode(.tail)
             Spacer(minLength: 8)
-            Text(row.detail)
-                .font(.system(size: 11))
-                .foregroundStyle(row.status == .waiting ? Theme.islandWarning : NotchIslandStyle.reset)
-                .lineLimit(1)
-                .fixedSize()
+            if showsDetail {
+                Text(row.detail)
+                    .font(.system(size: 11))
+                    .foregroundStyle(row.status == .waiting ? Theme.islandWarning : NotchIslandStyle.reset)
+                    .lineLimit(1)
+                    .fixedSize()
+            }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(row.accessibilityLabel)

@@ -45,6 +45,11 @@ public struct ClaudeCodeSessionTracker: Sendable {
                 }
             }
         }
+        // The steps come from the session's own thread: a subagent's work
+        // is the step that started it.
+        if agent.isEmpty, record.isSidechain != true, record.type == "assistant", let message = record.message {
+            session.addSteps(of: message, at: time)
+        }
         sessions[id] = session
     }
 
@@ -136,25 +141,36 @@ public struct ClaudeCodeSessionTracker: Sendable {
 }
 
 extension ClaudeCodeSessionActivity {
-    var workingSince: Date? {
+    public var workingSince: Date? {
         switch state {
         case .working(let since), .needsPermission(let since): since
         case .finished: nil
         }
     }
 
-    var finishedAt: Date? {
+    public var finishedAt: Date? {
         if case .finished(let at) = state, at != .distantPast { at } else { nil }
     }
 
     /// Working from `time` on; a turn under way keeps its start.
     mutating func work(at time: Date) {
+        if workingSince == nil { turn = ClaudeCodeTurn(start: time) }
         state = .working(since: workingSince ?? time)
         stateTime = max(stateTime, time)
     }
 
+    /// The tools a reply of the turn calls, as its steps. A reply from
+    /// before the turn, or after it ended (a log read late), adds nothing.
+    mutating func addSteps(of message: ClaudeCodeSessionRecord.Message, at time: Date) {
+        guard var turn, time >= turn.start else { return }
+        if let end = finishedAt, time > end { return }
+        turn.apply(message.tools, thinks: message.contentKinds.contains("thinking"), at: time)
+        self.turn = turn
+    }
+
     /// Waiting for the permission prompt `agent` opened at `time`.
     mutating func askPermission(of agent: String, at time: Date) {
+        if workingSince == nil { turn = ClaudeCodeTurn(start: time) }
         permissionRequests[agent] = permissionRequests[agent] ?? time
         state = .needsPermission(since: workingSince ?? time)
         stateTime = max(stateTime, time)

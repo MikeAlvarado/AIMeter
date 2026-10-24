@@ -235,22 +235,35 @@ struct NamedRowLayout: Layout {
     }
 }
 
-/// What the lead session is doing, as its row says it: "Working for 3m",
-/// "Needs permission" in yellow, "Done just now"; cut short past
-/// `maxWidth` in a long language, for the same window as the name.
+/// What the lead session is doing, as its row says it: the step under
+/// way ("Editing") while it works, else "Working for 3m", "Needs
+/// permission" in yellow, "Done just now"; cut short past `maxWidth` in a
+/// long language, for the same window as the name. While steps show, it
+/// keeps that whole width and each new step rolls in from below like a
+/// ticker, so the island never changes size as the session works.
 struct SessionDetail: View {
     let row: NotchIslandModel.Sessions.Row
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     static let maxWidth: CGFloat = 150
 
+    private var text: String { row.action ?? row.detail }
+
     var body: some View {
-        Text(row.detail)
-            .font(.system(size: 11))
-            .foregroundStyle(row.status == .waiting ? Theme.islandWarning : NotchIslandStyle.reset)
-            .lineLimit(1)
-            .truncationMode(.tail)
-            .frame(maxWidth: Self.maxWidth, alignment: .trailing)
-            .accessibilityHidden(true)
+        ZStack(alignment: .trailing) {
+            Text(text)
+                .font(.system(size: 11))
+                .foregroundStyle(row.status == .waiting ? Theme.islandWarning : NotchIslandStyle.reset)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .id(text)
+                .transition(reduceMotion ? .opacity : .push(from: .bottom))
+        }
+        .frame(width: row.action == nil ? nil : Self.maxWidth, alignment: .trailing)
+        .frame(maxWidth: Self.maxWidth, alignment: .trailing)
+        .clipped()
+        .animation(.smooth(duration: 0.35), value: text)
+        .accessibilityHidden(true)
     }
 }
 #endif

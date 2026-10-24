@@ -67,7 +67,10 @@ can follow.
   draws on any other screen: hover for the figures you chose, click for
   every account in full, never taking focus. Each Claude Code session at
   work gets a pixel pet beside the notch that walks, shakes when it needs
-  your permission and sleeps when done.
+  your permission and sleeps when done; open the island to see what it is
+  doing step by step ("Step 3 of 7" when the desktop app keeps a plan),
+  open it in the right copy of Claude, and, if you turn it on, approve,
+  deny or stop it from there.
 - **Menu bar.** A gauge, a number, a bar, a battery or several windows,
   with an optional countdown and the account's name; a popover with
   every account; a discreet mode for a screen others can see.
@@ -132,9 +135,11 @@ policy is on the [website](https://mikealvarado.github.io/AIMeter/privacy/).
 - **Opt-in on the Mac**: reading Claude Code's logs in `~/.claude/projects`
   for the cost figures (only the usage fields, never a prompt or a
   reply); the Claude Code sessions in the notch read only each record's
-  type, time and ids, and the optional hooks add one entry per event to
-  `~/.claude/settings.json`, backed up first, posting to a socket only
-  AIMeter can read; "Avoid covering the menu bar" asks for Accessibility
+  type, time and ids and the names of the tools Claude calls, and the
+  optional hooks add one entry per event to `~/.claude/settings.json`,
+  backed up first, posting to a socket only AIMeter can read; answering
+  from the island, off by default, shows what a permission prompt asks
+  about only while it is open; "Avoid covering the menu bar" asks for Accessibility
   and uses it for one thing, reading where the menu titles and status
   items are; "Open at Login" registers with macOS only when you turn it
   on.

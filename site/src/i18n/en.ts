@@ -177,7 +177,7 @@ export const en = {
     description: 'What AIMeter reads, what it stores on your device, and what never leaves it.',
     intro:
       'AIMeter has no server and no account of its own. It reads your usage from your AI provider with the login you grant it, keeps a copy on your device so widgets can render, and sends nothing anywhere else. This page lists every data flow so you can check each one against the source.',
-    updated: 'Last updated: 22 October 2026',
+    updated: 'Last updated: 23 October 2026',
     sections: [
       {
         heading: 'What leaves your device',
@@ -217,7 +217,7 @@ export const en = {
       {
         heading: 'Command-line sessions in the notch (Mac)',
         paragraphs: [
-          'On while the notch island is, and off with one switch in Settings. To show which Claude Code sessions are working, waiting for your permission or done, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is and when it was written, plus each session’s title and folder: never prompts, replies or tool input. It keeps nothing and sends nothing anywhere. If you install the optional hooks, AIMeter adds one entry per event to ~/.claude/settings.json (backing the file up first and keeping everything else), and Claude Code passes each event to AIMeter over a private connection on that Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest. Remove takes the entries out again. The feature does not exist on iOS.',
+          'On while the notch island is, and off with one switch in Settings. To show which Claude Code sessions are working, waiting for your permission or done, AIMeter follows the session logs in ~/.claude/projects and reads only what each record is, when it was written and the names of the tools Claude calls (and, for the desktop app’s plan, only whether each step is done), plus each session’s title and folder: never prompts, replies or what a tool is given. To open a session in the right copy of Claude, it reads only the two ids in the record each Claude app keeps for it. It keeps nothing and sends nothing anywhere. If you install the optional hooks, AIMeter adds one entry per event to ~/.claude/settings.json (backing the file up first and keeping everything else), and Claude Code passes each event to AIMeter over a private connection on that Mac that only your account can reach; AIMeter reads which session it is about and what happened, and discards the rest. Remove takes the entries out again. “Answer from the island”, off by default, makes the permission hook wait for your answer in the island and a second hook check before each tool whether you stopped the session; only then does a permission prompt show the command, file or address it asks about, held while the prompt is open and never kept. Nothing about it leaves your Mac. The feature does not exist on iOS.',
         ],
       },
       {
@@ -303,7 +303,7 @@ export const en = {
       },
       {
         q: 'What are the little pets beside the notch?',
-        a: 'Each Claude Code session at work on that Mac gets a pixel pet: it walks while the session works, shakes beside a yellow ! when it needs your permission, and falls asleep for a few seconds when it is done. The count on the other side of the notch says how many sessions there are. Rest the cursor on the notch to see the session’s name and what it is doing, or click for every session and your usage. In Settings, the Claude Code tab turns the pets, the name or the whole feature off, and installs the optional hooks that tell AIMeter the moment a session asks for permission.',
+        a: 'Each Claude Code session at work on that Mac gets a pixel pet: it walks while the session works, shakes beside a yellow ! when it needs your permission, and falls asleep for a few seconds when it is done. The count on the other side of the notch says how many sessions there are. Rest the cursor on the notch to see the session’s name and what it is doing, or click for every session and your usage: the session in front shows its steps (“Step 3 of 7” when the desktop app keeps a plan) and opens in the right copy of Claude. In Settings, the Claude Code tab turns the pets, the name or the whole feature off, and installs the optional hooks that tell AIMeter the moment a session asks for permission. With “Answer from the island” on, you can approve, deny or stop a session from the island too.',
       },
       {
         q: 'Where is the tour?',

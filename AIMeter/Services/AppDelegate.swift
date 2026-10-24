@@ -354,7 +354,11 @@ enum AppChrome {
     static func updateClaudeSessions() {
         guard let prefs = AppEnvironment.prefs else { return }
         let shows = prefs.notchIslandEnabled && prefs.claudeSessionsEnabled
-        ClaudeSessionMonitor.shared.update(enabled: shows || prefs.claudeSessionsNotify, notifies: prefs.claudeSessionsNotify)
+        ClaudeSessionMonitor.shared.update(
+            enabled: shows || prefs.claudeSessionsNotify,
+            notifies: prefs.claudeSessionsNotify,
+            answers: shows && prefs.claudeSessionsAnswers
+        )
     }
 
     /// Windows belonging to the dashboard scene, matched on the identifier

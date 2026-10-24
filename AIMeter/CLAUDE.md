@@ -402,8 +402,13 @@
     "Notify when a session needs you", when a session asks for permission
     (its caption adds "once the hooks below are in" while they aren't),
     which asks for the permission and shows the same denied row as the
-    notification cards; and "Permission prompts" with Install or Remove,
-    the hooks' failure in red under it; each switch restarts the monitor
+    notification cards; "Permission prompts" with Install or Remove,
+    the hooks' failure in red under it (Remove also turns the next switch
+    off); and, while sessions show, "Answer from the island" (off by
+    default: Approve, Deny and Stop on the island's card, through the
+    hooks' answering mode, which turning it on installs), with "AIMeter
+    receives nothing. All of this stays on your Mac." under it while on;
+    each switch restarts the monitor
     through `AppChrome.updateClaudeSessions`; "A pet for each session",
     under the first while it is on, with "Off, a spinner and a count
     instead." under it, and "Show the session's name" under that, with
@@ -975,8 +980,15 @@
     height measured with `onGeometryChange` (a preference read with
     `onPreferenceChange`, the way `MenuBarView` measures its own, got
     only its default in this panel on macOS 27). Under them, while any
-    Claude Code session is shown, `SessionsSection`: up to five rows
-    (`SessionRowView`: the pet at 1.5 pt a pixel, with its "!" while it
+    Claude Code session is shown, `SessionsSection`: the session in the
+    sneak as a card (`SessionCard`, `NotchIslandSessionCard.swift`: its
+    row, the turn's timer, a headline of what it does now, six segments, the three steps before it in a
+    window of fixed height and a footer of fixed height: the progress,
+    Stop or Approve and Deny with "Answer from the island" on, "Done in
+    13s · 6 edits", and "Open in Claude Work"; see "Claude Code
+    sessions" in the repo-root CLAUDE.md; pinned to its session while
+    the island is open, `SessionsSection.pinned`), then the others as rows, up to
+    five in all (`SessionRowView`: the pet at 1.5 pt a pixel, with its "!" while it
     waits, or the mark with pets off; the name with the folder dimmed
     after a title; and the status on the trailing edge, yellow while it
     needs permission), "N more", and while the hooks aren't installed the

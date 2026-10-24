@@ -302,6 +302,10 @@ struct Preferences: Sendable {
     /// permission, which only the hooks tell. A turn ending is not
     /// announced. Off by default.
     var claudeSessionsNotify: Bool = false
+    /// "Answer from the island": approve or deny a session's permission
+    /// prompt and stop a session from the island, through the hooks'
+    /// answering mode (`ClaudeCodeHooks.Mode.answering`). Off by default.
+    var claudeSessionsAnswers: Bool = false
     /// The island's invitation to install the hooks was dismissed.
     var claudeSessionsHooksDismissed: Bool = false
 

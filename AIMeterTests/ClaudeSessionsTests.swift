@@ -22,6 +22,7 @@ final class ClaudeSessionsTests: XCTestCase {
         XCTAssertFalse(fresh.claudeSessionsHooksDismissed)
         XCTAssertTrue(fresh.claudeSessionsPets, "pets on by default, presence-checked")
         XCTAssertFalse(fresh.claudeSessionsShowsName, "off by default: a short island")
+        XCTAssertFalse(fresh.claudeSessionsAnswers, "answering from the island is opt-in")
 
         let model = PreferencesModel(defaults: scratch.defaults)
         model.claudeSessionsEnabled = false
@@ -29,12 +30,14 @@ final class ClaudeSessionsTests: XCTestCase {
         model.claudeSessionsHooksDismissed = true
         model.claudeSessionsPets = false
         model.claudeSessionsShowsName = true
+        model.claudeSessionsAnswers = true
         let reloaded = Preferences.load(from: scratch.defaults)
         XCTAssertFalse(reloaded.claudeSessionsEnabled, "a written false is honored")
         XCTAssertTrue(reloaded.claudeSessionsNotify)
         XCTAssertTrue(reloaded.claudeSessionsHooksDismissed)
         XCTAssertFalse(reloaded.claudeSessionsPets)
         XCTAssertTrue(reloaded.claudeSessionsShowsName)
+        XCTAssertTrue(reloaded.claudeSessionsAnswers)
     }
 
     /// "Avoid covering the menu bar": macOS's prompt only while the
@@ -177,9 +180,65 @@ final class ClaudeSessionsTests: XCTestCase {
         let handler = try XCTUnwrap((permission["hooks"] as? [[String: Any]])?.first)
         XCTAssertEqual(handler["async"] as? Bool, true, "Claude Code never waits for it")
         XCTAssertEqual(Set(hooks.keys), Set(ClaudeCodeHooks.events).union(["PreToolUse"]))
+        XCTAssertEqual(ClaudeCodeHooks.installedMode(in: installed), .watching)
 
         let again = ClaudeCodeHooks.installing(into: installed)
         XCTAssertEqual(((again["hooks"] as? [String: Any])?["Stop"] as? [[String: Any]])?.count, 2, "never twice")
+    }
+
+    /// "Answer from the island": the permission request's command waits
+    /// for the island and prints its answer, a check runs before each tool,
+    /// and going back to watching takes both out again.
+    func testTheAnsweringModeWaitsForTheIsland() throws {
+        let answering = ClaudeCodeHooks.installing(.answering, into: theirs)
+        XCTAssertEqual(ClaudeCodeHooks.installedMode(in: answering), .answering)
+        let hooks = try XCTUnwrap(answering["hooks"] as? [String: Any])
+        let permission = try XCTUnwrap((hooks["PermissionRequest"] as? [[String: Any]])?.first?["hooks"] as? [[String: Any]])
+        XCTAssertNil(permission.first?["async"], "Claude Code waits for this one")
+        XCTAssertEqual(permission.first?["command"] as? String, ClaudeCodeHooks.permissionCommand)
+        XCTAssertEqual(permission.first?["timeout"] as? Int, 600)
+        let preTool = try XCTUnwrap(hooks["PreToolUse"] as? [[String: Any]])
+        XCTAssertEqual(preTool.count, 2, "theirs, then AIMeter's")
+        XCTAssertEqual(preTool[1]["matcher"] as? String, "*")
+        for command in [ClaudeCodeHooks.command, ClaudeCodeHooks.permissionCommand, ClaudeCodeHooks.preToolCommand] {
+            XCTAssertTrue(command.hasPrefix(#"[ -S "$HOME/Library/Application Support/AIMeter/claude-hooks.sock" ] &&"#), "nothing runs without AIMeter")
+            XCTAssertTrue(command.contains("ppid=$PPID"))
+        }
+        XCTAssertTrue(ClaudeCodeHooks.permissionCommand.hasSuffix("; exit 0"), "no answer, no output: Claude Code's prompt decides")
+
+        let watching = ClaudeCodeHooks.installing(.watching, into: answering)
+        XCTAssertEqual(ClaudeCodeHooks.installedMode(in: watching), .watching)
+        XCTAssertEqual(((watching["hooks"] as? [String: Any])?["PreToolUse"] as? [[String: Any]])?.count, 1, "only theirs again")
+        XCTAssertEqual(ClaudeCodeHooks.removing(from: answering) as NSDictionary, theirs as NSDictionary)
+        XCTAssertTrue(ClaudeCodeHooks.hasEntries(in: answering))
+        XCTAssertFalse(ClaudeCodeHooks.hasEntries(in: theirs))
+    }
+
+    func testThePermissionAnswersAreClaudeCodesShape() throws {
+        func decision(_ answer: ClaudeHookListener.Answer) throws -> [String: Any] {
+            let object = try JSONSerialization.jsonObject(with: ClaudeHookListener.permissionBody(answer)) as? [String: Any]
+            let output = try XCTUnwrap(object?["hookSpecificOutput"] as? [String: Any])
+            XCTAssertEqual(output["hookEventName"] as? String, "PermissionRequest")
+            return try XCTUnwrap(output["decision"] as? [String: Any])
+        }
+        XCTAssertEqual(try decision(.allow)["behavior"] as? String, "allow")
+        XCTAssertEqual(try decision(.deny)["behavior"] as? String, "deny")
+        XCTAssertNil(try decision(.deny)["interrupt"])
+        XCTAssertEqual(try decision(.stop)["interrupt"] as? Bool, true)
+        let stop = try JSONSerialization.jsonObject(with: ClaudeHookListener.stopBody) as? [String: Any]
+        XCTAssertEqual(stop?["continue"] as? Bool, false)
+    }
+
+    func testAHookRequestsPathAndProcess() {
+        func target(_ line: String) -> (String, Int32?) {
+            let parsed = ClaudeHookListener.target(of: Data("\(line)\r\nHost: localhost\r\n\r\n".utf8))
+            return (parsed.path, parsed.ppid)
+        }
+        XCTAssertTrue(target("POST /claude-permission?ppid=4242 HTTP/1.1") == ("/claude-permission", 4242))
+        XCTAssertTrue(target("POST /claude-hook HTTP/1.1") == ("/claude-hook", nil))
+        XCTAssertTrue(target("POST /claude-hook?ppid=abc HTTP/1.1") == ("/claude-hook", nil))
+        XCTAssertTrue(target("POST /claude-pretool?ppid=1 HTTP/1.1") == ("/claude-pretool", nil), "launchd is no session's")
+        XCTAssertTrue(target("garbage") == ("", nil))
     }
 
     func testRemovingTakesOutOnlyAIMetersEntries() throws {
@@ -196,6 +255,7 @@ final class ClaudeSessionsTests: XCTestCase {
         }
         let old: [String: Any] = ["hooks": hooks]
         XCTAssertFalse(ClaudeCodeHooks.isInstalled(in: old), "installing again replaces it")
+        XCTAssertTrue(ClaudeCodeHooks.hasEntries(in: old), "so the monitor brings it up to date")
         let replaced = ClaudeCodeHooks.installing(into: old)
         XCTAssertTrue(ClaudeCodeHooks.isInstalled(in: replaced))
         XCTAssertEqual(((replaced["hooks"] as? [String: Any])?["Stop"] as? [[String: Any]])?.count, 1)
@@ -234,7 +294,7 @@ final class ClaudeSessionsTests: XCTestCase {
         XCTAssertEqual(pets["demo-425"], SessionPet(creature: .frog, palette: .green, accessory: .none))
         let island = NotchIslandModel.Sessions(sessions: sessions, justFinished: nil, now: now)
         XCTAssertEqual(island.pets.map(\.id), ["demo-170", "demo-54", "demo-203"], "the one waiting leads; the finished one has no pet beside the notch")
-        XCTAssertEqual(island.rows.map(\.detail), ["Needs permission", "Working for 3m", "Working for 1m", "Done 2m ago"])
+        XCTAssertEqual(island.rows.map(\.detail), ["Needs permission", "Running a command · 3m", "Reading · 1m", "Done 2m ago"], "each row says what it does")
     }
 
     /// A drawn notch's or the pill's row with the session's name: the name

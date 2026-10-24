@@ -231,6 +231,10 @@ final class PreferencesModel {
         get { stored.claudeSessionsNotify }
         set { guard stored.claudeSessionsNotify != newValue else { return }; stored.claudeSessionsNotify = newValue; persist(newValue, Preferences.Keys.claudeSessionsNotify, reloadsWidgets: false) }
     }
+    var claudeSessionsAnswers: Bool {
+        get { stored.claudeSessionsAnswers }
+        set { guard stored.claudeSessionsAnswers != newValue else { return }; stored.claudeSessionsAnswers = newValue; persist(newValue, Preferences.Keys.claudeSessionsAnswers, reloadsWidgets: false) }
+    }
     var claudeSessionsHooksDismissed: Bool {
         get { stored.claudeSessionsHooksDismissed }
         set { guard stored.claudeSessionsHooksDismissed != newValue else { return }; stored.claudeSessionsHooksDismissed = newValue; persist(newValue, Preferences.Keys.claudeSessionsHooksDismissed, reloadsWidgets: false) }

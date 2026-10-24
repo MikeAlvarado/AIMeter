@@ -8,10 +8,23 @@ import Foundation
 /// one click takes exactly those entries out again. Every other setting
 /// and hook in the file is kept; the file is backed up before each change
 /// (`settings.json.aimeter-backup`) and never written when it doesn't
-/// parse. The command posts the event to `ClaudeHookListener`'s socket in
-/// the background (`async`, so Claude Code never waits for it) and always
-/// exits 0; with AIMeter closed it does nothing at all.
+/// parse. Each command posts the event to `ClaudeHookListener`'s socket,
+/// with the id of the Claude Code process that ran it (which app or
+/// terminal a session lives in), and always exits 0; with AIMeter closed
+/// it does nothing at all.
+///
+/// Two modes. Watching (the hooks alone): every command is `async`, so
+/// Claude Code never waits for it. Answering ("Answer from the island",
+/// off by default): the permission request's command waits for the
+/// user's answer in the island and prints it, and a `PreToolUse` command
+/// asks whether the user stopped the session before each tool (a few
+/// milliseconds). Claude Code shows its own prompt meanwhile, and
+/// whichever is answered first decides (measured on 2026-10-23 with
+/// Claude Code 2.1.306); a command that prints nothing, as it does with
+/// AIMeter closed, leaves the prompt to Claude Code.
 nonisolated enum ClaudeCodeHooks {
+    enum Mode: Equatable { case watching, answering }
+
     static var settingsURL: URL {
         FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".claude/settings.json")
     }
@@ -23,18 +36,38 @@ nonisolated enum ClaudeCodeHooks {
     /// end. The log says the rest, the answer to a prompt included.
     static let events = ["UserPromptSubmit", "PermissionRequest", "Notification", "Stop", "StopFailure", "SessionEnd"]
     /// The events whose entries carry a tool `matcher`.
-    static let toolEvents: Set<String> = ["PermissionRequest"]
+    static let toolEvents: Set<String> = ["PermissionRequest", "PreToolUse"]
 
     /// What makes an entry AIMeter's own, for "Remove".
     static let marker = "AIMeter/claude-hooks.sock"
 
+    private static let socket = #""$HOME/Library/Application Support/AIMeter/claude-hooks.sock""#
+
     /// `sh -c`'d by Claude Code with the event's JSON on stdin. The socket
     /// test keeps it from even starting curl while AIMeter isn't running.
-    static let command = #"[ -S "$HOME/Library/Application Support/AIMeter/claude-hooks.sock" ] && /usr/bin/curl -s -m 2 --unix-socket "$HOME/Library/Application Support/AIMeter/claude-hooks.sock" --data-binary @- http://localhost/claude-hook >/dev/null 2>&1 || true"#
+    /// `$PPID` is the Claude Code process the hook runs under.
+    static let command = #"[ -S \#(socket) ] && /usr/bin/curl -s -m 2 --unix-socket \#(socket) --data-binary @- "http://localhost/claude-hook?ppid=$PPID" >/dev/null 2>&1 || true"#
 
-    /// The handler AIMeter adds to each event.
-    static var handler: [String: Any] {
-        ["type": "command", "command": command, "async": true]
+    /// The permission request's command while answering: prints AIMeter's
+    /// answer, or nothing (the island closed, the prompt answered in
+    /// Claude Code, ten minutes gone).
+    static let permissionCommand = #"[ -S \#(socket) ] && /usr/bin/curl -s -m 590 --unix-socket \#(socket) --data-binary @- "http://localhost/claude-permission?ppid=$PPID" 2>/dev/null; exit 0"#
+
+    /// Before each tool while answering: prints the stop the user asked
+    /// for in the island, else nothing.
+    static let preToolCommand = #"[ -S \#(socket) ] && /usr/bin/curl -s -m 2 --unix-socket \#(socket) --data-binary @- "http://localhost/claude-pretool?ppid=$PPID" 2>/dev/null; exit 0"#
+
+    /// Each event's handler in `mode`.
+    static func handlers(_ mode: Mode) -> [String: [String: Any]] {
+        var handlers: [String: [String: Any]] = [:]
+        for event in events {
+            handlers[event] = ["type": "command", "command": command, "async": true]
+        }
+        if mode == .answering {
+            handlers["PermissionRequest"] = ["type": "command", "command": permissionCommand, "timeout": 600]
+            handlers["PreToolUse"] = ["type": "command", "command": preToolCommand, "timeout": 5]
+        }
+        return handlers
     }
 
     enum Failure: LocalizedError {
@@ -46,24 +79,39 @@ nonisolated enum ClaudeCodeHooks {
 
     // MARK: Pure
 
-    /// Whether every event has AIMeter's current entry. One from an older
-    /// build (another command, a different set of events) reads as not
-    /// installed, so installing again replaces it.
-    static func isInstalled(in settings: [String: Any]) -> Bool {
+    /// The mode AIMeter's current entries are in, nil when they aren't all
+    /// there. An entry from an older build (another command, another set of
+    /// events) reads as nil, so installing again replaces it.
+    static func installedMode(in settings: [String: Any]) -> Mode? {
         let hooks = settings["hooks"] as? [String: Any] ?? [:]
-        return events.allSatisfy { event in
-            groups(hooks[event]).contains { group in
-                (group["hooks"] as? [[String: Any]] ?? []).contains { ($0["command"] as? String) == command }
-            }
+        let ours = Dictionary(uniqueKeysWithValues: hooks.compactMap { event, value -> (String, String)? in
+            let commands = groups(value).filter(isOurs).flatMap { $0["hooks"] as? [[String: Any]] ?? [] }
+            guard commands.count == 1, let command = commands.first?["command"] as? String else { return nil }
+            return (event, command)
+        })
+        for mode in [Mode.answering, .watching] {
+            let expected = handlers(mode).mapValues { $0["command"] as? String ?? "" }
+            if ours == expected { return mode }
         }
+        return nil
     }
 
-    /// `settings` with AIMeter's entry on every event, nothing else changed
+    static func isInstalled(in settings: [String: Any]) -> Bool {
+        installedMode(in: settings) != nil
+    }
+
+    /// Whether the file has any entry of AIMeter's, current or not.
+    static func hasEntries(in settings: [String: Any]) -> Bool {
+        let hooks = settings["hooks"] as? [String: Any] ?? [:]
+        return hooks.values.contains { groups($0).contains(where: isOurs) }
+    }
+
+    /// `settings` with AIMeter's entries in `mode`, nothing else changed
     /// (its own older entries are replaced, never doubled).
-    static func installing(into settings: [String: Any]) -> [String: Any] {
+    static func installing(_ mode: Mode = .watching, into settings: [String: Any]) -> [String: Any] {
         var settings = removing(from: settings)
         var hooks = settings["hooks"] as? [String: Any] ?? [:]
-        for event in events {
+        for (event, handler) in handlers(mode).sorted(by: { $0.key < $1.key }) {
             var entry: [String: Any] = ["hooks": [handler]]
             if toolEvents.contains(event) { entry["matcher"] = "*" }
             hooks[event] = groups(hooks[event]) + [entry]
@@ -97,12 +145,15 @@ nonisolated enum ClaudeCodeHooks {
 
     // MARK: File
 
-    static var isInstalled: Bool {
-        (try? read()).map(isInstalled(in:)) ?? false
+    /// What the file holds: AIMeter's entries in a mode, and whether it has
+    /// any of its entries at all (an older build's, to bring up to date).
+    static func state() -> (mode: Mode?, hasEntries: Bool) {
+        guard let settings = try? read() else { return (nil, false) }
+        return (installedMode(in: settings), hasEntries(in: settings))
     }
 
-    static func install() throws {
-        try write(installing(into: read()))
+    static func install(_ mode: Mode) throws {
+        try write(installing(mode, into: read()))
     }
 
     /// Takes AIMeter's entries out. When nothing else changed since the
