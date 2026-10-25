@@ -40,6 +40,8 @@ func send(_ cue: Scene.Cue) {
         }
         let data = try! JSONEncoder().encode(Payload(sessions: sessions, justFinished: justFinished))
         send("sessions", String(decoding: data, as: UTF8.self))
+    case .approve(let id):
+        send("approve", id)
     }
 }
 

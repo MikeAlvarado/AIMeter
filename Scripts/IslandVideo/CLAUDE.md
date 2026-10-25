@@ -26,8 +26,12 @@ that is fine for trying the pipeline, not for the site.
   distributed notifications (`com.mikealvarado.aimeter.director`, a
   `command` and a `value`): `demo` (demo mode on), `level` (`collapsed`,
   `peek`, `expanded`, through `NotchIslandController.direct`, as if the
-  cursor had opened it) and `sessions` (a JSON list replacing the demo's
-  sessions, `DemoSessions`). No cursor moves and no real session shows.
+  cursor had opened it), `sessions` (a JSON list replacing the demo's
+  sessions, `DemoSessions`, each with its turn's `steps` (an action,
+  how many, seconds from the turn's start), `edits`, `plan` (statuses)
+  and `ask` (the tool and what it asks), for the island's card) and
+  `approve` (a session's id: the card's Approve, on the demo). No
+  cursor moves and no real session shows.
 - **The recorder** (`swift build -c release` here) captures the island's
   panel alone with ScreenCaptureKit (`Capture.swift`: AIMeter's window at
   `mainMenu + 3`, transparent where nothing is drawn, at its display's
@@ -51,11 +55,16 @@ that is fine for trying the pipeline, not for the site.
 - **The scenes** (`Scenes.swift`), each a timeline of what the app is
   told and where the cursor is: `limits` (no session: the cursor rests
   on the notch, the figures peek out, a click opens every account),
-  `sessions` (three sessions at work walk beside the notch; resting
-  shows the newest, a click every session) and `permission` (a session
-  asks: its pet comes forward and shakes beside the "!", the peek and
-  the row say so in yellow; once allowed it works on, and another
-  finishes and falls asleep). Session titles and the terminals follow
+  `sessions` (two sessions at work walk beside the notch; resting shows
+  the newest, a click opens the island, the newest as its card: what it
+  does now, the steps it did, "Step 3 of 5") and `permission` (a
+  session asks: its pet comes forward and shakes beside the "!", the
+  peek says so, a click opens its card, which says what it asks; the
+  cursor presses Approve on the card, measured at 127 pt left of the
+  middle and 409 pt down on a MacBook's island, and it works on; then
+  the other finishes and falls asleep). Two sessions a scene, not more:
+  the open island with the card and two accounts is just short of the
+  540 pt canvas, and a third row ran it past the bottom edge. Session titles and the terminals follow
   the language; folder names do not. The ids are the demo's
   (`DemoUsageData.claudeSessions`), picked for their pets (a fox in
   sunglasses, a cat in headphones, a bunny with a bow, a ghost in a
@@ -65,5 +74,9 @@ that is fine for trying the pipeline, not for the site.
 The Screen Recording permission the recorder needs is the terminal's
 (the same one `screencapture` uses). The script relaunches the app
 normally at the end, even after a failure, so the user's own accounts
-come back. Recorded on 2026-10-15, and again on 2026-10-21 for 4.0
-(the expanded island's account rows on their own layout, `IslandColumns`).
+come back (the script reopens the build it recorded with; quit it and
+open the installed copy, and note that a test build rewrites AIMeter's
+hooks in `~/.claude/settings.json` to its own format: copy the file
+before and put it back after). Recorded on 2026-10-15, again on
+2026-10-21 for 4.0 (the expanded island's account rows on their own
+layout, `IslandColumns`), and on 2026-10-25 for 4.2 (the session card).

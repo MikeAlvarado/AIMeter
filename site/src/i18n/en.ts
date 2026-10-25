@@ -37,8 +37,8 @@ export const en = {
     label: 'The notch island at work',
     scenes: [
       { pill: 'Limits', title: 'Your limits, a glance away.' },
-      { pill: 'Sessions', title: 'A pet for every session at work.' },
-      { pill: 'Needs you', title: 'Know the moment a session needs you.' },
+      { pill: 'Sessions', title: 'Every session at work, step by step.' },
+      { pill: 'Needs you', title: 'Know the moment a session needs you, and answer it there.' },
     ],
   },
   features: {

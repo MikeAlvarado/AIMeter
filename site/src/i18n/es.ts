@@ -37,8 +37,8 @@ export const es = {
     label: 'La isla del notch en acción',
     scenes: [
       { pill: 'Límites', title: 'Tus límites, a un vistazo.' },
-      { pill: 'Sesiones', title: 'Una mascota por cada sesión en curso.' },
-      { pill: 'Te necesita', title: 'Entérate cuando una sesión te necesita.' },
+      { pill: 'Sesiones', title: 'Cada sesión en curso, paso a paso.' },
+      { pill: 'Te necesita', title: 'Entérate cuando una sesión te necesita, y respóndele ahí.' },
     ],
   },
   features: {

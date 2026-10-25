@@ -7,9 +7,11 @@ import UsageKit
 /// Launched with `-AIMeterIslandDirector YES`, the app takes commands as
 /// distributed notifications (`notification`, a `command` and a `value`
 /// in `userInfo`): `demo` turns demo mode on, `level` opens the island to
-/// `collapsed`, `peek` or `expanded`, and `sessions` replaces the demo's
-/// sessions with a JSON list. A recording needs no cursor and shows no
-/// real session.
+/// `collapsed`, `peek` or `expanded`, `sessions` replaces the demo's
+/// sessions with a JSON list (each with its turn's steps, plan and
+/// permission prompt, for the card), and `approve` answers a demo
+/// session's prompt as the card's Approve does. A recording needs no
+/// cursor and shows no real session.
 enum IslandDirector {
     static let notification = Notification.Name("com.mikealvarado.aimeter.director")
 
@@ -22,6 +24,25 @@ enum IslandDirector {
         let project: String?
         let state: String
         let ago: Double
+        /// The turn's steps, each `at` seconds after the turn started.
+        let steps: [Step]?
+        let edits: Int?
+        /// The desktop app's plan, by status: `completed`, `in_progress`,
+        /// `pending`.
+        let plan: [String]?
+        /// The permission prompt it waits on.
+        let ask: Ask?
+    }
+
+    private struct Step: Decodable {
+        let action: String
+        let count: Int
+        let at: Double
+    }
+
+    private struct Ask: Decodable {
+        let tool: String
+        let subject: String
     }
 
     private struct Sessions: Decodable {
@@ -62,9 +83,35 @@ enum IslandDirector {
                 case "finished": .finished(at: at)
                 default: .working(since: at)
                 }
-                return ClaudeCodeSessionActivity(id: session.id, customTitle: session.title, project: session.project, state: state, lastActivity: now)
+                var activity = ClaudeCodeSessionActivity(id: session.id, customTitle: session.title, project: session.project, state: state, lastActivity: now)
+                if let steps = session.steps {
+                    // A finished session's turn ended `ago`; it started before.
+                    let start = session.state == "finished" ? at.addingTimeInterval(-(steps.last?.at ?? 0) - 20) : at
+                    activity.turn = ClaudeCodeTurn(
+                        start: start,
+                        steps: steps.compactMap { step in
+                            ClaudeCodeTurn.Action(rawValue: step.action).map {
+                                ClaudeCodeTurn.Step(action: $0, start: start.addingTimeInterval(step.at), count: step.count)
+                            }
+                        },
+                        edits: session.edits ?? 0,
+                        plan: session.plan?.map { status -> ClaudeCodeTurn.PlanStatus in
+                            switch status {
+                            case "completed": .completed
+                            case "in_progress": .inProgress
+                            default: .pending
+                            }
+                        }
+                    )
+                }
+                return activity
             }
-            DemoSessions.shared.set(activities, justFinished: activities.first { $0.id == list.justFinished })
+            let asks = Dictionary(uniqueKeysWithValues: list.sessions.compactMap { session in
+                session.ask.map { (session.id, ClaudeCodePermissionAsk(sessionId: session.id, toolName: $0.tool, subject: $0.subject)) }
+            })
+            DemoSessions.shared.set(activities, justFinished: activities.first { $0.id == list.justFinished }, asks: asks)
+        case "approve":
+            DemoSessions.shared.approve(value)
         default:
             break
         }

@@ -26,9 +26,10 @@ final class DemoSessions {
         asks = DemoUsageData.claudeSessionAsks
     }
 
-    func set(_ sessions: [ClaudeCodeSessionActivity], justFinished: ClaudeCodeSessionActivity?) {
+    func set(_ sessions: [ClaudeCodeSessionActivity], justFinished: ClaudeCodeSessionActivity?, asks: [String: ClaudeCodePermissionAsk]? = nil) {
         self.sessions = sessions
         self.justFinished = justFinished
+        if let asks { self.asks = asks }
     }
 
     // MARK: The card's buttons, on the demo

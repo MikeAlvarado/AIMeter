@@ -10,6 +10,8 @@ struct Scene {
     enum Cue {
         case level(String)
         case sessions([Session], justFinished: String? = nil)
+        /// The card's Approve on that session's prompt.
+        case approve(String)
     }
 
     struct Session: Encodable {
@@ -18,6 +20,28 @@ struct Scene {
         let project: String?
         let state: String
         let ago: Double
+        /// The turn's steps for the card: an action (`ClaudeCodeTurn.Action`),
+        /// how many in a row, and when, in seconds from the turn's start.
+        var steps: [Step]? = nil
+        var edits: Int? = nil
+        var plan: [String]? = nil
+        var ask: Ask? = nil
+    }
+
+    struct Step: Encodable {
+        let action: String
+        let count: Int
+        let at: Double
+    }
+
+    struct Ask: Encodable {
+        let tool: String
+        let subject: String
+    }
+
+    /// Steps from (action, count, seconds after the start) triples.
+    static func steps(_ list: [(String, Int, Double)]) -> [Step] {
+        list.map { Step(action: $0.0, count: $0.1, at: $0.2) }
     }
 
     /// A cursor keyframe: where its tip is at `time` (nil hides it), and
@@ -45,7 +69,6 @@ struct Scene {
         let inside = CGPoint(x: notch.x + 30, y: 118)
         let onboarding = es ? "Terminar el onboarding" : "Ship the onboarding"
         let apiClient = es ? "Refactorizar el cliente de la API" : "Refactor the API client"
-        let notes = es ? "Escribir las notas de la versión" : "Write the release notes"
         switch name {
         case "limits":
             // No session at work: resting on the notch peeks the figures,
@@ -61,13 +84,17 @@ struct Scene {
                 ]
             )
         case "sessions":
-            // Three sessions at work walk beside the notch; resting on it
-            // shows the newest in full, a click every session.
+            // Two sessions at work walk beside the notch; resting on it
+            // shows the newest in full, a click every session, the newest
+            // as its card: what it does now, what it did, "Step 3 of 5".
+            // Two, not more: the open island with the card and its accounts
+            // is then just short of the canvas's height.
             let sessions = [
-                Session(id: "demo-54", title: onboarding, project: "my-app", state: "working", ago: 65),
-                Session(id: "demo-203", title: nil, project: "website", state: "working", ago: 185),
-                Session(id: "demo-425", title: apiClient, project: "backend", state: "working", ago: 305),
-                Session(id: "demo-70", title: notes, project: "docs", state: "finished", ago: 125),
+                Session(id: "demo-54", title: onboarding, project: "my-app", state: "working", ago: 65,
+                        steps: Self.steps([("thinking", 1, 0), ("reading", 3, 6), ("editing", 2, 21), ("running", 1, 44)]),
+                        edits: 2, plan: ["completed", "completed", "in_progress", "pending", "pending"]),
+                Session(id: "demo-425", title: apiClient, project: "backend", state: "working", ago: 305,
+                        steps: Self.steps([("reading", 5, 0), ("editing", 4, 90), ("running", 2, 210)]), edits: 4),
             ]
             return Scene(
                 name: name, duration: 12,
@@ -81,31 +108,39 @@ struct Scene {
             )
         case "permission":
             // A session asks for permission: its pet comes forward and
-            // shakes beside a yellow "!". Resting on the notch says so,
-            // a click shows where; once allowed it works on, and another
-            // finishes and falls asleep.
-            func three(fox: String, foxAgo: Double, bunny: String = "working") -> [Session] {
+            // shakes beside its "!". Resting on the notch says so, a click
+            // opens its card, which says what it asks; Approve on the card
+            // and it works on, and another finishes and falls asleep.
+            let foxSteps = Self.steps([("reading", 4, 0), ("searching", 2, 40), ("editing", 3, 65), ("running", 1, 265)])
+            // Two sessions, the card and one row, so the open island fits.
+            func two(fox: String, foxAgo: Double, cat: String = "working") -> [Session] {
                 [
-                    Session(id: "demo-170", title: apiClient, project: "backend", state: fox, ago: foxAgo),
-                    Session(id: "demo-54", title: onboarding, project: "my-app", state: "working", ago: 95),
-                    Session(id: "demo-203", title: nil, project: "website", state: bunny, ago: bunny == "working" ? 215 : 0),
+                    Session(id: "demo-170", title: apiClient, project: "backend", state: fox, ago: foxAgo,
+                            steps: foxSteps, edits: 3,
+                            ask: fox == "waiting" ? Ask(tool: "Bash", subject: "npm run db:migrate") : nil),
+                    Session(id: "demo-54", title: onboarding, project: "my-app", state: cat, ago: cat == "working" ? 95 : 0,
+                            steps: Self.steps([("reading", 3, 0), ("editing", 2, 30)]), edits: 2),
                 ]
             }
+            // The card's Approve, measured on a MacBook's island: left of
+            // the card's footer, under the accounts.
+            let approve = CGPoint(x: canvas.width / 2 - 127, y: 409)
             return Scene(
-                name: name, duration: 14,
-                setup: [.sessions(three(fox: "working", foxAgo: 300)), .level("collapsed")],
+                name: name, duration: 15,
+                setup: [.sessions(two(fox: "working", foxAgo: 300)), .level("collapsed")],
                 cues: [
-                    (1.8, .sessions(three(fox: "waiting", foxAgo: 0))),
+                    (1.8, .sessions(two(fox: "waiting", foxAgo: 280))),
                     (4.0, .level("peek")),
                     (6.0, .level("expanded")),
-                    (8.6, .sessions(three(fox: "working", foxAgo: 0))),
-                    (10.0, .level("collapsed")),
-                    (11.2, .sessions(three(fox: "working", foxAgo: 3, bunny: "finished"), justFinished: "demo-203")),
+                    (8.4, .approve("demo-170")),
+                    (11.0, .level("collapsed")),
+                    (12.2, .sessions(two(fox: "working", foxAgo: 290, cat: "finished"), justFinished: "demo-54")),
                 ],
                 cursor: [
                     Key(time: 0, point: rest), Key(time: 2.8, point: rest), Key(time: 3.7, point: notch),
-                    Key(time: 6.0, point: notch, click: true), Key(time: 7.0, point: inside),
-                    Key(time: 9.4, point: inside), Key(time: 10.2, point: away), Key(time: 14, point: away),
+                    Key(time: 6.0, point: notch, click: true), Key(time: 7.4, point: approve),
+                    Key(time: 8.4, point: approve, click: true), Key(time: 9.4, point: inside),
+                    Key(time: 10.4, point: inside), Key(time: 11.2, point: away), Key(time: 15, point: away),
                 ]
             )
         default:
