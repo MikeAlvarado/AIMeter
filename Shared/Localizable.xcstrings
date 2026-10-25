@@ -1191,6 +1191,53 @@
         }
       }
     },
+    "Choose which connected account this control shows." : {
+      "comment" : "Description of the Control Center control's account setting.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige qué cuenta conectada muestra este control."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle, welchen verbundenen Account diese Steuerung anzeigt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez le compte connecté affiché par cette commande."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このコントロールに表示する接続済みアカウントを選びます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 제어 항목에 표시할 연결된 계정을 선택합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha qual conta conectada este controle mostra."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择此控制显示的已连接账户。"
+          }
+        }
+      }
+    },
     "Claude: on the Mac, AIMeter can read the login Claude Code already keeps on this computer, never modifying or rotating those tokens; Claude Code stays in charge of its own session. Or you sign in on Claude's own page in your browser and paste back the code it shows." : {
       "localizations" : {
         "de" : {
@@ -2442,6 +2489,53 @@
         }
       }
     },
+    "One account's figure. A tap refreshes it." : {
+      "comment" : "Description of the Control Center control in the controls gallery.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cifra de una cuenta. Al tocarla se actualiza."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Wert eines Accounts. Ein Tippen aktualisiert ihn."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le chiffre d’un compte. Touchez pour l’actualiser."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントの数値を表示します。タップで更新します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 하나의 수치입니다. 탭하면 새로 고칩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O número de uma conta. Toque para atualizar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示一个账户的数值。轻点即可刷新。"
+          }
+        }
+      }
+    },
     "Open %@ in AIMeter" : {
       "comment" : "Tooltip on an account in the macOS menu bar popover; a click opens that account's detail in the Dashboard window. %@ is the account's nickname.",
       "localizations" : {
@@ -2902,6 +2996,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "读取 Codex 保存在 ~/.codex 中的登录，不做任何更改。或者在下方用你自己的代码登录。"
+          }
+        }
+      }
+    },
+    "Refreshing" : {
+      "comment" : "The Control Center control while its tap refreshes the account's figure.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizando"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird aktualisiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로 고치는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在刷新"
           }
         }
       }

@@ -199,6 +199,36 @@ legacy sentinel if none — rather than each re-deriving it.
   account itself, which fetched that account's usage with its login and
   saved it under the requested id.
 
+## StandBy (iOS)
+
+A small widget in StandBy (the iPhone charging on its side) loses its
+background and is shown large across the room; an iPad's Lock Screen
+does the same. Both small widgets read
+`showsWidgetContainerBackground` and, without one, draw
+`StandByUsageView` instead of the card: the account's name small, the
+figure at 66 pt (the protagonist `AccountCardLayout` picks for Usage
+Limits, the picked window for Single Limit, whatever its style), the
+window's short name and its reset beside it, and its bar. No header and
+no refresh button: nothing there is read up close. At night the system
+tints it red itself; the colors are the usual levels.
+
+## The control (iOS 18 and later)
+
+`UsageControl` (`AIMeterControl`, registered in the bundle behind
+`#available(iOS 18)`): a `ControlWidgetButton` for Control Center, the
+Lock Screen's two buttons and the Action button, showing one account's
+nickname and its glance figure ("Session 42%",
+`Shared/ControlFigure.swift`: the window `glanceMetric` points at, with
+the Lock Screen gauge's fallback, in the display mode Settings picks)
+over the gauge glyph filled to it (`variableValue`). The account is the
+control's own choice (`UsageControlConfigurationIntent`, the widgets'
+`UsageAccountOption` entity; unset, the first connected account,
+`WidgetAccountFallback`). A tap runs the widgets' `RefreshAccountIntent`,
+which reloads the control too (`ControlCenter.reloadControls(ofKind:)`);
+everything else that redraws the widgets reloads it through
+`WidgetReload.all()`. It reads the App Group's snapshot and never fetches
+on its own.
+
 ## Live Activity (Session window, iOS only)
 
 `SessionLiveActivity` puts the Session window's countdown on the Lock

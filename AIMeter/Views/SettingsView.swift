@@ -80,6 +80,7 @@ struct SettingsView: View {
                 }
             }
             .padding(20)
+            .readableWidth()
         }
         .appBackground()
         .navigationTitle("Settings")
@@ -100,6 +101,7 @@ private struct SettingsGroupLink<Content: View>: View {
                     content()
                 }
                 .padding(20)
+                .readableWidth()
             }
             .appBackground()
             .navigationTitle(title)

@@ -11,6 +11,9 @@ struct AIMeterWidgetsBundle: WidgetBundle {
         AllAccountsWidget()
         #if os(iOS)
         SessionLiveActivity()
+        if #available(iOS 18.0, *) {
+            UsageControl()
+        }
         #endif
     }
 }

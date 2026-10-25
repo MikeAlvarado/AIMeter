@@ -83,6 +83,7 @@ struct ProviderDetailView: View {
                 }
             }
             .padding(20)
+            .readableWidth()
         }
         .appBackground()
         .sheet(isPresented: $showingReconnect) {

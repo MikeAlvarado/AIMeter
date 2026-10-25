@@ -261,7 +261,7 @@ struct RefreshService {
         try credentialSource.clear()
         store?.removeSnapshot(for: account.accountID)
         UsageRecorder.clear(accountID: account.accountID)
-        WidgetCenter.shared.reloadAllTimelines()
+        WidgetReload.all()
         // Everything else keyed by this accountID goes too: the reset/
         // run-out requests still queued for it (they'd fire at their
         // `resetsAt` for an account that no longer exists), whatever it

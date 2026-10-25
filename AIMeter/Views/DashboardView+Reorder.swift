@@ -57,7 +57,8 @@ extension DashboardView {
                     // Depth instead of scale: a lifted card that also grows is
                     // exactly what this interaction was rebuilt to avoid.
                     .shadow(color: isDragging ? Theme.shadowSoft : .clear, radius: 22, x: 0, y: 12)
-                    .offset(y: isDragging ? dragTranslation : 0)
+                    // Both ways in an iPad's grid, up and down in a column.
+                    .offset(x: isDragging && isGrid ? dragTranslation.width : 0, y: isDragging ? dragTranslation.height : 0)
                     // Over its neighbours while it travels, back in line after.
                     .zIndex(isDragging ? 1 : 0),
                 for: usage.id
@@ -97,10 +98,10 @@ extension DashboardView {
         case .began(let location):
             lift(accountID)
             if draggingID == accountID {
-                dragStartY = location.y
+                dragStart = location
             }
         case .moved(let location):
-            drag(accountID, translation: location.y - dragStartY, location: location)
+            drag(accountID, translation: CGSize(width: location.x - dragStart.x, height: location.y - dragStart.y), location: location)
         case .ended, .cancelled:
             endReorder(of: accountID)
         }
@@ -111,10 +112,10 @@ extension DashboardView {
     private func lift(_ accountID: String) {
         guard !scrollTracker.movedRecently, draggingID != accountID else { return }
         draggingID = accountID
-        dragTranslation = 0
+        dragTranslation = .zero
     }
 
-    private func drag(_ accountID: String, translation: CGFloat, location: CGPoint) {
+    private func drag(_ accountID: String, translation: CGSize, location: CGPoint) {
         guard draggingID == accountID else { return }
         dragTranslation = translation
         setDropTarget(hitTest(location, excluding: accountID))
@@ -160,7 +161,7 @@ extension DashboardView {
                     lift(accountID)
                 case .second(true, let drag):
                     guard let drag else { return }
-                    self.drag(accountID, translation: drag.translation.height, location: drag.location)
+                    self.drag(accountID, translation: drag.translation, location: drag.location)
                 default:
                     break
                 }
@@ -186,7 +187,7 @@ extension DashboardView {
             // travels from where it was released into its new slot instead
             // of snapping back first and then jumping.
             draggingID = nil
-            dragTranslation = 0
+            dragTranslation = .zero
             dropTargetID = nil
         }
     }

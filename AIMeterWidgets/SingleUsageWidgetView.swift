@@ -10,14 +10,34 @@ import UsageKit
 /// (`RingUsageView`).
 struct SingleUsageWidgetView: View {
     let entry: SingleUsageEntry
+    /// False in StandBy (and on an iPad's Lock Screen): either style draws
+    /// `StandByUsageView` there.
+    @Environment(\.showsWidgetContainerBackground) private var showsBackground
 
     var body: some View {
         Group {
+            #if os(iOS)
+            if !showsBackground {
+                StandByUsageView(
+                    accountName: entry.accountName,
+                    windowName: entry.windowName,
+                    window: entry.window,
+                    prefs: entry.prefs,
+                    now: entry.date,
+                    moneySubtitle: entry.snapshot.flatMap { entry.prefs.creditsAmountSubtitle(for: entry.kind, snapshot: $0) }
+                )
+            } else if entry.style == .ring {
+                RingUsageView(entry: entry)
+            } else {
+                bars
+            }
+            #else
             if entry.style == .ring {
                 RingUsageView(entry: entry)
             } else {
                 bars
             }
+            #endif
         }
         .containerBackground(for: .widget) {
             Theme.card

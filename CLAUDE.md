@@ -42,7 +42,13 @@ system, and behaviors. It should be enough to rebuild the app from zero.
   (`.systemLarge`-only, every connected account at once, its layout the
   one per-instance choice: two in full, or six condensed — see
   `AIMeterWidgets/CLAUDE.md`); on the Watch,
-  `AIMeterWatchUsage` (the complications, every accessory family).
+  `AIMeterWatchUsage` (the complications, every accessory family). And
+  one control kind (iOS 18 and later, Control Center, the Lock Screen,
+  the Action button): `AIMeterControl` (`UsageControl`, one account's
+  glance figure over `Shared/ControlFigure.swift`, a tap refreshing it).
+  Whatever redraws them goes through `Shared/WidgetReload.swift`
+  (`WidgetReload.all()`: every timeline and every control), never
+  `reloadAllTimelines()` alone, so the control is never left behind.
 
 ## Layout of the repo
 
@@ -2085,7 +2091,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   run-out warning per window (`NotificationSchedulerTests`), the widgets'
   reset line (countdown or label), their reload after a reset and what
   counts as stale (`WidgetScheduleTests`), the export's CSV rows, JSON
-  document and file name (`UsageExportTests`), the Watch payload's round
+  document and file name (`UsageExportTests`), the control's figure
+  (`ControlFigureTests`), the Watch payload's round
   trip through the session dictionary and what applying one leaves in
   the Watch's stores (`WatchPayloadTests`), iCloud sync over a
   dictionary in place of the store: what a device sends, what another

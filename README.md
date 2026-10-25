@@ -35,7 +35,10 @@ can follow.
 - **Widgets.** Home Screen, Lock Screen, Notification Center and the Mac
   desktop: one account's limits, a single number (a bar or a ring), or
   every account at once (two in full, or six condensed). Countdowns tick
-  live, and on iOS the widgets refresh themselves.
+  live, and on iOS the widgets refresh themselves. In StandBy a small
+  widget turns into one large figure, readable across the room.
+- **A control.** On iOS 18, one account's figure in Control Center, on
+  the Lock Screen or on the Action button; a tap refreshes it.
 - **History and forecast.** Thirty days of each limit on a chart with its
   resets marked, pace captions, a forecast of what runs out early, and an
   export to CSV or JSON.

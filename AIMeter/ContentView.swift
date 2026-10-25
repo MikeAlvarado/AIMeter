@@ -45,7 +45,7 @@ struct ContentView: View {
                 // the fetch below fails or is throttled — otherwise a
                 // freshly updated app can leave placed widgets showing
                 // WidgetKit's archived render of the previous version.
-                WidgetCenter.shared.reloadAllTimelines()
+                WidgetReload.all()
                 Task {
                     // The user may have flipped the permission in Settings.
                     await model.refreshNotificationAuthorization()

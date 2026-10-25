@@ -243,7 +243,7 @@ final class UsageModel {
             }
             return await group.reduce(false) { $0 || $1 }
         }
-        if fetched { WidgetCenter.shared.reloadAllTimelines() }
+        if fetched { WidgetReload.all() }
     }
 
     func refreshAll() async {
@@ -259,7 +259,7 @@ final class UsageModel {
             return await group.reduce(false) { $0 || $1 }
         }
         await status
-        if fetched { WidgetCenter.shared.reloadAllTimelines() }
+        if fetched { WidgetReload.all() }
         applyAccountOrder()
         notifyWatch()
     }
@@ -277,7 +277,7 @@ final class UsageModel {
     func refresh(accountID: String) async {
         async let status: Void = refreshServiceStatus()
         if await fetch(accountID: accountID) {
-            WidgetCenter.shared.reloadAllTimelines()
+            WidgetReload.all()
         }
         await status
         applyAccountOrder()
@@ -392,7 +392,7 @@ final class UsageModel {
             return await group.reduce(false) { $0 || $1 }
         }
         await status
-        if fetched { WidgetCenter.shared.reloadAllTimelines() }
+        if fetched { WidgetReload.all() }
         applyAccountOrder()
         notifyWatch()
     }

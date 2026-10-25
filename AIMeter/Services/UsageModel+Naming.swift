@@ -68,7 +68,7 @@ extension UsageModel {
         registry?.replaceAll(accounts.map(\.account))
         // The all-accounts widget renders the registry in order, so it has
         // to re-render for the new one to show up there too.
-        WidgetCenter.shared.reloadAllTimelines()
+        WidgetReload.all()
         notifyWatch()
     }
 
@@ -160,7 +160,7 @@ extension UsageModel {
     /// re-issued the notifications from the name it started with.
     func propagateName(accountID: String) {
         guard let usage = usage(for: accountID) else { return }
-        WidgetCenter.shared.reloadAllTimelines()
+        WidgetReload.all()
         notifyWatch()
         #if os(iOS)
         LiveActivityManager.restart(

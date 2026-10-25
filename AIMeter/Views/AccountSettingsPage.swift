@@ -211,6 +211,7 @@ struct AccountSettingsPage: View {
         ScrollView {
             AccountSettingsCards(accountID: accountID, onDisconnect: dismissesOnDisconnect ? { dismiss() } : nil)
                 .padding(20)
+                .readableWidth()
         }
         .appBackground()
         .navigationTitle(model.usage(for: accountID)?.account.displayName ?? "")

@@ -589,6 +589,16 @@
 - **Landscape (iPhone)**: `verticalSizeClass == .compact` swaps the
   dashboard for a full screen of the same account cards
   (`AccountSectionView(linksToDetail: false)`, no sparkline).
+- **iPad** (a regular horizontal size class): the Dashboard puts
+  two or more accounts in two columns of the same cards
+  (`DashboardView.isGrid`, a `LazyVGrid`, top-aligned, at most 1100 pt
+  wide) and one account's card centred at 560 pt; a dragged card follows
+  the finger both ways there (`dragTranslation` is a size; a phone's
+  column still moves it up and down only). Provider Detail, an account's
+  settings and Settings read in a centred 680 pt column
+  (`readableWidth()`, `AIMeter/Views/ReadableWidth.swift`), not across
+  the screen. An iPad in Split View narrow enough to be compact gets the
+  phone's layout.
 - **macOS menu bar**: one status item regardless of how many accounts are
   connected — `MenuBarExtra` has no per-instance configuration the way
   widgets do. The label (`MenuBarLabel`, drawing a `MenuBarLabelModel`)

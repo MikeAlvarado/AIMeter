@@ -293,7 +293,7 @@ final class PreferencesModel {
         widgetReload = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(500))
             guard !Task.isCancelled else { return }
-            WidgetCenter.shared.reloadAllTimelines()
+            WidgetReload.all()
             Self.onWidgetVisibleChange?()
         }
     }

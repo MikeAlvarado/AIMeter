@@ -19,10 +19,10 @@ struct DashboardView: View {
     /// itself instead of using SwiftUI's drag and drop. Internal rather
     /// than private only so that extension file can reach it.
     @State var draggingID: String?
-    @State var dragTranslation: CGFloat = 0
+    @State var dragTranslation: CGSize = .zero
     /// Where the finger was when the card lifted (UIKit path only — the
     /// SwiftUI drag reports a translation of its own).
-    @State var dragStartY: CGFloat = 0
+    @State var dragStart: CGPoint = .zero
     @State var dropTargetID: String?
     /// Each section's on-screen rect, so a drag can tell what it's over.
     @State var sectionFrames: [String: CGRect] = [:]
@@ -30,6 +30,35 @@ struct DashboardView: View {
     /// why this exists and why it is a reference, not plain `@State`.
     @State var scrollTracker = ScrollMovementTracker()
     @Environment(\.accessibilityReduceMotion) var reduceMotion
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
+
+    /// An iPad's width: two or more accounts sit in two columns of the same
+    /// cards, and a dragged card moves both ways (`accountSection`).
+    var isGrid: Bool {
+        #if os(iOS)
+        sizeClass == .regular && model.accounts.count > 1
+        #else
+        false
+        #endif
+    }
+
+    /// An iPad's width with one account: its card, centred, at a width a
+    /// card reads well at rather than the screen's.
+    private var isWideSingle: Bool {
+        #if os(iOS)
+        sizeClass == .regular && model.accounts.count <= 1
+        #else
+        false
+        #endif
+    }
+
+    /// The two columns, the cards top-aligned in each row.
+    private static let gridColumns = [
+        GridItem(.flexible(), spacing: 16, alignment: .top),
+        GridItem(.flexible(), spacing: 16, alignment: .top),
+    ]
 
     var body: some View {
         ScrollView {
@@ -247,8 +276,16 @@ struct DashboardView: View {
                     .frame(maxWidth: .infinity)
                 }
             } else {
-                ForEach(model.accounts) { usage in
-                    accountSection(usage)
+                if isGrid {
+                    LazyVGrid(columns: Self.gridColumns, alignment: .leading, spacing: 16) {
+                        ForEach(model.accounts) { usage in
+                            accountSection(usage)
+                        }
+                    }
+                } else {
+                    ForEach(model.accounts) { usage in
+                        accountSection(usage)
+                    }
                 }
                 // Not in demo mode: `completeConnection` would register a
                 // real account underneath the fabricated row, invisible
@@ -258,6 +295,8 @@ struct DashboardView: View {
                 }
             }
         }
+        .frame(maxWidth: isWideSingle ? 560 : (isGrid ? 1100 : .infinity))
+        .frame(maxWidth: .infinity)
         .coordinateSpace(name: Self.reorderSpace)
         .onPreferenceChange(AccountSectionFramesKey.self) { frames in
             sectionFrames = frames

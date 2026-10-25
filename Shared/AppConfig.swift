@@ -35,6 +35,9 @@ nonisolated enum AppConfig {
     static let allAccountsWidgetKind = "AIMeterAllAccounts"
     /// The Watch's complications, one kind for every accessory family.
     static let watchWidgetKind = "AIMeterWatchUsage"
+    /// iOS 18's control (Control Center, the Lock Screen, the Action
+    /// button): one account's glance figure, a tap refreshing it.
+    static let controlKind = "AIMeterControl"
     static let refreshInterval: TimeInterval = 15 * 60
     /// A snapshot older than this is flagged as stale in widgets.
     static let staleAfter: TimeInterval = 30 * 60

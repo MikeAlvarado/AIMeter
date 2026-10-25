@@ -11,6 +11,9 @@ import AppIntents
 /// the Remaining/Used and Relative/Absolute preferences from the App Group.
 struct UsageWidgetView: View {
     @Environment(\.widgetFamily) private var family
+    /// False in StandBy (and on an iPad's Lock Screen): the small family
+    /// draws `StandByUsageView` there.
+    @Environment(\.showsWidgetContainerBackground) private var showsBackground
     let entry: UsageEntry
 
     var body: some View {
@@ -27,6 +30,18 @@ struct UsageWidgetView: View {
                 #endif
                 case .systemMedium:
                     MediumUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName, accountIcon: entry.accountIcon)
+                #if os(iOS)
+                case .systemSmall where !showsBackground:
+                    let hero = AccountCardLayout(snapshot: snapshot, modelSlotFallback: entry.prefs.modelSlotFallback).hero
+                    StandByUsageView(
+                        accountName: entry.accountName,
+                        windowName: hero.window?.shortTitle ?? hero.kind.shortName,
+                        window: hero.window,
+                        prefs: entry.prefs,
+                        now: entry.date,
+                        moneySubtitle: entry.prefs.creditsAmountSubtitle(for: hero.kind, snapshot: snapshot)
+                    )
+                #endif
                 default:
                     SystemUsageView(snapshot: snapshot, prefs: entry.prefs, date: entry.date, accountID: entry.accountID, accountName: entry.accountName, accountIcon: entry.accountIcon)
                 }

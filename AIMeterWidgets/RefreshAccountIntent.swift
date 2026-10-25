@@ -29,6 +29,9 @@ struct RefreshAccountIntent: AppIntent {
         WidgetCenter.shared.reloadTimelines(ofKind: AppConfig.widgetKind)
         WidgetCenter.shared.reloadTimelines(ofKind: AppConfig.singleWidgetKind)
         WidgetCenter.shared.reloadTimelines(ofKind: AppConfig.allAccountsWidgetKind)
+        if #available(iOS 18.0, *) {
+            ControlCenter.shared.reloadControls(ofKind: AppConfig.controlKind)
+        }
         return .result()
     }
 }
