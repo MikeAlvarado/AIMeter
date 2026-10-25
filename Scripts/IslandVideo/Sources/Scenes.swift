@@ -68,6 +68,7 @@ struct Scene {
         // name, clear of every figure.
         let inside = CGPoint(x: notch.x + 30, y: 118)
         let onboarding = es ? "Terminar el onboarding" : "Ship the onboarding"
+        let notes = es ? "Escribir las notas de la versión" : "Write the release notes"
         let apiClient = es ? "Refactorizar el cliente de la API" : "Refactor the API client"
         switch name {
         case "limits":
@@ -84,26 +85,23 @@ struct Scene {
                 ]
             )
         case "sessions":
-            // Two sessions at work walk beside the notch; resting on it
-            // shows the newest in full, a click every session, the newest
-            // as its card: what it does now, what it did, "Step 3 of 5".
-            // Two, not more: the open island with the card and its accounts
-            // is then just short of the canvas's height.
+            // Three sessions at work walk beside the notch; resting on it
+            // shows the newest in full. The island stays closed: the card
+            // and its steps are the permission scene's (Mike's call,
+            // 2026-10-25).
             let sessions = [
-                Session(id: "demo-54", title: onboarding, project: "my-app", state: "working", ago: 65,
-                        steps: Self.steps([("thinking", 1, 0), ("reading", 3, 6), ("editing", 2, 21), ("running", 1, 44)]),
-                        edits: 2, plan: ["completed", "completed", "in_progress", "pending", "pending"]),
-                Session(id: "demo-425", title: apiClient, project: "backend", state: "working", ago: 305,
-                        steps: Self.steps([("reading", 5, 0), ("editing", 4, 90), ("running", 2, 210)]), edits: 4),
+                Session(id: "demo-54", title: onboarding, project: "my-app", state: "working", ago: 65),
+                Session(id: "demo-203", title: nil, project: "website", state: "working", ago: 185),
+                Session(id: "demo-425", title: apiClient, project: "backend", state: "working", ago: 305),
+                Session(id: "demo-70", title: notes, project: "docs", state: "finished", ago: 125),
             ]
             return Scene(
-                name: name, duration: 12,
+                name: name, duration: 11,
                 setup: [.sessions(sessions), .level("collapsed")],
-                cues: [(3.0, .level("peek")), (5.2, .level("expanded")), (9.4, .level("collapsed"))],
+                cues: [(3.0, .level("peek")), (8.0, .level("collapsed"))],
                 cursor: [
                     Key(time: 0, point: away), Key(time: 1.6, point: away), Key(time: 2.7, point: notch),
-                    Key(time: 5.2, point: notch, click: true), Key(time: 6.2, point: inside),
-                    Key(time: 8.8, point: inside), Key(time: 9.7, point: away), Key(time: 12, point: away),
+                    Key(time: 7.6, point: notch), Key(time: 8.5, point: away), Key(time: 11, point: away),
                 ]
             )
         case "permission":

@@ -55,14 +55,14 @@ that is fine for trying the pipeline, not for the site.
 - **The scenes** (`Scenes.swift`), each a timeline of what the app is
   told and where the cursor is: `limits` (no session: the cursor rests
   on the notch, the figures peek out, a click opens every account),
-  `sessions` (two sessions at work walk beside the notch; resting shows
-  the newest, a click opens the island, the newest as its card: what it
-  does now, the steps it did, "Step 3 of 5") and `permission` (a
+  `sessions` (three sessions at work walk beside the notch; resting
+  shows the newest in full, and the island stays closed: the card is
+  the permission scene's, Mike's call on 2026-10-25) and `permission` (a
   session asks: its pet comes forward and shakes beside the "!", the
   peek says so, a click opens its card, which says what it asks; the
   cursor presses Approve on the card, measured at 127 pt left of the
   middle and 409 pt down on a MacBook's island, and it works on; then
-  the other finishes and falls asleep). Two sessions a scene, not more:
+  the other finishes and falls asleep). Two sessions there, not more:
   the open island with the card and two accounts is just short of the
   540 pt canvas, and a third row ran it past the bottom edge. Session titles and the terminals follow
   the language; folder names do not. The ids are the demo's
