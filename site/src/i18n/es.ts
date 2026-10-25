@@ -266,7 +266,7 @@ export const es = {
     title: 'Soporte',
     description: 'Cómo conectar una cuenta, qué significan las alertas y dónde pedir ayuda.',
     intro: 'AIMeter la construye y mantiene una sola persona, a la vista de todos. La mayoría de las respuestas están abajo; lo demás está a un issue de GitHub o un correo de distancia.',
-    updated: 'Para AIMeter 4.1',
+    updated: 'Para AIMeter 4.2',
     sections: [
       {
         heading: 'Conectar en iPhone y iPad',

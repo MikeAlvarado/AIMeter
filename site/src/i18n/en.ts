@@ -266,7 +266,7 @@ export const en = {
     title: 'Support',
     description: 'How to connect an account, what the alerts mean, and where to ask for help.',
     intro: 'AIMeter is built and maintained by one person, in the open. Most answers are below; anything else is a GitHub issue or an email away.',
-    updated: 'For AIMeter 4.1',
+    updated: 'For AIMeter 4.2',
     sections: [
       {
         heading: 'Connecting on iPhone and iPad',

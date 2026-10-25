@@ -1,6 +1,89 @@
 {
   "releases": [
     {
+      "version": "4.2.0",
+      "items": [
+        {
+          "symbol": "list.bullet.rectangle",
+          "title": {
+            "en": "What each session is doing",
+            "es": "Lo que hace cada sesión",
+            "de": "Was jede Sitzung gerade tut",
+            "fr": "Ce que fait chaque session",
+            "ja": "各セッションが今していること",
+            "ko": "각 세션이 하는 일",
+            "pt-BR": "O que cada sessão está fazendo",
+            "zh-Hans": "每个会话正在做什么"
+          },
+          "detail": {
+            "en": "Open the notch island to see the session in front step by step: what it is doing right now, what it already did and how long each step took, and \"Step 3 of 7\" when the Claude app keeps a plan. AIMeter reads only the kind of action, never your files or commands.",
+            "es": "Abre la isla del notch para ver la sesión al frente paso a paso: qué hace ahora, qué ya hizo y cuánto tardó cada paso, y \"Paso 3 de 7\" cuando la app de Claude lleva un plan. AIMeter solo lee el tipo de acción, nunca tus archivos ni tus comandos.",
+            "de": "Öffne die Notch-Insel und sieh die vorderste Sitzung Schritt für Schritt: was sie gerade tut, was sie schon erledigt hat und wie lange jeder Schritt dauerte, und \"Schritt 3 von 7\", wenn die Claude-App einen Plan führt. AIMeter liest nur die Art der Aktion, nie deine Dateien oder Befehle.",
+            "fr": "Ouvrez l’îlot de l’encoche pour suivre la session au premier plan étape par étape : ce qu'elle fait maintenant, ce qu'elle a déjà fait et la durée de chaque étape, et « Étape 3 sur 7 » quand l'app Claude tient un plan. AIMeter ne lit que le type d'action, jamais vos fichiers ni vos commandes.",
+            "ja": "ノッチアイランドを開くと、手前のセッションをステップごとに確認できます。今していること、すでに終えたこととそれぞれの所要時間、そして Claude アプリが計画を持っているときは「ステップ 3/7」。AIMeter が読むのは操作の種類だけで、ファイルやコマンドは読みません。",
+            "ko": "노치 아일랜드를 열면 맨 앞 세션을 단계별로 볼 수 있습니다. 지금 하는 일, 이미 한 일과 단계마다 걸린 시간, 그리고 Claude 앱이 계획을 세웠을 때는 \"7단계 중 3단계\"까지. AIMeter는 작업의 종류만 읽고 파일이나 명령은 읽지 않습니다.",
+            "pt-BR": "Abra a ilha do notch para ver a sessão da frente passo a passo: o que ela faz agora, o que já fez e quanto tempo levou cada etapa, e \"Etapa 3 de 7\" quando o app do Claude mantém um plano. O AIMeter lê só o tipo de ação, nunca seus arquivos ou comandos.",
+            "zh-Hans": "打开刘海岛，即可逐步查看最前面的会话：它现在在做什么、已经做了什么以及每一步用了多久；Claude App 制定了计划时还会显示“第 3 步，共 7 步”。AIMeter 只读取操作类型，从不读取你的文件或命令。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "arrow.up.forward.app",
+          "title": {
+            "en": "Open it in the right Claude",
+            "es": "Ábrela en el Claude correcto",
+            "de": "Im richtigen Claude öffnen",
+            "fr": "Ouvrez-la dans le bon Claude",
+            "ja": "正しい Claude で開く",
+            "ko": "올바른 Claude에서 열기",
+            "pt-BR": "Abra no Claude certo",
+            "zh-Hans": "在正确的 Claude 中打开"
+          },
+          "detail": {
+            "en": "\"Open in\" takes you to the session in the copy of Claude it runs in, even with two of them installed. A session from the terminal brings that terminal forward.",
+            "es": "\"Abrir en\" te lleva a la sesión en la copia de Claude donde corre, aunque tengas dos instaladas. Una sesión de la terminal trae esa terminal al frente.",
+            "de": "\"Öffnen in\" bringt dich zur Sitzung in der Claude-Kopie, in der sie läuft, auch wenn zwei installiert sind. Eine Sitzung aus dem Terminal holt dieses Terminal nach vorn.",
+            "fr": "« Ouvrir dans » vous mène à la session dans la copie de Claude où elle tourne, même si deux sont installées. Une session lancée dans le terminal ramène ce terminal au premier plan.",
+            "ja": "「開く」をクリックすると、Claude が2つインストールされていても、そのセッションが動いている Claude でセッションを開きます。ターミナルのセッションなら、そのターミナルが前面に出ます。",
+            "ko": "\"열기\"를 누르면 Claude가 두 개 설치되어 있어도 세션이 실행 중인 Claude에서 바로 열립니다. 터미널에서 실행한 세션은 해당 터미널을 앞으로 가져옵니다.",
+            "pt-BR": "\"Abrir no\" leva você à sessão na cópia do Claude onde ela roda, mesmo com duas instaladas. Uma sessão do terminal traz esse terminal para a frente.",
+            "zh-Hans": "“在…中打开”会在会话所在的那个 Claude 中打开它，即使装了两个也不会弄错。来自终端的会话会把那个终端调到前面。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        },
+        {
+          "symbol": "hand.raised",
+          "title": {
+            "en": "Answer from the island",
+            "es": "Responde desde la isla",
+            "de": "Aus der Insel antworten",
+            "fr": "Répondez depuis l’îlot",
+            "ja": "アイランドから応答",
+            "ko": "아일랜드에서 응답",
+            "pt-BR": "Responda pela ilha",
+            "zh-Hans": "从刘海岛回应"
+          },
+          "detail": {
+            "en": "Optional and off by default (Settings, Claude Code): approve or deny a session's permission prompts, or stop it, without leaving what you are doing. AIMeter receives nothing; it all stays on your Mac.",
+            "es": "Opcional y apagado por defecto (Ajustes, Claude Code): aprueba o deniega los permisos que pide una sesión, o detenla, sin dejar lo que estás haciendo. AIMeter no recibe nada; todo se queda en tu Mac.",
+            "de": "Optional und standardmäßig aus (Einstellungen, Claude Code): Berechtigungsanfragen einer Sitzung erlauben oder ablehnen oder die Sitzung stoppen, ohne das zu verlassen, woran du gerade arbeitest. AIMeter empfängt nichts; alles bleibt auf deinem Mac.",
+            "fr": "Facultatif et désactivé par défaut (Réglages, Claude Code) : autorisez ou refusez les demandes d'autorisation d'une session, ou arrêtez-la, sans quitter ce que vous faites. AIMeter ne reçoit rien ; tout reste sur votre Mac.",
+            "ja": "オプションで、初期設定はオフです（設定、Claude Code）。作業を中断せずに、セッションの許可リクエストを許可・拒否したり、セッションを停止したりできます。AIMeter は何も受け取らず、すべてこの Mac に残ります。",
+            "ko": "선택 사항이며 기본적으로 꺼져 있습니다(설정, Claude Code). 하던 일을 멈추지 않고 세션의 권한 요청을 허용하거나 거부하고, 세션을 중지할 수 있습니다. AIMeter는 아무것도 받지 않으며 모든 정보는 Mac에 남습니다.",
+            "pt-BR": "Opcional e desativado por padrão (Ajustes, Claude Code): aprove ou negue os pedidos de permissão de uma sessão, ou pare-a, sem sair do que está fazendo. O AIMeter não recebe nada; tudo fica no seu Mac.",
+            "zh-Hans": "可选功能，默认关闭（设置，Claude Code）：无需离开手头的工作，就能批准或拒绝会话的权限请求，或停止会话。AIMeter 不会收到任何内容，一切都留在你的 Mac 上。"
+          },
+          "platforms": [
+            "macOS"
+          ]
+        }
+      ]
+    },
+    {
       "version": "4.1.1",
       "items": [
         {
