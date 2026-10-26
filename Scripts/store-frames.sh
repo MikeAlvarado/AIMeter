@@ -3,7 +3,7 @@
 # page header and the search-results card) from the app's own views and
 # the raw simulator captures. See Scripts/StoreFrames/CLAUDE.md.
 #
-#   Scripts/store-frames.sh <work-dir> [frames|marketing|shots|notch] [en|es]
+#   Scripts/store-frames.sh <work-dir> [frames|duo|marketing|shots|notch] [en|es]
 #
 # <work-dir>/raw/ must hold the simulator captures the specs name
 # (dashboard.png, detail-top.png, ...) and appicon.png. Output lands in
@@ -23,11 +23,12 @@ cp "$ROOT/Scripts/StoreFrames/Sources/"*.swift "$BUILD/Sources/"
 # behind a symlink), and the widget views minus their timeline plumbing.
 for f in Theme ThemeComponents Surfaces AccountCardLayout ProviderIdentityView ProviderMark PeakBadge ClaudePeakStatus \
          UsageFormatting ResetLine WindowDisplay PreferencesStore PreferencesStore+NotchIsland PreferencesStore+ClaudeSessions PreferencesModel \
-         NotchIslandModel NotchIslandModel+Sessions SessionPet SessionPet+Sprites NotchIslandGeometry NotchIslandInteraction AppConfig ProviderCatalog MenuBarLabelModel AppIconChoice; do
+         NotchIslandModel NotchIslandModel+Sessions NotchIslandModel+Steps WidgetReload SessionPet SessionPet+Sprites NotchIslandGeometry NotchIslandInteraction AppConfig ProviderCatalog MenuBarLabelModel AppIconChoice; do
   cp "$ROOT/Shared/$f.swift" "$BUILD/Sources/"
 done
 cp "$ROOT/AIMeterWidgets/MediumUsageView.swift" "$ROOT/AIMeterWidgets/SingleUsageWidgetView.swift" \
-   "$ROOT/AIMeterWidgets/AllAccountsWidgetView.swift" "$ROOT/AIMeterWidgets/AllAccountsCondensedView.swift" "$BUILD/Sources/"
+   "$ROOT/AIMeterWidgets/AllAccountsWidgetView.swift" "$ROOT/AIMeterWidgets/AllAccountsCondensedView.swift" \
+   "$ROOT/AIMeterWidgets/StandByUsageView.swift" "$BUILD/Sources/"
 python3 - "$ROOT/AIMeterWidgets/UsageWidgetViews.swift" "$BUILD/Sources/UsageWidgetViews.swift" <<'PY'
 import sys
 s = open(sys.argv[1]).read()
@@ -41,6 +42,7 @@ cp -R "$ROOT/Shared/Media.xcassets" "$BUILD/Sources/Media.xcassets"
 (cd "$BUILD" && swift build -c release 2>&1 | grep -E "error:|Build complete")
 case "$MODE" in
   frames)    "$BUILD/.build/release/StoreFrames" "$WORK" frames ;;
+  duo)       "$BUILD/.build/release/StoreFrames" "$WORK" duo ;;
   marketing) "$BUILD/.build/release/StoreFrames" "$WORK" marketing ;;
   shots)     mkdir -p "$WORK/widget-shots"; "$BUILD/.build/release/StoreFrames" "$WORK/widget-shots" ;;
   notch)     "$BUILD/.build/release/StoreFrames" "$WORK" notch "${3:-en}" ;;

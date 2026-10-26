@@ -32,6 +32,14 @@ if CommandLine.arguments.count > 2, CommandLine.arguments[2] == "notch" {
     RunLoop.main.run()
 }
 
+if CommandLine.arguments.count > 2, CommandLine.arguments[2] == "duo" {
+    Task { @MainActor in
+        renderFrames(rawDir: CommandLine.arguments[1] + "/raw", outDir: CommandLine.arguments[1] + "/frames", specs: duoSpecs)
+        exit(0)
+    }
+    RunLoop.main.run()
+}
+
 if CommandLine.arguments.count > 2, CommandLine.arguments[2] == "frames" {
     Task { @MainActor in
         renderFrames(rawDir: CommandLine.arguments[1] + "/raw", outDir: CommandLine.arguments[1] + "/frames", specs: phoneSpecs + padSpecs)

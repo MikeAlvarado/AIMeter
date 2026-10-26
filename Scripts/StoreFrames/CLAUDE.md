@@ -15,6 +15,18 @@ this file current: it is the only record of how the assets were made.
   on top or bottom, tilt. The device hangs off one edge by a fixed
   amount and the text sits at the other, so neither can push the other
   out of the canvas (the first attempt let the headline clip).
+- `duo`: the iPhone Duo set (4.3, the `APP_IPHONE_DUO` slot, optional
+  until April 2027, the product page's "optimized for iPhone Duo" badge
+  when present): five frames at the inner display's 2007×2853 (669×951
+  pt at 3x; the slot also takes the outer display's 1398×2034 and both
+  landscape sizes), `duoSpecs`: the open Dashboard's two columns, the
+  closed one with Settings and Refresh in the side bar, the open
+  detail's history, the closed detail's pace, and the closing frame.
+  Each capture keeps its own shape in its bezel (1.42 open, 1.45
+  closed); a landscape capture would sit centred under the headline,
+  but the open screen held sideways left the device small and half
+  empty, so the set is upright. The open detail is framed text on top,
+  so its bottom edge, the Spend card's title, falls outside.
 - `marketing`: the two landscape product-page assets App Store Connect
   added with iOS 26 — the **header** (5244×2950) and the **search
   results** card (3840×2560) — `Sources/Marketing.swift`. Copy on the
@@ -54,7 +66,15 @@ using (iPhone 17e and iPad Pro 13" M5 for 2.0 and 3.0); the demo build is a
 plain `xcodebuild build` for the simulator, installed with
 `simctl install` and launched with `simctl launch`. Never place real
 accounts on a simulator for this; demo data is the source of every
-store image. The 3.0 set (2026-10-14) was taken with a clean status
+store image. The iPhone Duo's (4.3, 2026-10-26, Xcode 27.1's iOS 27.1
+runtime) are `duo-inner-dashboard.png`, `duo-inner-detail.png` (open,
+upright, 2007×2853) and `duo-outer-dashboard.png`,
+`duo-outer-detail.png` (closed, 1398×2034): each display is its own
+`simctl io <udid> screenshot --display=<UUID>` (`simctl io <udid>
+enumerate` lists them; the inner one captures black while the device is
+closed), the pose set in Device Hub (Xcode 27.1's simulator app, which
+has no command line for it), the detail opened with the DEBUG
+`-AIMeterOpenAccount demo`. The 3.0 set (2026-10-14) was taken with a clean status
 bar (`xcrun simctl status_bar <udid> override --time 9:41 --batteryState
 charged --batteryLevel 100 …`; 2.0's showed the real time) and the
 simulator's own appearance for the dark captures (`xcrun simctl ui
@@ -136,6 +156,7 @@ add three pills (Free · Open source · No account).
     Scripts/store-frames.sh <work-dir> shots       # widget renders → <work-dir>/widget-shots
     cp <work-dir>/widget-shots/home-widgets.png <work-dir>/raw/
     Scripts/store-frames.sh <work-dir> frames      # → <work-dir>/frames
+    Scripts/store-frames.sh <work-dir> duo         # → <work-dir>/frames (the iPhone Duo set)
     Scripts/store-frames.sh <work-dir> marketing   # → <work-dir>/marketing
     Scripts/store-frames.sh <work-dir> notch [es]  # → <work-dir>/notch-frames (see "Not store assets")
 
@@ -143,7 +164,9 @@ The script copies sources rather than symlinking them: SwiftPM did not
 notice edits behind a symlink and rendered stale views once. Its list of
 `Shared/` files is explicit, so a new file a copied one depends on has
 to join it (3.0 added the sessions' model, preferences and pets; 3.2
-`ResetLine`, the widgets' countdown). Run it from
+`ResetLine`, the widgets' countdown; 4.3 the session card's
+`NotchIslandModel+Steps`, `WidgetReload` and the widgets'
+`StandByUsageView`). Run it from
 a checkout whose `Shared/` matches the build you are shipping, since the
 widget views come from the working tree.
 
