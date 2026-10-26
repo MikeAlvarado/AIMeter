@@ -104,7 +104,11 @@ struct AccountIconPicker: View {
             #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
+                    #if os(iOS)
+                    SheetDoneButton { dismiss() }
+                    #else
                     Button("Done") { dismiss() }
+                    #endif
                 }
             }
         }

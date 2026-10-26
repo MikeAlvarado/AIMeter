@@ -15,7 +15,14 @@ struct HeroWindowView: View {
     /// The window's last 24 hours, shown once it holds enough points
     /// (`HistoryChartData.showsSparkline`).
     var sparkline: HistoryChartData? = nil
-    @ScaledMetric(relativeTo: .largeTitle) private var figureSize: CGFloat = 54
+    /// A card in two columns: the figure at 46 pt instead of 54, so it
+    /// and the reset line fit side by side at full size. Left to
+    /// `minimumScaleFactor`, the two cards of a row drew their figures at
+    /// two sizes ("73" smaller than "61") and cut "Resets in 1h…".
+    var narrow = false
+    @ScaledMetric(relativeTo: .largeTitle) private var baseFigureSize: CGFloat = 54
+
+    private var figureSize: CGFloat { narrow ? baseFigureSize * 46 / 54 : baseFigureSize }
 
     var body: some View {
         let tint = window?.tint(usageColors: prefs.usageColors) ?? Theme.accent
@@ -82,6 +89,8 @@ struct HeroWindowView: View {
                     .font(Theme.caption.weight(.medium))
                     .foregroundStyle(Theme.inkSecondary)
                     .lineLimit(1)
+                    // Whole: the figure beside it is what gives way.
+                    .fixedSize()
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -122,7 +131,8 @@ struct CompactWindowRows: View {
                 .foregroundStyle(Theme.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)
-                // The title is what the row is; the bar gives way first.
+                // The title is what the row is; the bar gives way first,
+                // then the title shrinks and, past that, ends in "…".
                 .layoutPriority(1)
                 // The row speaks once, from its first cell.
                 .accessibilityLabel(Text(verbatim: [title, percent, window?.resetsAt.map { UsageFormatting.resetLabel(for: $0, style: prefs.resetStyle) }].compactMap { $0 }.joined(separator: ", ")))
@@ -132,12 +142,17 @@ struct CompactWindowRows: View {
                 height: 5
             )
             .frame(minWidth: 36)
+            // The figure and the reset never shorten: in a narrow card
+            // (an iPad's or an iPhone Duo's two columns) they read "4…" and
+            // "2h…" while a long title kept its room.
             Text(verbatim: percent)
                 .font(Theme.compactPercent)
                 .foregroundStyle(window == nil ? Theme.inkSecondary : Theme.ink)
+                .fixedSize()
                 .gridColumnAlignment(.trailing)
                 .accessibilityHidden(true)
             trailingCell(trailing, toggles: window?.resetsAt != nil)
+                .fixedSize()
                 .gridColumnAlignment(.trailing)
                 .accessibilityHidden(true)
         }

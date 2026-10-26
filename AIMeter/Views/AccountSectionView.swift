@@ -32,6 +32,11 @@ struct AccountSectionView: View {
     /// Whether the protagonist carries its 24-hour sparkline — on for the
     /// Dashboard, off for landscape, which stays a glance.
     var showsSparkline = false
+    /// Whether the card is one of the iPad's (and the open iPhone Duo's)
+    /// two columns: it takes the height it is offered, so the cards side
+    /// by side end level whatever windows each one has, and its
+    /// protagonist the narrower figure (`HeroWindowView.narrow`).
+    var inColumns = false
 
     /// The sheet is owned here rather than by each caller because both
     /// surfaces that render this card need the same recovery, and the
@@ -54,7 +59,8 @@ struct AccountSectionView: View {
                 moneySubtitle: prefs.creditsAmountSubtitle(for: layout.hero.kind, snapshot: usage.snapshot),
                 sparkline: showsSparkline
                     ? HistoryChartData(samples: model.timeline(for: usage.account.accountID, kind: layout.hero.kind), range: .day, now: Date())
-                    : nil
+                    : nil,
+                narrow: inColumns
             )
             if !layout.others.isEmpty {
                 CompactWindowRows(slots: layout.others, snapshot: usage.snapshot)
@@ -62,7 +68,7 @@ struct AccountSectionView: View {
             statusTail
         }
         .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: inColumns ? .infinity : nil, alignment: .topLeading)
         .cardSurface()
         .sheet(isPresented: $showingReconnect) {
             ConnectAccountSheet(reconnecting: usage.account)

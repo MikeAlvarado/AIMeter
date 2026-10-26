@@ -39,6 +39,9 @@ can follow.
   widget turns into one large figure, readable across the room.
 - **A control.** On iOS 18, one account's figure in Control Center, on
   the Lock Screen or on the Action button; a tap refreshes it.
+- **iPad and iPhone Duo.** Two or more accounts in two columns of cards
+  of one width and height; on iPhone Duo, Settings and Refresh in the bar
+  at the side of the screen, like the rest of the app's buttons.
 - **History and forecast.** Thirty days of each limit on a chart with its
   resets marked, pace captions, a forecast of what runs out early, and an
   export to CSV or JSON.

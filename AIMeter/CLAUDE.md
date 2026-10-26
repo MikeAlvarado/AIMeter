@@ -589,16 +589,48 @@
 - **Landscape (iPhone)**: `verticalSizeClass == .compact` swaps the
   dashboard for a full screen of the same account cards
   (`AccountSectionView(linksToDetail: false)`, no sparkline).
-- **iPad** (a regular horizontal size class): the Dashboard puts
-  two or more accounts in two columns of the same cards
-  (`DashboardView.isGrid`, a `LazyVGrid`, top-aligned, at most 1100 pt
-  wide) and one account's card centred at 560 pt; a dragged card follows
+- **iPad** (a regular horizontal size class, which the open iPhone Duo
+  is too): the Dashboard puts two or more accounts in two columns of the
+  same cards (`DashboardView.isGrid`, at most 1100 pt wide) and one
+  account's card centred at 560 pt. The columns are rows of two equal
+  halves (an `HStack` per pair, `fixedSize` vertically), each card
+  taking its row's height (`AccountSectionView.inColumns`), so a pair
+  ends level whatever windows each has; a `LazyVGrid` kept each card's
+  own height, and a `Grid` sized each column by its content, the card
+  with the longer line coming out wider (Mike, 2026-10-26, on the Duo
+  simulator). In columns the protagonist's figure is 46 pt
+  (`HeroWindowView.narrow`) and its reset line is never shortened, and a
+  compact row's figure and reset never are either: left to
+  `minimumScaleFactor`, a row's two cards drew their figures at two
+  sizes and read "4…", "2h…" and "Resets in 1h…". A dragged card follows
   the finger both ways there (`dragTranslation` is a size; a phone's
   column still moves it up and down only). Provider Detail, an account's
   settings and Settings read in a centred 680 pt column
   (`readableWidth()`, `AIMeter/Views/ReadableWidth.swift`), not across
   the screen. An iPad in Split View narrow enough to be compact gets the
   phone's layout.
+- **iPhone Duo's side bar** (iOS 27.1, `AIMeter/Views/SideBar.swift`):
+  in some poses (always on the outer display, closed) the system lays a
+  screen's navigation bar and toolbar vertically beside the status bar,
+  and takes only system toolbar items with an icon there: a view of the
+  app's never goes, and an item with a title and no icon keeps the whole
+  bar horizontal. `readsVerticalBar` follows `toolbarVerticalEdge`, which
+  is reported even while the navigation bar is hidden. While it is
+  vertical the Dashboard (`DashboardSideBar`) shows its navigation bar
+  with Settings (leading) and Refresh (trailing) as toolbar items and
+  drops the header's round buttons, keeping "Updated X ago" at the top;
+  otherwise the bar stays hidden and the header is as it always was. A
+  sheet's Done (`SheetDoneButton`: Settings, the icon picker) is the
+  word, and on the side bar a checkmark, since Settings' text-only Done
+  kept its bar at the top while every other screen's went to the side.
+  Provider Detail and an account's settings needed nothing (their
+  toolbar items have icons; Back is the system's). The Connect sheets and
+  the tour keep their buttons in their content. Measured on the iPhone
+  Duo simulator (Xcode 27.1, iOS 27.1 runtime), closed and open; the
+  half-open pose and its fold (`reservedRegions`) not yet. `DEBUG` only,
+  to check or capture a screen without a tap: `-AIMeterOpenAccount <id>`
+  (with `-AIMeterOpenAccountSettings YES`, its settings page) and
+  `-AIMeterShowSettings YES`; the demo's ids are `demo` and `demo-2`.
 - **macOS menu bar**: one status item regardless of how many accounts are
   connected — `MenuBarExtra` has no per-instance configuration the way
   widgets do. The label (`MenuBarLabel`, drawing a `MenuBarLabelModel`)

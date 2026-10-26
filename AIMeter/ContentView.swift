@@ -93,12 +93,11 @@ struct ContentView: View {
 
     private var dashboard: some View {
         NavigationStack(path: $path) {
+            // The Dashboard draws its own header on iOS, and hides the
+            // navigation bar itself but on iPhone Duo's side bar
+            // (`DashboardSideBar`); the Mac's window toolbar carries its
+            // buttons instead.
             DashboardView()
-                #if os(iOS)
-                // The Dashboard draws its own header on iOS; the Mac's
-                // window toolbar carries its buttons instead.
-                .toolbar(.hidden, for: .automatic)
-                #endif
         }
         // An account disconnected (from its own settings page, Settings,
         // or the Mac's Settings window): back to the Dashboard, since the
@@ -111,6 +110,18 @@ struct ContentView: View {
                 path = NavigationPath()
             }
         }
+        #if os(iOS) && DEBUG
+        // `-AIMeterOpenAccount <accountID>` opens that account's detail at
+        // launch, and with `-AIMeterOpenAccountSettings YES` its settings
+        // page, to check or capture them without a tap.
+        .onAppear {
+            guard path.isEmpty, let id = UserDefaults.standard.string(forKey: "AIMeterOpenAccount") else { return }
+            path.append(id)
+            if UserDefaults.standard.bool(forKey: "AIMeterOpenAccountSettings") {
+                path.append(AccountSettingsRoute(accountID: id))
+            }
+        }
+        #endif
         #if os(macOS)
         // A click on an account in the menu bar popover opens its detail
         // here (`AppChrome.openAccount`).

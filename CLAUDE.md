@@ -141,8 +141,9 @@ below and `AIMeterWatch/CLAUDE.md`.
   is `PopoverAccountRow.swift`, its footer `PopoverMenuItems.swift`; see
   "Account cards" under "Design system". The Dashboard is `DashboardView.swift` plus
   `DashboardView+Reorder.swift` (the hold-and-drag reorder, whose state
-  stays on the view — internal `@State`, for the same reason as above) and
-  `RoundIconButton.swift`. The macOS status item is `MenuBarLabel.swift`
+  stays on the view — internal `@State`, for the same reason as above),
+  `RoundIconButton.swift` and, iOS only, `SideBar.swift` (iPhone Duo's
+  side bar, see "iPhone Duo's side bar" in `AIMeter/CLAUDE.md`). The macOS status item is `MenuBarLabel.swift`
   (the view, the drawn bar/battery glyphs, and `MenuBarLabelModel.current`)
   over `Shared/MenuBarLabelModel.swift` (the pure model: text, fill, tint,
   accessibility — the part that is unit-tested); its Settings tab is

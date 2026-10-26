@@ -1,6 +1,115 @@
 {
   "releases": [
     {
+      "version": "4.3.0",
+      "items": [
+        {
+          "symbol": "rectangle.split.2x1",
+          "platforms": [
+            "iOS"
+          ],
+          "title": {
+            "en": "Ready for iPhone Duo",
+            "es": "Lista para el iPhone Duo",
+            "de": "Bereit fürs iPhone Duo",
+            "fr": "Prête pour l'iPhone Duo",
+            "ja": "iPhone Duoに対応",
+            "ko": "iPhone Duo 지원",
+            "pt-BR": "Pronto para o iPhone Duo",
+            "zh-Hans": "支持 iPhone Duo"
+          },
+          "detail": {
+            "en": "Settings and Refresh join the bar at the side of the screen, and open, your accounts sit in two columns of the same width and height.",
+            "es": "Ajustes y Actualizar se unen a la barra del costado de la pantalla, y abierto, tus cuentas se acomodan en dos columnas del mismo ancho y alto.",
+            "de": "Einstellungen und Aktualisieren wandern in die Leiste am Bildschirmrand, und aufgeklappt stehen deine Accounts in zwei gleich breiten und gleich hohen Spalten.",
+            "fr": "Réglages et Actualiser rejoignent la barre sur le côté de l'écran, et une fois ouvert, vos comptes se placent sur deux colonnes de même largeur et de même hauteur.",
+            "ja": "設定と更新は画面横のバーに並び、開くとアカウントが同じ幅と高さの2列に並びます。",
+            "ko": "설정과 새로 고침이 화면 옆 막대로 옮겨지고, 펼치면 계정이 같은 너비와 높이의 두 열로 놓입니다.",
+            "pt-BR": "Ajustes e Atualizar passam para a barra na lateral da tela, e aberto, suas contas ficam em duas colunas da mesma largura e altura.",
+            "zh-Hans": "设置和刷新移到屏幕侧边的栏中，展开后，你的账户以宽度和高度相同的两栏显示。"
+          }
+        },
+        {
+          "symbol": "ipad.landscape",
+          "title": {
+            "en": "Made for iPad",
+            "es": "Hecha para iPad",
+            "de": "Fürs iPad gemacht",
+            "fr": "Pensée pour l'iPad",
+            "ja": "iPadに最適化",
+            "ko": "iPad에 맞춘 화면",
+            "pt-BR": "Feito para iPad",
+            "zh-Hans": "为 iPad 打造"
+          },
+          "detail": {
+            "en": "On iPad your accounts sit side by side in two columns, and an account's details and Settings read in a comfortable column instead of across the screen.",
+            "es": "En el iPad tus cuentas se acomodan lado a lado en dos columnas, y el detalle de una cuenta y Ajustes se leen en una columna cómoda en lugar de ocupar toda la pantalla.",
+            "de": "Auf dem iPad stehen deine Accounts in zwei Spalten nebeneinander, und die Details eines Accounts und die Einstellungen lesen sich in einer angenehmen Spalte statt über den ganzen Bildschirm.",
+            "fr": "Sur iPad, vos comptes se placent côte à côte sur deux colonnes, et le détail d'un compte et les Réglages se lisent dans une colonne confortable plutôt que sur toute la largeur de l'écran.",
+            "ja": "iPadではアカウントが2列に並び、アカウントの詳細と設定は画面いっぱいではなく読みやすい幅の列で表示されます。",
+            "ko": "iPad에서는 계정이 두 열로 나란히 놓이고, 계정 세부 정보와 설정은 화면 전체가 아니라 읽기 편한 너비로 표시됩니다.",
+            "pt-BR": "No iPad, suas contas ficam lado a lado em duas colunas, e os detalhes de uma conta e os Ajustes aparecem em uma coluna confortável em vez de ocupar a tela toda.",
+            "zh-Hans": "在 iPad 上，你的账户会以两栏并排显示，账户详情和设置则以舒适的宽度显示，不再铺满整个屏幕。"
+          },
+          "platforms": [
+            "iOS"
+          ]
+        },
+        {
+          "symbol": "switch.2",
+          "title": {
+            "en": "A control for Control Center",
+            "es": "Un control para el Centro de control",
+            "de": "Eine Steuerung fürs Kontrollzentrum",
+            "fr": "Une commande pour le centre de contrôle",
+            "ja": "コントロールセンター用のコントロール",
+            "ko": "제어 센터용 제어 항목",
+            "pt-BR": "Um controle para a Central de Controle",
+            "zh-Hans": "控制中心控制"
+          },
+          "detail": {
+            "en": "On iOS 18 and later, add AIMeter to Control Center, the Lock Screen or the Action button: it shows an account's figure, and a tap refreshes it.",
+            "es": "En iOS 18 o posterior, agrega AIMeter al Centro de control, a la pantalla bloqueada o al botón de Acción: muestra la cifra de una cuenta y al tocarlo la actualiza.",
+            "de": "Ab iOS 18 kannst du AIMeter zum Kontrollzentrum, zum Sperrbildschirm oder zur Aktionstaste hinzufügen: Es zeigt den Wert eines Accounts, und ein Tippen aktualisiert ihn.",
+            "fr": "Sur iOS 18 ou ultérieur, ajoutez AIMeter au centre de contrôle, à l'écran verrouillé ou au bouton Action : il affiche le chiffre d'un compte, et un toucher l'actualise.",
+            "ja": "iOS 18以降では、AIMeterをコントロールセンター、ロック画面、アクションボタンに追加できます。アカウントの数値を表示し、タップで更新します。",
+            "ko": "iOS 18 이상에서는 AIMeter를 제어 센터, 잠금 화면 또는 동작 버튼에 추가할 수 있습니다. 계정의 수치를 보여주고, 탭하면 새로 고칩니다.",
+            "pt-BR": "No iOS 18 ou posterior, adicione o AIMeter à Central de Controle, à Tela Bloqueada ou ao botão de Ação: ele mostra o número de uma conta, e um toque o atualiza.",
+            "zh-Hans": "在 iOS 18 或更高版本中，可将 AIMeter 添加到控制中心、锁定屏幕或操作按钮：它显示一个账户的数值，轻点即可刷新。"
+          },
+          "platforms": [
+            "iOS"
+          ]
+        },
+        {
+          "symbol": "powersleep",
+          "title": {
+            "en": "Widgets for StandBy",
+            "es": "Widgets para StandBy",
+            "de": "Widgets für StandBy",
+            "fr": "Des widgets pour StandBy",
+            "ja": "スタンバイ用のウィジェット",
+            "ko": "스탠바이용 위젯",
+            "pt-BR": "Widgets para o Modo de Espera",
+            "zh-Hans": "适用于待机显示的小组件"
+          },
+          "detail": {
+            "en": "While your iPhone charges on its side, the small widgets show one large figure you can read from across the room.",
+            "es": "Mientras tu iPhone carga de lado, los widgets pequeños muestran una cifra grande que se lee desde el otro lado del cuarto.",
+            "de": "Während dein iPhone seitlich lädt, zeigen die kleinen Widgets einen großen Wert, den du quer durch den Raum lesen kannst.",
+            "fr": "Pendant que votre iPhone se recharge à l'horizontale, les petits widgets affichent un grand chiffre lisible depuis l'autre bout de la pièce.",
+            "ja": "iPhoneを横向きで充電している間、小さいウィジェットは部屋の向こうからでも読める大きな数値を表示します。",
+            "ko": "iPhone을 옆으로 눕혀 충전하는 동안 작은 위젯이 방 건너편에서도 읽을 수 있는 큰 수치를 보여줍니다.",
+            "pt-BR": "Enquanto o iPhone carrega deitado, os widgets pequenos mostram um número grande que dá para ler do outro lado do quarto.",
+            "zh-Hans": "iPhone 横放充电时，小号小组件会显示一个大数字，在房间另一头也看得清。"
+          },
+          "platforms": [
+            "iOS"
+          ]
+        }
+      ]
+    },
+    {
       "version": "4.2.0",
       "items": [
         {
@@ -79,84 +188,6 @@
           },
           "platforms": [
             "macOS"
-          ]
-        },
-        {
-          "symbol": "ipad.landscape",
-          "title": {
-            "en": "Made for iPad",
-            "es": "Hecha para iPad",
-            "de": "Fürs iPad gemacht",
-            "fr": "Pensée pour l'iPad",
-            "ja": "iPadに最適化",
-            "ko": "iPad에 맞춘 화면",
-            "pt-BR": "Feito para iPad",
-            "zh-Hans": "为 iPad 打造"
-          },
-          "detail": {
-            "en": "On iPad your accounts sit side by side in two columns, and an account's details and Settings read in a comfortable column instead of across the screen.",
-            "es": "En el iPad tus cuentas se acomodan lado a lado en dos columnas, y el detalle de una cuenta y Ajustes se leen en una columna cómoda en lugar de ocupar toda la pantalla.",
-            "de": "Auf dem iPad stehen deine Accounts in zwei Spalten nebeneinander, und die Details eines Accounts und die Einstellungen lesen sich in einer angenehmen Spalte statt über den ganzen Bildschirm.",
-            "fr": "Sur iPad, vos comptes se placent côte à côte sur deux colonnes, et le détail d'un compte et les Réglages se lisent dans une colonne confortable plutôt que sur toute la largeur de l'écran.",
-            "ja": "iPadではアカウントが2列に並び、アカウントの詳細と設定は画面いっぱいではなく読みやすい幅の列で表示されます。",
-            "ko": "iPad에서는 계정이 두 열로 나란히 놓이고, 계정 세부 정보와 설정은 화면 전체가 아니라 읽기 편한 너비로 표시됩니다.",
-            "pt-BR": "No iPad, suas contas ficam lado a lado em duas colunas, e os detalhes de uma conta e os Ajustes aparecem em uma coluna confortável em vez de ocupar a tela toda.",
-            "zh-Hans": "在 iPad 上，你的账户会以两栏并排显示，账户详情和设置则以舒适的宽度显示，不再铺满整个屏幕。"
-          },
-          "platforms": [
-            "iOS"
-          ]
-        },
-        {
-          "symbol": "switch.2",
-          "title": {
-            "en": "A control for Control Center",
-            "es": "Un control para el Centro de control",
-            "de": "Eine Steuerung fürs Kontrollzentrum",
-            "fr": "Une commande pour le centre de contrôle",
-            "ja": "コントロールセンター用のコントロール",
-            "ko": "제어 센터용 제어 항목",
-            "pt-BR": "Um controle para a Central de Controle",
-            "zh-Hans": "控制中心控制"
-          },
-          "detail": {
-            "en": "On iOS 18 and later, add AIMeter to Control Center, the Lock Screen or the Action button: it shows an account's figure, and a tap refreshes it.",
-            "es": "En iOS 18 o posterior, agrega AIMeter al Centro de control, a la pantalla bloqueada o al botón de Acción: muestra la cifra de una cuenta y al tocarlo la actualiza.",
-            "de": "Ab iOS 18 kannst du AIMeter zum Kontrollzentrum, zum Sperrbildschirm oder zur Aktionstaste hinzufügen: Es zeigt den Wert eines Accounts, und ein Tippen aktualisiert ihn.",
-            "fr": "Sur iOS 18 ou ultérieur, ajoutez AIMeter au centre de contrôle, à l'écran verrouillé ou au bouton Action : il affiche le chiffre d'un compte, et un toucher l'actualise.",
-            "ja": "iOS 18以降では、AIMeterをコントロールセンター、ロック画面、アクションボタンに追加できます。アカウントの数値を表示し、タップで更新します。",
-            "ko": "iOS 18 이상에서는 AIMeter를 제어 센터, 잠금 화면 또는 동작 버튼에 추가할 수 있습니다. 계정의 수치를 보여주고, 탭하면 새로 고칩니다.",
-            "pt-BR": "No iOS 18 ou posterior, adicione o AIMeter à Central de Controle, à Tela Bloqueada ou ao botão de Ação: ele mostra o número de uma conta, e um toque o atualiza.",
-            "zh-Hans": "在 iOS 18 或更高版本中，可将 AIMeter 添加到控制中心、锁定屏幕或操作按钮：它显示一个账户的数值，轻点即可刷新。"
-          },
-          "platforms": [
-            "iOS"
-          ]
-        },
-        {
-          "symbol": "powersleep",
-          "title": {
-            "en": "Widgets for StandBy",
-            "es": "Widgets para StandBy",
-            "de": "Widgets für StandBy",
-            "fr": "Des widgets pour StandBy",
-            "ja": "スタンバイ用のウィジェット",
-            "ko": "스탠바이용 위젯",
-            "pt-BR": "Widgets para o Modo de Espera",
-            "zh-Hans": "适用于待机显示的小组件"
-          },
-          "detail": {
-            "en": "While your iPhone charges on its side, the small widgets show one large figure you can read from across the room.",
-            "es": "Mientras tu iPhone carga de lado, los widgets pequeños muestran una cifra grande que se lee desde el otro lado del cuarto.",
-            "de": "Während dein iPhone seitlich lädt, zeigen die kleinen Widgets einen großen Wert, den du quer durch den Raum lesen kannst.",
-            "fr": "Pendant que votre iPhone se recharge à l'horizontale, les petits widgets affichent un grand chiffre lisible depuis l'autre bout de la pièce.",
-            "ja": "iPhoneを横向きで充電している間、小さいウィジェットは部屋の向こうからでも読める大きな数値を表示します。",
-            "ko": "iPhone을 옆으로 눕혀 충전하는 동안 작은 위젯이 방 건너편에서도 읽을 수 있는 큰 수치를 보여줍니다.",
-            "pt-BR": "Enquanto o iPhone carrega deitado, os widgets pequenos mostram um número grande que dá para ler do outro lado do quarto.",
-            "zh-Hans": "iPhone 横放充电时，小号小组件会显示一个大数字，在房间另一头也看得清。"
-          },
-          "platforms": [
-            "iOS"
           ]
         }
       ]

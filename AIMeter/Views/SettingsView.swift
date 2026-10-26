@@ -156,7 +156,7 @@ struct SettingsSheet: View {
             SettingsView()
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Done") { dismiss() }
+                        SheetDoneButton { dismiss() }
                             .tint(Theme.accent)
                     }
                 }

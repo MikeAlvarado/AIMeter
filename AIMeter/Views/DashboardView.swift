@@ -32,6 +32,9 @@ struct DashboardView: View {
     @Environment(\.accessibilityReduceMotion) var reduceMotion
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
+    /// iPhone Duo's side bar holds Settings and Refresh in place of the
+    /// header's buttons (`DashboardSideBar`).
+    @State private var barIsVertical = false
     #endif
 
     /// An iPad's width: two or more accounts sit in two columns of the same
@@ -54,11 +57,12 @@ struct DashboardView: View {
         #endif
     }
 
-    /// The two columns, the cards top-aligned in each row.
-    private static let gridColumns = [
-        GridItem(.flexible(), spacing: 16, alignment: .top),
-        GridItem(.flexible(), spacing: 16, alignment: .top),
-    ]
+    /// The accounts two by two, the rows of the two columns.
+    private var accountPairs: [[UsageModel.AccountUsage]] {
+        stride(from: 0, to: model.accounts.count, by: 2).map {
+            Array(model.accounts[$0..<min($0 + 2, model.accounts.count)])
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -135,6 +139,22 @@ struct DashboardView: View {
             refreshRequests += 1
             await model.refreshAll()
         }
+        .modifier(DashboardSideBar(
+            isVertical: $barIsVertical,
+            isRefreshing: model.isRefreshing,
+            settings: { showingSettings = true },
+            refresh: {
+                refreshRequests += 1
+                Task { await model.refreshAll() }
+            }
+        ))
+        #if DEBUG
+        // `-AIMeterShowSettings YES` opens Settings at launch, to check or
+        // capture it without a tap.
+        .onAppear {
+            if UserDefaults.standard.bool(forKey: "AIMeterShowSettings") { showingSettings = true }
+        }
+        #endif
         // "Show the tour" closes Settings first; the tour opens once the
         // sheet is gone.
         .sheet(isPresented: $showingSettings, onDismiss: Tour.deliverPendingShow) {
@@ -226,7 +246,7 @@ struct DashboardView: View {
                     .foregroundStyle(Theme.inkSecondary)
                     .contentTransition(.opacity)
             }
-            HStack {
+            if !barIsVertical {
                 headerButtons
             }
         }
@@ -277,9 +297,23 @@ struct DashboardView: View {
                 }
             } else {
                 if isGrid {
-                    LazyVGrid(columns: Self.gridColumns, alignment: .leading, spacing: 16) {
-                        ForEach(model.accounts) { usage in
-                            accountSection(usage)
+                    // Rows of two equal halves, each row as tall as its
+                    // taller card (`AccountSectionView.inColumns` fills
+                    // it), so a pair ends level however many windows each
+                    // has. Not a `LazyVGrid`, whose cells keep their own
+                    // heights, nor a `Grid`, which sizes each column by its
+                    // content: the card with the longer line came out wider.
+                    VStack(spacing: 16) {
+                        ForEach(accountPairs, id: \.first?.id) { pair in
+                            HStack(alignment: .top, spacing: 16) {
+                                ForEach(pair) { usage in
+                                    accountSection(usage)
+                                }
+                                if pair.count == 1 {
+                                    Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
+                                }
+                            }
+                            .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                 } else {
