@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "4.3.3",
+      "items": [
+        {
+          "symbol": "macwindow",
+          "platforms": [
+            "macOS"
+          ],
+          "title": {
+            "en": "The island opens windows again",
+            "es": "La isla vuelve a abrir ventanas",
+            "de": "Die Insel öffnet wieder Fenster",
+            "fr": "L'île ouvre de nouveau les fenêtres",
+            "ja": "アイランドから再びウインドウを開けます",
+            "ko": "아일랜드에서 다시 창이 열립니다",
+            "pt-BR": "A ilha volta a abrir janelas",
+            "zh-Hans": "岛屿再次可以打开窗口"
+          },
+          "detail": {
+            "en": "After your Mac restarted, the island's buttons could do nothing until AIMeter's window had been opened once. Now they open the Dashboard, Settings and the update notes right away.",
+            "es": "Después de reiniciar tu Mac, los botones de la isla podían no hacer nada hasta abrir una vez la ventana de AIMeter. Ahora abren el Dashboard, Ajustes y las notas de actualización de inmediato.",
+            "de": "Nach einem Neustart deines Mac konnten die Schaltflächen der Insel nichts tun, bis das Fenster von AIMeter einmal geöffnet war. Jetzt öffnen sie die Übersicht, die Einstellungen und die Update-Hinweise sofort.",
+            "fr": "Après un redémarrage de votre Mac, les boutons de l'île pouvaient ne rien faire tant que la fenêtre d'AIMeter n'avait pas été ouverte une fois. Désormais, ils ouvrent aussitôt le tableau de bord, les réglages et les notes de mise à jour.",
+            "ja": "Macを再起動したあと、AIMeterのウインドウを一度開くまでアイランドのボタンが反応しないことがありました。今はダッシュボード、設定、アップデートの内容をすぐに開けます。",
+            "ko": "Mac을 재시동한 뒤에는 AIMeter 창을 한 번 열기 전까지 아일랜드의 버튼이 아무 동작도 하지 않을 수 있었습니다. 이제 대시보드, 설정, 업데이트 안내를 바로 엽니다.",
+            "pt-BR": "Depois de reiniciar o Mac, os botões da ilha podiam não fazer nada até a janela do AIMeter ser aberta uma vez. Agora eles abrem o painel, os Ajustes e as notas de atualização na hora.",
+            "zh-Hans": "Mac 重新启动后，在打开一次 AIMeter 窗口之前，岛屿上的按钮可能没有反应。现在它们会立即打开仪表板、设置和更新说明。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.3.2",
       "items": [
         {

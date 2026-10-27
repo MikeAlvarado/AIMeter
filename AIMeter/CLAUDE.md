@@ -1001,8 +1001,9 @@
     it animates. Footer: Refresh and Open AIMeter grouped left, Settings alone
     right; it activates the app only for Open AIMeter
     (`AppChrome.revealMainWindow`) and Settings (`AppChrome.openSettings`:
-    the dashboard scene's captured `openSettings` action, else the
-    `showSettingsWindow:` selector), and those two (with the update
+    the dashboard scene's captured `openSettings` action, or, before that
+    scene has appeared, the reopen described under "A launch with no
+    window"), and those two (with the update
     notice, "Sign in again" and "Connect") close the island on the way,
     `NotchIslandActions.close`; Refresh runs `refreshAll()` in place
     and leaves it open; no keyboard shortcut (the panel is never key).
@@ -1162,6 +1163,23 @@
     Dashboard windows are matched by the identifier SwiftUI derives from
     `WindowGroup(id:)` (`dashboard-AppWindow-…`) so the Settings window,
     also main-capable, is never mistaken for one.
+  - **A launch with no window.** The bridges (`openDashboard`,
+    `openSettingsAction`, the update and tour windows' actions) exist only
+    once the Dashboard scene has appeared. macOS restores no window when
+    the app last quit with its windows closed (at login, say), and until
+    4.3.3 every button in the island and the popover then did nothing:
+    Settings' fallback, the `showSettingsWindow:` selector, is refused
+    since macOS 14 ("Please use SettingsLink"; Mike, 2026-10-27, after a
+    restart). A route that finds no bridge now asks Launch Services to
+    reopen the app (`AppChrome.summonDashboardScene`, through
+    `NSWorkspace.openApplication`): with no window open SwiftUI opens the
+    Dashboard, whose `onAppear` sets the bridges and hands over what waited
+    (`AppChrome.sceneBridgesReady`: Settings, the update window, the tour),
+    closing the Dashboard again when it was not what was asked for. Not in
+    the first two seconds of a launch (`launchSettled`), when the scene may
+    still be on its way and a reopen could open a second window;
+    `applicationShouldHandleReopen` only reveals a window once a scene
+    exists, so the reopen itself is what opens the first.
   - **Quit still means quit.** Hiding changes only what is visible; the menu
     bar Quit button remains an unconditional `NSApp.terminate`.
   - **One instance.** `applicationWillFinishLaunching` terminates any

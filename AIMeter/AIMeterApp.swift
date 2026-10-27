@@ -42,9 +42,8 @@ struct AIMeterApp: App {
                     AppChrome.openDashboard = { openWindow(id: Self.dashboardWindowID) }
                     AppChrome.openSettingsAction = { openSettings() }
                     AppChrome.openUpdateWindowAction = { openWindow(id: Self.updateWindowID) }
-                    AppChrome.deliverPendingUpdateWindow()
                     AppChrome.openTourWindowAction = { openWindow(id: Self.tourWindowID) }
-                    AppChrome.deliverPendingTourWindow()
+                    AppChrome.sceneBridgesReady()
                     // The notch island lives outside the scene graph; this
                     // is where it gets the app's one `PreferencesModel`.
                     AppEnvironment.prefs = prefs

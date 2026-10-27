@@ -28,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // that window may not open at all, or close just below, and the
         // schedule's first run is a whole cadence away.
         Task { await AppEnvironment.shared?.refreshAll() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { AppChrome.launchSettled = true }
         // A menu-bar-only app shouldn't greet every launch with a window.
         // `.accessory` alone doesn't suppress the `WindowGroup` (measured —
         // the window is up by the time this runs), so close it deliberately.
@@ -81,7 +82,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// having to relaunch once shouldn't permanently undo the chrome the
     /// user chose.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
-        AppChrome.revealMainWindow()
+        // With no Dashboard scene yet (a launch that restored no window),
+        // returning true is what makes SwiftUI open one: its `onAppear`
+        // then registers the window bridges (`AppChrome.summonDashboardScene`).
+        if AppChrome.hasSceneBridges || AppChrome.hasDashboardWindow {
+            AppChrome.revealMainWindow()
+        }
         return true
     }
 }
@@ -203,8 +209,10 @@ enum AppChrome {
         // place instead of building a second one beside it.
         if let existing = dashboardWindows.first {
             existing.makeKeyAndOrderFront(nil)
+        } else if let openDashboard {
+            openDashboard()
         } else {
-            openDashboard?()
+            summonDashboardScene(forDashboard: true)
         }
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -252,9 +260,66 @@ enum AppChrome {
         if let openSettingsAction {
             openSettingsAction()
         } else {
-            _ = NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+            // The `showSettingsWindow:` selector this used to fall back on
+            // does nothing since macOS 14 ("Please use SettingsLink").
+            pendingSettings = true
+            summonDashboardScene(forDashboard: false)
         }
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    static var pendingSettings = false
+
+    static func deliverPendingSettings() {
+        guard pendingSettings, let openSettingsAction else { return }
+        pendingSettings = false
+        openSettingsAction()
+    }
+
+    // MARK: The Dashboard scene's bridges
+
+    /// Every window route here runs through the actions the Dashboard scene
+    /// hands over when it first appears (`AIMeterApp`). A launch that opens
+    /// no window never gets them: macOS restores none when the app last
+    /// quit with its windows closed (at login, say), and the island's and
+    /// the popover's buttons then had nothing to call (4.2.0, Mike,
+    /// 2026-10-27: "detecta el click pero no abre nada", after a restart).
+    /// So a route that finds no bridge asks Launch Services to reopen the
+    /// app, which with no window open makes SwiftUI open the Dashboard
+    /// (measured with `open` on that running 4.2.0); its `onAppear`
+    /// registers the bridges and delivers what waits (`sceneBridgesReady`).
+    /// When another window was all that was asked for, the Dashboard closes
+    /// again once it has.
+    private static var summoning = false
+    private static var closesSummonedDashboard = false
+    /// Set a moment after launch: until then the scene may still be on its
+    /// way, and a reopen sent meanwhile could open a second window.
+    static var launchSettled = false
+
+    static var hasSceneBridges: Bool { openDashboard != nil }
+    static var hasDashboardWindow: Bool { !dashboardWindows.isEmpty }
+
+    static func summonDashboardScene(forDashboard: Bool) {
+        guard launchSettled, !hasSceneBridges else { return }
+        closesSummonedDashboard = forDashboard ? false : (summoning ? closesSummonedDashboard : true)
+        guard !summoning else { return }
+        summoning = true
+        NSWorkspace.shared.openApplication(at: Bundle.main.bundleURL, configuration: NSWorkspace.OpenConfiguration()) { _, _ in
+            DispatchQueue.main.async { summoning = false }
+        }
+    }
+
+    /// The Dashboard scene's `onAppear`, its bridges just set: hands over
+    /// what waited for them.
+    static func sceneBridgesReady() {
+        summoning = false
+        deliverPendingSettings()
+        deliverPendingUpdateWindow()
+        deliverPendingTourWindow()
+        if closesSummonedDashboard {
+            closesSummonedDashboard = false
+            DispatchQueue.main.async { closeDashboardWindows() }
+        }
     }
 
     // MARK: Updates
@@ -273,6 +338,7 @@ enum AppChrome {
             NSApp.activate(ignoringOtherApps: true)
         } else {
             pendingUpdateWindow = true
+            summonDashboardScene(forDashboard: false)
         }
     }
 
@@ -306,6 +372,7 @@ enum AppChrome {
             NSApp.activate(ignoringOtherApps: true)
         } else {
             pendingTourWindow = true
+            summonDashboardScene(forDashboard: false)
         }
     }
 
