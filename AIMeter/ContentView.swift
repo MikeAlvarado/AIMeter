@@ -4,6 +4,7 @@ import UsageKit
 
 struct ContentView: View {
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @Environment(\.scenePhase) private var scenePhase
     /// The Dashboard's navigation, held here so the Mac's popover can open
     /// an account's detail in it (`AppChrome.openAccount`).
@@ -57,6 +58,7 @@ struct ContentView: View {
         }
         .sheet(item: $whatsNew, onDismiss: { WhatsNew.lastSeen = AppVersion.current }) { release in
             WhatsNewSheet(release: release) { whatsNew = nil }
+                .withAppModels(model, prefs)
                 // Its features' cards show with the notes: offered.
                 .onAppear { Tour.markOffered(release.items.compactMap(\.tourFeature)) }
         }
@@ -70,6 +72,7 @@ struct ContentView: View {
                 connectsAfterTour = connect
                 showsTour = false
             }
+            .withAppModels(model, prefs)
         }
         .task {
             for await _ in NotificationCenter.default.notifications(named: .tourShowRequest) {

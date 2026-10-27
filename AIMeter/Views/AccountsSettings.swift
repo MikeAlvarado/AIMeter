@@ -10,6 +10,7 @@ import UsageKit
 /// instead (`MacAccountsSettingsPage`), which draws the same rows.
 struct AccountListSettings: View {
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @State private var connecting = false
 
     var body: some View {
@@ -55,6 +56,7 @@ struct AccountListSettings: View {
         }
         .sheet(isPresented: $connecting) {
             ConnectAccountSheet()
+                .withAppModels(model, prefs)
         }
         SectionFootnote(text: AccountOrderToggle.isOffered(model)
             ? String(localized: "Each account's notifications, Live Activity, name and icon, and disconnecting it.") + " " + AccountOrderToggle.footnote

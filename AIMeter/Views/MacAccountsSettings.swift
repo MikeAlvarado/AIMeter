@@ -20,6 +20,7 @@ struct MacAccountsSettingsPage: View {
     /// Notifications rows can open an account here.
     @Binding var selection: String?
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @State private var connecting = false
     @State private var confirmingRemoval = false
 
@@ -55,6 +56,7 @@ struct MacAccountsSettingsPage: View {
         .appBackground()
         .sheet(isPresented: $connecting) {
             ConnectAccountSheet()
+                .withAppModels(model, prefs)
         }
     }
 

@@ -3,6 +3,7 @@ import UsageKit
 
 struct DashboardView: View {
     @Environment(UsageModel.self) var model
+    @Environment(PreferencesModel.self) private var prefs
     #if os(macOS)
     @Environment(\.openSettings) private var openSettings
     #endif
@@ -159,6 +160,7 @@ struct DashboardView: View {
         // sheet is gone.
         .sheet(isPresented: $showingSettings, onDismiss: Tour.deliverPendingShow) {
             SettingsSheet()
+                .withAppModels(model, prefs)
         }
         // The tour's last step: connect, once the tour has closed.
         .task {
@@ -169,9 +171,11 @@ struct DashboardView: View {
         #endif
         .sheet(isPresented: $showingConnect) {
             ConnectAccountSheet()
+                .withAppModels(model, prefs)
         }
         .sheet(item: $reconnecting) { account in
             ConnectAccountSheet(reconnecting: account)
+                .withAppModels(model, prefs)
         }
         #if os(macOS)
         // When the accounts last refreshed, once, under the window's title

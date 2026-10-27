@@ -17,6 +17,7 @@ struct AccountSettingsCards: View {
     var onDisconnect: (() -> Void)? = nil
 
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @State private var showingRename = false
     @State private var renameDraft = ""
     @State private var showingIconPicker = false
@@ -149,9 +150,11 @@ struct AccountSettingsCards: View {
         }
         .sheet(isPresented: $showingIconPicker) {
             AccountIconPicker(accountID: accountID)
+                .withAppModels(model, prefs)
         }
         .sheet(item: $reconnecting) { account in
             ConnectAccountSheet(reconnecting: account)
+                .withAppModels(model, prefs)
         }
         .renameAccountAlert(for: accountID, isPresented: $showingRename, name: $renameDraft)
     }

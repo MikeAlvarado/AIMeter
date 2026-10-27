@@ -72,10 +72,12 @@ struct AccountSectionView: View {
         .cardSurface()
         .sheet(isPresented: $showingReconnect) {
             ConnectAccountSheet(reconnecting: usage.account)
+                .withAppModels(model, prefs)
         }
         .renameAccountAlert(for: usage.account.accountID, isPresented: $showingRename, name: $renameDraft)
         .sheet(isPresented: $showingIconPicker) {
             AccountIconPicker(accountID: usage.account.accountID)
+                .withAppModels(model, prefs)
         }
     }
 

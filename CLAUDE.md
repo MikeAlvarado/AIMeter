@@ -143,7 +143,11 @@ below and `AIMeterWatch/CLAUDE.md`.
   `DashboardView+Reorder.swift` (the hold-and-drag reorder, whose state
   stays on the view — internal `@State`, for the same reason as above),
   `RoundIconButton.swift` and, iOS only, `SideBar.swift` (iPhone Duo's
-  side bar, see "iPhone Duo's side bar" in `AIMeter/CLAUDE.md`). The macOS status item is `MenuBarLabel.swift`
+  side bar, see "iPhone Duo's side bar" in `AIMeter/CLAUDE.md`). Every
+  sheet's and cover's content gets the two models from its presenter
+  (`PresentedModels.swift`, `withAppModels(model, prefs)`), never by
+  inheritance alone: the iPhone build on a Mac with Apple silicon
+  presented the first launch's tour without them and crashed (4.3.0). The macOS status item is `MenuBarLabel.swift`
   (the view, the drawn bar/battery glyphs, and `MenuBarLabelModel.current`)
   over `Shared/MenuBarLabelModel.swift` (the pure model: text, fill, tint,
   accessibility — the part that is unit-tested); its Settings tab is

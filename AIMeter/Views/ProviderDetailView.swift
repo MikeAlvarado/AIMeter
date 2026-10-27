@@ -11,6 +11,7 @@ struct ProviderDetailView: View {
     let accountID: String
 
     @Environment(UsageModel.self) private var model
+    @Environment(PreferencesModel.self) private var prefs
     @State private var showingReconnect = false
 
     private var usage: UsageModel.AccountUsage? {
@@ -89,6 +90,7 @@ struct ProviderDetailView: View {
         .sheet(isPresented: $showingReconnect) {
             if let account = usage?.account {
                 ConnectAccountSheet(reconnecting: account)
+                    .withAppModels(model, prefs)
             }
         }
         .navigationTitle(accountName)
