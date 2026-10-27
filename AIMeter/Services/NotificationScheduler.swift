@@ -203,6 +203,7 @@ enum NotificationScheduler {
     static func notifyReauthenticationNeeded(
         accountID: String,
         accountLabel: String? = nil,
+        providerName: String,
         preferences: NotificationPreferences
     ) async {
         guard preferences.reauthAlertsEnabled,
@@ -211,7 +212,7 @@ enum NotificationScheduler {
 
         let content = UNMutableNotificationContent()
         content.title = labeled(String(localized: "Sign-in expired"), accountLabel)
-        content.body = String(localized: "Claude rejected AIMeter's saved sign-in. Open AIMeter and sign in again to keep tracking your usage.")
+        content.body = String(localized: "\(providerName) rejected AIMeter's saved sign-in. Open AIMeter and sign in again to keep tracking your usage.")
         content.sound = .default
 
         let request = UNNotificationRequest(

@@ -139,6 +139,8 @@ struct DeviceCodeConnectView: View {
                 }
 
                 Button("Cancel") { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                    .tapTarget()
                     .buttonStyle(.plain)
                     .foregroundStyle(Theme.inkSecondary)
                     .padding(.bottom, 8)
@@ -180,7 +182,7 @@ struct DeviceCodeConnectView: View {
                                 .accessibilityLabel(Text("Copy code"))
                                 .font(.body.weight(.medium))
                                 .foregroundStyle(.white)
-                                .frame(width: 36, height: 36)
+                                .frame(width: 44, height: 44)
                                 .background(Theme.accent, in: Circle())
                         }
                         .buttonStyle(.plain)
@@ -188,9 +190,13 @@ struct DeviceCodeConnectView: View {
                     .padding(.horizontal, 18)
                     .padding(.vertical, 12)
                     .background(Theme.track.opacity(0.6), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    // One VoiceOver element: "Your code: ABCD-1234".
+                    // One VoiceOver element: "Your code: ABCD-1234", with
+                    // Copy as its action (combined, the button was gone).
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(Text("Your code: \(prompt.userCode)"))
+                    .accessibilityAction(named: Text("Copy code")) {
+                        copy(prompt.userCode)
+                    }
                 }
                 if phase == .waiting || phase == .connecting {
                     HStack(spacing: 6) {
@@ -226,6 +232,7 @@ struct DeviceCodeConnectView: View {
         NSPasteboard.general.setString(code, forType: .string)
         #endif
         copied = true
+        AccessibilityNotification.Announcement(String(localized: "Copied")).post()
         Task {
             try? await Task.sleep(for: .seconds(2))
             copied = false

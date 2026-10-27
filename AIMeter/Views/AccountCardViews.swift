@@ -27,23 +27,29 @@ struct HeroWindowView: View {
     var body: some View {
         let tint = window?.tint(usageColors: prefs.usageColors) ?? Theme.accent
         VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .bottom, spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(window?.title ?? kind.displayName)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Theme.inkSecondary)
-                        .lineLimit(1)
-                    figure
-                }
-                .layoutPriority(1)
-                Spacer(minLength: 8)
-                VStack(alignment: .trailing, spacing: 8) {
-                    if let sparkline, sparkline.showsSparkline {
-                        Sparkline(data: sparkline, tint: tint, size: CGSize(width: 92, height: 30))
+            // Side by side when the figure and the reset line fit at full
+            // size; stacked otherwise (German or French words, a larger
+            // text size, a narrow column). 4.3.0 kept them side by side at
+            // any cost and the card ran past the screen's edges.
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .bottom, spacing: 12) {
+                    titleAndFigure
+                        .layoutPriority(1)
+                    Spacer(minLength: 8)
+                    VStack(alignment: .trailing, spacing: 8) {
+                        sparklineView(tint)
+                        trailingLine(fixed: true)
                     }
-                    trailingLine
+                    .padding(.bottom, 6)
                 }
-                .padding(.bottom, 6)
+                VStack(alignment: .leading, spacing: 8) {
+                    titleAndFigure
+                    HStack(alignment: .center, spacing: 12) {
+                        trailingLine(fixed: false)
+                        Spacer(minLength: 8)
+                        sparklineView(tint)
+                    }
+                }
             }
             UsageBarView(
                 value: window?.displayedPct(prefs.displayMode),
@@ -53,6 +59,23 @@ struct HeroWindowView: View {
             )
         }
         .accessibilityElement(children: .combine)
+    }
+
+    private var titleAndFigure: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(window?.title ?? kind.displayName)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.inkSecondary)
+                .lineLimit(2)
+            figure
+        }
+    }
+
+    @ViewBuilder
+    private func sparklineView(_ tint: Color) -> some View {
+        if let sparkline, sparkline.showsSparkline {
+            Sparkline(data: sparkline, tint: tint, size: CGSize(width: 92, height: 30))
+        }
     }
 
     private var figure: some View {
@@ -79,8 +102,10 @@ struct HeroWindowView: View {
         .minimumScaleFactor(0.7)
     }
 
+    /// When it resets, whole beside the figure (`fixed`, the layout only
+    /// chosen when it fits) or wrapping under it.
     @ViewBuilder
-    private var trailingLine: some View {
+    private func trailingLine(fixed: Bool) -> some View {
         if let resetsAt = window?.resetsAt {
             Button {
                 prefs.toggleResetStyle()
@@ -88,17 +113,17 @@ struct HeroWindowView: View {
                 Text(UsageFormatting.resetLabel(for: resetsAt, style: prefs.resetStyle))
                     .font(Theme.caption.weight(.medium))
                     .foregroundStyle(Theme.inkSecondary)
-                    .lineLimit(1)
-                    // Whole: the figure beside it is what gives way.
-                    .fixedSize()
-                    .contentShape(Rectangle())
+                    .lineLimit(fixed ? 1 : 2)
+                    .fixedSize(horizontal: fixed, vertical: !fixed)
+                    .tapTarget()
             }
             .buttonStyle(.plain)
         } else if let moneySubtitle {
             Text(moneySubtitle)
                 .font(Theme.caption.weight(.medium))
                 .foregroundStyle(Theme.inkSecondary)
-                .lineLimit(1)
+                .lineLimit(fixed ? 1 : 2)
+                .fixedSize(horizontal: fixed, vertical: !fixed)
         }
     }
 }
@@ -113,17 +138,64 @@ struct CompactWindowRows: View {
     let snapshot: UsageSnapshot?
 
     var body: some View {
-        Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 13) {
-            ForEach(slots, id: \.kind) { slot in
-                row(slot)
+        // One line a window in shared columns when the longest title fits
+        // whole; otherwise each window on two lines, its title over its
+        // bar, figure and reset (German or French titles, a larger text
+        // size), rather than a row wider than the card.
+        ViewThatFits(in: .horizontal) {
+            Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 13) {
+                ForEach(slots, id: \.kind) { slot in
+                    row(slot)
+                }
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(slots, id: \.kind) { slot in
+                    stackedRow(slot)
+                }
             }
         }
+    }
+
+    private func stackedRow(_ slot: AccountCardLayout.Slot) -> some View {
+        let window = slot.window
+        return VStack(alignment: .leading, spacing: 5) {
+            Text(window?.title ?? slot.kind.displayName)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 10) {
+                UsageBarView(
+                    value: window?.displayedPct(prefs.displayMode),
+                    tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent,
+                    height: 5
+                )
+                Text(verbatim: percentText(window))
+                    .font(Theme.compactPercent)
+                    .foregroundStyle(window == nil ? Theme.inkSecondary : Theme.ink)
+                    .fixedSize()
+                trailingCell(trailingText(slot), toggles: window?.resetsAt != nil)
+                    .fixedSize()
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: spokenLabel(slot)))
+    }
+
+    private func percentText(_ window: UsageWindow?) -> String {
+        window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--"
+    }
+
+    private func spokenLabel(_ slot: AccountCardLayout.Slot) -> String {
+        let window = slot.window
+        return [window?.title ?? slot.kind.displayName, percentText(window), window?.resetsAt.map { UsageFormatting.resetLabel(for: $0, style: prefs.resetStyle) }]
+            .compactMap { $0 }
+            .joined(separator: ", ")
     }
 
     private func row(_ slot: AccountCardLayout.Slot) -> some View {
         let window = slot.window
         let title = window?.title ?? slot.kind.displayName
-        let percent = window.map { "\(Int($0.displayedPct(prefs.displayMode)))%" } ?? "--"
+        let percent = percentText(window)
         let trailing = trailingText(slot)
         return GridRow {
             Text(title)
@@ -135,7 +207,7 @@ struct CompactWindowRows: View {
                 // then the title shrinks and, past that, ends in "…".
                 .layoutPriority(1)
                 // The row speaks once, from its first cell.
-                .accessibilityLabel(Text(verbatim: [title, percent, window?.resetsAt.map { UsageFormatting.resetLabel(for: $0, style: prefs.resetStyle) }].compactMap { $0 }.joined(separator: ", ")))
+                .accessibilityLabel(Text(verbatim: spokenLabel(slot)))
             UsageBarView(
                 value: window?.displayedPct(prefs.displayMode),
                 tint: window?.tint(usageColors: prefs.usageColors) ?? Theme.accent,
@@ -170,7 +242,7 @@ struct CompactWindowRows: View {
             Button {
                 prefs.toggleResetStyle()
             } label: {
-                label.contentShape(Rectangle())
+                label.tapTarget()
             }
             .buttonStyle(.plain)
         } else {

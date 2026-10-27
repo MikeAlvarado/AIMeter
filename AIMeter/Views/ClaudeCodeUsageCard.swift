@@ -119,13 +119,19 @@ enum ClaudeCodeFormatting {
         demo ? String(localized: "Coding sessions on this Mac") : String(localized: "Claude Code on this Mac")
     }
 
-    /// "1.2M tokens · ≈ $4.10", or "—" for an empty bucket.
+    /// "≈ $4.10", or "at least $4.10" when a model has no price: a lone
+    /// ">" read as an arrow.
+    static func costText(_ cost: Double, lowerBound: Bool) -> String {
+        let usd = UsageFormatting.usd(cost)
+        return lowerBound ? String(localized: "at least \(usd)") : "≈ \(usd)"
+    }
+
+    /// "1.2M tokens · ≈ $4.10", or "--" for an empty bucket.
     static func summary(_ aggregate: ClaudeCodeUsageAggregate) -> String {
         guard aggregate.messages > 0 else { return "--" }
         let tokens = String(localized: "\(UsageFormatting.tokens(aggregate.tokens.total)) tokens")
         guard let cost = aggregate.cost else { return tokens }
-        let prefix = aggregate.hasUnpricedModels ? "> " : "≈ "
-        return "\(tokens) · \(prefix)\(UsageFormatting.usd(cost))"
+        return "\(tokens) · \(costText(cost, lowerBound: aggregate.hasUnpricedModels))"
     }
 }
 #endif

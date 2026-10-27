@@ -48,6 +48,7 @@ struct AccountSectionView: View {
     @State private var showingIconPicker = false
     @Environment(UsageModel.self) private var model
     @Environment(PreferencesModel.self) private var prefs
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let layout = AccountCardLayout(snapshot: usage.snapshot, modelSlotFallback: prefs.modelSlotFallback)
@@ -156,15 +157,25 @@ struct AccountSectionView: View {
 
     private func headerContent(showsChevron: Bool) -> some View {
         HStack(spacing: 10) {
-            ProviderIdentityView(
-                name: usage.account.displayName,
-                iconSize: 26,
-                iconCornerRadius: 8,
-                font: .headline,
-                nameColor: Theme.ink,
-                planName: usage.snapshot?.planName,
-                icon: usage.account.icon
-            )
+            // At the accessibility text sizes the plan pill goes under the
+            // name, which beside it was cut to "Pe…".
+            let pillBelow = typeSize.isAccessibilitySize ? usage.snapshot?.planName : nil
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 10) {
+                    ProviderIdentityView(
+                        name: usage.account.displayName,
+                        iconSize: 26,
+                        iconCornerRadius: 8,
+                        font: .headline,
+                        nameColor: Theme.ink,
+                        planName: pillBelow == nil ? usage.snapshot?.planName : nil,
+                        icon: usage.account.icon
+                    )
+                }
+                if let pillBelow {
+                    PlanPill(name: pillBelow)
+                }
+            }
             Spacer()
             if showsChevron {
                 Image(systemName: "chevron.right")

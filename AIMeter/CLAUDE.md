@@ -204,11 +204,13 @@
   Dashboard header's context menu uses (see "Renaming" above), and an
   Icon row opening the icon picker, one card between them (`Card` stacks
   its rows itself: handed them loose, it drew three cards from 1.6 to
-  3.0.1); the per-window reset notification toggles
-  (`NotificationTogglesCard`) and a **Smart notifications** card
+  3.0.1); the per-window reset notification toggles under "Reset
+  alerts" (`NotificationTogglesCard`) and a **Smart notifications** card
   (`SmartNotificationTogglesCard`, one toggle per `SmartAlert` case in
-  declaration order: Near-limit warnings with a threshold slider, Limit
-  reached, Run-out warnings, Early-reset alerts, and Sign-in alerts —
+  declaration order, each with a line under its name saying what fires
+  it, `SmartAlert.detail`, where until 4.3.1 one paragraph under the
+  card explained all five: Near-limit warnings with a threshold slider,
+  Limit reached, Run-out warnings, Early-reset alerts, and Sign-in alerts —
   all five scoped to this one account, and Sign-in alerts the only toggle
   in the app that starts **on**, for the reason documented on
   `NotificationPreferences.reauthAlertsEnabled`); on iOS only, a "Live
@@ -492,7 +494,8 @@
   for your approval…" under it), a button that opens the service's
   device page (`auth.openai.com/codex/device`, `github.com/login/device`),
   Codex's note that device code login must be allowed in ChatGPT's
-  security settings, the nickname field under the same rules as Claude's,
+  security settings, the nickname field under the same rules as Claude's
+  (every flow's Cancel answers Esc and Claude's Connect, Return),
   the family's own independence footnote, and Cancel. The view polls at
   the service's interval until the login lands (then
   `UsageModel.completeConnection(_:displayName:)` or
@@ -586,9 +589,13 @@
   keep it from looking like a second, competing call to action. Provider
   Detail's bottom button also becomes "Exit Demo" (both platforms) instead
   of "Disconnect Claude" (iOS-only) while active.
-- **Landscape (iPhone)**: `verticalSizeClass == .compact` swaps the
-  dashboard for a full screen of the same account cards
-  (`AccountSectionView(linksToDetail: false)`, no sparkline).
+- **Landscape (iPhone)**: the same Dashboard (`DashboardView.isLandscapePhone`,
+  `verticalSizeClass == .compact`), its header's Settings and Refresh and
+  every card's link to Provider Detail included, with no sparklines and
+  no status bar. Until 4.3.1 a view of its own (`LandscapeUsageView`)
+  replaced the Dashboard there, outside its navigation stack: no
+  Settings, no Refresh, no way to an account's detail, and rotating lost
+  where the user was.
 - **iPad** (a regular horizontal size class, which the open iPhone Duo
   is too): the Dashboard puts two or more accounts in two columns of the
   same cards (`DashboardView.isGrid`, at most 1100 pt wide) and one
@@ -599,10 +606,15 @@
   own height, and a `Grid` sized each column by its content, the card
   with the longer line coming out wider (Mike, 2026-10-26, on the Duo
   simulator). In columns the protagonist's figure is 46 pt
-  (`HeroWindowView.narrow`) and its reset line is never shortened, and a
-  compact row's figure and reset never are either: left to
-  `minimumScaleFactor`, a row's two cards drew their figures at two
-  sizes and read "4…", "2h…" and "Resets in 1h…". A dragged card follows
+  (`HeroWindowView.narrow`). On every screen, a card's figures and resets
+  are never shortened: left to `minimumScaleFactor`, a row's two cards
+  drew their figures at two sizes and read "4…", "2h…" and "Resets in
+  1h…". What doesn't fit on one line stacks instead (`ViewThatFits`): the
+  protagonist's reset line under its figure, and each compact row's
+  title over its bar, figure and reset. 4.3.0 kept them on one line at
+  any cost, and in German, in French or at a larger text size the card
+  ran past both edges of an iPhone's screen. At the accessibility text
+  sizes the plan pill sits under the account's name. A dragged card follows
   the finger both ways there (`dragTranslation` is a size; a phone's
   column still moves it up and down only). Provider Detail, an account's
   settings and Settings read in a centred 680 pt column
@@ -680,7 +692,8 @@
   it at 78 % (solid under Reduce Transparency) and each card is a solid
   `Theme.card`: 4.0.0 drew straight on the clear glass, and with a
   window behind the popover its secondary text could not be read. The
-  card under the pointer darkens a little and a click opens that
+  card under the pointer (or reached with Tab, Full Keyboard Access, and
+  opened with Return or Space) darkens a little and a click opens that
   account's Provider Detail in the Dashboard window
   (`AppChrome.openAccount`: the window's `NavigationStack` path lives in
   `ContentView`, which registers `AppChrome.presentAccount` on appear,

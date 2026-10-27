@@ -24,12 +24,15 @@ struct HistoryCard: View {
         let data = HistoryChartData(samples: model.timeline(for: accountID, kind: kind), range: range)
         Card {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
-                SegmentedPill(options: kinds.map { ($0, $0.shortName) }, selection: $kind)
-                SegmentedPill(options: HistoryRange.allCases.map { ($0, $0.label) }, selection: $range)
+                SegmentedPill(options: kinds.map { ($0, $0.shortName) }, selection: $kind, name: String(localized: "Window"))
+                SegmentedPill(options: HistoryRange.allCases.map { ($0, $0.label) }, selection: $range, name: String(localized: "Time range"))
                 if data.isReady {
                     chart(data)
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel(data.summary(for: kind))
+                        // VoiceOver's Audio Graph, which the summary
+                        // replacing the chart had taken away.
+                        .accessibilityChartDescriptor(HistoryAudioGraph(data: data, title: kind.displayName))
                 } else {
                     recording(data)
                 }
@@ -179,5 +182,38 @@ struct Sparkline: View {
         .chartLegend(.hidden)
         .frame(width: size.width, height: size.height)
         .accessibilityHidden(true)
+    }
+}
+
+/// The History chart as VoiceOver's Audio Graph: time across, the % of the
+/// limit used up, one series of the samples in range.
+private struct HistoryAudioGraph: AXChartDescriptorRepresentable {
+    let data: HistoryChartData
+    let title: String
+
+    func makeChartDescriptor() -> AXChartDescriptor {
+        let times = data.points.map { $0.date.timeIntervalSince1970 }
+        let start = times.min() ?? 0
+        let end = max(times.max() ?? 1, start + 1)
+        let xAxis = AXNumericDataAxisDescriptor(
+            title: String(localized: "Time"),
+            range: start...end,
+            gridlinePositions: []
+        ) { value in
+            Date(timeIntervalSince1970: value).formatted(date: .abbreviated, time: .shortened)
+        }
+        let yAxis = AXNumericDataAxisDescriptor(
+            title: String(localized: "Percent of limit"),
+            range: 0...100,
+            gridlinePositions: [85]
+        ) { value in
+            "\(Int(value))%"
+        }
+        let series = AXDataSeriesDescriptor(
+            name: title,
+            isContinuous: true,
+            dataPoints: data.points.map { AXDataPoint(x: $0.date.timeIntervalSince1970, y: $0.usedPct) }
+        )
+        return AXChartDescriptor(title: title, summary: nil, xAxis: xAxis, yAxis: yAxis, additionalAxes: [], series: [series])
     }
 }

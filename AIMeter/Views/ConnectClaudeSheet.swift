@@ -118,11 +118,14 @@ struct ConnectClaudeSheet: View {
                     .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.white)
+                // Disabled, its word in the secondary ink: white on the
+                // track (1.2:1) hid the button altogether.
+                .foregroundStyle(canConnect ? Color.white : Theme.inkSecondary)
                 .background(
                     (canConnect ? Theme.accent : Theme.track) , in: Capsule()
                 )
                 .disabled(!canConnect)
+                .keyboardShortcut(.defaultAction)
 
                 #if os(macOS)
                 // macOS only, and not by accident: the iOS build never asks
@@ -167,6 +170,8 @@ struct ConnectClaudeSheet: View {
                 }
 
                 Button("Cancel") { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                    .tapTarget()
                     .buttonStyle(.plain)
                     .foregroundStyle(Theme.inkSecondary)
                     .padding(.bottom, 8)

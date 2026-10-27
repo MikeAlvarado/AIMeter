@@ -137,7 +137,8 @@ struct UsageRowsSettings: View {
             VStack(alignment: .leading, spacing: Theme.rowSpacing) {
                 SegmentedPill(
                     options: ModelSlotFallback.allCases.map { ($0, $0.label) },
-                    selection: $prefs.modelSlotFallback
+                    selection: $prefs.modelSlotFallback,
+                    name: String(localized: "Usage rows")
                 )
                 Divider().overlay(Theme.track)
                 Toggle(isOn: $prefs.showCreditsAmount) {
@@ -182,7 +183,7 @@ struct GlanceMetricSettings: View {
 
         SectionHeader(title: String(localized: "Lock Screen widget"))
         Card {
-            SegmentedPill(options: options.map { ($0, $0.shortName) }, selection: $prefs.glanceMetric)
+            SegmentedPill(options: options.map { ($0, $0.shortName) }, selection: $prefs.glanceMetric, name: String(localized: "Lock Screen widget"))
         }
         SectionFootnote(text: String(localized: "Which usage window the Lock Screen circular widget shows, whichever account it is set to. The options are what your accounts report."))
     }

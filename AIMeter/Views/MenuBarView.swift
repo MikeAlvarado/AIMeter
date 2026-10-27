@@ -19,6 +19,7 @@ struct MenuBarView: View {
     @State private var listBottom: CGFloat = 0
     @State private var loginItem = LoginItemManager()
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Past this the list scrolls instead of growing the popover.
     private static let maxListHeight: CGFloat = 480
 
@@ -205,7 +206,7 @@ struct MenuBarView: View {
         .overlay(alignment: .bottom) {
             if moreBelow {
                 Button {
-                    withAnimation(.easeOut(duration: 0.3)) { scroller.scrollTo(Self.listEnd, anchor: .bottom) }
+                    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.3)) { scroller.scrollTo(Self.listEnd, anchor: .bottom) }
                 } label: {
                     Image(systemName: "chevron.compact.down")
                         .font(.title3.weight(.semibold))
@@ -218,7 +219,7 @@ struct MenuBarView: View {
                 .transition(.opacity)
             }
         }
-        .animation(.easeOut(duration: 0.15), value: moreBelow)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: moreBelow)
         }
     }
 

@@ -154,6 +154,18 @@ enum SmartAlert: CaseIterable {
         case .reauth: String(localized: "Sign-in alerts")
         }
     }
+
+    /// One line under the toggle: what fires it. Until 4.3.1 the five
+    /// were explained in one paragraph under the card.
+    var detail: String {
+        switch self {
+        case .nearLimit: String(localized: "When a limit passes the level you set.")
+        case .limitReached: String(localized: "When a limit runs out, and whether credits take over.")
+        case .runOut: String(localized: "Ahead of time, when your pace would use a limit up early.")
+        case .earlyReset: String(localized: "When a limit refills before its scheduled reset.")
+        case .reauth: String(localized: "When the service stops accepting this account's sign-in. On by default, since nothing else would tell you the figures stopped updating.")
+        }
+    }
 }
 
 extension NotificationPreferences {

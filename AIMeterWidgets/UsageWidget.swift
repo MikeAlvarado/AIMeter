@@ -109,7 +109,7 @@ struct UsageWidget: Widget {
             UsageWidgetView(entry: entry)
         }
         .configurationDisplayName("Usage Limits")
-        .description("Session, weekly, and top-model usage windows. Edit the widget to pick which account.")
+        .description("Your account's limits and when they reset. Edit the widget to pick which account.")
         .supportedFamilies(Self.families)
     }
 

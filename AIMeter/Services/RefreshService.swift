@@ -117,7 +117,10 @@ struct RefreshService {
             // which costs nothing when it turns out to be unnecessary.
             if case UsageError.notAuthenticated = error {
                 await NotificationScheduler.notifyReauthenticationNeeded(
-                    accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+                    accountID: account.accountID,
+                    accountLabel: accountLabel,
+                    providerName: ProviderCatalog.displayName(for: account.providerID),
+                    preferences: prefs
                 )
             }
             throw error

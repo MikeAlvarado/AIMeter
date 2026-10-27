@@ -84,6 +84,8 @@ struct ConnectAccountSheet: View {
                     .multilineTextAlignment(.center)
 
                 Button("Cancel") { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                    .tapTarget()
                     .buttonStyle(.plain)
                     .foregroundStyle(Theme.inkSecondary)
                     .padding(.bottom, 8)

@@ -1071,7 +1071,8 @@ the account silently freezes at its last snapshot.
   (last record wins) and carries no time, so the buckets come from
   per-message tokens × the pricing table and `cost-state` is the
   cross-check; an unknown model shows tokens and no cost, and makes the
-  bucket's cost a lower bound ("> $…"). The pricing table is hardcoded
+  bucket's cost a lower bound ("at least $…", which until 4.3.1 read
+  "> $…" and looked like an arrow). The pricing table is hardcoded
   and release-updated like `ClaudePeakSchedule` was — no server, not
   user-editable — and verifying it against the pricing page is part of
   every release. iOS: nothing, deliberately (no logs there, and the iOS
@@ -1931,7 +1932,8 @@ protagonist (`HeroWindowView`: its title, its figure at 54 pt (a
 beside it, the sparkline and its "Resets in …" on the trailing side, a
 10 pt bar), then the others as one line each in shared columns
 (`CompactWindowRows`: title, a 5 pt bar, figure, bare reset or credits
-amount; a tap on a reset toggles the style, as everywhere), then the
+amount; a tap on a reset toggles the style, as everywhere; both stack
+when one line doesn't fit, see "iPad" in `AIMeter/CLAUDE.md`), then the
 status tail only when it has something to say (an error, "Sign in
 again", the incident line, or "Updated X ago" once stale:
 `UsageStatusFooter(updated: .whenStale)`), since the Dashboard says when
@@ -2061,7 +2063,16 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   the account header) claims its full shape with `.contentShape(...)` on
   the label. Without it only the word or glyph responds, which is how the
   Connect sheet's button shipped once: tappable on the text, dead on the
-  rest of the capsule.
+  rest of the capsule. On iOS a small text control (a reset line, "Sign
+  in again", Cancel) takes a finger's 44 pt of height through
+  `tapTarget()` (`Shared/ThemeComponents.swift`), which widens the hit
+  area without moving anything; `SegmentedPill`'s segments are 44 pt tall
+  on iOS and carry a `name` VoiceOver says before them (the section's
+  header); `SectionHeader` is a heading for the rotor; a slider or menu
+  whose label sits beside it still gets its own (`Warn at`, "Refresh
+  usage", "Style"); the History chart keeps its spoken summary and adds
+  an Audio Graph (`HistoryAudioGraph`); and a disabled capsule button
+  draws its word in the secondary ink, never white on the track.
   `accessibilityReduceMotion` gates the three animated transitions in the
   app (`RoundIconButton`'s refresh spin, `SegmentedPill`'s selection
   change, and the Dashboard account reorder's drop-target highlight and

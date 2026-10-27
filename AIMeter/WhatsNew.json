@@ -1,6 +1,132 @@
 {
   "releases": [
     {
+      "version": "4.3.2",
+      "items": [
+        {
+          "symbol": "textformat.size",
+          "title": {
+            "en": "Every word in its place",
+            "es": "Cada palabra en su lugar",
+            "de": "Jedes Wort an seinem Platz",
+            "fr": "Chaque mot à sa place",
+            "ja": "すべての文字がきちんと収まる",
+            "ko": "모든 글자가 제자리에",
+            "pt-BR": "Cada palavra no lugar",
+            "zh-Hans": "每个字都各就其位"
+          },
+          "detail": {
+            "en": "With a larger text size, or in German or French, the cards rearrange themselves instead of running off the screen.",
+            "es": "Con el texto más grande, o en alemán o francés, las tarjetas se acomodan solas en lugar de salirse de la pantalla.",
+            "de": "Mit größerer Schrift oder auf Deutsch und Französisch ordnen sich die Karten neu an, statt über den Bildschirmrand hinauszuragen.",
+            "fr": "Avec une plus grande taille de texte, ou en allemand et en français, les cartes se réorganisent au lieu de dépasser de l'écran.",
+            "ja": "文字サイズを大きくしても、ドイツ語やフランス語でも、カードが画面からはみ出さずに並び替わります。",
+            "ko": "글자 크기를 키우거나 독일어, 프랑스어로 보아도 카드가 화면 밖으로 넘치지 않고 알맞게 다시 배치됩니다.",
+            "pt-BR": "Com o texto maior, ou em alemão e francês, os cartões se reorganizam em vez de sair da tela.",
+            "zh-Hans": "使用更大的文字，或使用德语、法语时，卡片会自动重新排列，不再超出屏幕。"
+          }
+        },
+        {
+          "symbol": "iphone.landscape",
+          "platforms": [
+            "iOS"
+          ],
+          "title": {
+            "en": "Landscape keeps its buttons",
+            "es": "El modo horizontal conserva sus botones",
+            "de": "Querformat behält seine Schaltflächen",
+            "fr": "Le mode paysage garde ses boutons",
+            "ja": "横向きでもボタンはそのまま",
+            "ko": "가로 모드에서도 버튼 그대로",
+            "pt-BR": "O modo horizontal mantém os botões",
+            "zh-Hans": "横屏时按钮仍在"
+          },
+          "detail": {
+            "en": "Turn your iPhone sideways and Settings, Refresh and each account's details are still there.",
+            "es": "Gira tu iPhone y Ajustes, Actualizar y el detalle de cada cuenta siguen ahí.",
+            "de": "Drehst du dein iPhone ins Querformat, bleiben Einstellungen, Aktualisieren und die Details jedes Accounts erreichbar.",
+            "fr": "Tournez votre iPhone à l'horizontale : Réglages, Actualiser et le détail de chaque compte restent là.",
+            "ja": "iPhoneを横向きにしても、設定、更新、各アカウントの詳細はそのまま使えます。",
+            "ko": "iPhone을 가로로 돌려도 설정, 새로 고침, 각 계정의 세부 정보가 그대로 있습니다.",
+            "pt-BR": "Gire o iPhone e Ajustes, Atualizar e os detalhes de cada conta continuam ali.",
+            "zh-Hans": "将 iPhone 横过来，设置、刷新和每个账户的详情依然都在。"
+          }
+        },
+        {
+          "symbol": "bell.badge",
+          "title": {
+            "en": "Alerts that explain themselves",
+            "es": "Avisos que se explican solos",
+            "de": "Mitteilungen, die sich selbst erklären",
+            "fr": "Des alertes qui s'expliquent",
+            "ja": "内容がひと目でわかる通知",
+            "ko": "스스로 설명하는 알림",
+            "pt-BR": "Avisos que se explicam",
+            "zh-Hans": "一看就懂的提醒"
+          },
+          "detail": {
+            "en": "In each account's settings, every alert says what sets it off, and the sign-in alert names the service that needs you.",
+            "es": "En los ajustes de cada cuenta, cada aviso dice qué lo activa, y el aviso de inicio de sesión nombra el servicio que te necesita.",
+            "de": "In den Einstellungen jedes Accounts steht bei jeder Mitteilung, was sie auslöst, und die Anmelde-Mitteilung nennt den Dienst, der dich braucht.",
+            "fr": "Dans les réglages de chaque compte, chaque alerte dit ce qui la déclenche, et l'alerte de connexion nomme le service qui a besoin de vous.",
+            "ja": "各アカウントの設定で、それぞれの通知が何で届くかを表示し、サインインの通知は対応が必要なサービス名を示します。",
+            "ko": "각 계정 설정에서 알림마다 무엇이 알림을 보내는지 알려주고, 로그인 알림은 확인이 필요한 서비스 이름을 알려줍니다.",
+            "pt-BR": "Nos ajustes de cada conta, cada aviso diz o que o dispara, e o aviso de login mostra o nome do serviço que precisa de você.",
+            "zh-Hans": "在每个账户的设置中，每条提醒都会说明触发条件，登录提醒会写明需要你处理的服务。"
+          }
+        },
+        {
+          "symbol": "accessibility",
+          "title": {
+            "en": "Easier with VoiceOver",
+            "es": "Más fácil con VoiceOver",
+            "de": "Einfacher mit VoiceOver",
+            "fr": "Plus simple avec VoiceOver",
+            "ja": "VoiceOverでもっと使いやすく",
+            "ko": "VoiceOver로 더 쉽게",
+            "pt-BR": "Mais fácil com o VoiceOver",
+            "zh-Hans": "VoiceOver 更易用"
+          },
+          "detail": {
+            "en": "Larger touch targets, section headings, named controls, and the history chart as an audio graph.",
+            "es": "Áreas táctiles más grandes, encabezados de sección, controles con nombre y la gráfica del historial como gráfico de audio.",
+            "de": "Größere Tippflächen, Abschnittsüberschriften, benannte Bedienelemente und das Verlaufsdiagramm als Audiodiagramm.",
+            "fr": "Des zones de toucher plus grandes, des titres de section, des commandes nommées et le graphique de l'historique en graphique audio.",
+            "ja": "タップしやすい大きな領域、セクション見出し、名前付きのコントロール、そして履歴グラフのオーディオグラフ。",
+            "ko": "더 넓은 터치 영역, 섹션 제목, 이름이 있는 컨트롤, 그리고 기록 그래프의 오디오 그래프.",
+            "pt-BR": "Áreas de toque maiores, títulos de seção, controles com nome e o gráfico do histórico como gráfico de áudio.",
+            "zh-Hans": "更大的触控区域、分区标题、带名称的控件，以及历史图表的音频图表。"
+          }
+        },
+        {
+          "symbol": "keyboard",
+          "platforms": [
+            "macOS"
+          ],
+          "title": {
+            "en": "More from the keyboard",
+            "es": "Más desde el teclado",
+            "de": "Mehr mit der Tastatur",
+            "fr": "Plus au clavier",
+            "ja": "キーボードでもっと操作",
+            "ko": "키보드로 더 많이",
+            "pt-BR": "Mais pelo teclado",
+            "zh-Hans": "更多键盘操作"
+          },
+          "detail": {
+            "en": "Esc and Return in the sheets that connect an account, and Tab through the accounts in the menu bar.",
+            "es": "Esc y Return en las hojas para conectar una cuenta, y Tab para recorrer las cuentas en la barra de menús.",
+            "de": "Esc und Return in den Fenstern zum Verbinden eines Accounts, und Tab durch die Accounts in der Menüleiste.",
+            "fr": "Échap et Retour dans les fenêtres de connexion d'un compte, et Tab pour parcourir les comptes dans la barre des menus.",
+            "ja": "アカウントを接続するシートでEscとReturn、メニューバーではTabでアカウント間を移動できます。",
+            "ko": "계정을 연결하는 시트에서 Esc와 Return을, 메뉴 막대에서는 Tab으로 계정 사이를 이동할 수 있습니다.",
+            "pt-BR": "Esc e Return nas janelas para conectar uma conta, e Tab para percorrer as contas na barra de menus.",
+            "zh-Hans": "在连接账户的窗口中可用 Esc 和 Return，在菜单栏中可用 Tab 在账户间切换。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.3.0",
       "items": [
         {

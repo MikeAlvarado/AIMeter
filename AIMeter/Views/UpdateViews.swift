@@ -198,10 +198,11 @@ struct UpdatesSettings: View {
     }
 
     private func button(_ title: String, action: @escaping () -> Void) -> some View {
+        // A bordered button, the Mac's own, rather than a link-sized word
+        // (it was 57 by 13 pt). Its title keeps the Mac's title case.
         Button(title, action: action)
-            .buttonStyle(.plain)
-            .font(Theme.caption.weight(.semibold))
-            .foregroundStyle(Theme.accent)
+            .buttonStyle(.bordered)
+            .controlSize(.small)
     }
 }
 

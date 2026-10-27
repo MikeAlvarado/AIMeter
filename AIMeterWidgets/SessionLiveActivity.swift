@@ -152,6 +152,8 @@ private struct LockScreenView: View {
             .foregroundStyle(Theme.inkSecondary)
         }
         .padding(16)
+        // One VoiceOver element: the account, its figure and the countdown.
+        .accessibilityElement(children: .combine)
     }
 }
 #endif

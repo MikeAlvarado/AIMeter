@@ -23,8 +23,8 @@ enum NotchIslandForm: String, CaseIterable, Sendable {
 
     var caption: String {
         switch self {
-        case .notch: String(localized: "Fused to the top edge, like a MacBook’s notch.")
-        case .pill: String(localized: "Floats in the menu bar, like the iPhone’s island.")
+        case .notch: String(localized: "Fused to the top edge, like a MacBook's notch.")
+        case .pill: String(localized: "Floats in the menu bar, like the iPhone's island.")
         }
     }
 }

@@ -91,7 +91,7 @@ struct UsageComplication: Widget {
             ComplicationView(entry: entry)
         }
         .configurationDisplayName("Usage Limits")
-        .description("Session, weekly, and top-model usage. Edit the complication to pick which account.")
+        .description("Your account's limits. Edit the complication to pick which account.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner])
     }
 }

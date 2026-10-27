@@ -4,6 +4,100 @@
     "" : {
 
     },
+    "%@ rejected AIMeter's saved sign-in. Open AIMeter and sign in again to keep tracking your usage." : {
+      "comment" : "Body of the sign-in expired notification. The placeholder is the service's name (Claude, Codex, GitHub Copilot).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ hat die gespeicherte Anmeldung von AIMeter abgelehnt. Öffne AIMeter und melde dich erneut an, um deine Nutzung weiter zu verfolgen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ rechazó el inicio de sesión guardado de AIMeter. Abre AIMeter y vuelve a iniciar sesión para seguir midiendo tu uso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ a refusé la connexion enregistrée d'AIMeter. Ouvrez AIMeter et reconnectez-vous pour continuer à suivre votre usage."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@がAIMeterの保存済みサインインを拒否しました。使用量の記録を続けるにはAIMeterを開いてもう一度サインインしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에서 AIMeter의 저장된 로그인을 거부했습니다. 사용량 추적을 계속하려면 AIMeter를 열고 다시 로그인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ rejeitou o login salvo do AIMeter. Abra o AIMeter e entre de novo para continuar acompanhando seu uso."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 拒绝了 AIMeter 保存的登录。打开 AIMeter 并重新登录以继续跟踪用量。"
+          }
+        }
+      }
+    },
+    "%@ Settings" : {
+      "comment" : "Title of one account's settings page. The placeholder is the account's nickname.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen für %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes de %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages de %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 설정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes de %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@设置"
+          }
+        }
+      }
+    },
     "%lld edits" : {
       "comment" : "How many times a finished Claude Code turn changed a file, after \"Done in 13s\" in the notch island.",
       "localizations" : {
@@ -492,6 +586,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude Code 或 Codex 已保存在这台 Mac 上的登录只会被读取，绝不更改；你通过 AIMeter 登录的则加密保存在系统钥匙串中。没有任何数据离开本设备。小组件不直接访问钥匙串，由菜单栏应用把用量传给它。"
+          }
+        }
+      }
+    },
+    "A notification when each limit refills." : {
+      "comment" : "Footnote under an account's reset alerts.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Mitteilung, wenn sich ein Limit wieder auffüllt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una notificación cuando cada límite se recarga."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une notification quand chaque limite se recharge."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各上限がリセットされたときに通知します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "각 한도가 다시 채워지면 알려줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma notificação quando cada limite recarrega."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个额度恢复时通知你。"
+          }
+        }
+      }
+    },
+    "Ahead of time, when your pace would use a limit up early." : {
+      "comment" : "Line under the Run-out warnings toggle.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorab, wenn ein Limit bei deinem Tempo zu früh aufgebraucht wäre."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con anticipación, cuando a tu ritmo un límite se agotaría antes de tiempo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À l'avance, quand votre rythme épuiserait une limite trop tôt."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今のペースだと上限に早く達しそうなとき、前もって。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 속도라면 한도를 일찍 다 쓸 것 같을 때 미리 알려줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com antecedência, quando no seu ritmo um limite acabaria cedo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按当前速度额度会提前用尽时，提前提醒。"
           }
         }
       }
@@ -1145,6 +1333,53 @@
         }
       }
     },
+    "at least %@" : {
+      "comment" : "A lower bound for a cost some of whose models have no price. The placeholder is an amount in US dollars.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mindestens %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "al menos %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "au moins %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@以上"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최소 %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pelo menos %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "至少 %@"
+          }
+        }
+      }
+    },
     "Chat" : {
       "localizations" : {
         "de" : {
@@ -1698,6 +1933,53 @@
         }
       }
     },
+    "Copied" : {
+      "comment" : "Spoken by VoiceOver after the sign-in code is copied.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピーしました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拷贝"
+          }
+        }
+      }
+    },
     "Copy code" : {
       "localizations" : {
         "de" : {
@@ -1973,6 +2255,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在编辑"
+          }
+        }
+      }
+    },
+    "Explore every screen with sample data before connecting your real account." : {
+      "comment" : "Under Settings' Demo mode card while nothing is connected.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erkunde jeden Bildschirm mit Beispieldaten, bevor du deinen echten Account verbindest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explora todas las pantallas con datos de muestra antes de conectar tu cuenta real."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorez chaque écran avec des données d'exemple avant de connecter votre vrai compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "実際のアカウントを接続する前に、サンプルデータですべての画面を試せます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실제 계정을 연결하기 전에 샘플 데이터로 모든 화면을 둘러보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explore todas as telas com dados de exemplo antes de conectar sua conta real."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接真实账户之前，先用示例数据浏览每个界面。"
           }
         }
       }
@@ -2722,6 +3051,53 @@
         }
       }
     },
+    "Percent of limit" : {
+      "comment" : "The History chart's vertical axis, read by VoiceOver's Audio Graph.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozent des Limits"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porcentaje del límite"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pourcentage de la limite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限に対する割合"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한도 대비 비율"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porcentagem do limite"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额度百分比"
+          }
+        }
+      }
+    },
     "Pick the service to connect. Each one signs in through its own page, and AIMeter only ever reads your usage limits." : {
       "localizations" : {
         "de" : {
@@ -3047,6 +3423,53 @@
         }
       }
     },
+    "Reset alerts" : {
+      "comment" : "Header of an account's per-limit notifications, each fired when that limit refills.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset-Mitteilungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos de reinicio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alertes de recharge"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リセットの通知"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초기화 알림"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos de reinício"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置提醒"
+          }
+        }
+      }
+    },
     "Running a command" : {
       "comment" : "The step a Claude Code session is on, in the notch island (only the kind of action, never what it acts on).",
       "localizations" : {
@@ -3188,6 +3611,53 @@
         }
       }
     },
+    "Shows one limit you choose. Edit the widget to pick which one." : {
+      "comment" : "Description of the Single Limit widget in the widget gallery.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt ein Limit deiner Wahl. Bearbeite das Widget, um es auszuwählen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra un límite que elijas. Edita el widget para elegir cuál."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche une limite de votre choix. Modifiez le widget pour la choisir."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選んだ1つの上限を表示します。ウィジェットを編集して選べます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 한도 하나를 표시합니다. 위젯을 편집해 선택하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra um limite à sua escolha. Edite o widget para escolher qual."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示你选择的一个额度，编辑小组件可进行选择。"
+          }
+        }
+      }
+    },
     "Sign in on Claude's page and paste the code it shows." : {
       "localizations" : {
         "de" : {
@@ -3230,6 +3700,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Claude 页面登录，然后粘贴它显示的代码。"
+          }
+        }
+      }
+    },
+    "Sign in to the service you use. AIMeter only ever reads your limits." : {
+      "comment" : "The tour's last step, connecting an account.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich bei dem Dienst an, den du nutzt. AIMeter liest nur deine Limits."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión en el servicio que usas. AIMeter solo lee tus límites."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous au service que vous utilisez. AIMeter ne lit que vos limites."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使っているサービスにサインインします。AIMeterが読むのは上限だけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용하는 서비스에 로그인하세요. AIMeter는 한도만 읽습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre no serviço que você usa. O AIMeter só lê seus limites."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录你使用的服务。AIMeter 只读取你的额度。"
           }
         }
       }
@@ -3605,6 +4122,53 @@
         }
       }
     },
+    "Time range" : {
+      "comment" : "VoiceOver name of the History card's 24 h / 7 days / 30 days selector.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periodo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Période"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "期間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Período"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时间范围"
+          }
+        }
+      }
+    },
     "Try again" : {
       "localizations" : {
         "de" : {
@@ -3837,6 +4401,194 @@
         }
       }
     },
+    "When a limit passes the level you set." : {
+      "comment" : "Line under the Near-limit warnings toggle.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn ein Limit die von dir gewählte Schwelle überschreitet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando un límite pasa del nivel que elegiste."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand une limite dépasse le seuil choisi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限の使用量が設定した値を超えたとき。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한도가 설정한 수준을 넘으면 알려줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando um limite passa do nível que você definiu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额度用量超过你设定的水平时。"
+          }
+        }
+      }
+    },
+    "When a limit refills before its scheduled reset." : {
+      "comment" : "Line under the Early-reset alerts toggle.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn sich ein Limit vor dem geplanten Reset wieder auffüllt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando un límite se recarga antes de su reinicio programado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand une limite se recharge avant la date prévue."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "予定より早く上限がリセットされたとき。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예정된 초기화 전에 한도가 다시 채워지면 알려줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando um limite recarrega antes do reinício previsto."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额度在预定重置前提前恢复时。"
+          }
+        }
+      }
+    },
+    "When a limit runs out, and whether credits take over." : {
+      "comment" : "Line under the Limit reached toggle.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn ein Limit aufgebraucht ist, und ob Credits einspringen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando un límite se agota, y si los créditos toman el relevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand une limite est épuisée, et si les crédits prennent le relais."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限に達したとき。クレジットに切り替わるかどうかもお知らせします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한도를 모두 쓰면 알려주고, 크레딧이 대신 쓰이는지도 알려줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando um limite se esgota, e se os créditos assumem."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额度用尽时，并告诉你是否改用额度金。"
+          }
+        }
+      }
+    },
+    "When the service stops accepting this account's sign-in. On by default, since nothing else would tell you the figures stopped updating." : {
+      "comment" : "Line under the Sign-in alerts toggle.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn der Dienst die Anmeldung dieses Accounts nicht mehr annimmt. Standardmäßig aktiv, weil dir sonst nichts sagt, dass die Werte nicht mehr aktualisiert werden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando el servicio deja de aceptar el inicio de sesión de esta cuenta. Activado de forma predeterminada, porque nada más te avisaría de que las cifras dejaron de actualizarse."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand le service n'accepte plus la connexion de ce compte. Activé par défaut, car rien d'autre ne vous dirait que les chiffres ne se mettent plus à jour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスがこのアカウントのサインインを受け付けなくなったとき。数値が更新されなくなったことを知らせる手段がほかにないため、初期設定でオンです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서비스가 이 계정의 로그인을 더 이상 받지 않으면 알려줍니다. 수치가 더 이상 업데이트되지 않는다는 걸 달리 알 방법이 없어 기본으로 켜져 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando o serviço deixa de aceitar o login desta conta. Ativado por padrão, porque nada mais avisaria que os números pararam de atualizar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务不再接受此账户的登录时。默认开启，因为没有其他方式能告诉你数字已停止更新。"
+          }
+        }
+      }
+    },
     "While discreet mode is on, this account leaves the menu bar and the notch island. The switch is under the accounts list, in the menu bar popover and on ⌘⇧D." : {
       "comment" : "An account's settings, discreet mode footnote (macOS).",
       "localizations" : {
@@ -3974,6 +4726,147 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在与代理协作"
+          }
+        }
+      }
+    },
+    "You're viewing sample data. Exit to connect your real account." : {
+      "comment" : "Under Settings' Demo mode card while the demo is on.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du siehst Beispieldaten. Beende die Demo, um deinen echten Account zu verbinden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estás viendo datos de muestra. Sal para conectar tu cuenta real."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous consultez des données d'exemple. Quittez pour connecter votre vrai compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルデータを表示中です。終了すると実際のアカウントを接続できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "샘플 데이터를 보고 있습니다. 종료하면 실제 계정을 연결할 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você está vendo dados de exemplo. Saia para conectar sua conta real."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你正在查看示例数据。退出后可连接真实账户。"
+          }
+        }
+      }
+    },
+    "Your account's limits and when they reset. Edit the widget to pick which account." : {
+      "comment" : "Description of the Usage Limits widget in the widget gallery.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Limits deines Accounts und wann sie zurückgesetzt werden. Bearbeite das Widget, um den Account zu wählen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los límites de tu cuenta y cuándo se reinician. Edita el widget para elegir la cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les limites de votre compte et quand elles se rechargent. Modifiez le widget pour choisir le compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントの上限とリセットのタイミング。ウィジェットを編集してアカウントを選べます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정의 한도와 초기화 시점. 위젯을 편집해 계정을 선택하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os limites da sua conta e quando reiniciam. Edite o widget para escolher a conta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账户的额度及重置时间，编辑小组件可选择账户。"
+          }
+        }
+      }
+    },
+    "Your account's limits. Edit the complication to pick which account." : {
+      "comment" : "Description of the Apple Watch complication.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Limits deines Accounts. Bearbeite die Komplikation, um den Account zu wählen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los límites de tu cuenta. Edita la complicación para elegir la cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les limites de votre compte. Modifiez la complication pour choisir le compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントの上限。コンプリケーションを編集してアカウントを選びます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정의 한도. 컴플리케이션을 편집해 계정을 선택하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os limites da sua conta. Edite a complicação para escolher a conta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账户的额度。编辑复杂功能以选择账户。"
           }
         }
       }
@@ -4747,7 +5640,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prochaine réinitialisation de session :"
+            "value" : "Prochaine session :"
           }
         },
         "ja" : {
@@ -5076,7 +5969,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réinitialisation %@"
+            "value" : "Recharge %@"
           }
         },
         "ja" : {
@@ -5571,53 +6464,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法连接 iPhone。显示上次更新的内容。"
-          }
-        }
-      }
-    },
-    "Session, weekly, and top-model usage. Edit the complication to pick which account." : {
-      "comment" : "Watch: the complication's description in the face editor.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sitzung, Woche und Top-Modell. Bearbeite die Komplikation, um den Account zu wählen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesión, semana y modelo top. Edita la complicación para elegir la cuenta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Session, semaine et modèle principal. Modifiez la complication pour choisir le compte."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッション、週間、トップモデルの使用量。コンプリケーションを編集してアカウントを選びます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "세션, 주간, 최상위 모델 사용량. 컴플리케이션을 편집해 계정을 선택하세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sessão, semana e modelo principal. Edite a complicação para escolher a conta."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会话、每周和顶级模型用量。编辑复杂功能以选择账户。"
           }
         }
       }
@@ -7216,53 +8062,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "连接你的账户"
-          }
-        }
-      }
-    },
-    "Sign in with your Claude account. AIMeter only ever reads your limits." : {
-      "comment" : "Tour's last step: what connecting does.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Melde dich mit deinem Claude-Account an. AIMeter liest nur deine Limits."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicia sesión con tu cuenta de Claude. AIMeter solo lee tus límites."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connectez-vous avec votre compte Claude. AIMeter ne lit que vos limites."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claudeアカウントでサインインします。AIMeterが読むのは上限だけです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude 계정으로 로그인하세요. AIMeter는 한도만 읽습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entre com sua conta Claude. O AIMeter só lê seus limites."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用你的 Claude 账户登录。AIMeter 只读取你的额度。"
           }
         }
       }
@@ -11672,52 +12471,6 @@
         }
       }
     },
-    "A local notification fires when the selected usage window resets." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine lokale Mitteilung erscheint, wenn das ausgewählte Nutzungsfenster zurückgesetzt wird."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se envía una notificación local cuando la ventana de uso seleccionada se reinicia."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une notification locale est envoyée quand la fenêtre d'usage sélectionnée se réinitialise."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選択した使用ウインドウがリセットされるとローカル通知が届きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "선택한 사용 기간이 초기화되면 로컬 알림이 옵니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uma notificação local é enviada quando a janela de uso selecionada é reiniciada."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所选用量周期重置时会发送本地通知。"
-          }
-        }
-      }
-    },
     "A name can't be empty." : {
       "localizations" : {
         "de" : {
@@ -12228,53 +12981,6 @@
         }
       }
     },
-    "AIMeter has no server and no account of its own. Usage is read directly from Anthropic and cached on this device so widgets can show it. Nothing is sent anywhere else." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter hat keinen Server und keinen eigenen Account. Die Nutzung wird direkt von Anthropic gelesen und auf diesem Gerät zwischengespeichert, damit Widgets sie anzeigen können. Nichts wird woandershin gesendet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter no tiene servidor ni cuenta propia. El uso se lee directamente de Anthropic y se guarda en este dispositivo para que los widgets puedan mostrarlo. No se envía nada a ningún otro lado."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter n'a ni serveur ni compte propre. L'usage est lu directement auprès d'Anthropic et mis en cache sur cet appareil pour que les widgets puissent l'afficher. Rien n'est envoyé ailleurs."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeterには独自のサーバもアカウントもありません。使用量はAnthropicから直接読み取り、ウィジェットが表示できるようこのデバイスにキャッシュします。他にはどこにも送信しません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter에는 자체 서버도 계정도 없습니다. 사용량은 Anthropic에서 직접 읽어 위젯이 표시할 수 있도록 이 기기에 캐시됩니다. 다른 곳으로는 아무것도 전송되지 않습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O AIMeter não tem servidor nem conta própria. O uso é lido diretamente da Anthropic e guardado neste dispositivo para que os widgets possam mostrá-lo. Nada é enviado a outro lugar."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AIMeter 没有自己的服务器和账户。用量直接从 Anthropic 读取并缓存在本设备上，供小组件显示。不会发送到任何其他地方。"
-          }
-        }
-      }
-    },
     "AIMeter is an independent app, not affiliated with Anthropic. It only reads your own usage limits, never sends prompts or spends your plan's usage, and your sign-in token stays on this device." : {
       "localizations" : {
         "de" : {
@@ -12368,7 +13074,50 @@
       }
     },
     "AIMeter isn't running." : {
-      "localizations" : {}
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter läuft nicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter no se está ejecutando."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter n'est pas ouvert."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterが起動していません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter가 실행 중이 아닙니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AIMeter não está aberto."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 未在运行。"
+          }
+        }
+      }
     },
     "AIMeter keeps running and refreshing your usage either way. Hiding only changes what you see. Quit still quits." : {
       "localizations" : {
@@ -13479,104 +14228,6 @@
         }
       }
     },
-    "Choose which limit this widget shows." : {
-      "comment" : "Title of the widget configuration intent.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle, welches Limit dieses Widget anzeigt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elige qué límite muestra este widget."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez la limite affichée par ce widget."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このウィジェットに表示する上限を選びます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 위젯에 표시할 한도를 선택합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha qual limite este widget mostra."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择此小组件显示的额度。"
-          }
-        }
-      }
-    },
-    "Claude Account" : {
-      "comment" : "The name of the app's \"Claude Account\" widget.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude-Account"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta de Claude"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compte Claude"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claudeアカウント"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude 계정"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conta Claude"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude 账户"
-          }
-        }
-      }
-    },
     "Claude Code" : {
       "localizations" : {
         "de" : {
@@ -13849,52 +14500,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claude 不再接受此账户保存的登录。重新登录即可恢复，历史记录、提醒和小组件都保持不变。"
-          }
-        }
-      }
-    },
-    "Claude rejected AIMeter's saved sign-in. Open AIMeter and sign in again to keep tracking your usage." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude hat die gespeicherte Anmeldung von AIMeter abgelehnt. Öffne AIMeter und melde dich erneut an, um deine Nutzung weiter zu verfolgen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude rechazó el inicio de sesión guardado de AIMeter. Abre AIMeter y vuelve a iniciar sesión para seguir midiendo tu uso."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude a refusé la connexion enregistrée d'AIMeter. Ouvrez AIMeter et reconnectez-vous pour continuer à suivre votre usage."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ClaudeがAIMeterの保存済みサインインを拒否しました。使用量の記録を続けるにはAIMeterを開いてもう一度サインインしてください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude가 AIMeter의 저장된 로그인을 거부했습니다. 사용량 추적을 계속하려면 AIMeter를 열고 다시 로그인하세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Claude rejeitou o login salvo do AIMeter. Abra o AIMeter e entre de novo para continuar acompanhando seu uso."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude 拒绝了 AIMeter 保存的登录。打开 AIMeter 并重新登录以继续跟踪用量。"
           }
         }
       }
@@ -14315,53 +14920,6 @@
         }
       }
     },
-    "Disconnect Claude" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude trennen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desconectar Claude"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déconnecter Claude"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claudeを切断"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude 연결 해제"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desconectar Claude"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "断开 Claude"
-          }
-        }
-      }
-    },
     "Display" : {
       "localizations" : {
         "de" : {
@@ -14730,53 +15288,6 @@
         }
       }
     },
-    "Every 15 minutes" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle 15 Minuten"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cada 15 minutos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toutes les 15 minutes"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "15分ごと"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "15분마다"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A cada 15 minutos"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "每 15 分钟"
-          }
-        }
-      }
-    },
     "Every 30 minutes" : {
       "localizations" : {
         "de" : {
@@ -15100,52 +15611,6 @@
         }
       }
     },
-    "Explore every screen with sample data before connecting your real Claude account." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erkunde jeden Bildschirm mit Beispieldaten, bevor du deinen echten Claude-Account verbindest."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explora todas las pantallas con datos de muestra antes de conectar tu cuenta real de Claude."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explorez chaque écran avec des données d'exemple avant de connecter votre vrai compte Claude."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "実際のClaudeアカウントを接続する前に、サンプルデータですべての画面を試せます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "실제 Claude 계정을 연결하기 전에 샘플 데이터로 모든 화면을 둘러보세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explore todas as telas com dados de exemplo antes de conectar sua conta Claude real."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "连接真实 Claude 账户之前，先用示例数据浏览每个界面。"
-          }
-        }
-      }
-    },
     "Extra usage" : {
       "localizations" : {
         "de" : {
@@ -15193,7 +15658,50 @@
       }
     },
     "Fetches the latest usage for every connected account and updates the widgets." : {
-      "localizations" : {}
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruft die aktuelle Nutzung aller verbundenen Accounts ab und aktualisiert die Widgets."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtiene el uso más reciente de cada cuenta conectada y actualiza los widgets."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récupère l'usage le plus récent de chaque compte connecté et met à jour les widgets."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続中のすべてのアカウントの最新の使用量を取得し、ウィジェットを更新します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결된 모든 계정의 최신 사용량을 가져오고 위젯을 업데이트합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Busca o uso mais recente de cada conta conectada e atualiza os widgets."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取每个已连接账户的最新用量并更新小组件。"
+          }
+        }
+      }
     },
     "For a system-wide shortcut, add \"Refresh Usage\" or \"Show Usage\" to the Shortcuts app and give it a key there. No extra permissions needed." : {
       "localizations" : {
@@ -16484,52 +16992,6 @@
         }
       }
     },
-    "Near-limit warns you at the level you set. Limit reached fires when a window maxes out and tells you whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in. It's the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "„Nahe dem Limit“ warnt dich bei der von dir gesetzten Schwelle. „Limit erreicht“ wird ausgelöst, wenn ein Fenster ausgeschöpft ist, und sagt dir, ob Weiternutzen Credits verbraucht. Aufbrauch-Warnungen sagen ein vorzeitiges Ausschöpfen voraus. Hinweise bei vorzeitigem Reset erscheinen, wenn ein Limit früher als geplant aufgefüllt wird. Anmelde-Hinweise sagen dir, wenn Claude die gespeicherte Anmeldung dieses Accounts nicht mehr akzeptiert. Das ist der einzige standardmäßig aktive Hinweis, denn sonst würde dir nichts sagen, dass die Zahlen nicht mehr aktualisiert werden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cercanía al límite te avisa en el nivel que elijas. Límite alcanzado se dispara cuando una ventana se agota e indica si seguir consume créditos. Los avisos de agotamiento predicen un agotamiento anticipado. Los avisos de reinicio temprano se disparan cuando un límite se recarga antes de lo previsto. Los avisos de inicio de sesión te dicen cuándo Claude deja de aceptar el inicio de sesión guardado de esta cuenta: la única alerta activada por defecto, porque si no, nada te avisaría de que los números dejaron de actualizarse."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'approche de la limite vous avertit au niveau que vous choisissez. Limite atteinte se déclenche quand une fenêtre est pleine et indique si continuer consomme des crédits. Les avertissements d'épuisement prédisent un épuisement anticipé. Les alertes de réinitialisation anticipée se déclenchent quand une limite se recharge plus tôt que prévu. Les alertes de connexion vous préviennent quand Claude cesse d'accepter la connexion enregistrée de ce compte. C'est la seule alerte activée par défaut, car sinon rien ne vous dirait que les chiffres ont cessé de se mettre à jour."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上限接近は設定したレベルで警告します。上限到達はウインドウを使い切ったときに通知し、続行するとクレジットを消費するかも知らせます。使い切り警告は早期の枯渇を予測します。早期リセットの通知は上限が予定より早く回復したときに届きます。サインインの通知はClaudeがこのアカウントの保存済みサインインを受け付けなくなったときに知らせます。これだけはデフォルトでオンです。そうでないと数値の更新が止まったことに気づけないからです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "한도 근접은 설정한 수준에서 경고합니다. 한도 도달은 기간이 다 찼을 때 알리며 계속 사용하면 크레딧이 소비되는지도 알려줍니다. 소진 경고는 조기 소진을 예측합니다. 조기 초기화 알림은 한도가 예정보다 일찍 충전될 때 옵니다. 로그인 알림은 Claude가 이 계정의 저장된 로그인을 더 이상 받아들이지 않을 때 알려주며, 기본적으로 켜져 있는 유일한 알림입니다. 그렇지 않으면 숫자가 더 이상 갱신되지 않는다는 것을 알 길이 없기 때문입니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proximidade do limite avisa no nível que você definir. Limite atingido dispara quando uma janela esgota e informa se continuar consome créditos. Avisos de esgotamento preveem um esgotamento antecipado. Alertas de reinício antecipado disparam quando um limite recarrega antes do previsto. Alertas de login avisam quando o Claude deixa de aceitar o login salvo desta conta. É o único alerta ativado por padrão, porque senão nada avisaria que os números pararam de atualizar."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接近额度会在你设定的水平发出警告。额度用完会在周期耗尽时触发，并说明继续使用是否消耗额度金。耗尽警告预测提前用完。提前重置提醒在额度早于计划恢复时触发。登录提醒在 Claude 不再接受此账户保存的登录时通知你，这是唯一默认开启的提醒，否则不会有任何提示告诉你数字已停止更新。"
-          }
-        }
-      }
-    },
     "Next peak in %@" : {
       "localizations" : {
         "de" : {
@@ -17591,7 +18053,50 @@
       }
     },
     "Opens AIMeter's dashboard." : {
-      "localizations" : {}
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet die Übersicht von AIMeter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la pantalla principal de AIMeter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre le tableau de bord d'AIMeter."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterのダッシュボードを開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter 대시보드를 엽니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o painel do AIMeter."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 AIMeter 的仪表板。"
+          }
+        }
+      }
     },
     "Output (incl. thinking)" : {
       "localizations" : {
@@ -17961,59 +18466,54 @@
         }
       }
     },
-    "Peaked at %lld% at %@." : {
-      "extractionState" : "stale",
+    "Peaked at %lld%% at %@." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Höchststand %1$lld % um %2$@."
+            "value" : "Höchststand %1$lld %% um %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Peaked at %1$lld%% at %2$@."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Máximo de %1$lld % a las %2$@."
+            "value" : "Máximo de %1$lld %% a las %2$@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pic à %1$lld % à %2$@."
+            "value" : "Pic à %1$lld %% à %2$@."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@に%1$lld%でピーク。"
+            "value" : "%2$@に%1$lld%%でピーク。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@에 %1$lld%로 최고."
+            "value" : "%2$@에 %1$lld%%로 최고."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pico de %1$lld% às %2$@."
+            "value" : "Pico de %1$lld%% às %2$@."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@ 达到峰值 %1$lld%。"
-          }
-        }
-      }
-    },
-    "Peaked at %lld%% at %@." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Peaked at %1$lld%% at %2$@."
+            "value" : "%2$@ 达到峰值 %1$lld%%。"
           }
         }
       }
@@ -19126,7 +19626,50 @@
       }
     },
     "Reset" : {
-      "localizations" : {}
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recharge"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リセット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초기화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinício"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置"
+          }
+        }
+      }
     },
     "Reset %lld times." : {
       "localizations" : {
@@ -19329,7 +19872,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réinitialisation %@ %@"
+            "value" : "Recharge %@ %@"
           }
         },
         "ja" : {
@@ -19375,7 +19918,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réinitialisation à %@"
+            "value" : "Recharge à %@"
           }
         },
         "ja" : {
@@ -19467,7 +20010,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réinitialisation dans %@"
+            "value" : "Recharge dans %@"
           }
         },
         "ja" : {
@@ -20094,101 +20637,6 @@
         }
       }
     },
-    "Session, weekly, and top-model usage windows. Edit the widget to pick which account." : {
-      "comment" : "Widget description.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nutzungsfenster für Sitzung, Woche und Top-Modell. Bearbeite das Widget, um den Account zu wählen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ventanas de uso de sesión, semanal y del modelo principal. Edita el widget para elegir la cuenta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fenêtres d'usage session, hebdomadaire et modèle principal. Modifiez le widget pour choisir le compte."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッション、週間、トップモデルの使用ウインドウ。ウィジェットを編集してアカウントを選べます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "세션, 주간, 최상위 모델 사용 기간. 위젯을 편집해 계정을 선택하세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Janelas de uso de sessão, semanal e do modelo principal. Edite o widget para escolher a conta."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会话、每周和顶级模型用量周期，编辑小组件可选择账户。"
-          }
-        }
-      }
-    },
-    "Session, weekly, and top-model usage windows." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nutzungsfenster für Sitzung, Woche und Top-Modell."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ventanas de uso de sesión, semanal y del modelo principal."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fenêtres d'usage session, hebdomadaire et modèle principal."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッション、週間、トップモデルの使用ウインドウ。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "세션, 주간, 최상위 모델 사용 기간."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Janelas de uso de sessão, semanal e do modelo principal."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会话、每周和顶级模型用量周期。"
-          }
-        }
-      }
-    },
     "Sessions" : {
       "localizations" : {
         "de" : {
@@ -20465,53 +20913,6 @@
         }
       }
     },
-    "Show percentage" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prozentwert anzeigen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar porcentaje"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher le pourcentage"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パーセントを表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "백분율 표시"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar porcentagem"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示百分比"
-          }
-        }
-      }
-    },
     "Show Remaining" : {
       "localizations" : {
         "de" : {
@@ -20695,54 +21096,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示在仪表盘、小组件和通知标题中。"
-          }
-        }
-      }
-    },
-    "Shows one usage window you choose. Edit the widget to pick session, weekly, or a per-model limit." : {
-      "comment" : "Description of the Single Limit widget.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeigt ein Nutzungsfenster deiner Wahl. Bearbeite das Widget, um Sitzung, Woche oder ein Modell-Limit zu wählen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muestra una ventana de uso que elijas. Edita el widget para elegir sesión, semanal o un límite por modelo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affiche une fenêtre d'usage de votre choix. Modifiez le widget pour choisir session, hebdomadaire ou une limite par modèle."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選んだ1つの使用ウインドウを表示します。ウィジェットを編集してセッション、週間、モデル別の上限を選べます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "선택한 사용 기간 하나를 표시합니다. 위젯을 편집해 세션, 주간 또는 모델별 한도를 선택하세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra uma janela de uso à sua escolha. Edite o widget para escolher sessão, semanal ou um limite por modelo."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示你选择的一个用量周期，编辑小组件可选择会话、每周或按模型的额度。"
           }
         }
       }
@@ -21623,102 +21976,6 @@
         }
       }
     },
-    "The menu bar always shows a gauge that fills with your usage. Pick which window it reads above. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip." : {
-      "comment" : "Footnote for the menu bar label.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Menüleiste zeigt immer eine Anzeige, die sich mit deiner Nutzung füllt. Wähle oben, welches Fenster sie liest. Aktiviere dies, um den Prozentwert daneben auszuschreiben; ausgeschaltet steht der Wert weiterhin im Tooltip."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La barra de menús siempre muestra un indicador que se llena con tu uso. Elige arriba qué ventana lee. Activa esto para mostrar el porcentaje junto a él; desactivado, el valor sigue en la descripción emergente."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La barre des menus affiche toujours une jauge qui se remplit avec votre usage. Choisissez ci-dessus la fenêtre qu'elle lit. Activez ceci pour écrire le pourcentage à côté ; désactivé, la valeur reste dans l'infobulle."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メニューバーには常に使用量で満たされるゲージが表示されます。読み取るウインドウは上で選びます。これをオンにすると横にパーセントを表示し、オフでも値はツールチップに表示されます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메뉴 막대에는 항상 사용량만큼 채워지는 게이지가 표시됩니다. 읽을 기간은 위에서 선택하세요. 이것을 켜면 옆에 백분율이 표시되고, 꺼도 값은 도움말 설명에 남아 있습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A barra de menus sempre mostra um medidor que enche com seu uso. Escolha acima qual janela ele lê. Ative isto para escrever a porcentagem ao lado; desativado, o valor continua na dica."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单栏始终显示一个随用量填充的仪表。在上方选择它读取的周期。开启此项会在旁边显示百分比；关闭时数值仍在工具提示中。"
-          }
-        }
-      }
-    },
-    "The menu bar always shows a gauge that fills with your usage. Turn this on to spell out the percentage beside it; with it off, the value is still in the tooltip. Which window it reads is set in Claude's settings." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Menüleiste zeigt immer eine Anzeige, die sich mit deiner Nutzung füllt. Aktiviere dies, um den Prozentwert daneben auszuschreiben; ausgeschaltet steht der Wert weiterhin im Tooltip. Welches Fenster sie liest, wird in den Claude-Einstellungen festgelegt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La barra de menú siempre muestra un indicador que se llena con tu uso. Actívalo para ver el porcentaje escrito al lado; si lo desactivas, el valor sigue estando en la información al pasar el cursor. Qué ventana muestra se elige en los ajustes de Claude."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La barre des menus affiche toujours une jauge qui se remplit avec votre usage. Activez ceci pour écrire le pourcentage à côté ; désactivé, la valeur reste dans l'infobulle. La fenêtre lue se choisit dans les réglages de Claude."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メニューバーには常に使用量で満たされるゲージが表示されます。これをオンにすると横にパーセントを表示し、オフでも値はツールチップに表示されます。読み取るウインドウはClaudeの設定で選びます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메뉴 막대에는 항상 사용량만큼 채워지는 게이지가 표시됩니다. 이것을 켜면 옆에 백분율이 표시되고, 꺼도 값은 도움말 설명에 남아 있습니다. 읽을 기간은 Claude 설정에서 정합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A barra de menus sempre mostra um medidor que enche com seu uso. Ative isto para escrever a porcentagem ao lado; desativado, o valor continua na dica. Qual janela ele lê é definido nos ajustes do Claude."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单栏始终显示一个随用量填充的仪表。开启此项会在旁边显示百分比；关闭时数值仍在工具提示中。它读取哪个周期在 Claude 的设置中选择。"
-          }
-        }
-      }
-    },
     "Third usage row" : {
       "localizations" : {
         "de" : {
@@ -21766,10 +22023,96 @@
       }
     },
     "Threshold" : {
-      "localizations" : {}
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwelle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umbral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seuil"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "しきい値"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "임계값"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limiar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阈值"
+          }
+        }
+      }
     },
     "Time" : {
-      "localizations" : {}
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時刻"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时间"
+          }
+        }
+      }
     },
     "To draw the history chart, AIMeter keeps the percentages it has already fetched (just the numbers and their dates, nothing about what you did) on this device for 30 days. Disconnecting an account deletes its history." : {
       "localizations" : {
@@ -23294,53 +23637,6 @@
         }
       }
     },
-    "Which usage window shows as the percentage in the menu bar. Options match what this account actually reports." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welches Nutzungsfenster als Prozentwert in der Menüleiste erscheint. Die Optionen entsprechen dem, was dieser Account tatsächlich meldet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qué ventana de uso se muestra como porcentaje en la barra de menú. Las opciones coinciden con lo que esta cuenta realmente reporta."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quelle fenêtre d'usage s'affiche en pourcentage dans la barre des menus. Les options correspondent à ce que ce compte signale réellement."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メニューバーにパーセントで表示する使用ウインドウ。選択肢はこのアカウントが実際に報告するものに対応します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메뉴 막대에 백분율로 표시할 사용 기간입니다. 선택지는 이 계정이 실제로 보고하는 항목과 일치합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qual janela de uso aparece como porcentagem na barra de menus. As opções correspondem ao que esta conta realmente informa."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单栏以百分比显示哪个用量周期。选项与此账户实际报告的内容一致。"
-          }
-        }
-      }
-    },
     "Window" : {
       "comment" : "A usage window (session, weekly, a model's week): the row title over the menu bar's window picker, and the history chart's series name.",
       "localizations" : {
@@ -23752,52 +24048,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此额度在重置前无法使用。"
-          }
-        }
-      }
-    },
-    "You're viewing sample data. Exit to connect your real Claude account." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du siehst Beispieldaten. Beende die Demo, um deinen echten Claude-Account zu verbinden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estás viendo datos de muestra. Sal para conectar tu cuenta real de Claude."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous consultez des données d'exemple. Quittez pour connecter votre vrai compte Claude."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サンプルデータを表示中です。終了すると実際のClaudeアカウントを接続できます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "샘플 데이터를 보고 있습니다. 종료하면 실제 Claude 계정을 연결할 수 있습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você está vendo dados de exemplo. Saia para conectar sua conta Claude real."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你正在查看示例数据。退出后可连接真实 Claude 账户。"
           }
         }
       }
@@ -24499,7 +24749,7 @@
         }
       }
     },
-    "Fused to the top edge, like a MacBook’s notch." : {
+    "Fused to the top edge, like a MacBook's notch." : {
       "comment" : "Caption under the island's Style control when Notch is selected.",
       "localizations" : {
         "es" : {
@@ -24546,7 +24796,7 @@
         }
       }
     },
-    "Floats in the menu bar, like the iPhone’s island." : {
+    "Floats in the menu bar, like the iPhone's island." : {
       "comment" : "Caption under the island's Style control when Pill is selected. Do not use Apple's product name for the iPhone feature.",
       "localizations" : {
         "es" : {

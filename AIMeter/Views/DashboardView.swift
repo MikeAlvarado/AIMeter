@@ -33,10 +33,25 @@ struct DashboardView: View {
     @Environment(\.accessibilityReduceMotion) var reduceMotion
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
+    /// An iPhone on its side: the same Dashboard, its buttons and links
+    /// included, with no sparklines and no status bar. Until 4.3.1 a view
+    /// of its own replaced the Dashboard there, with no Settings, no
+    /// Refresh and no way to an account's detail, and rotating lost where
+    /// the user was.
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     /// iPhone Duo's side bar holds Settings and Refresh in place of the
     /// header's buttons (`DashboardSideBar`).
     @State private var barIsVertical = false
     #endif
+
+    /// An iPhone held sideways (`verticalSizeClass` compact).
+    var isLandscapePhone: Bool {
+        #if os(iOS)
+        verticalSizeClass == .compact
+        #else
+        false
+        #endif
+    }
 
     /// An iPad's width: two or more accounts sit in two columns of the same
     /// cards, and a dragged card moves both ways (`accountSection`).
@@ -114,6 +129,9 @@ struct DashboardView: View {
         // press when this flips, so there is never a pan in progress to cut.
         .scrollDisabled(draggingID != nil)
         .appBackground()
+        #if os(iOS)
+        .statusBarHidden(isLandscapePhone)
+        #endif
         // Soft tap when the *user* starts a refresh — pull gesture or
         // button alike. Keyed on the request count, not `isRefreshing`:
         // that also flips for the foreground auto-refresh, which would
@@ -241,33 +259,33 @@ struct DashboardView: View {
 
     #if os(iOS)
     private var header: some View {
-        ZStack {
+        // One row, so a larger text size wraps the line between the
+        // buttons instead of running under them (a ZStack until 4.3.1).
+        HStack(spacing: 12) {
+            if !barIsVertical {
+                RoundIconButton(systemName: "gearshape") {
+                    showingSettings = true
+                }
+                .accessibilityLabel(Text("Settings"))
+            }
+            Spacer(minLength: 0)
             // No app title (Mike, 2026-10-21: the cards are the screen);
             // only when the accounts last refreshed, between the buttons.
             if let lastUpdatedLabel {
                 Text(lastUpdatedLabel)
                     .font(.footnote)
                     .foregroundStyle(Theme.inkSecondary)
+                    .multilineTextAlignment(.center)
                     .contentTransition(.opacity)
             }
+            Spacer(minLength: 0)
             if !barIsVertical {
-                headerButtons
+                RoundIconButton(systemName: "arrow.clockwise", isBusy: model.isRefreshing) {
+                    refreshRequests += 1
+                    Task { await model.refreshAll() }
+                }
+                .accessibilityLabel(Text("Refresh"))
             }
-        }
-    }
-
-    private var headerButtons: some View {
-        HStack {
-            RoundIconButton(systemName: "gearshape") {
-                showingSettings = true
-            }
-            .accessibilityLabel(Text("Settings"))
-            Spacer()
-            RoundIconButton(systemName: "arrow.clockwise", isBusy: model.isRefreshing) {
-                refreshRequests += 1
-                Task { await model.refreshAll() }
-            }
-            .accessibilityLabel(Text("Refresh"))
         }
     }
     #endif

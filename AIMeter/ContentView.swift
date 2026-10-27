@@ -10,8 +10,6 @@ struct ContentView: View {
     /// an account's detail in it (`AppChrome.openAccount`).
     @State private var path = NavigationPath()
     #if os(iOS)
-    /// Compact height == iPhone in landscape → fullscreen usage mode.
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
     /// The full tour at the first launch (see `Tour`), and again from
     /// Settings (`.tourShowRequest`).
     @State private var showsTour = Tour.dueAtLaunch()
@@ -25,17 +23,7 @@ struct ContentView: View {
     #endif
 
     var body: some View {
-        Group {
-            #if os(iOS)
-            if verticalSizeClass == .compact {
-                LandscapeUsageView()
-            } else {
-                dashboard
-            }
-            #else
-            dashboard
-            #endif
-        }
+        dashboard
         #if os(iOS)
         .onChange(of: scenePhase) { _, phase in
             if phase == .background {

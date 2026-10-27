@@ -240,6 +240,8 @@ struct WidgetCompactRows: View {
                         .foregroundStyle(window == nil ? Theme.inkSecondary : Theme.ink)
                         .gridColumnAlignment(.trailing)
                 }
+                // One VoiceOver stop a row, name and figure together.
+                .accessibilityElement(children: .combine)
             }
         }
     }

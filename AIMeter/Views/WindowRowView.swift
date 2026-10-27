@@ -59,6 +59,7 @@ struct WindowRowView: View {
                             }
                             .font(Theme.caption)
                             .foregroundStyle(Theme.inkSecondary)
+                            .tapTarget()
                         }
                         .buttonStyle(.plain)
                     } else if let moneySubtitle {

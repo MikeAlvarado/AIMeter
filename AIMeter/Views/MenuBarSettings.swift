@@ -35,7 +35,7 @@ struct MenuBarSettings: View {
                         .font(Theme.rowTitle)
                         .foregroundStyle(Theme.ink)
                     Spacer()
-                    Picker("", selection: $prefs.menuBarStyle) {
+                    Picker("Style", selection: $prefs.menuBarStyle) {
                         ForEach(MenuBarStyle.allCases, id: \.self) { style in
                             Text(style.label).tag(style)
                         }

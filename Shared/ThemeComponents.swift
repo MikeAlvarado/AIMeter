@@ -36,6 +36,9 @@ struct UsageBarView: View {
 struct SegmentedPill<Option: Hashable>: View {
     let options: [(value: Option, label: String)]
     @Binding var selection: Option
+    /// What the choice is, said by VoiceOver before the segments ("Display,
+    /// Used, selected"): usually the section's own header.
+    var name: String? = nil
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -54,7 +57,9 @@ struct SegmentedPill<Option: Hashable>: View {
                         .font(.subheadline.weight(selection == option.value ? .semibold : .regular))
                         .foregroundStyle(selection == option.value ? Theme.ink : Theme.inkSecondary)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
+                        // 44 pt a segment on iOS, the size a finger needs
+                        // (36 until 4.3.1); the Mac's pointer keeps 8.
+                        .padding(.vertical, Self.segmentPadding)
                         .background {
                             if selection == option.value {
                                 Capsule().fill(Theme.accentWash)
@@ -71,7 +76,15 @@ struct SegmentedPill<Option: Hashable>: View {
         }
         .padding(4)
         .background(Theme.track.opacity(0.6), in: Capsule())
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(name.map { Text($0) } ?? Text(verbatim: ""))
     }
+
+    #if os(iOS)
+    private static var segmentPadding: CGFloat { 12 }
+    #else
+    private static var segmentPadding: CGFloat { 8 }
+    #endif
 }
 
 /// Card container with the standard surface, radius, and padding. It
@@ -101,6 +114,8 @@ struct SectionHeader: View {
             .font(Theme.sectionHeader)
             .foregroundStyle(Theme.inkSecondary)
             .padding(.horizontal, 4)
+            // VoiceOver's Headings rotor moves between sections.
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -163,6 +178,7 @@ struct UsageStatusFooter: View {
                     .buttonStyle(.plain)
                     .font(Theme.caption.weight(.semibold))
                     .foregroundStyle(Theme.accent)
+                    .tapTarget()
             }
         } else if let error {
             Label(error, systemImage: offline ? "wifi.slash" : "exclamationmark.triangle")
@@ -211,5 +227,21 @@ struct DisconnectedPrompt: View {
         .buttonStyle(.plain)
         .foregroundStyle(.white)
         .background(Theme.accent, in: Capsule())
+    }
+}
+
+extension View {
+    /// A finger's 44 pt of height around a small text control (a link-like
+    /// button, a reset line), without moving anything: the padding that
+    /// widens the hit area is taken back from the layout.
+    func tapTarget() -> some View {
+        #if os(iOS)
+        let extra: CGFloat = 12
+        return padding(.vertical, extra)
+            .contentShape(Rectangle())
+            .padding(.vertical, -extra)
+        #else
+        return self
+        #endif
     }
 }

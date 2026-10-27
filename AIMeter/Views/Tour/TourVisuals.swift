@@ -84,7 +84,9 @@ struct LoopingPhase<Content: View>: View {
 private struct BarsDemo: View {
     private static let frames: [[Double]] = [[12, 20, 8], [42, 61, 18], [73, 63, 20], [91, 66, 22]]
     private static var titles: [String] {
-        [String(localized: "5-hour session"), String(localized: "Weekly"), String(localized: "Credits")]
+        // The demo's own windows, so the first card a new user sees reads
+        // like the Dashboard that follows (it said "Credits" until 4.3.1).
+        [String(localized: "5-hour session"), String(localized: "Weekly"), UsageWindow.Kind.modelSpecific(String(localized: "Top model")).displayName]
     }
 
     var body: some View {
@@ -105,6 +107,10 @@ private struct BarsDemo: View {
                         Text(verbatim: "%")
                             .font(Theme.figure(size: 18))
                             .foregroundStyle(Theme.inkSecondary)
+                        Text(DisplayMode.used.suffix)
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(Theme.inkSecondary)
+                            .padding(.leading, 4)
                     }
                     UsageBarView(value: values[lead], tint: tint(values[lead]), height: 9, lit: true)
                         .padding(.top, 6)

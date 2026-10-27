@@ -12,11 +12,6 @@ struct SmartNotificationTogglesCard: View {
     let accountID: String
     @Environment(UsageModel.self) private var model
 
-    /// Shared caption for the section.
-    static var footnote: String {
-        String(localized: "Near-limit warns you at the level you set. Limit reached fires when a window maxes out and tells you whether continuing uses credits. Run-out warnings predict an early exhaustion. Early-reset alerts fire when a limit refills ahead of schedule. Sign-in alerts tell you when Claude stops accepting this account's saved sign-in. It's the one alert that's on by default, since otherwise nothing would tell you the numbers had stopped updating.")
-    }
-
     var body: some View {
         Card {
             VStack(spacing: Theme.rowSpacing) {
@@ -29,9 +24,15 @@ struct SmartNotificationTogglesCard: View {
                         get: { enabled },
                         set: { model.setSmartAlertEnabled($0, alert, accountID: accountID) }
                     )) {
-                        Text(alert.title)
-                            .font(Theme.rowTitle)
-                            .foregroundStyle(Theme.ink)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(alert.title)
+                                .font(Theme.rowTitle)
+                                .foregroundStyle(Theme.ink)
+                            Text(alert.detail)
+                                .font(Theme.caption)
+                                .foregroundStyle(Theme.inkSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
                     .tint(Theme.accent)
                     if alert == .nearLimit, enabled {
@@ -59,6 +60,10 @@ struct SmartNotificationTogglesCard: View {
                 step: 5
             )
             .tint(Theme.accent)
+            // Its own name and the percent it warns at: as a bare slider
+            // VoiceOver read 50 % as "0 percent" (the start of 50...95).
+            .accessibilityLabel(Text("Warn at"))
+            .accessibilityValue(Text(verbatim: "\(Int(model.nearLimitThreshold(for: accountID)))%"))
             Text("\(Int(model.nearLimitThreshold(for: accountID)))%")
                 .font(Theme.caption.monospacedDigit())
                 .foregroundStyle(Theme.ink)

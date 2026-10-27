@@ -60,7 +60,7 @@ struct ClaudeCodeUsageView: View {
     private func rows(_ aggregate: ClaudeCodeUsageAggregate) -> [(String, String)] {
         let t = aggregate.tokens
         var rows: [(String, String)] = [
-            (String(localized: "Equivalent API cost"), aggregate.cost.map { (aggregate.hasUnpricedModels ? "> " : "≈ ") + UsageFormatting.usd($0) } ?? "--"),
+            (String(localized: "Equivalent API cost"), aggregate.cost.map { ClaudeCodeFormatting.costText($0, lowerBound: aggregate.hasUnpricedModels) } ?? "--"),
             (String(localized: "Tokens"), UsageFormatting.tokens(t.total)),
             (String(localized: "Input"), UsageFormatting.tokens(t.input)),
             (String(localized: "Output (incl. thinking)"), UsageFormatting.tokens(t.output)),

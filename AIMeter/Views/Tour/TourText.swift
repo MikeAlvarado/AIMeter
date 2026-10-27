@@ -27,7 +27,7 @@ enum TourText {
         case .sessions: String(localized: "Each session at work gets a pixel pet beside the notch. Install the hooks and AIMeter also knows the moment a session asks for permission.")
         case .sessionNames: String(localized: "Show the working session's name beside the notch. With Accessibility allowed, the island shrinks before it covers your menus or the icons on the right.")
         case .openAtLogin: String(localized: "Open AIMeter at login, so the menu bar, the notch and the widgets stay current.")
-        case .connect: String(localized: "Sign in with your Claude account. AIMeter only ever reads your limits.")
+        case .connect: String(localized: "Sign in to the service you use. AIMeter only ever reads your limits.")
         }
     }
 }

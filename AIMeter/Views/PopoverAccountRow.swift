@@ -34,6 +34,10 @@ struct PopoverAccountRow: View {
     @Environment(PreferencesModel.self) private var prefs
     @Environment(UsageModel.self) private var model
     @State private var hovering = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Reached with Tab (Full Keyboard Access): it lights like the
+    /// pointer's card, and Return or Space opens it.
+    @FocusState private var focused: Bool
 
     var body: some View {
         let layout = AccountCardLayout(snapshot: usage.snapshot, modelSlotFallback: prefs.modelSlotFallback)
@@ -81,14 +85,20 @@ struct PopoverAccountRow: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Theme.card)
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Theme.ink.opacity(hovering ? 0.05 : 0))
+                .fill(Theme.ink.opacity(hovering || focused ? 0.05 : 0))
         }
         .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .onHover { inside in
-            withAnimation(.easeOut(duration: 0.12)) { hovering = inside }
+            withAnimation(reduceMotion ? nil : .easeOut(duration: 0.12)) { hovering = inside }
         }
         .onTapGesture {
             AppChrome.openAccount(usage.account.accountID)
+        }
+        .focusable(interactions: .activate)
+        .focused($focused)
+        .onKeyPress(keys: [.return, .space]) { _ in
+            AppChrome.openAccount(usage.account.accountID)
+            return .handled
         }
         .help(Text("Open \(usage.account.displayName) in AIMeter"))
         .accessibilityElement(children: .combine)

@@ -109,14 +109,13 @@ struct AccountSettingsCards: View {
                 SettingsGap()
             }
 
-            SectionHeader(title: String(localized: "Notifications"))
+            SectionHeader(title: String(localized: "Reset alerts"))
             NotificationTogglesCard(accountID: accountID)
-            SectionFootnote(text: String(localized: "A local notification fires when the selected usage window resets."))
+            SectionFootnote(text: String(localized: "A notification when each limit refills."))
 
             SettingsGap()
             SectionHeader(title: String(localized: "Smart notifications"))
             SmartNotificationTogglesCard(accountID: accountID)
-            SectionFootnote(text: SmartNotificationTogglesCard.footnote)
 
             #if os(iOS)
             SettingsGap()
@@ -217,7 +216,9 @@ struct AccountSettingsPage: View {
                 .readableWidth()
         }
         .appBackground()
-        .navigationTitle(model.usage(for: accountID)?.account.displayName ?? "")
+        // Not the account's name alone: that is Provider Detail's title,
+        // the page under this one, and the two read as one screen.
+        .navigationTitle(String(localized: "\(model.usage(for: accountID)?.account.displayName ?? "") Settings"))
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif

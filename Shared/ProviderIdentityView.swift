@@ -49,6 +49,10 @@ struct PlanPill: View {
         Text(name.capitalized)
             .font(compact ? .caption2.weight(.semibold) : .caption.weight(.semibold))
             .foregroundStyle(Theme.inkSecondary)
+            // Whole on one line: at the largest text sizes "Demo" split
+            // into "De" over "mo"; the name beside it is what gives way.
+            .lineLimit(1)
+            .fixedSize()
             .padding(.horizontal, compact ? 7 : 10)
             .padding(.vertical, compact ? 1.5 : 3)
             .background(Theme.track.opacity(0.7), in: Capsule())

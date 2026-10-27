@@ -45,7 +45,7 @@ struct DemoModeSettings: View {
                 }
                 .buttonStyle(.plain)
             }
-            SectionFootnote(text: String(localized: "You're viewing sample data. Exit to connect your real Claude account."))
+            SectionFootnote(text: String(localized: "You're viewing sample data. Exit to connect your real account."))
         } else {
             // "View Demo" swaps in fabricated accounts in memory only
             // (`UsageModel.enterDemoMode`), so it is safe to offer even
@@ -71,7 +71,7 @@ struct DemoModeSettings: View {
                 .buttonStyle(.plain)
             }
             SectionFootnote(text: model.needsConnection
-                ? String(localized: "Explore every screen with sample data before connecting your real Claude account.")
+                ? String(localized: "Explore every screen with sample data before connecting your real account.")
                 : String(localized: "Explore every screen with sample data. Your real accounts come back untouched when you exit."))
         }
     }
@@ -94,7 +94,8 @@ struct AppearanceSettings: View {
         Card {
             SegmentedPill(
                 options: AppearanceMode.allCases.map { ($0, $0.label) },
-                selection: $prefs.appearance
+                selection: $prefs.appearance,
+                name: String(localized: "Appearance")
             )
         }
         #if os(macOS)
@@ -108,7 +109,8 @@ struct AppearanceSettings: View {
         Card {
             SegmentedPill(
                 options: [DisplayMode.remaining, .used].map { ($0, $0.label) },
-                selection: $prefs.displayMode
+                selection: $prefs.displayMode,
+                name: String(localized: "Display")
             )
         }
         SectionFootnote(text: String(localized: "Whether bars and percentages show how much you have left or how much you've used."))
@@ -130,7 +132,8 @@ struct AppearanceSettings: View {
         Card {
             SegmentedPill(
                 options: [ResetStyle.relative, .absolute].map { ($0, $0.label) },
-                selection: $prefs.resetStyle
+                selection: $prefs.resetStyle,
+                name: String(localized: "Reset timers")
             )
         }
         SectionFootnote(text: String(localized: "Relative counts down to the reset. Absolute shows the local time. Tap any reset label on the dashboard to switch."))
@@ -206,7 +209,7 @@ struct BackgroundRefreshSettings: View {
                     .font(Theme.rowTitle)
                     .foregroundStyle(Theme.ink)
                 Spacer()
-                Picker("", selection: $prefs.refreshCadence) {
+                Picker("Refresh usage", selection: $prefs.refreshCadence) {
                     ForEach(RefreshCadence.allCases, id: \.self) { cadence in
                         Text(cadence.label).tag(cadence)
                     }
