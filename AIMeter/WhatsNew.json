@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "4.3.4",
+      "items": [
+        {
+          "symbol": "macwindow.on.rectangle",
+          "platforms": [
+            "macOS"
+          ],
+          "title": {
+            "en": "One window, not two",
+            "es": "Una ventana, no dos",
+            "de": "Ein Fenster statt zwei",
+            "fr": "Une fenêtre, pas deux",
+            "ja": "ウインドウは1つだけ",
+            "ko": "창은 하나만",
+            "pt-BR": "Uma janela, não duas",
+            "zh-Hans": "只开一个窗口"
+          },
+          "detail": {
+            "en": "Opening AIMeter from Finder, Spotlight or the Dock with no window open now shows one Dashboard instead of two.",
+            "es": "Abrir AIMeter desde Finder, Spotlight o el Dock sin ninguna ventana abierta ahora muestra un Dashboard en lugar de dos.",
+            "de": "Wenn du AIMeter ohne offenes Fenster aus dem Finder, aus Spotlight oder aus dem Dock öffnest, erscheint jetzt eine Übersicht statt zwei.",
+            "fr": "Ouvrir AIMeter depuis le Finder, Spotlight ou le Dock sans fenêtre ouverte affiche désormais un seul tableau de bord au lieu de deux.",
+            "ja": "ウインドウを開いていない状態でFinder、Spotlight、DockからAIMeterを開くと、ダッシュボードが2つではなく1つだけ表示されるようになりました。",
+            "ko": "창이 열려 있지 않을 때 Finder, Spotlight 또는 Dock에서 AIMeter를 열면 이제 대시보드가 두 개가 아닌 하나만 표시됩니다.",
+            "pt-BR": "Abrir o AIMeter pelo Finder, Spotlight ou Dock sem nenhuma janela aberta agora mostra um painel em vez de dois.",
+            "zh-Hans": "在没有打开窗口时，从访达、聚焦或程序坞打开 AIMeter，现在只会显示一个仪表板，而不是两个。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.3.3",
       "items": [
         {

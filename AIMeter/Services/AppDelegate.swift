@@ -85,10 +85,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // With no Dashboard scene yet (a launch that restored no window),
         // returning true is what makes SwiftUI open one: its `onAppear`
         // then registers the window bridges (`AppChrome.summonDashboardScene`).
-        if AppChrome.hasSceneBridges || AppChrome.hasDashboardWindow {
-            AppChrome.revealMainWindow()
-        }
-        return true
+        // Once there is one, the app reveals or opens the window itself and
+        // answers false: answering true as well had SwiftUI open a second
+        // Dashboard beside it (two windows from one double-click in Finder,
+        // Mike, 2026-10-27).
+        guard AppChrome.hasSceneBridges || AppChrome.hasDashboardWindow else { return true }
+        AppChrome.revealMainWindow()
+        return false
     }
 }
 

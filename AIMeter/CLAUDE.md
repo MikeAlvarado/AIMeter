@@ -1179,7 +1179,9 @@
     the first two seconds of a launch (`launchSettled`), when the scene may
     still be on its way and a reopen could open a second window;
     `applicationShouldHandleReopen` only reveals a window once a scene
-    exists, so the reopen itself is what opens the first.
+    exists, so the reopen itself is what opens the first; once it reveals
+    or opens one itself it answers false, since answering true as well
+    had SwiftUI open a second Dashboard beside it (4.2.0 to 4.3.3).
   - **Quit still means quit.** Hiding changes only what is visible; the menu
     bar Quit button remains an unconditional `NSApp.terminate`.
   - **One instance.** `applicationWillFinishLaunching` terminates any
