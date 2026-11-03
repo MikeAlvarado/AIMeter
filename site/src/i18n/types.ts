@@ -43,7 +43,7 @@ export interface PhoneCopy {
   history: string
   forecast: string
   windowPills: [string, string, string]
-  ranges: [string, string, string]
+  ranges: [string, string, string, string]
   /** The history chart's x labels, one list per range. */
   chartLabels: [string[], string[], string[]]
   runsOutEarly: string
