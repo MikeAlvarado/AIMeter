@@ -95,10 +95,11 @@ final class UsageModel {
     /// iCloud sync while `Preferences.cloudSync` is on (`CloudSync`, see
     /// `UsageModel+CloudSync.swift`); nil otherwise and in unit tests.
     @ObservationIgnored var cloud: CloudSync?
-    /// `peakEnabled` is the one field on `NotificationPreferences` that
-    /// ignores `accountID` (peak hours is a Claude-wide policy, not tied to
-    /// any one account) — "global" is a documented placeholder, never used
-    /// as a real key.
+    /// `peakEnabled` and the incident alerts are the fields on
+    /// `NotificationPreferences` that ignore `accountID` (peak hours is a
+    /// Claude-wide policy, an incident a service's, neither tied to any one
+    /// account) — "global" is a documented placeholder, never used as a
+    /// real key.
     let peakPreferences = NotificationPreferences(accountID: "global")
     #if os(iOS)
     /// The Watch app's feed (`WatchBridge`); nil with no Watch to pair,

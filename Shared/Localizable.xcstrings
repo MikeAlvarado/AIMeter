@@ -143,6 +143,52 @@
         }
       }
     },
+    "%@ reports an incident" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ meldet eine Störung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ reporta un incidente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ signale un incident"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@が障害を報告しています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에서 장애를 보고함"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ relata um incidente"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 报告了事故"
+          }
+        }
+      }
+    },
     "%@ Settings" : {
       "comment" : "Title of one account's settings page. The placeholder is the account's nickname.",
       "localizations" : {
@@ -3001,6 +3047,52 @@
         }
       }
     },
+    "Notify about incidents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei Störungen benachrichtigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisar de incidentes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signaler les incidents"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "障害を通知"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "장애 알림"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisar sobre incidentes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事故通知"
+          }
+        }
+      }
+    },
     "On this step for" : {
       "comment" : "Before a running timer (\"1:42\") under the step a Claude Code session is on, in the notch island.",
       "localizations" : {
@@ -3044,6 +3136,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此步骤已进行"
+          }
+        }
+      }
+    },
+    "Once per incident of a service you use, taken back when it's over." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einmal pro Störung eines Dienstes, den du nutzt, und wieder entfernt, wenn sie vorbei ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una vez por incidente de un servicio que usas, y se retira cuando termina."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une fois par incident d'un service que vous utilisez, retirée une fois l'incident terminé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使っているサービスの障害ごとに1回。終わると取り下げます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용하는 서비스의 장애마다 한 번 알리고, 끝나면 거둬들입니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma vez por incidente de um serviço que você usa, retirado quando acaba."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你使用的服务每次事故通知一次，结束后撤回。"
           }
         }
       }

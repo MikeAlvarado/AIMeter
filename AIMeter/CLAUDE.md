@@ -312,7 +312,8 @@
     report; and how to add a widget, since the app can't place one),
     **Refresh & data** (the refresh cadence, "Check service
     status" (`Preferences.checksServiceStatus`, default on, mirrored into
-    the model through `setChecksServiceStatus`), iCloud
+    the model through `setChecksServiceStatus`) with "Notify about
+    incidents" under it while it is on, iCloud
     (`CloudSyncSettings`: "Sync preferences and history",
     `Preferences.cloudSync`, off by default, mirrored through
     `setCloudSync(enabled:)`; see "iCloud sync" in the repo-root

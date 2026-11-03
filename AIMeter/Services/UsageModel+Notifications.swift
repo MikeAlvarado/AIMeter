@@ -114,10 +114,11 @@ extension UsageModel {
         }
     }
 
-    /// Shared permission gate for enabling a notification toggle: a denied
+    /// Shared permission gate for enabling a notification toggle (internal,
+    /// not private, for the incident toggle in `UsageModel+ServiceStatus`): a denied
     /// system permission snaps the toggle back off and surfaces the blocked
     /// state. Returns whether the caller should proceed to persist.
-    private func authorizeIfEnabling(_ enabled: Bool) async -> Bool {
+    func authorizeIfEnabling(_ enabled: Bool) async -> Bool {
         if enabled {
             guard await NotificationScheduler.ensureAuthorization() else {
                 notificationsBlocked = true

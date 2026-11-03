@@ -81,12 +81,13 @@ below and `AIMeterWatch/CLAUDE.md`.
   website's video recorder tells the island, see "Claude Code sessions"
   below); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
-  four files: `NotificationPreferences.swift` (the toggles, plus
+  five files: `NotificationPreferences.swift` (the toggles, plus
   `SmartAlert` — the five per-account families addressed as one enum, so
   the model and the toggles card have one getter/setter pair instead of
   five), `NotificationScheduler.swift` (the fetch-driven families),
-  `NotificationScheduler+RunOut.swift` (the run-out warnings) and
-  `NotificationScheduler+Peak.swift`.
+  `NotificationScheduler+RunOut.swift` (the run-out warnings),
+  `NotificationScheduler+Peak.swift` and
+  `NotificationScheduler+Incidents.swift` (a service's incidents).
 - `AIMeter/Services/ClaudeCodeUsageModel.swift` (macOS) — Claude Code's
   local token usage on this Mac, see "Claude Code local usage" below;
   its views are `AIMeter/Views/ClaudeCodeUsageCard.swift` (the Dashboard
@@ -557,6 +558,19 @@ the account silently freezes at its last snapshot.
   Demo mode never checks and never shows one. Not in the widget
   extension or the iOS background task: there is no surface for it
   there, and a stale status in a widget would be worse than none.
+  **Notify about incidents** (under the switch while it is on, off by
+  default, one global toggle like peak hours,
+  `NotificationPreferences.incidentAlertsEnabled`, `notify.incidents`;
+  `NotificationScheduler+Incidents.swift`): a notification
+  `incident.<providerID>` ("Claude reports an incident", the incident's
+  title or the page's summary) the first time a check finds a family's
+  page at minor, major or critical, once per incident (the announced
+  title is kept per family, `notify.incident.announced.<providerID>`),
+  replaced by a new incident's and taken back once the page is
+  operational again (`NotificationScheduler.incidentAlert`, pure,
+  `IncidentAlertTests`). Maintenance and an unknown status announce
+  nothing; turning the switch, or the check, off takes back what is
+  shown; switching it on announces an incident already under way.
 - Disconnect cascades (`RefreshService.disconnect()` from
   `UsageModel.disconnect(accountID:)`): credentials, stored snapshot, both
   usage histories (`UsageRecorder.clear` — the predictor's series and the
@@ -2165,7 +2179,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   offer rules and the install script (`UpdateFeedTests`), the
   service-status throttle, aging, banner and footer-line rules
   (`ServiceStatusTests`, with a stub `ServiceStatusSource` injected
-  through `UsageModel.serviceStatusSources`), the menu bar label's
+  through `UsageModel.serviceStatusSources`), when an incident is
+  announced, kept quiet or taken back (`IncidentAlertTests`), the menu bar label's
   text/fill/tint rules plus the style migration
   (`MenuBarLabelModelTests`), the app icon's looks, their pictures in
   the bundle, iOS's declared alternates and the Mac's preference

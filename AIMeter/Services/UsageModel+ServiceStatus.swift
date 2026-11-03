@@ -35,6 +35,7 @@ extension UsageModel {
         guard !enabled else { return }
         for providerID in serviceStatus.keys {
             serviceStatusStore?.clear(for: providerID)
+            withdrawIncident(for: providerID)
         }
         serviceStatus = [:]
         serviceStatusCheckedAt = [:]
@@ -87,11 +88,58 @@ extension UsageModel {
         if let status {
             serviceStatus[providerID] = status
             serviceStatusStore?.save(status, for: providerID)
+            alertIncident(status, for: providerID)
         } else if let last = serviceStatus[providerID],
                   now.timeIntervalSince(last.checkedAt) > Self.serviceStatusMaxAge {
             serviceStatus[providerID] = nil
             serviceStatusStore?.clear(for: providerID)
         }
+    }
+
+    // MARK: - Incident notifications
+
+    /// "Notify about incidents" (Settings → Service status), global like
+    /// the peak toggle; off by default.
+    var incidentNotificationsEnabled: Bool {
+        _ = notificationsRevision
+        return peakPreferences.incidentAlertsEnabled
+    }
+
+    func setIncidentNotificationsEnabled(_ enabled: Bool) {
+        Task { @MainActor in
+            guard await authorizeIfEnabling(enabled) else { return }
+            peakPreferences.incidentAlertsEnabled = enabled
+            notificationsRevision += 1
+            if enabled {
+                // An incident already under way is announced now, not at
+                // the next change of the page.
+                for (providerID, status) in serviceStatus { alertIncident(status, for: providerID) }
+            } else {
+                for providerID in Set(accounts.map(\.account.providerID)) { withdrawIncident(for: providerID) }
+            }
+        }
+    }
+
+    /// Announces a new incident of a family once, and takes the notice
+    /// back when the page is operational again
+    /// (`NotificationScheduler.incidentAlert`). Never in demo mode.
+    private func alertIncident(_ status: ServiceStatus, for providerID: String) {
+        guard !isDemoMode, peakPreferences.incidentAlertsEnabled else { return }
+        switch NotificationScheduler.incidentAlert(for: status, announced: peakPreferences.announcedIncident(for: providerID)) {
+        case .announce(let key):
+            peakPreferences.setAnnouncedIncident(key, for: providerID)
+            let name = ProviderCatalog.displayName(for: providerID)
+            Task { await NotificationScheduler.notifyIncident(providerID: providerID, providerName: name, status: status) }
+        case .withdraw:
+            withdrawIncident(for: providerID)
+        case .none:
+            break
+        }
+    }
+
+    private func withdrawIncident(for providerID: String) {
+        peakPreferences.setAnnouncedIncident(nil, for: providerID)
+        NotificationScheduler.withdrawIncident(providerID: providerID)
     }
 
     // MARK: - What the surfaces read

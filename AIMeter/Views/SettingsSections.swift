@@ -179,12 +179,30 @@ struct ServiceStatusSettings: View {
 
         SectionHeader(title: String(localized: "Service status"))
         Card {
-            Toggle(isOn: $prefs.checksServiceStatus) {
-                Text("Check service status")
-                    .font(Theme.rowTitle)
-                    .foregroundStyle(Theme.ink)
+            VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                Toggle(isOn: $prefs.checksServiceStatus) {
+                    Text("Check service status")
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                }
+                .tint(Theme.accent)
+                if prefs.checksServiceStatus {
+                    Toggle(isOn: Binding(
+                        get: { model.incidentNotificationsEnabled },
+                        set: model.setIncidentNotificationsEnabled
+                    )) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Notify about incidents")
+                                .font(Theme.rowTitle)
+                                .foregroundStyle(Theme.ink)
+                            Text("Once per incident of a service you use, taken back when it's over.")
+                                .font(Theme.caption)
+                                .foregroundStyle(Theme.inkSecondary)
+                        }
+                    }
+                    .tint(Theme.accent)
+                }
             }
-            .tint(Theme.accent)
         }
         .onChange(of: prefs.checksServiceStatus) { _, newValue in
             model.setChecksServiceStatus(newValue)

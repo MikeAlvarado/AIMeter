@@ -105,6 +105,24 @@ struct NotificationPreferences {
         nonmutating set { defaults.set(newValue, forKey: "notify.peak") }
     }
 
+    /// "Notify about incidents": a notification when a connected service's
+    /// status page reports one. Global like `peakEnabled`: an incident is
+    /// the service's, not an account's. Off by default.
+    var incidentAlertsEnabled: Bool {
+        get { defaults.bool(forKey: "notify.incidents") }
+        nonmutating set { defaults.set(newValue, forKey: "notify.incidents") }
+    }
+
+    /// The incident already announced for a provider family (its title, or
+    /// the page's summary), so the next check of the same one stays quiet.
+    func announcedIncident(for providerID: String) -> String? {
+        defaults.string(forKey: "notify.incident.announced.\(providerID)")
+    }
+
+    func setAnnouncedIncident(_ incident: String?, for providerID: String) {
+        defaults.set(incident, forKey: "notify.incident.announced.\(providerID)")
+    }
+
     /// `UserDefaults.bool(forKey:)` reports `false` for a key nobody has
     /// written, which would silently flip any preference whose default is
     /// `true` — same trap, and same presence check, as

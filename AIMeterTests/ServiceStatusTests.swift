@@ -182,3 +182,28 @@ private final class StubStatusSource: ServiceStatusSource, @unchecked Sendable {
         return status
     }
 }
+
+/// "Notify about incidents": announced once per incident, taken back when
+/// the page is operational again, never for maintenance or a failed check.
+final class IncidentAlertTests: XCTestCase {
+    private func status(_ indicator: ServiceStatus.Indicator, title: String? = nil) -> ServiceStatus {
+        ServiceStatus(indicator: indicator, description: "Partial System Outage", incidentTitle: title)
+    }
+
+    func testAnOutageIsAnnouncedOnceUnderItsTitle() {
+        let outage = status(.major, title: "Elevated errors on Claude Code")
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: outage, announced: nil), .announce("Elevated errors on Claude Code"))
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: outage, announced: "Elevated errors on Claude Code"), .none)
+        // A different incident while the last is still announced: a new notice.
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: status(.critical, title: "Login failures"), announced: "Elevated errors on Claude Code"), .announce("Login failures"))
+        // No incident title: the page's own summary is the key.
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: status(.minor), announced: nil), .announce("Partial System Outage"))
+    }
+
+    func testBackToOperationalWithdrawsAndMaintenanceOrUnknownSaysNothing() {
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: status(.operational), announced: "Login failures"), .withdraw)
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: status(.operational), announced: nil), .none)
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: status(.maintenance, title: "Scheduled upgrade"), announced: nil), .none)
+        XCTAssertEqual(NotificationScheduler.incidentAlert(for: status(.unknown), announced: "Login failures"), .none)
+    }
+}
