@@ -1,7 +1,7 @@
 {
   "releases": [
     {
-      "version": "4.3.5",
+      "version": "4.4.0",
       "items": [
         {
           "symbol": "tag",
@@ -24,6 +24,147 @@
             "ko": "Claude의 Max 20x가 이제 Ultra로 바뀌었고, 이 요금제의 계정은 이름 옆에 그렇게 표시됩니다. Ultra에는 5시간 한도가 없으므로 카드가 주간 한도부터 보여 줍니다.",
             "pt-BR": "O Max 20x do Claude agora se chama Ultra, e uma conta nesse plano mostra isso ao lado do nome. O Ultra não tem limite de 5 horas, então o cartão começa pela semana.",
             "zh-Hans": "Claude 的 Max 20x 现已更名为 Ultra，使用该方案的账户会在名称旁显示 Ultra。Ultra 没有 5 小时限制，因此卡片会先显示每周用量。"
+          }
+        },
+        {
+          "symbol": "sun.max",
+          "title": {
+            "en": "What fits in today",
+            "es": "Lo que cabe hoy",
+            "de": "Was heute drin ist",
+            "fr": "Ce qui tient aujourd'hui",
+            "ja": "今日使える分",
+            "ko": "오늘 쓸 수 있는 양",
+            "pt-BR": "O que cabe hoje",
+            "zh-Hans": "今天可用多少"
+          },
+          "detail": {
+            "en": "An account's detail says how much of each weekly limit you can use today so it lasts, and how the week divides between the apps that spent it.",
+            "es": "El detalle de una cuenta dice cuánto de cada límite semanal puedes usar hoy para que alcance, y cómo se reparte la semana entre las apps que la gastaron.",
+            "de": "Die Details eines Accounts zeigen, wie viel jedes Wochenlimits du heute nutzen kannst, damit es reicht, und wie sich die Woche auf die Apps verteilt, die sie verbraucht haben.",
+            "fr": "Le détail d'un compte indique ce que vous pouvez utiliser aujourd'hui de chaque limite hebdomadaire pour qu'elle tienne, et comment la semaine se répartit entre les apps qui l'ont consommée.",
+            "ja": "アカウントの詳細に、週ごとの上限を最後まで持たせるために今日使える量と、その週の使用量がどのアプリにどう分かれたかを表示します。",
+            "ko": "계정 세부 정보에서 주간 한도가 끝까지 버티도록 오늘 쓸 수 있는 양과, 이번 주 사용량이 어떤 앱에 어떻게 나뉘었는지 알려 줍니다.",
+            "pt-BR": "O detalhe de uma conta diz quanto de cada limite semanal você pode usar hoje para durar, e como a semana se divide entre os apps que a gastaram.",
+            "zh-Hans": "账户详情会显示今天还能用多少每周额度才能撑到最后，以及本周用量在各应用之间如何分配。"
+          }
+        },
+        {
+          "symbol": "person.2",
+          "title": {
+            "en": "Another account with room",
+            "es": "Otra cuenta con espacio",
+            "de": "Ein anderer Account mit Luft",
+            "fr": "Un autre compte avec de la marge",
+            "ja": "余裕のある別のアカウント",
+            "ko": "여유 있는 다른 계정",
+            "pt-BR": "Outra conta com espaço",
+            "zh-Hans": "另一个还有余量的账户"
+          },
+          "detail": {
+            "en": "When one account is nearly out, its card names another of the same service that still has room, and so do its limit alerts.",
+            "es": "Cuando una cuenta está por agotarse, su tarjeta nombra otra del mismo servicio que todavía tiene espacio, y sus avisos de límite también.",
+            "de": "Wenn ein Account fast aufgebraucht ist, nennt seine Karte einen anderen desselben Dienstes, der noch Luft hat, ebenso seine Limit-Hinweise.",
+            "fr": "Quand un compte est presque épuisé, sa carte indique un autre compte du même service qui a encore de la marge, tout comme ses alertes de limite.",
+            "ja": "あるアカウントの上限が近づくと、そのカードと上限の通知が、まだ余裕のある同じサービスの別アカウントを示します。",
+            "ko": "한 계정이 거의 다 쓰이면, 그 카드와 한도 알림이 아직 여유 있는 같은 서비스의 다른 계정을 알려 줍니다.",
+            "pt-BR": "Quando uma conta está quase no fim, o cartão dela indica outra do mesmo serviço que ainda tem espaço, assim como os avisos de limite.",
+            "zh-Hans": "当一个账户快用完时，它的卡片和额度提醒会指出同一服务中仍有余量的另一个账户。"
+          }
+        },
+        {
+          "symbol": "chart.xyaxis.line",
+          "title": {
+            "en": "90 days of history",
+            "es": "90 días de historial",
+            "de": "90 Tage Verlauf",
+            "fr": "90 jours d'historique",
+            "ja": "90日分の履歴",
+            "ko": "90일 기록",
+            "pt-BR": "90 dias de histórico",
+            "zh-Hans": "90 天历史记录"
+          },
+          "detail": {
+            "en": "The history chart now keeps 90 days, one point a day past the first 30.",
+            "es": "La gráfica de historial ahora guarda 90 días, un punto por día después de los primeros 30.",
+            "de": "Das Verlaufsdiagramm behält jetzt 90 Tage, nach den ersten 30 einen Punkt pro Tag.",
+            "fr": "Le graphique d'historique conserve désormais 90 jours, un point par jour après les 30 premiers.",
+            "ja": "履歴グラフが90日分を保持するようになりました。最初の30日を過ぎると1日1点になります。",
+            "ko": "기록 차트가 이제 90일을 보관하며, 처음 30일이 지나면 하루에 한 점씩 남깁니다.",
+            "pt-BR": "O gráfico de histórico agora guarda 90 dias, um ponto por dia depois dos primeiros 30.",
+            "zh-Hans": "历史图表现在保留 90 天，前 30 天之后每天保留一个点。"
+          }
+        },
+        {
+          "symbol": "bell.badge",
+          "title": {
+            "en": "Alerts your way",
+            "es": "Avisos a tu manera",
+            "de": "Hinweise nach deinem Geschmack",
+            "fr": "Des alertes à votre façon",
+            "ja": "自分好みの通知",
+            "ko": "원하는 방식의 알림",
+            "pt-BR": "Avisos do seu jeito",
+            "zh-Hans": "按你的方式提醒"
+          },
+          "detail": {
+            "en": "Up to three near-limit levels per account, a warning when a limit runs well ahead of pace, a reminder before your plan renews on the day you set, and an optional notice when a service has an incident.",
+            "es": "Hasta tres niveles de aviso por cuenta, un aviso cuando un límite va muy por delante del ritmo, un recordatorio antes de que se renueve tu plan el día que elijas, y un aviso opcional cuando un servicio tiene un incidente.",
+            "de": "Bis zu drei Warnschwellen pro Account, eine Warnung, wenn ein Limit dem Tempo weit voraus ist, eine Erinnerung vor der Verlängerung deines Tarifs am Tag deiner Wahl und auf Wunsch ein Hinweis, wenn ein Dienst eine Störung hat.",
+            "fr": "Jusqu'à trois seuils d'alerte par compte, un avertissement quand une limite prend beaucoup d'avance sur le rythme, un rappel avant le renouvellement de votre offre le jour que vous choisissez, et une alerte facultative quand un service a un incident.",
+            "ja": "アカウントごとに最大3つの警告レベル、上限がペースを大きく超えたときの警告、設定した日のプラン更新前のリマインダー、そしてサービスに障害が起きたときの任意の通知。",
+            "ko": "계정마다 최대 세 개의 경고 수준, 한도가 페이스보다 크게 앞설 때의 경고, 직접 정한 날 요금제 갱신 전 알림, 그리고 서비스에 장애가 있을 때의 선택형 알림.",
+            "pt-BR": "Até três níveis de aviso por conta, um aviso quando um limite fica bem à frente do ritmo, um lembrete antes de o plano renovar no dia que você definir e um aviso opcional quando um serviço tem um incidente.",
+            "zh-Hans": "每个账户最多三个警告水平、额度大幅超前节奏时的警告、在你设定的日期续订前的提醒，以及服务发生事故时的可选通知。"
+          }
+        },
+        {
+          "symbol": "timer",
+          "platforms": [
+            "iOS"
+          ],
+          "title": {
+            "en": "Live Activity without a session",
+            "es": "Live Activity sin sesión",
+            "de": "Live Activity ohne Sitzung",
+            "fr": "Live Activity sans session",
+            "ja": "セッションなしのライブアクティビティ",
+            "ko": "세션 없는 실시간 현황",
+            "pt-BR": "Atividade ao Vivo sem sessão",
+            "zh-Hans": "无会话的实时活动"
+          },
+          "detail": {
+            "en": "An account with no 5-hour session, like Ultra, now follows its fullest limit on the Lock Screen and in the Dynamic Island.",
+            "es": "Una cuenta sin sesión de 5 horas, como Ultra, ahora sigue su límite más lleno en la Pantalla Bloqueada y en la Dynamic Island.",
+            "de": "Ein Account ohne 5-Stunden-Sitzung, etwa Ultra, zeigt jetzt sein vollstes Limit auf dem Sperrbildschirm und in der Dynamic Island.",
+            "fr": "Un compte sans session de 5 heures, comme Ultra, suit désormais sa limite la plus remplie sur l'écran verrouillé et dans la Dynamic Island.",
+            "ja": "Ultraのように5時間のセッションがないアカウントは、ロック画面とDynamic Islandで最も上限に近い枠を表示するようになりました。",
+            "ko": "Ultra처럼 5시간 세션이 없는 계정은 이제 잠금 화면과 Dynamic Island에서 한도에 가장 가까운 항목을 보여 줍니다.",
+            "pt-BR": "Uma conta sem sessão de 5 horas, como a Ultra, agora acompanha o limite mais cheio na Tela Bloqueada e na Dynamic Island.",
+            "zh-Hans": "没有 5 小时会话的账户（例如 Ultra）现在会在锁定屏幕和灵动岛显示最接近用满的限制。"
+          }
+        },
+        {
+          "symbol": "mic",
+          "title": {
+            "en": "More from Siri and Shortcuts",
+            "es": "Más de Siri y Atajos",
+            "de": "Mehr mit Siri und Kurzbefehlen",
+            "fr": "Plus avec Siri et Raccourcis",
+            "ja": "Siriとショートカットでもっと",
+            "ko": "Siri와 단축어로 더 많이",
+            "pt-BR": "Mais com a Siri e Atalhos",
+            "zh-Hans": "Siri 和快捷指令的更多功能"
+          },
+          "detail": {
+            "en": "Ask how much one account has used or when its limits reset, or open it, picking the account by its name.",
+            "es": "Pregunta cuánto ha usado una cuenta o cuándo se reinician sus límites, o ábrela, eligiendo la cuenta por su nombre.",
+            "de": "Frag, wie viel ein Account verbraucht hat oder wann seine Limits zurückgesetzt werden, oder öffne ihn, den Account wählst du nach seinem Namen.",
+            "fr": "Demandez ce qu'un compte a utilisé ou quand ses limites se réinitialisent, ou ouvrez-le, en choisissant le compte par son nom.",
+            "ja": "アカウントを名前で選んで、使用量や上限のリセット時刻をたずねたり、そのアカウントを開いたりできます。",
+            "ko": "계정을 이름으로 골라 사용량이나 한도 초기화 시점을 묻거나, 그 계정을 열 수 있습니다.",
+            "pt-BR": "Pergunte quanto uma conta usou ou quando os limites dela reiniciam, ou abra-a, escolhendo a conta pelo nome.",
+            "zh-Hans": "按名称选择账户，询问它的用量或各项限制何时重置，或直接打开它。"
           }
         }
       ]
