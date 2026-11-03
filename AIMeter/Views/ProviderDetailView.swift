@@ -71,6 +71,20 @@ struct ProviderDetailView: View {
                     }
                 }
 
+                if let snapshot = usage?.snapshot, let today = TodayAllowanceCard(snapshot: snapshot) {
+                    SectionHeader(title: String(localized: "Today"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    today
+                    SectionFootnote(text: String(localized: "What's left divided by the days until each limit resets, today included, so it lasts the whole window."))
+                }
+
+                if let breakdown = usage?.snapshot?.breakdown, breakdown.hasUsage {
+                    SectionHeader(title: String(localized: "This week by app"))
+                        .padding(.top, Theme.sectionSpacing - 10)
+                    BreakdownCard(breakdown: breakdown)
+                    SectionFootnote(text: String(localized: "How this week's usage divides between the apps that spent it, as the service reports it."))
+                }
+
                 if let spend = usage?.snapshot?.spend {
                     SectionHeader(title: String(localized: "Spend"))
                         .padding(.top, Theme.sectionSpacing - 10)

@@ -199,3 +199,74 @@ enum ProviderDetailRows {
         amount.formatted(.currency(code: currency ?? "USD"))
     }
 }
+
+/// "This week by app": the week's usage divided by the app that spent it,
+/// in the provider's order and with its names (Claude Code, Chats,
+/// Cowork). The shares are of what was used, not of the limit, so the
+/// bars are in the accent alone, never the limit's yellow or red.
+struct BreakdownCard: View {
+    let breakdown: UsageBreakdown
+
+    var body: some View {
+        Card {
+            Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: Theme.rowSpacing) {
+                ForEach(breakdown.shares, id: \.key) { share in
+                    GridRow {
+                        Text(share.name)
+                            .font(Theme.rowTitle)
+                            .foregroundStyle(Theme.ink)
+                            .lineLimit(1)
+                        UsageBarView(value: share.percent, tint: Theme.accent, height: 5)
+                            .gridCellUnsizedAxes(.vertical)
+                        Text(Self.percentText(share.percent))
+                            .font(Theme.percent)
+                            .foregroundStyle(Theme.ink)
+                            .gridColumnAlignment(.trailing)
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text("\(share.name), \(Self.percentText(share.percent))"))
+                }
+            }
+        }
+    }
+
+    static func percentText(_ percent: Double) -> String {
+        "\(Int(percent.rounded()))%"
+    }
+}
+
+/// "Today": for each window a week or longer, what is left divided by the
+/// days until it resets (`UsageInsights.dailyAllowance`), so the window
+/// lasts. Plain arithmetic on the figure shown, so it needs no pace
+/// warm-up.
+struct TodayAllowanceCard: View {
+    let rows: [(title: String, allowance: Double)]
+
+    init?(snapshot: UsageSnapshot, now: Date = Date()) {
+        let rows = snapshot.windows.compactMap { window -> (title: String, allowance: Double)? in
+            UsageInsights.dailyAllowance(for: window, now: now).map { (window.title, $0) }
+        }
+        guard !rows.isEmpty else { return nil }
+        self.rows = rows
+    }
+
+    var body: some View {
+        Card {
+            VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(row.title)
+                            .font(Theme.rowTitle)
+                            .foregroundStyle(Theme.ink)
+                        Spacer()
+                        Text("Up to \(Int(row.allowance))% today")
+                            .font(.body)
+                            .foregroundStyle(Theme.ink)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            }
+        }
+    }
+}

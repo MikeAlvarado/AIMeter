@@ -66,6 +66,11 @@ struct AccountSectionView: View {
             if !layout.others.isEmpty {
                 CompactWindowRows(slots: layout.others, snapshot: usage.snapshot)
             }
+            if let room = model.room(for: usage) {
+                Label(UsageInsights.roomLine(room), systemImage: "arrow.left.arrow.right")
+                    .font(Theme.caption)
+                    .foregroundStyle(Theme.inkSecondary)
+            }
             statusTail
         }
         .padding(20)

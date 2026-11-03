@@ -137,6 +137,7 @@ enum NotificationScheduler {
         in current: UsageSnapshot,
         accountID: String,
         accountLabel: String? = nil,
+        room: String? = nil,
         preferences: NotificationPreferences
     ) async {
         guard preferences.nearLimitEnabled, !kinds.isEmpty, await canDeliver() else { return }
@@ -146,7 +147,7 @@ enum NotificationScheduler {
             let used = current.windows.first { $0.kind == kind }?.usedPct ?? 0
             let content = UNMutableNotificationContent()
             content.title = labeled(String(localized: "\(current.title(for: kind)) nearing its limit"), accountLabel)
-            content.body = String(localized: "You're at \(Int(used))% of this window.")
+            content.body = withRoom(String(localized: "You're at \(Int(used))% of this window."), room)
             content.sound = .default
             await add(content, prefix: nearLimitPrefix, accountID: accountID, kind: kind, to: center)
         }
@@ -162,6 +163,7 @@ enum NotificationScheduler {
         in current: UsageSnapshot,
         accountID: String,
         accountLabel: String? = nil,
+        room: String? = nil,
         preferences: NotificationPreferences
     ) async {
         guard preferences.limitReachedEnabled, !kinds.isEmpty, await canDeliver() else { return }
@@ -171,12 +173,19 @@ enum NotificationScheduler {
         for kind in kinds {
             let content = UNMutableNotificationContent()
             content.title = labeled(String(localized: "\(current.title(for: kind)) limit reached"), accountLabel)
-            content.body = hasCredits
+            content.body = withRoom(hasCredits
                 ? String(localized: "Further usage now draws on your usage credits.")
-                : String(localized: "You're blocked on this limit until it resets.")
+                : String(localized: "You're blocked on this limit until it resets."), room)
             content.sound = .default
             await add(content, prefix: limitReachedPrefix, accountID: accountID, kind: kind, to: center)
         }
+    }
+
+    /// A limit alert's body, ended with another account's room ("Work has
+    /// 70% free.") when there is one (`UsageInsights.room`).
+    private static func withRoom(_ body: String, _ room: String?) -> String {
+        guard let room else { return body }
+        return "\(body) \(room)"
     }
 
     /// Prefixes a notification title with the account's nickname — only

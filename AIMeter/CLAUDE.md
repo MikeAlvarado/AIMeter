@@ -21,7 +21,9 @@
   CLAUDE.md): inside the card, the identity (mark, nickname, plan pill,
   chevron), the most urgent window large with its 24-hour sparkline once
   three samples exist (see "History" in the repo-root CLAUDE.md), the
-  other windows one line each, and only when there is one the error,
+  other windows one line each, "Work has 70% free" while this account is
+  nearly out and another of its service has room (see "Today and room
+  elsewhere" in the repo-root CLAUDE.md), and only when there is one the error,
   "Sign in again", the incident line or a stale "Updated X ago"; tapping
   the identity pushes that account's Provider Detail
   (`NavigationLink(value: accountID)`). An "Add account" capsule on glass
@@ -176,7 +178,11 @@
   while `ClaudePeakSchedule.current` is non-nil, which it isn't today
   (the policy is retired); a **Forecast** card (`ForecastCard`) listing
   any of that account's windows projected to run out early or an
-  all-clear row; Spend and Extra usage cards (label/value rows, currency
+  all-clear row; a **Today** card (`TodayAllowanceCard`, each window a
+  week or longer and what fits in today so it lasts) and **This week by
+  app** (`BreakdownCard`, the week's usage by the app that spent it),
+  each only when it has a row, see "Today and room elsewhere" and "This
+  week by app" in the repo-root CLAUDE.md; Spend and Extra usage cards (label/value rows, currency
   formatted) for this account; and, in the toolbar, an **Account
   settings** button (`slider.horizontal.3`, a `NavigationLink` to an
   `AccountSettingsRoute`) pushing the account's own settings page (below)

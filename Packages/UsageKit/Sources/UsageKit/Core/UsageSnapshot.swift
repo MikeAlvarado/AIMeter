@@ -18,6 +18,10 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
     /// signed in on ("claude:<account uuid>"); nil until the provider has
     /// read its profile, and for snapshots saved before the field existed.
     public var accountIdentity: String?
+    /// Where the week's usage went, by app, when the provider says
+    /// (Claude's `seven_day_breakdown`); nil otherwise and for snapshots
+    /// saved before the field existed.
+    public var breakdown: UsageBreakdown?
 
     public init(
         providerID: String,
@@ -26,7 +30,8 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
         windows: [UsageWindow],
         spend: SpendStatus? = nil,
         extraUsage: ExtraUsageStatus? = nil,
-        accountIdentity: String? = nil
+        accountIdentity: String? = nil,
+        breakdown: UsageBreakdown? = nil
     ) {
         self.providerID = providerID
         self.planName = planName
@@ -35,6 +40,7 @@ public struct UsageSnapshot: Codable, Hashable, Sendable {
         self.spend = spend
         self.extraUsage = extraUsage
         self.accountIdentity = accountIdentity
+        self.breakdown = breakdown
     }
 
     public var sessionWindow: UsageWindow? {

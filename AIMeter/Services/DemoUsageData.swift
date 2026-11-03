@@ -58,7 +58,14 @@ enum DemoUsageData {
                 monthlyLimit: 20,
                 utilization: 17.5,
                 currency: "USD"
-            )
+            ),
+            // Neutral surfaces for the same reason as "Top model": no
+            // product names in what the store screenshots are taken from.
+            breakdown: UsageBreakdown(shares: [
+                .init(key: "coding", name: String(localized: "Coding"), percent: 64),
+                .init(key: "chat", name: String(localized: "Chat"), percent: 28),
+                .init(key: "other", name: String(localized: "Other"), percent: 8),
+            ])
         )
     }
 

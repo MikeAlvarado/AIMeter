@@ -193,8 +193,10 @@ struct RefreshService {
             previous: previous, current: current,
             threshold: ThresholdDetector.limitReachedThreshold
         )
+        let room = roomElsewhere(given: current).map(UsageInsights.roomSentence)
         await NotificationScheduler.notifyLimitReached(
-            reached, in: current, accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+            reached, in: current, accountID: account.accountID, accountLabel: accountLabel,
+            room: room, preferences: prefs
         )
 
         let nearing = ThresholdDetector.crossedUp(
@@ -202,7 +204,21 @@ struct RefreshService {
             threshold: prefs.nearLimitThreshold
         ).filter { !reached.contains($0) }
         await NotificationScheduler.notifyNearLimit(
-            nearing, in: current, accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+            nearing, in: current, accountID: account.accountID, accountLabel: accountLabel,
+            room: room, preferences: prefs
+        )
+    }
+
+    /// Another account of this service with room, read from the registry
+    /// and the stored snapshots (this service knows only its own account),
+    /// for the line the limit alerts end with.
+    private func roomElsewhere(given current: UsageSnapshot) -> UsageInsights.Room? {
+        guard let store, let registry = AccountRegistryStore(suiteName: AppConfig.appGroupID) else { return nil }
+        return UsageInsights.room(
+            forUrgency: AccountOrder.urgency(of: current),
+            providerID: account.providerID,
+            accountID: account.accountID,
+            among: registry.accounts().map { ($0, store.snapshot(for: $0.accountID)) }
         )
     }
 

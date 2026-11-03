@@ -102,7 +102,8 @@ public struct ClaudeProvider: UsageProvider {
             windows: windows,
             spend: decoded.spendStatus(),
             extraUsage: decoded.extraUsageStatus(),
-            accountIdentity: profile.uuid.map { Self.identity(for: $0) }
+            accountIdentity: profile.uuid.map { Self.identity(for: $0) },
+            breakdown: decoded.usageBreakdown()
         )
     }
 

@@ -85,16 +85,41 @@ struct ClaudeUsageResponse: Decodable {
         }
     }
 
+    /// `seven_day_breakdown`: the week's usage divided by app (Claude
+    /// Code, Chats, Cowork, Other), each row a share of what was used.
+    struct Breakdown: Decodable {
+        struct Row: Decodable {
+            let key: String?
+            let displayName: String?
+            let percent: Double?
+
+            enum CodingKeys: String, CodingKey {
+                case key, percent
+                case displayName = "display_name"
+            }
+        }
+
+        let windowStartedAt: String?
+        let rows: [Row]?
+
+        enum CodingKeys: String, CodingKey {
+            case rows
+            case windowStartedAt = "window_started_at"
+        }
+    }
+
     let fiveHour: LegacyWindow?
     let sevenDay: LegacyWindow?
     let limits: [Limit]?
     let spend: Spend?
     let extraUsage: ExtraUsage?
+    let sevenDayBreakdown: Breakdown?
 
     enum CodingKeys: String, CodingKey {
         case fiveHour = "five_hour"
         case sevenDay = "seven_day"
         case extraUsage = "extra_usage"
+        case sevenDayBreakdown = "seven_day_breakdown"
         case limits, spend
     }
 }
@@ -170,6 +195,20 @@ extension ClaudeUsageResponse {
             monthlyLimit: extraUsage.monthlyLimit.map { $0 / scale },
             utilization: extraUsage.utilization,
             currency: extraUsage.currency
+        )
+    }
+
+    /// Maps `seven_day_breakdown`; a row missing its name or share is
+    /// skipped, and nil when nothing is left.
+    func usageBreakdown() -> UsageBreakdown? {
+        let shares = (sevenDayBreakdown?.rows ?? []).compactMap { row -> UsageBreakdown.Share? in
+            guard let name = row.displayName, !name.isEmpty, let percent = row.percent else { return nil }
+            return UsageBreakdown.Share(key: row.key ?? name, name: name, percent: percent)
+        }
+        guard !shares.isEmpty else { return nil }
+        return UsageBreakdown(
+            shares: shares,
+            periodStart: Self.parseDate(sevenDayBreakdown?.windowStartedAt)
         )
     }
 

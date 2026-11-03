@@ -14,7 +14,12 @@ captured response) before changing the model.
   is **null for windows with no usage yet**. An Ultra account has no
   `session` entry at all and `five_hour` is null (captured 2026-11-03,
   `Tests/UsageKitTests/Fixtures/claude-usage-response-ultra.json`): the
-  plan has no 5-hour limit.
+  plan has no 5-hour limit. `seven_day_breakdown` (`as_of`,
+  `window_started_at`, `rows[]` of `key`, `display_name`, `percent`: the
+  week's usage by app, Claude Code, Chats, Cowork, Other, shares of what
+  was used) maps to `UsageSnapshot.breakdown`; a row without a name or a
+  share is skipped. The other top-level keys (`iguana_necktie`,
+  `seven_day_cowork`, … code names, mostly null) are not decoded.
 - `GET https://api.anthropic.com/api/oauth/profile` — the only source of
   the plan name (the usage response carries no subscription field):
   `account.has_claude_pro` / `has_claude_max` → "pro"/"max" (max wins),

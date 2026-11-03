@@ -68,7 +68,8 @@ below and `AIMeterWatch/CLAUDE.md`.
   `UsageModel+Notifications.swift` (the per-account toggles),
   `UsageModel+ServiceStatus.swift` (the provider's status page check, see
   "Service status" below), `UsageModel+History.swift` (the chart's
-  in-memory timeline cache), `UsageExport.swift` (the history as a CSV
+  in-memory timeline cache), `UsageModel+Insights.swift` (another
+  account's room, over `Shared/UsageInsights.swift`), `UsageExport.swift` (the history as a CSV
   or JSON file, pure; its Settings card is
   `AIMeter/Views/ExportSettings.swift`), `CloudSync.swift` (iCloud
   sync, see "iCloud sync" below; the model's side is
@@ -219,7 +220,9 @@ below and `AIMeterWatch/CLAUDE.md`.
   incident notice (dashboard, menu bar popover); `UsageRecorder.swift` is
   the one call that writes a persisted snapshot into both history stores;
   `HistoryChartData.swift` shapes a timeline into what the chart and the
-  sparkline draw (pure, tested); `PreferencesModel.swift` (the
+  sparkline draw (pure, tested); `UsageInsights.swift` is today's share of
+  a long window and another account's room (pure, tested, see "Today and
+  room elsewhere" under "Presentation rules"); `PreferencesModel.swift` (the
   observable wrapper, split from `PreferencesStore.swift`, the value
   type) keeps a single stored `Preferences` value behind computed
   accessors, so the field list exists once; `MetricChips.swift` is the
@@ -1007,6 +1010,33 @@ the account silently freezes at its last snapshot.
   `ResetDetector.earlyResets` compares consecutive snapshots for an early
   refill (used% dropped well before the known reset) to fire the
   early-reset alert.
+- Today and room elsewhere (`Shared/UsageInsights.swift`, pure,
+  `UsageInsightsTests`). Provider Detail's **Today** card
+  (`TodayAllowanceCard`) gives each window six days long or more what
+  is left divided by the days until its reset, today counting as one
+  ("Weekly: Up to 9% today", `UsageInsights.dailyAllowance`): arithmetic
+  on the figure shown, so no pace warm-up; a session, a full window or
+  one with no reset ahead gets no row, and no row at all means no card.
+  And once an account is nearly out (its `AccountOrder.urgency` past
+  85, the bars' red) while another account **of the same service** is
+  under half used, the one with the most room is named: a line under
+  the account's card ("Work has 70% free", `UsageModel.room(for:)`) and
+  the sentence the near-limit and limit-reached alerts end with
+  (`RefreshService.roomElsewhere`, read from the registry and the
+  stored snapshots, since a service knows only its own account). Only
+  the same service, because those are the logins one can switch
+  between.
+- This week by app (Provider Detail, `BreakdownCard`): the week's usage
+  divided by the app that spent it, as the provider divides it
+  (`UsageSnapshot.breakdown`, a `UsageBreakdown` of named shares in
+  UsageKit's core; Claude's `seven_day_breakdown`, see its CLAUDE.md),
+  each share a bar in the accent alone (a share of what was used, not of
+  a limit, so never yellow or red) and its percentage, with the names
+  the provider sends ("Claude Code", "Chats", "Cowork"). Shown only when
+  one share is above zero; not in widgets, the popover or the island.
+  The demo's first account carries neutral shares ("Coding", "Chat",
+  "Other"), since product names never appear in what the store
+  screenshots come from.
 - History (Provider Detail → "History", `HistoryCard`): the % of limit
   used over time for one of the account's reported windows (window and
   24 h / 7 days / 30 days pills), from `HistoryChartData` over the
@@ -2098,7 +2128,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   `AIMeter.app` on either platform, `@testable import AIMeter`), which
   covers the Shared/app logic UsageKit can't see: `WindowSlots` and the
   grouped reset line, which window leads an account card
-  (`AccountCardLayoutTests`), `UsageFormatting` (the date a far reset shows included), the
+  (`AccountCardLayoutTests`), today's share of a long window and another
+  account's room (`UsageInsightsTests`), `UsageFormatting` (the date a far reset shows included), the
   feedback row's issue link (`FeedbackSettingsTests`),
   `UsageSnapshot.glanceOptions`, the three families in the catalog and
   what a `ProviderLogin` is of, the slots and glance surfaces of an

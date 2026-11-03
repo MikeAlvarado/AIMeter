@@ -118,6 +118,22 @@ final class ClaudeResponseMappingTests: XCTestCase {
         XCTAssertEqual(windows.last?.resetsAt, windows.first?.resetsAt)
     }
 
+    /// The week divided by app, in the order and with the names the
+    /// endpoint sends (captured on the Ultra account, 2026-11-03).
+    func testBreakdownMapsTheWeekByApp() throws {
+        let breakdown = try XCTUnwrap(decodeFixture("claude-usage-response-ultra").usageBreakdown())
+
+        XCTAssertEqual(breakdown.shares.map(\.name), ["Claude Code", "Chats", "Cowork", "Other"])
+        XCTAssertEqual(breakdown.shares.map(\.percent), [97, 0, 3, 0])
+        XCTAssertEqual(breakdown.shares.first?.key, "claude_code")
+        XCTAssertNotNil(breakdown.periodStart)
+        XCTAssertTrue(breakdown.hasUsage)
+    }
+
+    func testNoBreakdownWhenTheResponseHasNone() throws {
+        XCTAssertNil(try decodeFixture().usageBreakdown())
+    }
+
     private func decodeFixture(_ name: String = "claude-usage-response") throws -> ClaudeUsageResponse {
         let url = try XCTUnwrap(Bundle.module.url(
             forResource: name,
