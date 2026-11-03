@@ -50,6 +50,22 @@ final class HistoryChartDataTests: XCTestCase {
         XCTAssertEqual(week.points.count, 6)
     }
 
+    /// Ninety days, where the store keeps one sample a day, is one line of
+    /// each day's highest: by window it would be lone points no line
+    /// joins. The resets are still counted.
+    func testNinetyDaysIsOneLineWithItsResetsCounted() {
+        let samples: [TimelineSample] = (0..<5).map { (day: Int) -> TimelineSample in
+            let hoursAgo = Double(24 * (60 - day * 10))
+            let resetsAt = now.addingTimeInterval(Double(day - 50) * 86_400)
+            return sample(hoursAgo: hoursAgo, used: Double(20 + day * 10), resetsAt: resetsAt)
+        }
+        let quarter = HistoryChartData(samples: samples, range: .quarter, now: now)
+        XCTAssertEqual(quarter.points.count, 5)
+        XCTAssertEqual(Set(quarter.points.map { $0.segment }), [0])
+        XCTAssertEqual(quarter.resets.count, 4)
+        XCTAssertEqual(quarter.start, now.addingTimeInterval(-90 * 86_400))
+    }
+
     func testOneRefreshRecordedTwiceIsOnePoint() {
         let twice = [
             sample(hoursAgo: 3, used: 90),

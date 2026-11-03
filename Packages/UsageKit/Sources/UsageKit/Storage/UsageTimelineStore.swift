@@ -10,13 +10,14 @@ import Foundation
 /// chart that exists to show several windows and their resets in a row.
 ///
 /// Compacted on every write (`UsageTimeline.compacted`): raw for 48 hours,
-/// one sample per hour before that, nothing past 30 days — tens of KB per
-/// account at the 30-minute cadence. Writes are atomic; the app and the
+/// one sample per hour up to 30 days, one per day up to 90, nothing past
+/// that — tens of KB per account at the 30-minute cadence. Writes are atomic; the app and the
 /// widget may both append, and the rare lost sample is accepted over a
 /// lock.
 public struct UsageTimelineStore: Sendable {
-    public static let retention: TimeInterval = 30 * 24 * 3600
+    public static let retention: TimeInterval = 90 * 24 * 3600
     public static let rawWindow: TimeInterval = 48 * 3600
+    public static let hourlyWindow: TimeInterval = 30 * 24 * 3600
 
     private let directory: URL
 
@@ -55,7 +56,7 @@ public struct UsageTimelineStore: Sendable {
             let key = window.kind.storageKey
             let sample = TimelineSample(timestamp: now, usedPct: window.usedPct, resetsAt: window.resetsAt)
             let series = UsageTimeline.appending(sample, to: file.kinds[key] ?? [])
-            file.kinds[key] = UsageTimeline.compacted(series, now: now, rawWindow: Self.rawWindow, retention: Self.retention)
+            file.kinds[key] = UsageTimeline.compacted(series, now: now, rawWindow: Self.rawWindow, hourlyWindow: Self.hourlyWindow, retention: Self.retention)
         }
         save(file, for: accountID)
     }
@@ -71,7 +72,7 @@ public struct UsageTimelineStore: Sendable {
         for (key, samples) in remote {
             let merged = UsageTimeline.compacted(
                 UsageTimeline.merged(file.kinds[key] ?? [], samples),
-                now: now, rawWindow: Self.rawWindow, retention: Self.retention
+                now: now, rawWindow: Self.rawWindow, hourlyWindow: Self.hourlyWindow, retention: Self.retention
             )
             if merged != file.kinds[key] {
                 file.kinds[key] = merged

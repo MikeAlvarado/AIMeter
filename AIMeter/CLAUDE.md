@@ -168,7 +168,7 @@
   service-status footnote in the app ("Service status: … · checked X
   ago", `UsageModel.serviceStatusFootnote`, absent until the first check
   of a launch lands or while the check is turned off); a **History**
-  card (`HistoryCard`: window pill, 24 h / 7 days / 30 days pill, the
+  card (`HistoryCard`: window pill, 24 h / 7 days / 30 days / 90 days pill, the
   Swift Charts curve with reset rules and the 85 % line, or "Recording
   since …" until an hour of samples exists — see "History" in the
   repo-root CLAUDE.md); a **Peak hours** card (`PeakHoursCard`, see
@@ -555,7 +555,7 @@
   window, so its third row is the credits fallback and the dashboard
   reads as two genuinely different accounts (and shows the per-account
   icon without a brand mark). Each gets `DemoUsageData.timeline(for:)`,
-  thirty days of samples per window ending on that snapshot's exact
+  ninety days of samples per window ending on that snapshot's exact
   figures (a 5-hour session sawtooth of varying height, the weekly
   windows resetting where the snapshot says the week began and once a
   week before that, sessions idle at night), and on macOS

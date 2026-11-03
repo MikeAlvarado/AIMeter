@@ -116,29 +116,37 @@ public enum UsageTimeline {
         return result
     }
 
-    /// Drops samples older than `retention`, and thins those older than
-    /// `rawWindow` to one per hour — the hour's highest figure, so a peak
-    /// is never flattened away and a reset still shows as the fall into
-    /// the next hour. Everything within `rawWindow` is kept as recorded.
+    /// Drops samples older than `retention`, thins those older than
+    /// `rawWindow` to one per hour and, with an `hourlyWindow`, those older
+    /// than it to one per day (UTC): the bucket's highest figure, so a
+    /// peak is never flattened away and a reset still shows as the fall
+    /// into the next bucket. Everything within `rawWindow` is kept as
+    /// recorded.
     public static func compacted(
         _ samples: [TimelineSample],
         now: Date,
         rawWindow: TimeInterval,
+        hourlyWindow: TimeInterval? = nil,
         retention: TimeInterval
     ) -> [TimelineSample] {
         let oldest = now.addingTimeInterval(-retention)
         let rawCutoff = now.addingTimeInterval(-rawWindow)
-        var hourly: [Int: TimelineSample] = [:]
+        let hourlyCutoff = hourlyWindow.map { now.addingTimeInterval(-$0) }
+        var thinned: [Int: TimelineSample] = [:]
         var raw: [TimelineSample] = []
         for sample in samples where sample.timestamp >= oldest {
             if sample.timestamp >= rawCutoff {
                 raw.append(sample)
-            } else {
-                let bucket = Int(sample.timestamp.timeIntervalSince1970 / 3600)
-                if let kept = hourly[bucket], kept.usedPct > sample.usedPct { continue }
-                hourly[bucket] = sample
+                continue
             }
+            let seconds = sample.timestamp.timeIntervalSince1970
+            // Daily buckets are negative so they never meet an hour's.
+            let bucket = hourlyCutoff.map { sample.timestamp < $0 } == true
+                ? -1 - Int((seconds / 86_400).rounded(.down))
+                : Int(seconds / 3600)
+            if let kept = thinned[bucket], kept.usedPct > sample.usedPct { continue }
+            thinned[bucket] = sample
         }
-        return hourly.values.sorted { $0.timestamp < $1.timestamp } + raw.sorted { $0.timestamp < $1.timestamp }
+        return thinned.values.sorted { $0.timestamp < $1.timestamp } + raw.sorted { $0.timestamp < $1.timestamp }
     }
 }

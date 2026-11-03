@@ -65,8 +65,8 @@ export const es = {
         id: 'history',
         title: 'Cada reinicio, graficado',
         body: 'El uso de cada límite en el último día, semana o mes, con cada reinicio marcado.',
-        points: ['30 días guardados en tu dispositivo', 'Una minigráfica en cada tarjeta'],
-        imageAlt: 'Gráfica del uso semanal en 30 días con marcas de reinicio.',
+        points: ['90 días guardados en tu dispositivo', 'Una minigráfica en cada tarjeta'],
+        imageAlt: 'Gráfica del uso semanal en 90 días con marcas de reinicio.',
       },
       {
         id: 'alerts',
@@ -109,7 +109,7 @@ export const es = {
     history: 'Historial',
     forecast: 'Pronóstico',
     windowPills: ['Sesión', 'Semana', 'Modelo top'],
-    ranges: ['24 h', '7 días', '30 días'],
+    ranges: ['24 h', '7 días', '30 días', '90 días'],
     chartLabels: [
       ['3 a. m.', '9 a. m.', '3 p. m.'],
       ['lun', 'mié', 'vie', 'dom'],
@@ -117,7 +117,7 @@ export const es = {
     ],
     runsOutEarly: 'Se agota ~{t} antes',
     forecastNote: 'Proyectado según tu ritmo promedio en esta ventana. Se ajusta a medida que usas más.',
-    historyNote: 'Porcentaje del límite usado, muestreado cada vez que AIMeter o un widget actualiza y guardado en este dispositivo 30 días.',
+    historyNote: 'Porcentaje del límite usado, muestreado cada vez que AIMeter o un widget actualiza y guardado en este dispositivo 90 días.',
     used: 'usado',
     usedCap: 'Usado',
     week: 'Semana',
@@ -198,7 +198,7 @@ export const es = {
         bullets: [
           'Tokens de inicio de sesión: únicamente en el llavero del sistema, cifrados, disponibles tras el primer desbloqueo. En iOS el widget los comparte a través del grupo de acceso al llavero del App Group para poder actualizar el uso por su cuenta. En el Mac, una primera cuenta puede simplemente leer el inicio de sesión que ya guarda tu herramienta de línea de comandos, en solo lectura y sin modificarlo jamás.',
           'El último registro de uso (porcentajes, fechas de reinicio, cifras de gasto) y tus preferencias de visualización: en el contenedor del App Group, para que los widgets dibujen sin consultar la red.',
-          'Hasta 30 días de porcentajes de uso por ventana (las cifras, sus fechas y las fechas de reinicio), como un archivo pequeño por cuenta en el mismo contenedor, para la gráfica de historial.',
+          'Hasta 90 días de porcentajes de uso por ventana (las cifras, sus fechas y las fechas de reinicio), como un archivo pequeño por cuenta en el mismo contenedor, para la gráfica de historial.',
           'Nunca se escribe nada en otro lugar del dispositivo, sin cifrar, ni fuera de los contenedores de la propia app.',
         ],
       },

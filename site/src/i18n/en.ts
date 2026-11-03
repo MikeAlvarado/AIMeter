@@ -65,8 +65,8 @@ export const en = {
         id: 'history',
         title: 'Every reset, charted',
         body: 'Each limit’s usage over the last day, week or month, with every reset marked.',
-        points: ['30 days kept on your device', 'A trace on every card'],
-        imageAlt: 'History chart of weekly usage over 30 days with reset markers.',
+        points: ['90 days kept on your device', 'A trace on every card'],
+        imageAlt: 'History chart of weekly usage over 90 days with reset markers.',
       },
       {
         id: 'alerts',
@@ -109,7 +109,7 @@ export const en = {
     history: 'History',
     forecast: 'Forecast',
     windowPills: ['Session', 'Week', 'Top model'],
-    ranges: ['24 h', '7 days', '30 days'],
+    ranges: ['24 h', '7 days', '30 days', '90 days'],
     chartLabels: [
       ['3 AM', '9 AM', '3 PM'],
       ['Mon', 'Wed', 'Fri', 'Sun'],
@@ -117,7 +117,7 @@ export const en = {
     ],
     runsOutEarly: 'Runs out ~{t} early',
     forecastNote: 'Projected from your average pace so far this window. It refines as you use more.',
-    historyNote: 'Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 30 days.',
+    historyNote: 'Percent of the limit used, sampled whenever AIMeter or a widget refreshes and kept on this device for 90 days.',
     used: 'used',
     usedCap: 'Used',
     week: 'Week',
@@ -198,7 +198,7 @@ export const en = {
         bullets: [
           'Sign-in tokens: in the system Keychain only, encrypted, available after first unlock. On iOS the widget shares them through the App Group’s keychain access group so it can refresh usage by itself. On the Mac, an account can simply read the login Claude Code or the Codex CLI already keeps, read-only, without ever modifying it.',
           'The last usage snapshot (percentages, reset dates, spend numbers) and your display preferences: in the App Group container, so widgets can render without fetching.',
-          'Up to 30 days of usage percentages per window (the numbers, their dates and the reset dates), as a small file per account in the same container, for the history chart.',
+          'Up to 90 days of usage percentages per window (the numbers, their dates and the reset dates), as a small file per account in the same container, for the history chart.',
           'Nothing is ever written anywhere else on the device, unencrypted, or outside the app’s own containers.',
         ],
       },

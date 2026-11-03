@@ -1,15 +1,16 @@
 import Foundation
 import UsageKit
 
-/// The three spans the History card offers.
+/// The four spans the History card offers.
 enum HistoryRange: CaseIterable {
-    case day, week, month
+    case day, week, month, quarter
 
     var interval: TimeInterval {
         switch self {
         case .day: 24 * 3600
         case .week: 7 * 24 * 3600
         case .month: 30 * 24 * 3600
+        case .quarter: 90 * 24 * 3600
         }
     }
 
@@ -19,6 +20,7 @@ enum HistoryRange: CaseIterable {
         case .day: String(localized: "24 h")
         case .week: String(localized: "7 days")
         case .month: String(localized: "30 days")
+        case .quarter: String(localized: "90 days")
         }
     }
 
@@ -28,6 +30,7 @@ enum HistoryRange: CaseIterable {
         case .day: String(localized: "the last 24 hours")
         case .week: String(localized: "the last 7 days")
         case .month: String(localized: "the last 30 days")
+        case .quarter: String(localized: "the last 90 days")
         }
     }
 
@@ -36,7 +39,7 @@ enum HistoryRange: CaseIterable {
         switch self {
         case .day: date.formatted(.dateTime.hour())
         case .week: date.formatted(.dateTime.weekday(.abbreviated))
-        case .month: date.formatted(.dateTime.day().month(.abbreviated))
+        case .month, .quarter: date.formatted(.dateTime.day().month(.abbreviated))
         }
     }
 }
@@ -90,10 +93,15 @@ struct HistoryChartData: Equatable {
         let inRange = UsageTimeline.deduplicated(samples.filter { $0.timestamp >= start && $0.timestamp <= now })
         var built: [Point] = []
         var resets: [Date] = []
+        // Past 30 days the store keeps one sample a day, and a session
+        // resets between any two of them: drawn by window, 90 days would
+        // be a scatter of lone points that no line joins. So that span is
+        // one line of each day's highest, resets still counted.
+        let continuous = range == .quarter
         for (segment, window) in UsageTimeline.segments(inRange).enumerated() {
             if segment > 0, let first = window.first { resets.append(first.timestamp) }
             for sample in window {
-                built.append(Point(id: built.count, date: sample.timestamp, usedPct: sample.usedPct, segment: segment))
+                built.append(Point(id: built.count, date: sample.timestamp, usedPct: sample.usedPct, segment: continuous ? 0 : segment))
             }
         }
         points = built

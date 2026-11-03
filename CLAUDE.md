@@ -672,7 +672,8 @@ the account silently freezes at its last snapshot.
   per account in the App Group container, `usage-timeline/<accountID>.json`)
   keeps the long, reset-*preserving* series of `TimelineSample`s
   (`timestamp`, `usedPct`, `resetsAt`) per window: raw for 48 hours, one
-  sample per hour (the hour's highest) before that, nothing past 30 days
+  sample per hour (the hour's highest) up to 30 days, one per day (the
+  day's highest, `UsageTimelineStore.hourlyWindow`) up to 90, nothing past 90 days
   (`UsageTimeline.compacted`, applied on every write — tens of KB per
   account). Resets are derived at read time, never stored:
   `UsageTimeline.isReset` says a sample starts a new window when its
@@ -1056,7 +1057,9 @@ the account silently freezes at its last snapshot.
   screenshots come from.
 - History (Provider Detail → "History", `HistoryCard`): the % of limit
   used over time for one of the account's reported windows (window and
-  24 h / 7 days / 30 days pills), from `HistoryChartData` over the
+  24 h / 7 days / 30 days / 90 days pills; 90 days is one line of each
+  day's highest, since past 30 days a session resets between any two
+  daily samples and by window the span would be lone points), from `HistoryChartData` over the
   timeline above — one Swift Charts area + line per window segment, so
   the curve breaks at a reset instead of drawing a cliff (the areas
   `stacking: .unstacked`, here and in the sparkline: Swift Charts stacks
@@ -1078,7 +1081,7 @@ the account silently freezes at its last snapshot.
   rendered as hatch marks at that size) (`AccountSectionView(showsSparkline:)`,
   true only from the Dashboard — landscape, the popover, detail and the
   widgets don't). Demo
-  mode draws from `DemoUsageData.timeline(for:)`, thirty fabricated days
+  mode draws from `DemoUsageData.timeline(for:)`, ninety fabricated days
   ending exactly on that demo account's snapshot figures (the demo has
   two accounts, see `AIMeter/CLAUDE.md` → "Demo mode").
 - Claude Code local usage (macOS, **opt-in**, off by default —

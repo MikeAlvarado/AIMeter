@@ -124,7 +124,7 @@ enum DemoUsageData {
         ]
     }
 
-    /// Thirty days of fabricated samples per window, ending exactly on the
+    /// Ninety days of fabricated samples per window, ending exactly on the
     /// figures `snapshot` reports now (the first demo account's by
     /// default), so the History card and the dashboard sparklines have
     /// something to draw in demo mode (and in screenshots). Sessions are a
@@ -134,7 +134,7 @@ enum DemoUsageData {
     static func timeline(now: Date = Date(), for snapshot: UsageSnapshot? = nil) -> [String: [TimelineSample]] {
         let snapshot = snapshot ?? self.snapshot(now: now)
         let step: TimeInterval = 30 * 60
-        let span: TimeInterval = 30 * 86400
+        let span: TimeInterval = 90 * 86400
         let sessionLength: TimeInterval = 5 * 3600
         let sessionPct = snapshot.sessionWindow?.usedPct ?? 42
         let weeklyPct = snapshot.weeklyWindow?.usedPct ?? 61

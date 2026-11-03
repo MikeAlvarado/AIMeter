@@ -24,7 +24,7 @@ can follow.
 
 <p align="center">
   <img src="docs/readme-widgets.jpg" alt="Widgets that keep score: small, medium, large and Lock Screen widgets for one account or all of them." width="32%">
-  <img src="docs/readme-history.jpg" alt="Every reset, charted: 24 hours, 7 days or 30 days of each limit, kept on your device." width="32%">
+  <img src="docs/readme-history.jpg" alt="Every reset, charted: 24 hours, 7 days, 30 days or 90 days of each limit, kept on your device." width="32%">
   <img src="docs/readme-alerts.jpg" alt="Alerts before you hit the wall: near-limit, run-out, early-reset and sign-in alerts, per account." width="32%">
 </p>
 
@@ -134,7 +134,7 @@ policy is on the [website](https://mikealvarado.github.io/AIMeter/privacy/).
 - **What is stored, and where**: tokens in the device Keychain only
   (shared with the iOS widget through the App Group's keychain access
   group, never on the Watch); the last snapshot and your preferences in
-  the App Group container; up to 30 days of percentages per window as a
+  the App Group container; up to 90 days of percentages per window as a
   small file per account, deleted when you disconnect.
 - **Read-only on the Mac**: a login Claude Code or the Codex CLI already
   keeps is only read, never changed or rotated.

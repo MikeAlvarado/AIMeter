@@ -49,8 +49,8 @@ final class UsageTimelineTests: XCTestCase {
         let now = t0
         let hour: TimeInterval = 3600
         var series: [TimelineSample] = []
-        // 31 days ago: expired.
-        series.append(TimelineSample(timestamp: now.addingTimeInterval(-31 * 24 * hour), usedPct: 50, resetsAt: nil))
+        // 91 days ago: expired.
+        series.append(TimelineSample(timestamp: now.addingTimeInterval(-91 * 24 * hour), usedPct: 50, resetsAt: nil))
         // 3 days ago, four samples in one hour: thinned to the highest.
         let old = now.addingTimeInterval(-3 * 24 * hour)
         let oldBucket = floor(old.timeIntervalSince1970 / hour) * hour
@@ -61,9 +61,30 @@ final class UsageTimelineTests: XCTestCase {
         series.append(TimelineSample(timestamp: now.addingTimeInterval(-hour), usedPct: 41, resetsAt: nil))
         series.append(TimelineSample(timestamp: now.addingTimeInterval(-1800), usedPct: 43, resetsAt: nil))
 
-        let kept = UsageTimeline.compacted(series, now: now, rawWindow: UsageTimelineStore.rawWindow, retention: UsageTimelineStore.retention)
+        let kept = UsageTimeline.compacted(
+            series, now: now, rawWindow: UsageTimelineStore.rawWindow,
+            hourlyWindow: UsageTimelineStore.hourlyWindow, retention: UsageTimelineStore.retention
+        )
         XCTAssertEqual(kept.map(\.usedPct), [30, 41, 43])
         XCTAssertEqual(kept.first?.timestamp, Date(timeIntervalSince1970: oldBucket + 600), "the peak sample itself survives")
+    }
+
+    /// Past 30 days, one sample a day: the day's highest, from samples
+    /// hours apart that the hourly tier would all have kept.
+    func testPastThirtyDaysOneSampleADay() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let day: TimeInterval = 86_400
+        let dayStart = floor(now.addingTimeInterval(-40 * day).timeIntervalSince1970 / day) * day
+        let series = [(1.0, 20.0), (5, 64), (9, 31)].map { hour, used in
+            TimelineSample(timestamp: Date(timeIntervalSince1970: dayStart + hour * 3600), usedPct: used, resetsAt: nil)
+        }
+        let kept = UsageTimeline.compacted(
+            series, now: now, rawWindow: UsageTimelineStore.rawWindow,
+            hourlyWindow: UsageTimelineStore.hourlyWindow, retention: UsageTimelineStore.retention
+        )
+        XCTAssertEqual(kept.map(\.usedPct), [64])
+        XCTAssertEqual(UsageTimeline.compacted(series, now: now, rawWindow: UsageTimelineStore.rawWindow, retention: UsageTimelineStore.retention).count, 3,
+                       "without an hourly window, the hours stay")
     }
 
     // MARK: One sample per refresh

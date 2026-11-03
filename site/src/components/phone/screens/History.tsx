@@ -34,12 +34,18 @@ const RANGES: { window: number; segments: [number, number][][] }[] = [
       [[0.69, 1], [1, 61]],
     ],
   },
+  // 90 days: one line of each day's highest, the weeks climbing and
+  // falling, as the app draws that span.
+  {
+    window: 1,
+    segments: [[[0.0, 3], [0.035, 26], [0.071, 48], [0.077, 3], [0.112, 45], [0.148, 82], [0.154, 3], [0.189, 31], [0.225, 57], [0.231, 3], [0.266, 44], [0.302, 79], [0.308, 3], [0.343, 36], [0.378, 65], [0.385, 3], [0.42, 41], [0.455, 75], [0.462, 3], [0.497, 39], [0.532, 72], [0.538, 3], [0.574, 38], [0.609, 69], [0.615, 3], [0.651, 42], [0.686, 77], [0.692, 3], [0.728, 34], [0.763, 61], [0.769, 3], [0.805, 44], [0.84, 81], [0.846, 3], [0.882, 29], [0.917, 53], [0.923, 3], [0.962, 34], [1.0, 61]]],
+  },
 ]
 
 /**
  * Provider Detail's History card: the window and range pills, and the
  * curve of the limit used, breaking at each reset with a dashed rule, under
- * the faint 85 % line. It steps through the three ranges, drawing each.
+ * the faint 85 % line. It steps through the four ranges, drawing each.
  */
 export function HistoryScreen({ copy }: { copy: PhoneCopy }) {
   const range = useTicker(3200) % RANGES.length

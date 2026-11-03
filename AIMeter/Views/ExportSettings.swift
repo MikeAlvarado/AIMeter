@@ -27,7 +27,7 @@ struct ExportSettings: View {
             defaultFilename: exporting.map { model.usageExport.fileName($0) }
         ) { _ in }
         #endif
-        SectionFootnote(text: String(localized: "Up to 30 days of usage per window for every account, as a file you can open in Numbers or Excel (CSV) or feed to a script (JSON). Nothing is uploaded: the file goes only where you send it."))
+        SectionFootnote(text: String(localized: "Up to 90 days of usage per window for every account, as a file you can open in Numbers or Excel (CSV) or feed to a script (JSON). Nothing is uploaded: the file goes only where you send it."))
     }
 
     /// Whether the section has anything to offer here.
