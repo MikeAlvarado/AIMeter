@@ -4,6 +4,52 @@
     "" : {
 
     },
+    "%@ ahead of pace" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ über dem Tempo"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ por delante del ritmo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ en avance sur le rythme"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@がペースを超過"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 페이스 초과"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ à frente do ritmo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 超前节奏"
+          }
+        }
+      }
+    },
     "%@ has %lld%% free" : {
       "localizations" : {
         "de" : {
@@ -962,6 +1008,52 @@
     "Account Usage" : {
       "localizations" : {}
     },
+    "Add a level" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwelle hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar un nivel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un seuil"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レベルを追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수준 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar um nível"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加水平"
+          }
+        }
+      }
+    },
     "Ahead of time, when your pace would use a limit up early." : {
       "comment" : "Line under the Run-out warnings toggle.",
       "localizations" : {
@@ -1005,6 +1097,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按当前速度额度会提前用尽时，提前提醒。"
+          }
+        }
+      }
+    },
+    "Ahead-of-pace warnings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warnungen bei zu schnellem Tempo"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos de ritmo adelantado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avertissements d'avance sur le rythme"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペース超過の警告"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "페이스 초과 경고"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos de ritmo adiantado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超前节奏警告"
           }
         }
       }
@@ -1654,6 +1792,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在刘海岛中批准或拒绝会话的权限请求，或停止会话。Claude Code 仍会在自己的窗口中询问，以先给出的回答为准。"
+          }
+        }
+      }
+    },
+    "At %lld%%, %lld points ahead of a steady pace to its reset." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei %1$lld%%, %2$lld Punkte über einem gleichmäßigen Tempo bis zum Zurücksetzen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Va en %1$lld%%, %2$lld puntos por delante de un ritmo parejo hasta su reinicio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À %1$lld %%, %2$lld points d'avance sur un rythme régulier jusqu'à la réinitialisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld%%で、リセットまでの均等なペースより%2$lldポイント先行しています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld%%로, 초기화까지 고른 페이스보다 %2$lld포인트 앞서 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em %1$lld%%, %2$lld pontos à frente de um ritmo constante até reiniciar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用 %1$lld%%，比到重置为止的匀速节奏超前 %2$lld 个百分点。"
           }
         }
       }
@@ -3330,6 +3514,52 @@
         }
       }
     },
+    "Once per window, when a limit runs 15 points ahead of a steady pace to its reset." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einmal pro Zeitraum, wenn ein Limit 15 Punkte über einem gleichmäßigen Tempo bis zum Zurücksetzen liegt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una vez por periodo, cuando un límite va 15 puntos por delante de un ritmo parejo hasta su reinicio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une fois par période, quand une limite a 15 points d'avance sur un rythme régulier jusqu'à sa réinitialisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "期間ごとに1回、上限がリセットまでの均等なペースより15ポイント先行したとき。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기간마다 한 번, 한도가 초기화까지 고른 페이스보다 15포인트 앞서면 알려줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma vez por período, quando um limite fica 15 pontos à frente de um ritmo constante até reiniciar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个周期一次：额度比到重置为止的匀速节奏超前 15 个百分点时。"
+          }
+        }
+      }
+    },
     "One account's figure. A tap refreshes it." : {
       "comment" : "Description of the Control Center control in the controls gallery.",
       "localizations" : {
@@ -4072,6 +4302,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在刷新"
+          }
+        }
+      }
+    },
+    "Remove %lld%%" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% entfernen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar %lld%%"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retirer %lld %%"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%を削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% 삭제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover %lld%%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除 %lld%%"
           }
         }
       }
@@ -5514,49 +5790,48 @@
         }
       }
     },
-    "When a limit passes the level you set." : {
-      "comment" : "Line under the Near-limit warnings toggle.",
+    "When a limit passes one of the levels you set." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn ein Limit die von dir gewählte Schwelle überschreitet."
+            "value" : "Wenn ein Limit eine der von dir gewählten Schwellen überschreitet."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuando un límite pasa del nivel que elegiste."
+            "value" : "Cuando un límite pasa de uno de los niveles que elegiste."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quand une limite dépasse le seuil choisi."
+            "value" : "Quand une limite dépasse l'un des seuils choisis."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "上限の使用量が設定した値を超えたとき。"
+            "value" : "上限の使用量が設定した値のいずれかを超えたとき。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "한도가 설정한 수준을 넘으면 알려줍니다."
+            "value" : "한도가 설정한 수준 중 하나를 넘으면 알려줍니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando um limite passa do nível que você definiu."
+            "value" : "Quando um limite passa de um dos níveis que você definiu."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "额度用量超过你设定的水平时。"
+            "value" : "额度用量超过你设定的任一水平时。"
           }
         }
       }

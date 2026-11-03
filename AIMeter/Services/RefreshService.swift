@@ -199,14 +199,28 @@ struct RefreshService {
             room: room, preferences: prefs
         )
 
-        let nearing = ThresholdDetector.crossedUp(
-            previous: previous, current: current,
-            threshold: prefs.nearLimitThreshold
-        ).filter { !reached.contains($0) }
+        // Every level the user set; a jump past two of them in one fetch
+        // is one warning, which reads the figure it reached.
+        var nearing: [UsageWindow.Kind] = []
+        for threshold in Set(prefs.nearLimitThresholds) {
+            for kind in ThresholdDetector.crossedUp(previous: previous, current: current, threshold: threshold)
+            where !reached.contains(kind) && !nearing.contains(kind) {
+                nearing.append(kind)
+            }
+        }
         await NotificationScheduler.notifyNearLimit(
             nearing, in: current, accountID: account.accountID, accountLabel: accountLabel,
             room: room, preferences: prefs
         )
+
+        // Pace is withheld until the account has been watched long enough
+        // to trust it, here as on every surface (`PaceCalculator.isReady`).
+        if PaceCalculator.isReady(observingSince: paceObservingSince()) {
+            await NotificationScheduler.notifyAheadOfPace(
+                PaceDetector.aheadCrossings(previous: previous, current: current),
+                in: current, accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+            )
+        }
     }
 
     /// Another account of this service with room, read from the registry

@@ -22,6 +22,7 @@ enum NotificationScheduler {
     private static let earlyResetPrefix = "earlyreset."
     private static let nearLimitPrefix = "nearlimit."
     private static let limitReachedPrefix = "limitreached."
+    private static let aheadOfPacePrefix = "ahead."
     static let peakPrefix = "peak."
     private static let reauthPrefix = "reauth."
 
@@ -181,6 +182,34 @@ enum NotificationScheduler {
         }
     }
 
+    // MARK: - Ahead-of-pace warnings (immediate, once per window)
+
+    /// One warning per window that just pulled well ahead of a steady
+    /// pace (`PaceDetector`), the window's reset remembered so it says so
+    /// once however the figure moves around the line until then.
+    static func notifyAheadOfPace(
+        _ kinds: [UsageWindow.Kind],
+        in current: UsageSnapshot,
+        accountID: String,
+        accountLabel: String? = nil,
+        preferences: NotificationPreferences
+    ) async {
+        guard preferences.aheadOfPaceEnabled, !kinds.isEmpty, await canDeliver() else { return }
+        let center = UNUserNotificationCenter.current()
+        for kind in kinds {
+            guard let window = current.windows.first(where: { $0.kind == kind }), let reset = window.resetsAt,
+                  preferences.aheadOfPaceWarned(for: kind) != reset,
+                  let pace = PaceCalculator.pace(for: window, now: current.fetchedAt) else { continue }
+            let content = UNMutableNotificationContent()
+            content.title = labeled(String(localized: "\(current.title(for: kind)) ahead of pace"), accountLabel)
+            let ahead = Int(window.usedPct - pace.expectedPct)
+            content.body = String(localized: "At \(Int(window.usedPct))%, \(ahead) points ahead of a steady pace to its reset.")
+            content.sound = .default
+            await add(content, prefix: aheadOfPacePrefix, accountID: accountID, kind: kind, to: center)
+            preferences.setAheadOfPaceWarned(reset, for: kind)
+        }
+    }
+
     /// A limit alert's body, ended with another account's room ("Work has
     /// 70% free.") when there is one (`UsageInsights.room`).
     private static func withRoom(_ body: String, _ room: String?) -> String {
@@ -244,7 +273,7 @@ enum NotificationScheduler {
     /// same stem, and `reauth.` is the bare stem.
     static func removeAll(accountID: String) async {
         let center = UNUserNotificationCenter.current()
-        let stems = [identifierPrefix, runOutPrefix, earlyResetPrefix, nearLimitPrefix, limitReachedPrefix]
+        let stems = [identifierPrefix, runOutPrefix, earlyResetPrefix, nearLimitPrefix, limitReachedPrefix, aheadOfPacePrefix]
             .map { $0 + accountID + "." } + [reauthPrefix + accountID]
         let matches: (String) -> Bool = { id in stems.contains { id.hasPrefix($0) } }
         let pending = await center.pendingNotificationRequests().map(\.identifier).filter(matches)

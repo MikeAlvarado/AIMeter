@@ -82,7 +82,7 @@ below and `AIMeterWatch/CLAUDE.md`.
   below); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
   five files: `NotificationPreferences.swift` (the toggles, plus
-  `SmartAlert` — the five per-account families addressed as one enum, so
+  `SmartAlert` — the six per-account families addressed as one enum, so
   the model and the toggles card have one getter/setter pair instead of
   five), `NotificationScheduler.swift` (the fetch-driven families),
   `NotificationScheduler+RunOut.swift` (the run-out warnings),
@@ -770,7 +770,7 @@ the account silently freezes at its last snapshot.
   (`NotificationScheduler`, e.g. `reset.<accountID>.<kind>`) so two
   accounts sharing a window kind never clobber each other's pending
   requests — the one deliberate exception is `peak.`, which stays
-  account-independent (see below). Five families are rescheduled/
+  account-independent (see below). Six families are rescheduled/
   re-evaluated from scratch after every successful fetch, scoped to just
   that fetch's account; two more sit outside that sweep — `peak.` (see
   "Peak hours" below — retired today, so the family only clears its own
@@ -778,7 +778,7 @@ the account silently freezes at its last snapshot.
   and never on what a fetch returns, so it's rescheduled once at
   `UsageModel.init` and whenever its toggle changes instead, and `reauth.`,
   which fires from the *failure* path rather than a successful fetch. Two
-  of the five fetch-driven families are *scheduled* to a future trigger:
+  of the six fetch-driven families are *scheduled* to a future trigger:
   `reset.` (per-window `UNCalendarNotificationTrigger` at each window's
   `resetsAt`, the free baseline, per-window opt-in toggles) and `runout.`
   (per-window run-out warnings fired a lead time before a projected early
@@ -788,16 +788,24 @@ the account silently freezes at its last snapshot.
   for the same reset stands, `NotificationScheduler.warnedAlready`). Both
   triggers carry their time zone (`NotificationScheduler.triggerComponents(at:)`):
   a date with no zone floats, firing at that clock time wherever the
-  device is by then, and a reset is one instant. Three are *immediate, detection-based* (nil trigger,
+  device is by then, and a reset is one instant. Four are *immediate, detection-based* (nil trigger,
   fired when comparing the previous stored snapshot to the new one, so
   they can't be scheduled — the trigger level/time isn't known ahead):
   `earlyreset.` (`ResetDetector` — a window refilled before its scheduled
   reset), `limitreached.` (`ThresholdDetector.crossedUp` at ~100%, message
   adapts to whether `spend.enabled` — "draws on credits" vs "blocked until
-  reset"), and `nearlimit.` (`crossedUp` at the user's threshold, a
-  slider; a single big jump that also hits the limit yields only the more
-  severe limit-reached, not both). All fire once per upward crossing (not
-  on every refresh while above) and re-arm after a reset. `reauth.` is
+  reset"), `nearlimit.` (`crossedUp` at each of the user's levels, up to
+  three sliders, `NotificationPreferences.nearLimitThresholds`, the first
+  written back to the old single `nearLimitThreshold`, which is where an
+  install from before reads its one level; a jump past two levels in one
+  fetch is one warning, and a single big jump that also hits the limit
+  yields only the more severe limit-reached, not both), and `ahead.`
+  ("Ahead-of-pace warnings": `PaceDetector.aheadCrossings`, a window that
+  crossed 15 points above a steady burn to its reset between two fetches,
+  past 20 % used and within one window, only once pace is ready, and
+  once per window: the window's reset is kept per kind,
+  `notify.aheadWarned.<kind>.<accountID>`). All fire once per upward
+  crossing (not on every refresh while above) and re-arm after a reset. `reauth.` is
   immediate too, but fired from the *failure* path rather than from a
   snapshot comparison: `RefreshService.refresh` posts it when the fetch
   throws `notAuthenticated` (see "Losing a login" above) — deliberately
@@ -808,8 +816,8 @@ the account silently freezes at its last snapshot.
   `reauthAlertDelivered` (fires once per breakage, not once per refresh
   cycle forever) and is cleared — pending flag and delivered notification
   alike — by the next successful fetch or a reconnect. Each `smart`
-  alert has its own toggle **per account** (near-limit adds a per-account
-  threshold) — `NotificationPreferences(accountID:)`, so muting a
+  alert has its own toggle **per account** (near-limit adds its
+  per-account levels) — `NotificationPreferences(accountID:)`, so muting a
   secondary account never touches another's; `peak.` is the one alert
   family with a single toggle shared by every account (`UsageModel`'s
   dedicated `peakPreferences`, constructed with a documented placeholder
@@ -2147,6 +2155,7 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   `Tests/UsageKitTests/Fixtures/claude-usage-response.json` is a real
   captured response — mapping tests assert against it;
   `AIMETER_LIVE_TEST=1` enables an opt-in live test;
+  `PaceDetectorTests` when a window counts as pulling ahead of pace;
   `ClaudeCodeSessionTests` pins the session rules on the measured record
   shapes, `ClaudeCodeTurnTests` a turn's steps, edits and the desktop
   app's plan, and what a permission request decodes; `CodexTests` and `CopilotTests` pin the two other families'

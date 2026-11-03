@@ -162,3 +162,37 @@ final class UsageProjectionTests: XCTestCase {
         )
     }
 }
+
+/// Ahead of a steady pace: crossed once, inside one window, past the
+/// minimum used.
+final class PaceDetectorTests: XCTestCase {
+    private let reset = Date(timeIntervalSince1970: 1_800_000_000)
+
+    /// A week half gone (expected 50 %) seen at `used`.
+    private func snapshot(_ used: Double, hoursIn: Double, kind: UsageWindow.Kind = .weekly, reset: Date? = nil) -> UsageSnapshot {
+        let resetsAt = reset ?? self.reset
+        let start = resetsAt.addingTimeInterval(-7 * 86_400)
+        return UsageSnapshot(
+            providerID: "claude",
+            fetchedAt: start.addingTimeInterval(hoursIn * 3_600),
+            windows: [UsageWindow(kind: kind, usedPct: used, resetsAt: resetsAt, duration: 7 * 86_400)]
+        )
+    }
+
+    func testCrossingFifteenPointsAheadFiresOnce() {
+        // 84 h in: a steady pace is at 50 %.
+        let before = snapshot(60, hoursIn: 83)   // ~10.6 ahead
+        let after = snapshot(66, hoursIn: 84)    // 16 ahead
+        XCTAssertEqual(PaceDetector.aheadCrossings(previous: before, current: after), [.weekly])
+        // Already ahead before: no second notice.
+        XCTAssertEqual(PaceDetector.aheadCrossings(previous: after, current: snapshot(70, hoursIn: 85)), [])
+    }
+
+    func testNotBelowTheMinimumNorAcrossAReset() {
+        // An hour into the week, 18 % is far ahead but still below 20 % used.
+        XCTAssertEqual(PaceDetector.aheadCrossings(previous: snapshot(1, hoursIn: 0.5), current: snapshot(18, hoursIn: 1)), [])
+        // Another window (the reset moved): no baseline to cross from.
+        let lastWeek = snapshot(10, hoursIn: 160, reset: reset.addingTimeInterval(-7 * 86_400))
+        XCTAssertEqual(PaceDetector.aheadCrossings(previous: lastWeek, current: snapshot(40, hoursIn: 10)), [])
+    }
+}

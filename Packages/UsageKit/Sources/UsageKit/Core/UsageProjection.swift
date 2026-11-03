@@ -169,6 +169,36 @@ public enum ThresholdDetector {
     }
 }
 
+/// Detects a window pulling well ahead of a steady burn to its reset: its
+/// used% `margin` points or more above where an even pace would have it
+/// (`PaceCalculator`), crossed upward between two snapshots, each read at
+/// its own fetch time. Only within one window (the same reset) and past
+/// `minimumUsedPct`, so the first hour of a week, when a few percent is
+/// already "ahead", says nothing. Pure; the app decides whether to notify.
+public enum PaceDetector {
+    public static let aheadMargin: Double = 15
+
+    public static func aheadCrossings(
+        previous: UsageSnapshot,
+        current: UsageSnapshot,
+        margin: Double = aheadMargin,
+        minimumUsedPct: Double = RunOutPredictor.alertMinimumUsedPct
+    ) -> [UsageWindow.Kind] {
+        current.windows.compactMap { cur in
+            guard cur.usedPct >= minimumUsedPct,
+                  let prev = previous.windows.first(where: { $0.kind == cur.kind }),
+                  let reset = cur.resetsAt, let prevReset = prev.resetsAt,
+                  abs(reset.timeIntervalSince(prevReset)) < 60,
+                  let now = PaceCalculator.pace(for: cur, now: current.fetchedAt),
+                  let before = PaceCalculator.pace(for: prev, now: previous.fetchedAt),
+                  prev.usedPct - before.expectedPct < margin,
+                  cur.usedPct - now.expectedPct >= margin
+            else { return nil }
+            return cur.kind
+        }
+    }
+}
+
 /// Detects a window that reset *before* its scheduled boundary — an early
 /// refill — by comparing consecutive snapshots. Pure so it's testable; the
 /// app decides whether to notify.

@@ -98,6 +98,16 @@ extension UsageModel {
         notificationsRevision += 1
     }
 
+    func nearLimitThresholds(for accountID: String) -> [Double] {
+        _ = notificationsRevision
+        return preferences(for: accountID).nearLimitThresholds
+    }
+
+    func setNearLimitThresholds(_ thresholds: [Double], accountID: String) {
+        preferences(for: accountID).nearLimitThresholds = thresholds
+        notificationsRevision += 1
+    }
+
     // MARK: Peak-hours alerts (global — see `peakPreferences` above)
 
     var peakNotificationsEnabled: Bool {

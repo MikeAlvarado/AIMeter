@@ -61,6 +61,44 @@ struct NotificationPreferences {
         }
     }
 
+    /// Up to three levels the near-limit warning fires at, in the order
+    /// the user set them (the card's rows). An account set before there
+    /// were several has its one `nearLimitThreshold`; the first level is
+    /// written back there too.
+    var nearLimitThresholds: [Double] {
+        get {
+            if let stored = defaults.array(forKey: scopedKey("notify.nearLimitThresholds")) as? [Double], !stored.isEmpty {
+                return Array(stored.prefix(Self.maxNearLimitThresholds))
+            }
+            return [nearLimitThreshold]
+        }
+        nonmutating set {
+            let levels = Array(newValue.prefix(Self.maxNearLimitThresholds).map { min(95, max(50, $0)) })
+            guard let first = levels.first else { return }
+            defaults.set(levels, forKey: scopedKey("notify.nearLimitThresholds"))
+            nearLimitThreshold = first
+        }
+    }
+
+    static let maxNearLimitThresholds = 3
+
+    /// "[window] ahead of pace": a window pulling 15 points or more ahead
+    /// of a steady burn to its reset (`PaceDetector`), once per window.
+    var aheadOfPaceEnabled: Bool {
+        get { defaults.bool(forKey: scopedKey("notify.aheadOfPace")) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.aheadOfPace")) }
+    }
+
+    /// The reset of the window an ahead-of-pace warning last went out for,
+    /// per kind: one warning per window, however it moves around the line.
+    func aheadOfPaceWarned(for kind: UsageWindow.Kind) -> Date? {
+        defaults.object(forKey: scopedKey("notify.aheadWarned.\(kind.storageKey)")) as? Date
+    }
+
+    func setAheadOfPaceWarned(_ reset: Date, for kind: UsageWindow.Kind) {
+        defaults.set(reset, forKey: scopedKey("notify.aheadWarned.\(kind.storageKey)"))
+    }
+
     /// "[window] limit reached" alerts (message adapts to whether the
     /// account has credits).
     var limitReachedEnabled: Bool {
@@ -160,6 +198,7 @@ enum SmartAlert: CaseIterable {
     case nearLimit
     case limitReached
     case runOut
+    case aheadOfPace
     case earlyReset
     case reauth
 
@@ -168,6 +207,7 @@ enum SmartAlert: CaseIterable {
         case .nearLimit: String(localized: "Near-limit warnings")
         case .limitReached: String(localized: "Limit reached")
         case .runOut: String(localized: "Run-out warnings")
+        case .aheadOfPace: String(localized: "Ahead-of-pace warnings")
         case .earlyReset: String(localized: "Early-reset alerts")
         case .reauth: String(localized: "Sign-in alerts")
         }
@@ -177,9 +217,10 @@ enum SmartAlert: CaseIterable {
     /// were explained in one paragraph under the card.
     var detail: String {
         switch self {
-        case .nearLimit: String(localized: "When a limit passes the level you set.")
+        case .nearLimit: String(localized: "When a limit passes one of the levels you set.")
         case .limitReached: String(localized: "When a limit runs out, and whether credits take over.")
         case .runOut: String(localized: "Ahead of time, when your pace would use a limit up early.")
+        case .aheadOfPace: String(localized: "Once per window, when a limit runs 15 points ahead of a steady pace to its reset.")
         case .earlyReset: String(localized: "When a limit refills before its scheduled reset.")
         case .reauth: String(localized: "When the service stops accepting this account's sign-in. On by default, since nothing else would tell you the figures stopped updating.")
         }
@@ -195,6 +236,7 @@ extension NotificationPreferences {
         case .nearLimit: nearLimitEnabled
         case .limitReached: limitReachedEnabled
         case .runOut: runOutWarningsEnabled
+        case .aheadOfPace: aheadOfPaceEnabled
         case .earlyReset: earlyResetAlertsEnabled
         case .reauth: reauthAlertsEnabled
         }
@@ -205,6 +247,7 @@ extension NotificationPreferences {
         case .nearLimit: nearLimitEnabled = enabled
         case .limitReached: limitReachedEnabled = enabled
         case .runOut: runOutWarningsEnabled = enabled
+        case .aheadOfPace: aheadOfPaceEnabled = enabled
         case .earlyReset: earlyResetAlertsEnabled = enabled
         case .reauth: reauthAlertsEnabled = enabled
         }

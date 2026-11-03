@@ -50,6 +50,29 @@ final class NotificationPreferencesTests: XCTestCase {
         XCTAssertEqual(p.nearLimitThreshold, 95)
     }
 
+    /// An account set before there were several levels has its one; the
+    /// list keeps the user's order, clamps, stops at three, and writes its
+    /// first level back to the old key.
+    func testNearLimitLevelsStartFromTheOldThresholdAndStopAtThree() {
+        let p = prefs("a")
+        p.nearLimitThreshold = 70
+        XCTAssertEqual(p.nearLimitThresholds, [70])
+        p.nearLimitThresholds = [90, 40, 75, 85]
+        XCTAssertEqual(p.nearLimitThresholds, [90, 50, 75])
+        XCTAssertEqual(p.nearLimitThreshold, 90)
+    }
+
+    func testAheadOfPaceWarnsOncePerWindowAndClearsWithTheAccount() {
+        let p = prefs("a")
+        let reset = Date(timeIntervalSince1970: 1_800_000_000)
+        XCTAssertNil(p.aheadOfPaceWarned(for: .weekly))
+        p.setAheadOfPaceWarned(reset, for: .weekly)
+        XCTAssertEqual(p.aheadOfPaceWarned(for: .weekly), reset)
+        XCTAssertNil(p.aheadOfPaceWarned(for: .session))
+        p.clear()
+        XCTAssertNil(p.aheadOfPaceWarned(for: .weekly))
+    }
+
     func testClearRemovesOnlyThisAccountsKeys() {
         let a = prefs("a"), b = prefs("b")
         a.setEnabled(true, .nearLimit)

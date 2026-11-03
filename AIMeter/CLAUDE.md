@@ -215,14 +215,16 @@
   (`SmartNotificationTogglesCard`, one toggle per `SmartAlert` case in
   declaration order, each with a line under its name saying what fires
   it, `SmartAlert.detail`, where until 4.3.1 one paragraph under the
-  card explained all five: Near-limit warnings with a threshold slider,
-  Limit reached, Run-out warnings, Early-reset alerts, and Sign-in alerts —
-  all five scoped to this one account, and Sign-in alerts the only toggle
+  card explained them all: Near-limit warnings with up to three levels
+  (a slider each, a minus beside each while there are two, "Add a level"
+  while there are fewer than three), Limit reached, Run-out warnings,
+  Ahead-of-pace warnings, Early-reset alerts, and Sign-in alerts —
+  all six scoped to this one account, and Sign-in alerts the only toggle
   in the app that starts **on**, for the reason documented on
   `NotificationPreferences.reauthAlertsEnabled`); on iOS only, a "Live
   Activity" card (`LiveActivityCard` — see `AIMeterWidgets/CLAUDE.md`): a
-  toggle for this account's Session countdown on the Lock Screen/Dynamic
-  Island, off by default, and while it is on, "Show a pet" (the account's
+  toggle for this account's countdown on the Lock Screen/Dynamic
+  Island (its session's, or with no session its busiest window's), off by default, and while it is on, "Show a pet" (the account's
   pixel pet beside the countdown, drawn next to the words; also off by
   default); and a disconnect button (hidden in demo mode; the demo leaves
   through Settings' Demo card); on the Mac, before it, "Hide in discreet
