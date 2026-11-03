@@ -36,3 +36,33 @@ final class NotificationSchedulerTests: XCTestCase {
         XCTAssertFalse(NotificationScheduler.warnedAlready([(id, nil)], identifier: id, resetsAt: reset))
     }
 }
+
+/// When the renewal reminder comes: the day the user set, the month's
+/// last when it is shorter, the lead days before at 10:00, the next two
+/// still ahead.
+final class RenewalScheduleTests: XCTestCase {
+    private var calendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "America/Mexico_City")!
+        return calendar
+    }()
+
+    private func date(_ y: Int, _ m: Int, _ d: Int, _ h: Int = 12) -> Date {
+        calendar.date(from: DateComponents(year: y, month: m, day: d, hour: h))!
+    }
+
+    func testTheNextTwoRemindersLeadTheDayYouSet() {
+        let next = NotificationScheduler.nextRenewals(day: 26, leadDays: 3, after: date(2026, 11, 3), calendar: calendar)
+        XCTAssertEqual(next.map(\.renewal), [date(2026, 11, 26, 0), date(2026, 12, 26, 0)])
+        XCTAssertEqual(next.map(\.reminder), [date(2026, 11, 23, 10), date(2026, 12, 23, 10)])
+    }
+
+    func testADayPastTheMonthsEndIsItsLastDayAndAPastReminderSkipsAMonth() {
+        // February has no 31st: its last day.
+        let next = NotificationScheduler.nextRenewals(day: 31, leadDays: 1, after: date(2027, 2, 1), calendar: calendar)
+        XCTAssertEqual(next.first?.renewal, date(2027, 2, 28, 0))
+        // This month's reminder already went (the 4th, 10:00): next month's.
+        let late = NotificationScheduler.nextRenewals(day: 5, leadDays: 1, after: date(2026, 11, 4, 11), calendar: calendar)
+        XCTAssertEqual(late.first?.reminder, date(2026, 12, 4, 10))
+    }
+}

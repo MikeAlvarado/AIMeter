@@ -273,7 +273,7 @@ enum NotificationScheduler {
     /// same stem, and `reauth.` is the bare stem.
     static func removeAll(accountID: String) async {
         let center = UNUserNotificationCenter.current()
-        let stems = [identifierPrefix, runOutPrefix, earlyResetPrefix, nearLimitPrefix, limitReachedPrefix, aheadOfPacePrefix]
+        let stems = [identifierPrefix, runOutPrefix, earlyResetPrefix, nearLimitPrefix, limitReachedPrefix, aheadOfPacePrefix, renewalPrefix]
             .map { $0 + accountID + "." } + [reauthPrefix + accountID]
         let matches: (String) -> Bool = { id in stems.contains { id.hasPrefix($0) } }
         let pending = await center.pendingNotificationRequests().map(\.identifier).filter(matches)

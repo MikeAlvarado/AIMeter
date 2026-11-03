@@ -99,6 +99,31 @@ struct NotificationPreferences {
         defaults.set(reset, forKey: scopedKey("notify.aheadWarned.\(kind.storageKey)"))
     }
 
+    /// "Remind me before it renews": off by default; the day of the month
+    /// the plan is charged (1–31, the month's last day when shorter) and
+    /// how many days ahead (1–7), both the user's
+    /// (`NotificationScheduler+Renewal.swift`).
+    var renewalEnabled: Bool {
+        get { defaults.bool(forKey: scopedKey("notify.renewal")) }
+        nonmutating set { defaults.set(newValue, forKey: scopedKey("notify.renewal")) }
+    }
+
+    var renewalDay: Int {
+        get {
+            let stored = defaults.integer(forKey: scopedKey("notify.renewalDay"))
+            return stored == 0 ? 1 : min(31, max(1, stored))
+        }
+        nonmutating set { defaults.set(min(31, max(1, newValue)), forKey: scopedKey("notify.renewalDay")) }
+    }
+
+    var renewalLeadDays: Int {
+        get {
+            let stored = defaults.integer(forKey: scopedKey("notify.renewalLead"))
+            return stored == 0 ? 3 : min(7, max(1, stored))
+        }
+        nonmutating set { defaults.set(min(7, max(1, newValue)), forKey: scopedKey("notify.renewalLead")) }
+    }
+
     /// "[window] limit reached" alerts (message adapts to whether the
     /// account has credits).
     var limitReachedEnabled: Bool {

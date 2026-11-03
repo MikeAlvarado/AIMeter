@@ -117,6 +117,11 @@ struct AccountSettingsCards: View {
             SectionHeader(title: String(localized: "Smart notifications"))
             SmartNotificationTogglesCard(accountID: accountID)
 
+            SettingsGap()
+            SectionHeader(title: String(localized: "Renewal"))
+            RenewalReminderCard(accountID: accountID)
+            SectionFootnote(text: String(localized: "AIMeter can't see your billing, so the day is the one you set. The reminder comes that many days before, every month."))
+
             #if os(iOS)
             SettingsGap()
             SectionHeader(title: String(localized: "Live Activity"))

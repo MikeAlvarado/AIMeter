@@ -81,13 +81,14 @@ below and `AIMeterWatch/CLAUDE.md`.
   website's video recorder tells the island, see "Claude Code sessions"
   below); members those extensions share are internal rather
   than private, by necessity, and documented as such. Notifications are
-  five files: `NotificationPreferences.swift` (the toggles, plus
+  six files: `NotificationPreferences.swift` (the toggles, plus
   `SmartAlert` — the six per-account families addressed as one enum, so
   the model and the toggles card have one getter/setter pair instead of
   five), `NotificationScheduler.swift` (the fetch-driven families),
   `NotificationScheduler+RunOut.swift` (the run-out warnings),
-  `NotificationScheduler+Peak.swift` and
-  `NotificationScheduler+Incidents.swift` (a service's incidents).
+  `NotificationScheduler+Peak.swift`,
+  `NotificationScheduler+Incidents.swift` (a service's incidents) and
+  `NotificationScheduler+Renewal.swift` (the renewal reminder).
 - `AIMeter/Services/ClaudeCodeUsageModel.swift` (macOS) — Claude Code's
   local token usage on this Mac, see "Claude Code local usage" below;
   its views are `AIMeter/Views/ClaudeCodeUsageCard.swift` (the Dashboard
@@ -815,7 +816,17 @@ the account silently freezes at its last snapshot.
   candidate throws before being dropped. It dedupes through
   `reauthAlertDelivered` (fires once per breakage, not once per refresh
   cycle forever) and is cleared — pending flag and delivered notification
-  alike — by the next successful fetch or a reconnect. Each `smart`
+  alike — by the next successful fetch or a reconnect. `renewal.` is the
+  plan's renewal reminder (the account page's "Renewal" card, off by
+  default): a day of the month (1–31, the month's last when it is
+  shorter) and 1 to 7 days ahead, both the user's, since no service says
+  when it bills (Claude's profile has only when the subscription began,
+  which is not the charge day; Mike, 2026-11-03: never assume it); the
+  next two reminders at 10:00 local stay pending
+  (`renewal.<accountID>.0`, `.1`, `NotificationScheduler.nextRenewals`,
+  pure, `RenewalScheduleTests`), rescheduled after every fetch and every
+  change, so a month without opening the app still gets its notice.
+  Each `smart`
   alert has its own toggle **per account** (near-limit adds its
   per-account levels) — `NotificationPreferences(accountID:)`, so muting a
   secondary account never touches another's; `peak.` is the one alert

@@ -221,7 +221,10 @@
   Ahead-of-pace warnings, Early-reset alerts, and Sign-in alerts —
   all six scoped to this one account, and Sign-in alerts the only toggle
   in the app that starts **on**, for the reason documented on
-  `NotificationPreferences.reauthAlertsEnabled`); on iOS only, a "Live
+  `NotificationPreferences.reauthAlertsEnabled`); a **Renewal** card
+  (`RenewalReminderCard`: "Remind me before it renews", off by default,
+  and while on the day of the month it renews and how many days before,
+  see "renewal." in the repo-root CLAUDE.md); on iOS only, a "Live
   Activity" card (`LiveActivityCard` — see `AIMeterWidgets/CLAUDE.md`): a
   toggle for this account's countdown on the Lock Screen/Dynamic
   Island (its session's, or with no session its busiest window's), off by default, and while it is on, "Show a pet" (the account's

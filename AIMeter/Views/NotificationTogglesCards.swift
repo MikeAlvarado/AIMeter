@@ -186,3 +186,68 @@ struct NotificationTogglesCard: View {
         )
     }
 }
+
+/// "Remind me before it renews": a day of the month and how many days
+/// ahead, both the user's, since no service says when it bills
+/// (`NotificationScheduler+Renewal.swift`). Off by default.
+struct RenewalReminderCard: View {
+    let accountID: String
+    @Environment(UsageModel.self) private var model
+
+    var body: some View {
+        let reminder = model.renewalReminder(for: accountID)
+        Card {
+            VStack(alignment: .leading, spacing: Theme.rowSpacing) {
+                Toggle(isOn: binding(reminder, \.enabled)) {
+                    Text("Remind me before it renews")
+                        .font(Theme.rowTitle)
+                        .foregroundStyle(Theme.ink)
+                }
+                .tint(Theme.accent)
+                if reminder.enabled {
+                    // The label beside the menu, drawn here: outside a Form,
+                    // iOS shows a menu picker's selection alone.
+                    row(String(localized: "Renews on")) {
+                        Picker(String(localized: "Renews on"), selection: binding(reminder, \.day)) {
+                            ForEach(1...31, id: \.self) { day in
+                                Text("Day \(day)").tag(day)
+                            }
+                        }
+                    }
+                    row(String(localized: "Remind me")) {
+                        Picker(String(localized: "Remind me"), selection: binding(reminder, \.leadDays)) {
+                            ForEach(1...7, id: \.self) { days in
+                                Text(days == 1 ? String(localized: "1 day before") : String(localized: "\(days) days before")).tag(days)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func row(_ title: String, @ViewBuilder picker: () -> some View) -> some View {
+        HStack {
+            Text(title)
+                .font(Theme.rowTitle)
+                .foregroundStyle(Theme.ink)
+            Spacer(minLength: 8)
+            picker()
+                .pickerStyle(.menu)
+                .labelsHidden()
+                .tint(Theme.accent)
+                .fixedSize()
+        }
+    }
+
+    private func binding<Value>(_ reminder: UsageModel.RenewalReminder, _ field: WritableKeyPath<UsageModel.RenewalReminder, Value>) -> Binding<Value> {
+        Binding(
+            get: { reminder[keyPath: field] },
+            set: { newValue in
+                var updated = reminder
+                updated[keyPath: field] = newValue
+                model.setRenewalReminder(updated, accountID: accountID)
+            }
+        )
+    }
+}

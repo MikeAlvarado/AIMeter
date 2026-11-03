@@ -148,6 +148,9 @@ struct RefreshService {
         await NotificationScheduler.rescheduleRunOuts(
             runOutProjections(for: snapshot), accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
         )
+        await NotificationScheduler.rescheduleRenewal(
+            accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+        )
         if let previous {
             await fireDetectionAlerts(previous: previous, current: snapshot, accountLabel: accountLabel, preferences: prefs)
         }
@@ -170,6 +173,9 @@ struct RefreshService {
         )
         await NotificationScheduler.rescheduleRunOuts(
             runOutProjections(for: snapshot), accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
+        )
+        await NotificationScheduler.rescheduleRenewal(
+            accountID: account.accountID, accountLabel: accountLabel, preferences: prefs
         )
     }
 

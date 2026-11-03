@@ -98,6 +98,36 @@ extension UsageModel {
         notificationsRevision += 1
     }
 
+    // MARK: - Renewal reminder (per account)
+
+    struct RenewalReminder: Equatable {
+        var enabled: Bool
+        var day: Int
+        var leadDays: Int
+    }
+
+    func renewalReminder(for accountID: String) -> RenewalReminder {
+        _ = notificationsRevision
+        let prefs = preferences(for: accountID)
+        return RenewalReminder(enabled: prefs.renewalEnabled, day: prefs.renewalDay, leadDays: prefs.renewalLeadDays)
+    }
+
+    /// Writes the reminder and reschedules it at once; turning it on asks
+    /// for the permission like every other alert. Never in demo mode.
+    func setRenewalReminder(_ reminder: RenewalReminder, accountID: String) {
+        let prefs = preferences(for: accountID)
+        let label = accountLabel(for: accountID)
+        Task { @MainActor in
+            guard await authorizeIfEnabling(reminder.enabled && !prefs.renewalEnabled) else { return }
+            prefs.renewalEnabled = reminder.enabled
+            prefs.renewalDay = reminder.day
+            prefs.renewalLeadDays = reminder.leadDays
+            notificationsRevision += 1
+            guard !isDemoMode else { return }
+            await NotificationScheduler.rescheduleRenewal(accountID: accountID, accountLabel: label, preferences: prefs)
+        }
+    }
+
     func nearLimitThresholds(for accountID: String) -> [Double] {
         _ = notificationsRevision
         return preferences(for: accountID).nearLimitThresholds
