@@ -133,7 +133,20 @@ final class UsageModel {
     /// and the platform services (macOS refresh schedule and observers,
     /// the peak notification sweep).
     convenience init() {
+        guard !Self.isTestHost else {
+            self.init(registry: nil, platformServices: false)
+            return
+        }
         self.init(registry: AccountRegistryStore(suiteName: AppConfig.appGroupID), platformServices: true)
+    }
+
+    /// The unit-test host is this same app, launched unsigned by
+    /// `xcodebuild test`: its own model connects nothing and refreshes
+    /// nothing, since every read of an account's Keychain item from a copy
+    /// signed another way asks for the login password (Mike, 2026-11-03:
+    /// one prompt per test run). The tests build models of their own.
+    nonisolated static var isTestHost: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
     /// `platformServices: false` is the unit-test seam: no migration (it
@@ -208,7 +221,7 @@ final class UsageModel {
         // ...unless the user explicitly disconnected that mirrored login
         // (`Preferences.autoDetectDeclined`), in which case re-mirroring it
         // here would just undo the disconnect on every launch.
-        if accounts.isEmpty, !Preferences.autoDetectDeclined {
+        if accounts.isEmpty, !Preferences.autoDetectDeclined, !Self.isTestHost {
             var candidate = ProviderCatalog.legacyAccount
             candidate.credentialStrategy = .autoDetected
             let service = previousServices[candidate.accountID] ?? RefreshService(account: candidate)

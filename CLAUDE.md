@@ -2264,7 +2264,12 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   the notch may reach: the status items found in a window list or
   placed by the Accessibility API (this Mac's, measured on macOS 27), the
   menus' edge, the narrower side for both, and on a screen without a
-  notch the room either side of its centre (`NotchIslandClearanceTests`). Three
+  notch the room either side of its centre (`NotchIslandClearanceTests`). The host
+  app's own model is empty under XCTest (`UsageModel.isTestHost`: no
+  registry, no platform services, no speculative Claude Code mirror), so
+  a test run never reads an account's Keychain item: the host is built
+  unsigned, and every such read from a copy signed another way asks the
+  user for the login password (one prompt per run, 2026-11-03). Three
   seams exist for it and nothing else: `UsageModel(registry:platformServices:)`
   with `platformServices: false` (no migration — it probes the real
   Keychain — no scheduler/observers, no notification sweep),
