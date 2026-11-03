@@ -287,6 +287,28 @@ final class ClaudeProviderTests: XCTestCase {
         XCTAssertEqual(source.saved.last?.subscriptionType, "max")
     }
 
+    /// Max 20x became Ultra (2026-10-30) while the profile kept saying
+    /// `has_claude_max`: the tier is what tells them apart, as measured on
+    /// 2026-11-03 on a Max (5x) and an Ultra account.
+    func testMaxTierNamesTheRenamedPlans() throws {
+        func plan(_ tier: String?) throws -> String? {
+            let organization = tier.map { #", "organization": {"rate_limit_tier": "\#($0)"}"# } ?? ""
+            let body = #"{"account": {"has_claude_pro": false, "has_claude_max": true}\#(organization)}"#
+            return try JSONDecoder().decode(ClaudeProfileResponse.self, from: Data(body.utf8)).subscriptionType
+        }
+        XCTAssertEqual(try plan("default_claude_max_20x"), "ultra")
+        XCTAssertEqual(try plan("default_claude_max_5x"), "max")
+        XCTAssertEqual(try plan("default_claude_ultra"), "ultra")
+        XCTAssertEqual(try plan(nil), "max")
+    }
+
+    /// A Team seat carries a Max-like tier but neither plan flag: no pill,
+    /// as before (measured on a `claude_team` organization).
+    func testTeamTierWithoutPlanFlagsHasNoPlan() throws {
+        let body = #"{"account": {"has_claude_pro": false, "has_claude_max": false}, "organization": {"rate_limit_tier": "default_claude_max_5x"}}"#
+        XCTAssertNil(try JSONDecoder().decode(ClaudeProfileResponse.self, from: Data(body.utf8)).subscriptionType)
+    }
+
     /// The plan write-back must persist only `subscriptionType`, over
     /// whatever tokens are stored *now* — never over the ones this fetch
     /// loaded. Saving the stale pair would put an already-consumed refresh

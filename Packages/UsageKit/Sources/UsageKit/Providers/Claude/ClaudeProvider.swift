@@ -1,6 +1,6 @@
 import Foundation
 
-/// Fetches Claude Pro/Max usage from the undocumented endpoint Claude Code
+/// Fetches Claude Pro/Max/Ultra usage from the undocumented endpoint Claude Code
 /// uses internally. All endpoint specifics live here and in
 /// `ClaudeUsageResponse` so a breaking change touches one place.
 public struct ClaudeProvider: UsageProvider {

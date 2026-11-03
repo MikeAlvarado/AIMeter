@@ -106,9 +106,21 @@ final class ClaudeResponseMappingTests: XCTestCase {
         XCTAssertNil(response.extraUsageStatus())
     }
 
-    private func decodeFixture() throws -> ClaudeUsageResponse {
+    /// Ultra (the old Max 20x, renamed 2026-10-30) has no 5-hour limit:
+    /// captured on 2026-11-03, `five_hour` is null and `limits` carries the
+    /// week and Fable's week alone, so the account shows those two and no
+    /// session placeholder.
+    func testUltraHasNoSessionWindow() throws {
+        let windows = try decodeFixture("claude-usage-response-ultra").usageWindows()
+
+        XCTAssertEqual(windows.map(\.kind), [.weekly, .modelSpecific("Fable")])
+        XCTAssertEqual(windows.first?.usedPct, 9)
+        XCTAssertEqual(windows.last?.resetsAt, windows.first?.resetsAt)
+    }
+
+    private func decodeFixture(_ name: String = "claude-usage-response") throws -> ClaudeUsageResponse {
         let url = try XCTUnwrap(Bundle.module.url(
-            forResource: "claude-usage-response",
+            forResource: name,
             withExtension: "json",
             subdirectory: "Fixtures"
         ))

@@ -7,7 +7,7 @@ public struct ClaudeCredentials: Codable, Equatable, Sendable {
     public var refreshToken: String?
     public var expiresAt: Date?
     public var scopes: [String]
-    /// e.g. "pro", "max".
+    /// e.g. "pro", "max", "ultra".
     public var subscriptionType: String?
     /// When `subscriptionType` was last confirmed against the profile
     /// endpoint. Nil means "never confirmed, or confirmed before this field

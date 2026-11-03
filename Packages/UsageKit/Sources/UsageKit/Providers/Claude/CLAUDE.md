@@ -11,10 +11,20 @@ captured response) before changing the model.
   `seven_day` objects are a legacy fallback. Also `spend` (amounts in
   `amount_minor` scaled by `exponent`) and `extra_usage` (credits scaled by
   `decimal_places`). `resets_at` is ISO 8601 with fractional seconds, and
-  is **null for windows with no usage yet**.
+  is **null for windows with no usage yet**. An Ultra account has no
+  `session` entry at all and `five_hour` is null (captured 2026-11-03,
+  `Tests/UsageKitTests/Fixtures/claude-usage-response-ultra.json`): the
+  plan has no 5-hour limit.
 - `GET https://api.anthropic.com/api/oauth/profile` — the only source of
   the plan name (the usage response carries no subscription field):
   `account.has_claude_pro` / `has_claude_max` → "pro"/"max" (max wins),
+  and a Max whose `organization.rate_limit_tier` is the 20x one
+  (`default_claude_max_20x`; Max is `default_claude_max_5x`) → "ultra":
+  Anthropic renamed Max 5x to Max and Max 20x to Ultra on 2026-10-30
+  and the profile has no Ultra flag (measured 2026-11-03 on both; a
+  Team seat carries `default_claude_max_5x` with both flags false, and
+  keeps no pill). A tier naming "ultra" itself counts too, unmeasured,
+  in case the tier follows the plan's new name,
   and of the account's identity: `account.uuid` (36 characters, stable
   for a login whatever device it is on), which iCloud sync keys the
   history by. Shape measured 2026-10-19 with
@@ -26,7 +36,8 @@ captured response) before changing the model.
   `organization` (`uuid`, `name`, `organization_type`,
   `rate_limit_tier`, `billing_type`, `subscription_status`, …),
   `application` (`uuid`, `name`, `slug`) and `enabled_plugins`. Only
-  `account.uuid` and the two flags are decoded.
+  `account.uuid`, the two flags and `organization.rate_limit_tier` are
+  decoded.
   The result is cached in the stored credentials (`subscriptionType`) with
   the date it was confirmed (`planCheckedAt`), and re-confirmed once the
   cache is older than `ClaudeProvider.planRecheckInterval` (6 h) — a

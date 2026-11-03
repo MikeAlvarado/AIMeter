@@ -38,7 +38,7 @@ struct ProviderIdentityView: View {
     }
 }
 
-/// The plan pill beside an account's name ("Pro", "Max"): drawn here and
+/// The plan pill beside an account's name ("Pro", "Max", "Ultra"): drawn here and
 /// in Settings' account rows, which put it beside the name over a second
 /// line of their own.
 struct PlanPill: View {

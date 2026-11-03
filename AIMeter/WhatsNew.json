@@ -1,6 +1,34 @@
 {
   "releases": [
     {
+      "version": "4.3.5",
+      "items": [
+        {
+          "symbol": "tag",
+          "title": {
+            "en": "The Ultra plan",
+            "es": "El plan Ultra",
+            "de": "Der Ultra-Tarif",
+            "fr": "L'offre Ultra",
+            "ja": "Ultraプラン",
+            "ko": "Ultra 요금제",
+            "pt-BR": "O plano Ultra",
+            "zh-Hans": "Ultra 方案"
+          },
+          "detail": {
+            "en": "Claude's Max 20x is now called Ultra, and an account on it says so beside its name. Ultra has no 5-hour limit, so its card leads with the week.",
+            "es": "Max 20x de Claude ahora se llama Ultra, y una cuenta con ese plan lo dice junto a su nombre. Ultra no tiene límite de 5 horas, así que su tarjeta empieza por la semana.",
+            "de": "Claudes Max 20x heißt jetzt Ultra, und ein Account mit diesem Tarif zeigt das neben seinem Namen. Ultra hat kein 5-Stunden-Limit, daher beginnt seine Karte mit der Woche.",
+            "fr": "Max 20x de Claude s'appelle désormais Ultra, et un compte avec cette offre l'affiche à côté de son nom. Ultra n'a pas de limite de 5 heures, sa carte commence donc par la semaine.",
+            "ja": "ClaudeのMax 20xはUltraという名前になり、このプランのアカウントは名前の横にそう表示されます。Ultraには5時間の上限がないため、カードは週から始まります。",
+            "ko": "Claude의 Max 20x가 이제 Ultra로 바뀌었고, 이 요금제의 계정은 이름 옆에 그렇게 표시됩니다. Ultra에는 5시간 한도가 없으므로 카드가 주간 한도부터 보여 줍니다.",
+            "pt-BR": "O Max 20x do Claude agora se chama Ultra, e uma conta nesse plano mostra isso ao lado do nome. O Ultra não tem limite de 5 horas, então o cartão começa pela semana.",
+            "zh-Hans": "Claude 的 Max 20x 现已更名为 Ultra，使用该方案的账户会在名称旁显示 Ultra。Ultra 没有 5 小时限制，因此卡片会先显示每周用量。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.3.4",
       "items": [
         {

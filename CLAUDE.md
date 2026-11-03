@@ -3,7 +3,7 @@
 Open source multiplatform app (iOS 17+ / macOS 14+, pure SwiftUI, no
 dependencies, no server) that shows AI subscription usage and remaining
 limits in the app, in widgets, and in the macOS menu bar. Three provider
-families since 4.0: Claude (Pro/Max), Codex (any ChatGPT plan, Free
+families since 4.0: Claude (Pro, Max, Ultra), Codex (any ChatGPT plan, Free
 included) and GitHub Copilot (Free, Pro, Pro+), each a folder under
 UsageKit's `Providers/` behind one seam (see "Provider seam" below), so
 more can follow; and multi-account: several logins, of one family or
@@ -941,7 +941,9 @@ the account silently freezes at its last snapshot.
   Copilot's premium requests, chat and completions), up to three of
   those in the provider's order. The third slot shows the real per-model
   window when the plan reports one (e.g. Max/Team Premium's Fable 5
-  allowance). When it doesn't — most Claude Pro accounts, since Fable
+  allowance). Ultra (the old Max 20x, renamed by Anthropic on
+  2026-10-30) has no 5-hour limit, so its card leads with the week and
+  shows no session row at all, the way Codex Free's month does. When it doesn't — most Claude Pro accounts, since Fable
   moved to usage credits — `ModelSlotFallback` (Settings → "Usage rows":
   Auto/Hidden/Credits, default Auto) decides: `.hidden` drops the slot
   (two rows total), `.credits` keeps three rows and fills it with a

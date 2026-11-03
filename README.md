@@ -13,8 +13,8 @@ no server, no account.
 **[Download on the App Store](https://apps.apple.com/app/id6797946742)** (iPhone, iPad, Apple Watch) ·
 **[Download for Mac](https://github.com/MikeAlvarado/AIMeter/releases/latest/download/AIMeter-macOS.zip)** (macOS 14+, notarized, updates itself)
 
-Supported today: **Claude** Pro and Max (the session, weekly and
-per-model windows), **Codex** on any ChatGPT plan, Free included (its
+Supported today: **Claude** Pro, Max and Ultra (the session, weekly and
+per-model windows; Ultra has no session limit), **Codex** on any ChatGPT plan, Free included (its
 5-hour and weekly windows, or Free's one monthly window), and **GitHub
 Copilot** Free, Pro and Pro+ (the monthly chat, completion and
 premium-request quotas). The architecture is provider-agnostic, so more
