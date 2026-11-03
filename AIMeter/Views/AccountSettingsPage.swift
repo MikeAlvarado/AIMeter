@@ -121,7 +121,7 @@ struct AccountSettingsCards: View {
             SettingsGap()
             SectionHeader(title: String(localized: "Live Activity"))
             LiveActivityCard(accountID: accountID)
-            SectionFootnote(text: String(localized: "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default. It updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates."))
+            SectionFootnote(text: String(localized: "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running, or, for an account with no session, its limit closest to full until it resets. Off by default. It updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates."))
             #endif
 
             #if os(macOS)

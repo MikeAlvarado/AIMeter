@@ -261,10 +261,21 @@ above); no new target, no push entitlement.
   `UsageRecorder.record` (both history stores — the predictor's and the chart's timeline) happens in both places: "stays continuous
   when only the widget runs." A running activity gets fresher the same
   way the rest of the app does; no new budget to manage.
-- **Session only, not Weekly/Credits.** ~5h comfortably fits ActivityKit's
-  ~8h hard cap, and "counting down to a deadline" is the Live Activity
-  metaphor; a 7-day window doesn't fit either. Not a "later" gap — the
-  wrong shape for this mechanism entirely.
+- **The session, or the busiest window of an account that has none.**
+  ~5h comfortably fits ActivityKit's ~8h hard cap, and "counting down to
+  a deadline" is the Live Activity metaphor. An account with no session
+  at all (Claude's Ultra, Codex Free, Copilot) would otherwise never
+  show one, so it follows its window closest to the limit that has been
+  used and resets ahead (`UsageInsights.liveActivityWindow`, tested in
+  `LiveActivityWindowTests`) until that reset: Mike's call on
+  2026-11-03, knowing iOS takes the activity down after eight hours
+  whatever it shows (the next fetch with the switch on starts another).
+  Such an activity carries the window's short name
+  (`ContentState.windowTitle`, "Week") and shows its reset as the
+  widgets do (`ResetLineText`: "Week · 3d 4h", the live countdown only
+  in its last day); an account that has a session still follows only
+  the session, and ends with it while it is idle. Peak hours only ever
+  mark the session.
 - **Opt-in per account, off by default** — a "Live Activity" toggle on
   the account's settings page (`AccountSettingsCards`; in Provider
   Detail until 3.2), same visual/persistence pattern as the Smart
@@ -286,8 +297,8 @@ above); no new target, no push entitlement.
   `BGAppRefreshTask` path (updates still flow there), and `start` checks
   `ActivityAuthorizationInfo().areActivitiesEnabled` first. While a toggle
   is on, it starts one whenever
-  that account has a session window with a future `resetsAt` and none is
-  already running, and ends it (`dismissalPolicy: .immediate`) on
+  that account has a window to follow (above) and none is already
+  running, and ends it (`dismissalPolicy: .immediate`) on
   toggle-off, on disconnect, or once a fresh fetch shows no active session
   (usage back at 0, or no `resetsAt`), and a demo account's when the demo
   ends (or at the next launch, if the app was quit in it), its switches
@@ -315,7 +326,8 @@ above); no new target, no push entitlement.
   for one account (a restart's old one, a duplicate) is ended by the next
   `sync`, which keeps the one whose pet matches.
 - `Shared/SessionActivityAttributes.swift` (`ActivityAttributes` +
-  `ContentState: usedPct, resetsAt, isPeak, severity`) lives in `Shared/`,
+  `ContentState: usedPct, resetsAt, isPeak, severity, windowTitle`,
+  the last optional, so an activity an older build started decodes) lives in `Shared/`,
   synced into both targets already like `Theme.swift`/`AppConfig.swift` —
   both the app (start/update/end) and this extension (render) need the
   type. `severity` rides along so the bar can call the same

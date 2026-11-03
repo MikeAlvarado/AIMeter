@@ -55,6 +55,25 @@ enum UsageInsights {
             .max { $0.freePct < $1.freePct }
     }
 
+    /// The window a Live Activity follows: the session while the account
+    /// has one (and nothing while that session is idle or past its reset,
+    /// as always), else, for an account with no session at all (Ultra,
+    /// Codex Free, Copilot), its window closest to the limit that has
+    /// been used and resets ahead. That one is followed until its reset;
+    /// iOS takes an activity down after eight hours whatever it shows.
+    static func liveActivityWindow(in snapshot: UsageSnapshot?, now: Date = Date()) -> UsageWindow? {
+        guard let snapshot else { return nil }
+        let candidates: [UsageWindow]
+        if let session = snapshot.sessionWindow {
+            candidates = [session]
+        } else {
+            candidates = snapshot.windows
+        }
+        return candidates
+            .filter { $0.usedPct > 0 && ($0.resetsAt.map { $0 > now } ?? false) }
+            .max { AccountOrder.urgency(of: $0) < AccountOrder.urgency(of: $1) }
+    }
+
     /// "Work has 70% free", the line under a card.
     static func roomLine(_ room: Room) -> String {
         String(localized: "\(room.name) has \(Int(room.freePct))% free")

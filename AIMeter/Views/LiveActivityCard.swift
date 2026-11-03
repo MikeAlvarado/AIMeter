@@ -2,8 +2,9 @@
 import SwiftUI
 import UsageKit
 
-/// Provider Detail's "Live Activity" card: this account's Session
-/// countdown on the Lock Screen and in the Dynamic Island, and, while that
+/// The account page's "Live Activity" card: this account's session
+/// countdown (or, with no session, its busiest window's) on the Lock
+/// Screen and in the Dynamic Island, and, while that
 /// is on, its pet beside the countdown (see "Live Activity" in
 /// `AIMeterWidgets/CLAUDE.md`). Both switches are per account and off by
 /// default.

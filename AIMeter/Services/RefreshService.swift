@@ -193,7 +193,7 @@ struct RefreshService {
             previous: previous, current: current,
             threshold: ThresholdDetector.limitReachedThreshold
         )
-        let room = roomElsewhere(given: current).map(UsageInsights.roomSentence)
+        let room = roomElsewhere(given: current).map { UsageInsights.roomSentence($0) }
         await NotificationScheduler.notifyLimitReached(
             reached, in: current, accountID: account.accountID, accountLabel: accountLabel,
             room: room, preferences: prefs

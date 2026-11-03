@@ -22,6 +22,12 @@ nonisolated struct SessionActivityAttributes: ActivityAttributes {
         /// makes — a provider-flagged "critical"/"exceeded" window should
         /// turn red here too, not just past the raw percentage threshold.
         var severity: UsageWindow.Severity?
+        /// The window's short name ("Week") when the activity follows one
+        /// that isn't the session (an account with no session, see
+        /// `UsageInsights.liveActivityWindow`); nil for the session, and
+        /// for an activity an older build started, which decodes without
+        /// it.
+        var windowTitle: String? = nil
     }
 
     let accountID: String

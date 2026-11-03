@@ -3934,6 +3934,52 @@
         }
       }
     },
+    "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running, or, for an account with no session, its limit closest to full until it resets. Off by default. It updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt den Sitzungs-Countdown dieses Accounts auf dem Sperrbildschirm und in der Dynamic Island, solange eine Sitzung läuft, oder, bei einem Account ohne Sitzung, sein vollstes Limit bis zum Zurücksetzen. Standardmäßig aus. Er aktualisiert sich, wenn AIMeter oder seine Widgets gerade aktualisieren, nicht sofort, da es keinen Server gibt, der Updates sendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra la cuenta regresiva de la sesión de esta cuenta en la Pantalla Bloqueada y en la Dynamic Island mientras haya una sesión activa o, en una cuenta sin sesión, su límite más cerca de llenarse hasta que se reinicie. Desactivado por defecto. Se actualiza cuando AIMeter o sus widgets se refrescan, no al instante, ya que no hay un servidor que envíe actualizaciones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche le compte à rebours de session de ce compte sur l'écran verrouillé et dans la Dynamic Island tant qu'une session est en cours ou, pour un compte sans session, sa limite la plus remplie jusqu'à sa réinitialisation. Désactivé par défaut. Il se met à jour quand AIMeter ou ses widgets s'actualisent, pas instantanément, car aucun serveur n'envoie de mises à jour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッション中、このアカウントのセッションのカウントダウンをロック画面とDynamic Islandに表示します。セッションのないアカウントでは、最も上限に近い枠をリセットまで表示します。デフォルトではオフです。更新を送るサーバがないため、即時ではなくAIMeterやウィジェットが更新したときに反映されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션이 진행 중인 동안 이 계정의 세션 카운트다운을 잠금 화면과 Dynamic Island에 표시하고, 세션이 없는 계정은 한도에 가장 가까운 항목을 초기화될 때까지 표시합니다. 기본값은 꺼짐입니다. 업데이트를 보내는 서버가 없으므로 즉시가 아니라 AIMeter나 위젯이 새로 고칠 때 갱신됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra a contagem regressiva da sessão desta conta na Tela Bloqueada e na Dynamic Island enquanto uma sessão estiver ativa ou, numa conta sem sessão, o limite mais perto de encher até ele reiniciar. Desativado por padrão. Atualiza quando o AIMeter ou seus widgets atualizam, não na hora, já que não há servidor enviando atualizações."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会话进行期间，在锁定屏幕和灵动岛显示此账户的会话倒计时；没有会话的账户则显示最接近用满的限制，直到它重置。默认关闭；由于没有服务器推送更新，它在 AIMeter 或其小组件刷新时更新，而不是即时更新。"
+          }
+        }
+      }
+    },
     "Sign in on Claude's page and paste the code it shows." : {
       "localizations" : {
         "de" : {
@@ -21510,52 +21556,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示在仪表盘、小组件和通知标题中。"
-          }
-        }
-      }
-    },
-    "Shows this account's session countdown on the Lock Screen and Dynamic Island while a session is running. Off by default. It updates whenever AIMeter or its widgets happen to refresh, not instantly, since there's no server to push updates." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeigt den Sitzungs-Countdown dieses Accounts auf dem Sperrbildschirm und in der Dynamic Island, solange eine Sitzung läuft. Standardmäßig aus. Er aktualisiert sich, wenn AIMeter oder seine Widgets gerade aktualisieren, nicht sofort, da es keinen Server gibt, der Updates sendet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muestra la cuenta regresiva de la sesión de esta cuenta en la Pantalla Bloqueada y en la Dynamic Island mientras haya una sesión activa. Desactivado por defecto. Se actualiza cuando AIMeter o sus widgets se refrescan, no al instante, ya que no hay un servidor que envíe actualizaciones."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affiche le compte à rebours de session de ce compte sur l'écran verrouillé et dans la Dynamic Island tant qu'une session est en cours. Désactivé par défaut. Il se met à jour quand AIMeter ou ses widgets s'actualisent, pas instantanément, car aucun serveur n'envoie de mises à jour."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッション中、このアカウントのセッションのカウントダウンをロック画面とDynamic Islandに表示します。デフォルトではオフです。更新を送るサーバがないため、即時ではなくAIMeterやウィジェットが更新したときに反映されます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "세션이 진행 중인 동안 이 계정의 세션 카운트다운을 잠금 화면과 Dynamic Island에 표시합니다. 기본값은 꺼짐입니다. 업데이트를 보내는 서버가 없으므로 즉시가 아니라 AIMeter나 위젯이 새로 고칠 때 갱신됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra a contagem regressiva da sessão desta conta na Tela Bloqueada e na Dynamic Island enquanto uma sessão estiver ativa. Desativado por padrão. Atualiza quando o AIMeter ou seus widgets atualizam, não na hora, já que não há servidor enviando atualizações."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会话进行期间，在锁定屏幕和灵动岛显示此账户的会话倒计时。默认关闭；由于没有服务器推送更新，它在 AIMeter 或其小组件刷新时更新，而不是即时更新。"
           }
         }
       }

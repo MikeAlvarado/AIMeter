@@ -105,24 +105,25 @@ enum LiveActivityManager {
         }
     }
 
-    /// What a live session shows, or nil when there's nothing to show
-    /// (toggle off, no session window, an idle one, or one already past
-    /// its reset) — which `sync` reads as "end whatever is running".
+    /// What the activity shows, or nil when there's nothing to show
+    /// (toggle off, an idle session or one already past its reset, or an
+    /// account with no session and no used window ahead,
+    /// `UsageInsights.liveActivityWindow`), which `sync` reads as "end
+    /// whatever is running".
     private static func content(
         for snapshot: UsageSnapshot?, providerID: String, enabled: Bool
     ) -> ActivityContent<SessionActivityAttributes.ContentState>? {
         guard enabled,
-              let window = snapshot?.sessionWindow,
-              window.usedPct > 0,
-              let resetsAt = window.resetsAt,
-              resetsAt > Date()
+              let window = UsageInsights.liveActivityWindow(in: snapshot),
+              let resetsAt = window.resetsAt
         else { return nil }
         return ActivityContent(
             state: SessionActivityAttributes.ContentState(
                 usedPct: window.usedPct,
                 resetsAt: resetsAt,
-                isPeak: ClaudePeakStatus.forProvider(providerID).isPeak,
-                severity: window.severity
+                isPeak: window.kind == .session && ClaudePeakStatus.forProvider(providerID).isPeak,
+                severity: window.severity,
+                windowTitle: window.kind == .session ? nil : window.shortTitle
             ),
             staleDate: resetsAt
         )

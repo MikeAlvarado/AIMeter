@@ -3,6 +3,7 @@ import UsageKit
 @testable import AIMeter
 
 /// What fits in today, and which other account has room.
+@MainActor
 final class UsageInsightsTests: XCTestCase {
     private let now = Date(timeIntervalSince1970: 1_800_000_000)
 
@@ -41,7 +42,7 @@ final class UsageInsightsTests: XCTestCase {
         let others = [entry("a", "Personal", used: 92), entry("b", "Work", used: 30), entry("c", "Side", used: 45)]
         let room = UsageInsights.room(forUrgency: 92, providerID: ProviderCatalog.defaultProviderID, accountID: "a", among: others)
         XCTAssertEqual(room, .init(accountID: "b", name: "Work", freePct: 70))
-        XCTAssertEqual(room.map(UsageInsights.roomLine), "Work has 70% free")
+        XCTAssertEqual(room.map { UsageInsights.roomLine($0) }, "Work has 70% free")
     }
 
     func testNoRoomUntilNearlyOutAndNeverAnotherService() {
@@ -55,5 +56,35 @@ final class UsageInsightsTests: XCTestCase {
         XCTAssertNil(UsageInsights.room(forUrgency: 95, providerID: ProviderCatalog.defaultProviderID, accountID: "a", among: [entry("b", "Work", used: 50)]))
         let blank = (ConnectedAccount.managed("d", name: "New"), UsageSnapshot?.none)
         XCTAssertNil(UsageInsights.room(forUrgency: 95, providerID: ProviderCatalog.defaultProviderID, accountID: "a", among: [blank]))
+    }
+}
+
+/// Which window a Live Activity follows.
+@MainActor
+final class LiveActivityWindowTests: XCTestCase {
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    func testTheSessionWhileTheAccountHasOneAndNothingWhileItIsIdle() {
+        let busy = UsageSnapshot.make(windows: [.make(.session, used: 20, resetsIn: 3_600, now: now), .make(.weekly, used: 90, resetsIn: 86_400, now: now)])
+        XCTAssertEqual(UsageInsights.liveActivityWindow(in: busy, now: now)?.kind, .session)
+
+        // An idle session ends the activity even with a busy week: the
+        // week is followed only by an account that has no session at all.
+        let idle = UsageSnapshot.make(windows: [.make(.session, used: 0), .make(.weekly, used: 90, resetsIn: 86_400, now: now)])
+        XCTAssertNil(UsageInsights.liveActivityWindow(in: idle, now: now))
+    }
+
+    /// Ultra, Codex Free, Copilot: the window closest to its limit.
+    func testWithNoSessionTheWindowClosestToItsLimit() {
+        let ultra = UsageSnapshot.make(windows: [
+            .make(.weekly, used: 9, resetsIn: 5 * 86_400, now: now),
+            .make(.modelSpecific("Fable"), used: 11, resetsIn: 5 * 86_400, now: now),
+        ])
+        XCTAssertEqual(UsageInsights.liveActivityWindow(in: ultra, now: now)?.kind, .modelSpecific("Fable"))
+
+        let unused = UsageSnapshot.make(windows: [.make(.weekly, used: 0, resetsIn: 86_400, now: now)])
+        XCTAssertNil(UsageInsights.liveActivityWindow(in: unused, now: now))
+        let past = UsageSnapshot.make(windows: [.make(.weekly, used: 40, resetsIn: -60, now: now)])
+        XCTAssertNil(UsageInsights.liveActivityWindow(in: past, now: now))
     }
 }

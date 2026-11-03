@@ -329,9 +329,10 @@ below and `AIMeterWatch/CLAUDE.md`.
   Claude's alone, by nature rather than by omission: the profile call and
   its plan cache (Codex's plan comes with every usage response, Copilot's
   too), the speculative CLI mirror at launch (Codex's is offered in the
-  Connect sheet instead), the pasted credentials JSON, and the Live
-  Activity's session window (Codex's paid plans have one too, so it
-  works there as well; Copilot has none).
+  Connect sheet instead), and the pasted credentials JSON. The Live
+  Activity follows the session where there is one (Claude's Pro and Max,
+  Codex's paid plans) and, for an account with none (Ultra, Codex Free,
+  Copilot), its window closest to the limit.
 - **Accounts vs. providers**: `providerID` (`UsageProvider.id`,
   `UsageSnapshot.providerID`) identifies a provider *family* — `"claude"` —
   and never changes per login; `accountID` identifies one specific

@@ -98,7 +98,14 @@ struct SessionLiveActivity: Widget {
         let end = max(state.resetsAt, Date().addingTimeInterval(1))
         return HStack(spacing: 3) {
             Image(systemName: "arrow.circlepath")
-            Text(timerInterval: Date()...end, countsDown: true)
+            if let title = state.windowTitle {
+                // A week away: "Week · 3d 4h", the countdown only in its
+                // last day, as the widgets do.
+                Text(title)
+                ResetLineText(resetsAt: state.resetsAt, style: .relative, now: Date(), bare: true)
+            } else {
+                Text(timerInterval: Date()...end, countsDown: true)
+            }
         }
         .font(.system(size: size))
         .foregroundStyle(Theme.inkSecondary)
@@ -145,8 +152,13 @@ private struct LockScreenView: View {
                 .frame(height: Theme.barHeight)
             HStack(spacing: 4) {
                 Image(systemName: "arrow.circlepath")
-                Text(timerInterval: Date()...max(state.resetsAt, Date().addingTimeInterval(1)), countsDown: true)
-                Text("until reset")
+                if let title = state.windowTitle {
+                    Text(title)
+                    ResetLineText(resetsAt: state.resetsAt, style: .relative, now: Date())
+                } else {
+                    Text(timerInterval: Date()...max(state.resetsAt, Date().addingTimeInterval(1)), countsDown: true)
+                    Text("until reset")
+                }
             }
             .font(.system(size: 11))
             .foregroundStyle(Theme.inkSecondary)

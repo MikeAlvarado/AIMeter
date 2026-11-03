@@ -13,9 +13,13 @@ enum AccountOrder {
     /// counting as full. Nil with no snapshot: nothing to say yet.
     static func urgency(of snapshot: UsageSnapshot?) -> Double? {
         guard let windows = snapshot?.windows, !windows.isEmpty else { return nil }
-        return windows.map { window in
-            window.severity == .critical || window.severity == .exceeded ? max(window.usedPct, 100) : window.usedPct
-        }.max()
+        return windows.map { urgency(of: $0) }.max()
+    }
+
+    /// One window's: its percentage, or full when flagged critical or
+    /// exceeded.
+    static func urgency(of window: UsageWindow) -> Double {
+        window.severity == .critical || window.severity == .exceeded ? max(window.usedPct, 100) : window.usedPct
     }
 
     /// The most urgent first, those with no snapshot last; equals keep
