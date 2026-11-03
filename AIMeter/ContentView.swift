@@ -101,6 +101,15 @@ struct ContentView: View {
                 path = NavigationPath()
             }
         }
+        #if os(iOS)
+        // The "Open Account" intent (Shortcuts, Siri).
+        .onChange(of: model.accountToOpen) { _, accountID in
+            guard let accountID else { return }
+            model.accountToOpen = nil
+            path = NavigationPath()
+            path.append(accountID)
+        }
+        #endif
         #if os(iOS) && DEBUG
         // `-AIMeterOpenAccount <accountID>` opens that account's detail at
         // launch, and with `-AIMeterOpenAccountSettings YES` its settings

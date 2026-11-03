@@ -60,6 +60,12 @@ final class UsageModel {
     /// `SnapshotStore`, or `WidgetCenter`, so it can never leak into
     /// widgets or a real connection.
     var isDemoMode = false
+    #if os(iOS)
+    /// An account the "Open Account" intent asked for; the Dashboard's
+    /// navigation stack opens its detail and clears it (`ContentView`). The
+    /// Mac goes through `AppChrome.openAccount` instead.
+    var accountToOpen: String?
+    #endif
     /// Transient error from the Connect sheet's own attempt to store fresh
     /// credentials — distinct from an already-connected account's ongoing
     /// `lastError`, since a failed connection never makes it into `accounts`.

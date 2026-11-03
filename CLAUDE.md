@@ -210,7 +210,9 @@ below and `AIMeterWatch/CLAUDE.md`.
   `AIMeter/Services/ProviderLogin.swift` is what a flow hands the model;
   see "Connect sheet" in `AIMeter/CLAUDE.md`.
 - `AIMeter/Intents/` — the App Intents (`RefreshUsageIntent`,
-  `ShowUsageIntent`, `AIMeterShortcuts`), both platforms; see
+  `ShowUsageIntent`, `AIMeterShortcuts` in `RefreshUsageIntent.swift`;
+  `AccountUsageIntent`, `NextResetsIntent`, `OpenAccountIntent` and their
+  `AccountEntity` in `AccountIntents.swift`), both platforms; see
   "Conventions" for why they exist.
 - `Shared/` — `Surfaces.swift` is the backdrop and the two surfaces
   (`AppBackground`, `cardSurface`, `glassControl`) and
@@ -2097,7 +2099,17 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   and speaks a one-line summary per account, `UsageSummary.spoken`) and
   `ShowUsageIntent` (`openAppWhenRun`, reveals the dashboard), registered
   by `AIMeterShortcuts` with phrases, so the user can give either a
-  system-wide key in the Shortcuts app with no extra permission. They
+  system-wide key in the Shortcuts app with no extra permission. Three
+  more act on one account the user picks by its nickname
+  (`AccountEntity`, read from the registry): `AccountUsageIntent`
+  ("Account Usage": each window's figure, `UsageSummary.figures`),
+  `NextResetsIntent` ("Next Resets": when each window refills,
+  `UsageSummary.resets`; both fetch what went stale first) and
+  `OpenAccountIntent` ("Open Account", `openAppWhenRun`: its Provider
+  Detail, through `AppChrome.openAccount` on the Mac and
+  `UsageModel.accountToOpen`, which `ContentView`'s stack takes, on
+  iOS). Like the first two, their titles stay in English in every
+  language. They
   reach the live model through `AppEnvironment.shared`, which
   `UsageModel.init` now sets on both platforms (iOS gets the same two
   Shortcuts/Siri actions for free). Their `perform()` is `@MainActor`:

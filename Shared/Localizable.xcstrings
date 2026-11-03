@@ -189,6 +189,52 @@
         }
       }
     },
+    "%@ resets in %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ wird in %2$@ zurückgesetzt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ se reinicia en %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ se réinitialise dans %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@は%2$@後にリセットされます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@은(는) %2$@ 후 초기화됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ reinicia em %2$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 将在 %2$@ 后重置。"
+          }
+        }
+      }
+    },
     "%@ Settings" : {
       "comment" : "Title of one account's settings page. The placeholder is the account's nickname.",
       "localizations" : {
@@ -278,6 +324,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@，%2$@"
+          }
+        }
+      }
+    },
+    "%@: no reset ahead." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: kein Zurücksetzen anstehend."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ningún reinicio por delante."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : aucune réinitialisation à venir."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 予定されているリセットはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 예정된 초기화가 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: nenhum reinício pela frente."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：暂无即将到来的重置。"
           }
         }
       }
@@ -820,6 +912,9 @@
           }
         }
       }
+    },
+    "Account Usage" : {
+      "localizations" : {}
     },
     "Ahead of time, when your pace would use a limit up early." : {
       "comment" : "Line under the Run-out warnings toggle.",
@@ -3000,6 +3095,9 @@
         }
       }
     },
+    "Next Resets" : {
+      "localizations" : {}
+    },
     "No account is marked to hide yet: turn on Hide in discreet mode in an account's settings." : {
       "comment" : "Settings, discreet mode card (macOS): no account is marked for the mode yet.",
       "localizations" : {
@@ -3280,6 +3378,9 @@
         }
       }
     },
+    "Open Account" : {
+      "localizations" : {}
+    },
     "Open ChatGPT's device page" : {
       "localizations" : {
         "de" : {
@@ -3415,6 +3516,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 %@ 中打开"
+          }
+        }
+      }
+    },
+    "Opens one account's details in AIMeter." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet die Details eines Accounts in AIMeter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el detalle de una cuenta en AIMeter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre le détail d'un compte dans AIMeter."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeterで1つのアカウントの詳細を開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIMeter에서 한 계정의 세부 정보를 엽니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre os detalhes de uma conta no AIMeter."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 AIMeter 中打开一个账户的详情。"
           }
         }
       }
@@ -3927,6 +4074,98 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在运行命令"
+          }
+        }
+      }
+    },
+    "Says how much of each limit one account has used." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sagt, wie viel ein Account von jedem Limit verbraucht hat."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dice cuánto ha usado una cuenta de cada límite."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indique la part de chaque limite utilisée par un compte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つのアカウントが各上限をどれだけ使ったかを伝えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 계정이 각 한도를 얼마나 사용했는지 알려 줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diz quanto uma conta usou de cada limite."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说出一个账户各项限制的用量。"
+          }
+        }
+      }
+    },
+    "Says when each of one account's limits resets." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sagt, wann jedes Limit eines Accounts zurückgesetzt wird."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dice cuándo se reinicia cada límite de una cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indique quand chaque limite d'un compte se réinitialise."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つのアカウントの各上限がいつリセットされるかを伝えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 계정의 각 한도가 언제 초기화되는지 알려 줍니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diz quando cada limite de uma conta reinicia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说出一个账户各项限制何时重置。"
           }
         }
       }

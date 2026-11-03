@@ -50,6 +50,24 @@ struct AIMeterShortcuts: AppShortcutsProvider {
             shortTitle: "Show Usage",
             systemImageName: "gauge.with.needle"
         )
+        AppShortcut(
+            intent: AccountUsageIntent(),
+            phrases: ["How much of \(\.$account) have I used in \(.applicationName)", "\(\.$account) usage in \(.applicationName)"],
+            shortTitle: "Account Usage",
+            systemImageName: "chart.bar"
+        )
+        AppShortcut(
+            intent: NextResetsIntent(),
+            phrases: ["When does \(\.$account) reset in \(.applicationName)", "Next resets in \(.applicationName)"],
+            shortTitle: "Next Resets",
+            systemImageName: "arrow.circlepath"
+        )
+        AppShortcut(
+            intent: OpenAccountIntent(),
+            phrases: ["Open \(\.$account) in \(.applicationName)"],
+            shortTitle: "Open Account",
+            systemImageName: "person.crop.circle"
+        )
     }
 }
 
@@ -68,5 +86,36 @@ enum UsageSummary {
             return model.accounts.count > 1 ? "\(usage.account.displayName): \(values.joined(separator: ", "))" : values.joined(separator: ", ")
         }
         return lines.isEmpty ? String(localized: "AIMeter: no usage data yet") : lines.joined(separator: ". ")
+    }
+
+    /// One account's windows with their figures: "Work: Session 42% used,
+    /// Week 18% used".
+    @MainActor
+    static func figures(accountID: String, in model: UsageModel) -> String {
+        guard let usage = model.usage(for: accountID), let snapshot = usage.snapshot else {
+            return String(localized: "AIMeter: no usage data yet")
+        }
+        let mode = Preferences.load().displayMode
+        let values = snapshot.windows.map { "\($0.shortTitle) \(Int($0.displayedPct(mode)))% \(mode.label.lowercased())" }
+        return "\(usage.account.displayName): \(values.joined(separator: ", "))"
+    }
+
+    /// When each of one account's windows resets: "Work: Session resets
+    /// in 2h 10m. Week resets in 3d 4h." A window with no reset ahead (an
+    /// idle session) is left out.
+    @MainActor
+    static func resets(accountID: String, in model: UsageModel, now: Date = Date()) -> String {
+        guard let usage = model.usage(for: accountID), let snapshot = usage.snapshot else {
+            return String(localized: "AIMeter: no usage data yet")
+        }
+        let lines = snapshot.windows.compactMap { window -> String? in
+            guard let resetsAt = window.resetsAt, resetsAt > now else { return nil }
+            let value = UsageFormatting.resetValue(for: resetsAt, style: .relative, now: now)
+            return String(localized: "\(window.shortTitle) resets in \(value).")
+        }
+        guard !lines.isEmpty else {
+            return String(localized: "\(usage.account.displayName): no reset ahead.")
+        }
+        return "\(usage.account.displayName): \(lines.joined(separator: " "))"
     }
 }
