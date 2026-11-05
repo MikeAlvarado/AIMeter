@@ -1050,8 +1050,8 @@
     only its default in this panel on macOS 27). Under them, while any
     Claude Code session is shown, `SessionsSection`: the session in the
     sneak as a card (`SessionCard`, `NotchIslandSessionCard.swift`: its
-    row, the turn's timer, a headline of what it does now, six segments, the three steps before it in a
-    window of fixed height and a footer of fixed height: the progress,
+    row, the turn's timer, a headline of what it does now, six segments, the steps before it, up to
+    three, taking the room they need, and a footer of fixed height: the progress,
     Stop or Approve and Deny with "Answer from the island" on, "Done in
     13s · 6 edits", and "Open in Claude Work"; see "Claude Code
     sessions" in the repo-root CLAUDE.md; pinned to its session while
@@ -1063,26 +1063,32 @@
     `HooksInvitation` line (Install / Not now). `maxBodyHeight` (620) is
     sized for four accounts, the incident notice, five sessions and the
     footer.
-  - The accounts are one set of columns (`AccountGrid`,
-    `NotchIslandRows.swift`, laid out by `IslandColumns`,
-    `NotchIslandColumns.swift`): per account a divider, the header, a
-    line of figures (`SegmentText`, the separators between them) and a
-    line of bars (`SegmentBar`), and a status line, each view tagged with
-    its line and its cell (`islandCell`: a span across the width, or a
-    figure, a separator or a bar in a column). Each column is as wide as
-    its widest figure; the layout's ideal width is the columns with 10 pt
-    either side of each separator, and offered more, the separators share
-    the extra evenly (`IslandColumns.Metrics`), so the first column sits
-    on the left edge and the last ends on the right one; offered less, it
-    keeps its ideal width and `ViewThatFits` picks a smaller size: 12, 11
-    and 10 pt. A custom layout and not a SwiftUI `Grid`, which is what it
-    was until 3.2.0: with its separator columns flexible, a `Grid`
-    holding an account of two windows beside one of three laid out wider
-    than it was offered (measured: 341 pt ideal, 451 pt for the 366
-    offered, 705 for 1000) and the island cut both ends of every line;
-    before that, flexible cells of its own had split its width into equal
-    columns and pushed it 13 pt past the edge. `NotchIslandColumnsTests`
-    renders the screenshot's two accounts and checks the width. One inset, `ExpandedContent.horizontalPadding`
+  - The accounts (`AccountGrid`, `NotchIslandRows.swift`, laid out by
+    `IslandColumns`, `NotchIslandColumns.swift`): per account a divider,
+    the header, a line of figures (`SegmentText`, the separators between
+    them), a line of bars (`SegmentBar`) and a status line, each view
+    tagged with its line and its cell (`islandCell`: a span across the
+    width, or a figure, a separator or a bar in cell n of the account's
+    count). An
+    account's cells are one width and share its line edge to edge with
+    8 pt, the separator and 8 pt between every two
+    (`IslandColumns.Metrics`), so two windows are two halves and three
+    are three thirds, the bars equally wide and equally spaced (Mike,
+    2026-11-05; shared columns across accounts had left an account with
+    no session starting a column late). The layout's ideal width is the
+    narrowest that gives every cell its widest figure; offered less, it
+    keeps it and `ViewThatFits` takes the short form for the whole
+    island (`Segment.shortReset`: the countdown in place of the clock
+    time, the amount spent alone in place of credits' "of $25.00"), at
+    the same 12 pt and with the same names; the 600 pt island
+    (`NotchIslandGeometry.expandedWidth`) is what makes the countdown fit
+    in every language. A custom
+    layout and not a SwiftUI `Grid`, which is what it was until 3.2.0:
+    with its separator columns flexible, a `Grid` laid out wider than it
+    was offered (measured: 451 pt for the 366 offered) and the island cut
+    both ends of every line. `NotchIslandColumnsTests` checks the cells'
+    arithmetic and renders the screenshot's two accounts inside the width.
+    One inset, `ExpandedContent.horizontalPadding`
     (18 pt), gives the header's wings, the accounts, the sessions and the
     footer the same two edges; the footer draws its outer icons against
     them.

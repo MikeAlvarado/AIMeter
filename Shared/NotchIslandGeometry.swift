@@ -121,7 +121,12 @@ enum NotchIslandGeometry {
     /// (width and height), before any peek: the hint that it is alive.
     static let hoverFlap = CGSize(width: 10, height: 3)
     /// The expanded island's minimum width; wider when the wings need it.
-    static let expandedWidth: CGFloat = 440
+    /// 600 gives each of three windows about 160 pt: a clock time on one
+    /// line at 12 pt on most days ("Fable 6% ↻Sun 9:09 AM", 148), and the
+    /// countdown the island falls back to always, in every language
+    /// (German's "Fable 100% ↻6 T 23 Std" is the widest, 155). 440 left
+    /// 114, where a clock time didn't fit even at 10 pt (Mike, 2026-11-05).
+    static let expandedWidth: CGFloat = 600
     /// The widest a wing is allowed to be, and the tallest the expanded
     /// body: not limits the content is laid out against, but what the
     /// fixed window is sized to hold. Content past them is clipped by the

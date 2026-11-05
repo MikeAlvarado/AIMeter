@@ -7,10 +7,11 @@ import UsageKit
 /// accent, flashing when the user clicks another session into it): its name, how long its turn has run, what it is
 /// doing right now in large type, six segments, the steps before it and a
 /// footer with what the user can do (see "Claude Code sessions" in the
-/// repo-root CLAUDE.md). Every part keeps one size whatever it holds, so
-/// nothing in the island moves as a step is added: the window holds three
-/// steps, the new one rolls in at the bottom and the oldest leaves at the
-/// top, and the footer is one height for a line or for buttons. In demo
+/// repo-root CLAUDE.md). The steps take the room they need, up to three:
+/// past that the new one rolls in at the bottom and the oldest leaves at
+/// the top, so the card stops growing; three rows held open from the start
+/// left a hole under a turn's first step (Mike, 2026-11-05). The footer is
+/// one height for a line or for buttons. In demo
 /// mode its buttons act on the demo's sessions (`DemoSessions`).
 struct SessionCard: View {
     let row: NotchIslandModel.Sessions.Row
@@ -57,7 +58,9 @@ struct SessionCard: View {
             header
             nowLine
             SegmentStrip(segments: turn.segments)
-            steps
+            if !turn.history.isEmpty {
+                steps
+            }
             footer
         }
         .padding(12)
@@ -194,8 +197,6 @@ struct SessionCard: View {
                     .transition(stepTransition)
             }
         }
-        .frame(height: Self.stepHeight * CGFloat(NotchIslandModel.Sessions.Turn.shownSteps)
-            + Self.stepSpacing * CGFloat(NotchIslandModel.Sessions.Turn.shownSteps - 1), alignment: .top)
         .clipped()
         .animation(reduceMotion ? nil : .smooth(duration: 0.45), value: turn.history.map(\.id))
     }

@@ -165,6 +165,12 @@ extension SpendStatus {
         let limitText = limit.formatted(.currency(code: code))
         return String(localized: "\(usedText) of \(limitText)")
     }
+
+    /// "$14.27": what was spent, alone, for a line with no room for the
+    /// limit too (the expanded island's short reset).
+    var usedAmountLabel: String? {
+        usedAmount.map { $0.formatted(.currency(code: currency ?? "USD")) }
+    }
 }
 
 extension UsageWindow {

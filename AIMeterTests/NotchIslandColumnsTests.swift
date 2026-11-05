@@ -4,33 +4,42 @@ import SwiftUI
 import UsageKit
 @testable import AIMeter
 
-/// The expanded island's columns (`IslandColumns`): the gaps' arithmetic,
+/// The expanded island's account lines (`IslandColumns`): equal cells,
 /// and that the account rows never lay out wider than the island offers,
 /// with the figures of Mike's screenshot of 3.2.0 (2026-10-20), where a
 /// `Grid` took 451 pt of the 366 offered and the island cut both ends.
 @MainActor
 final class NotchIslandColumnsTests: XCTestCase {
-    func testTheSeparatorsShareTheSpareWidthAndTheLastColumnEndsAtTheEdge() {
-        let metrics = IslandColumns.Metrics(columnWidths: [66, 84, 96], separatorWidth: 7)
-        XCTAssertEqual(metrics.fixed, 260)
-        XCTAssertEqual(metrics.ideal(minimumGap: 10), 300)
-        XCTAssertEqual(metrics.width(offered: 366, minimumGap: 10), 366)
-        XCTAssertEqual(metrics.width(offered: 280, minimumGap: 10), 300, "offered less, the ideal")
-        XCTAssertEqual(metrics.width(offered: nil, minimumGap: 10), 300)
-        XCTAssertEqual(metrics.width(offered: .infinity, minimumGap: 10), 300)
+    /// Two cells or three, each line is shared edge to edge by cells of one
+    /// width with one gap and a separator between them (Mike, 2026-11-05).
+    func testAnAccountsCellsAreEquallyWideAndEquallySpaced() {
+        let metrics = IslandColumns.Metrics(widest: [2: 120, 3: 96], separatorWidth: 7, gap: 8)
+        // Between two cells: 8 + 7 + 8 = 23.
+        XCTAssertEqual(metrics.ideal, 3 * 96 + 2 * 23, "the line of three is the widest need")
+        XCTAssertEqual(metrics.width(offered: 366), 366)
+        XCTAssertEqual(metrics.width(offered: 300), metrics.ideal, "offered less, the ideal")
+        XCTAssertEqual(metrics.width(offered: nil), metrics.ideal)
 
-        let x = metrics.columnX(width: 366, minimumGap: 10)
-        XCTAssertEqual(x.columns[0], 0)
-        XCTAssertEqual(x.separators[1], 66 + 26.5)
-        XCTAssertEqual(x.columns[1], 66 + 26.5 + 7 + 26.5)
-        XCTAssertEqual(x.columns[2] + 96, 366, accuracy: 0.001, "the last column ends at the right edge")
-        XCTAssertEqual(x.separators[2] - (x.columns[1] + 84), x.columns[2] - (x.separators[2] + 7), accuracy: 0.001, "even gaps")
+        for count in [2, 3] {
+            let cell = metrics.cellWidth(of: count, width: 366)
+            let starts = (0..<count).map { metrics.cellX($0, of: count, width: 366) }
+            XCTAssertEqual(starts.first, 0)
+            XCTAssertEqual(starts.last! + cell, 366, accuracy: 0.001, "the last cell ends at the right edge")
+            for index in 1..<count {
+                XCTAssertEqual(starts[index] - (starts[index - 1] + cell), 23, accuracy: 0.001, "one gap between every two")
+                let separator = metrics.separatorX(index, of: count, width: 366)
+                XCTAssertEqual(separator - (starts[index - 1] + cell), starts[index] - (separator + 7), accuracy: 0.001, "the separator centred")
+            }
+        }
+        XCTAssertEqual(metrics.cellWidth(of: 2, width: 366), (366 - 23) / 2)
+        XCTAssertEqual(metrics.cellWidth(of: 3, width: 366), (366 - 46) / 3)
     }
 
-    func testOneColumnHasNoGap() {
-        let metrics = IslandColumns.Metrics(columnWidths: [80], separatorWidth: 0)
-        XCTAssertEqual(metrics.ideal(minimumGap: 10), 80)
-        XCTAssertEqual(metrics.columnX(width: 366, minimumGap: 10).columns, [0])
+    func testOneCellTakesTheWholeLine() {
+        let metrics = IslandColumns.Metrics(widest: [1: 80], separatorWidth: 0, gap: 8)
+        XCTAssertEqual(metrics.ideal, 80)
+        XCTAssertEqual(metrics.cellWidth(of: 1, width: 366), 366)
+        XCTAssertEqual(metrics.cellX(0, of: 1, width: 366), 0)
     }
 
     func testTheRowsOfTwoAccountsWithTwoAndThreeWindowsStayInsideTheIsland() throws {

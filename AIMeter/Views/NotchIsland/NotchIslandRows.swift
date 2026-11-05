@@ -62,41 +62,47 @@ struct ExpandedContent: View {
     }
 }
 
-/// Every account in one set of columns, so their windows sit in the same
-/// columns with the same gap between them, whatever each one reports,
-/// and the rows spanning the island edge to edge: the separators share
-/// the spare width evenly, so the first column starts at the body's left
-/// edge and the last ends at its right one, where the sessions, the
-/// dividers and the footer start and end. Each figure column is as wide
-/// as its widest figures, and every bar in a column has that column's
-/// width. Headers, dividers and status lines span the width. The figures
-/// are 12 pt; when they would not fit the island's width, 11, then 10.
-/// With two or more accounts, a click anywhere on one puts its figures in
-/// the sneak (and the menu bar's), and the one there now has its header
-/// marked. Laid out by `IslandColumns`, not a SwiftUI `Grid`: a `Grid`
-/// whose separator columns were the flexible ones laid out wider than
-/// the island it was offered (measured: 451 pt for 366 offered, with one
-/// account of two windows beside one of three), and the island clipped
-/// both ends of every line (3.2.0).
+/// Every account's windows in cells of one width that share its line
+/// edge to edge, one gap and a separator between them, so its bars are
+/// equally wide and equally spaced whether it reports two windows or three
+/// (Mike, 2026-11-05: an earlier grid put every account in shared columns,
+/// and an account with no session, Ultra, then began a column late). The
+/// rows span the island edge to edge, where the sessions, the dividers and
+/// the footer start and end. A window's figures and its reset are always
+/// one line at 12 pt, the name in full (Mike, 2026-11-05: no reset under
+/// the bar, no smaller size, no shortened name): in the absolute style the
+/// clock time when every line holds it, else the island shows the
+/// countdown ("↻2d 16h"), which fits in every language
+/// (`NotchIslandGeometry.expandedWidth`); credits' amount, shown in full
+/// when it fits, falls back to the amount spent alone. Headers, dividers and status lines
+/// span the width. With two or more accounts, a click anywhere on one
+/// puts its figures in the sneak (and the menu bar's), and the one there
+/// now has its header marked. Laid out by `IslandColumns`, not a SwiftUI
+/// `Grid`: a `Grid` whose separator columns were the flexible ones laid
+/// out wider than the island it was offered (measured: 451 pt for 366
+/// offered), and the island clipped both ends of every line (3.2.0).
 struct AccountGrid: View {
     let accounts: [NotchIslandModel.Account]
     /// The account the sneak shows.
     var primaryID: String?
 
     var body: some View {
+        // One line per account at one size, the reset beside its figure:
+        // the clock time when every line holds it, else the short form
+        // (the countdown, or credits' amount spent), for the whole island
+        // at once.
         ViewThatFits(in: .horizontal) {
-            columns(scale: 1)
-            columns(scale: 11 / 12)
-            columns(scale: 10 / 12)
+            columns(shortReset: false)
+            columns(shortReset: true)
         }
     }
 
-    private func columns(scale: CGFloat) -> some View {
-        let columns = accounts.map(\.segments.count).max() ?? 0
+    private func columns(shortReset: Bool) -> some View {
         let picks = accounts.count > 1
-        return IslandColumns(columns: columns, minimumGap: 10) {
+        return IslandColumns(gap: 8) {
             ForEach(Array(accounts.enumerated()), id: \.element.id) { index, account in
                 let line = index * IslandColumns.linesPerAccount
+                let count = account.segments.count
                 if index > 0 {
                     Rectangle().fill(NotchIslandStyle.hairline).frame(height: 1)
                         .padding(.vertical, 12)
@@ -105,23 +111,23 @@ struct AccountGrid: View {
                 AccountHeader(account: account, isSelected: picks && account.id == primaryID, isPickable: picks)
                     .padding(.bottom, 10)
                     .islandCell(.span, line: line + 1)
-                ForEach(Array(account.segments.enumerated()), id: \.offset) { column, segment in
-                    if column > 0 {
+                ForEach(Array(account.segments.enumerated()), id: \.offset) { cell, segment in
+                    if cell > 0 {
                         Text(verbatim: "|")
-                            .font(NotchIslandStyle.font(12 * scale))
+                            .font(NotchIslandStyle.font(12))
                             .foregroundStyle(NotchIslandStyle.separator)
                             .picksAccount(account.id, if: picks)
-                            .islandCell(.separator(column), line: line + 2)
+                            .islandCell(.separator(cell, of: count), line: line + 2)
                     }
-                    SegmentText(segment: segment, compact: false, scale: scale)
+                    SegmentText(segment: segment, compact: false, shortReset: shortReset)
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel(segment.accessibilityLabel)
                         .picksAccount(account.id, if: picks)
-                        .islandCell(.segment(column), line: line + 2)
+                        .islandCell(.segment(cell, of: count), line: line + 2)
                     SegmentBar(segment: segment)
                         .padding(.top, 4)
                         .picksAccount(account.id, if: picks)
-                        .islandCell(.bar(column), line: line + 3)
+                        .islandCell(.bar(cell, of: count), line: line + 3)
                 }
                 if account.status != .fresh {
                     AccountStatusLine(account: account)

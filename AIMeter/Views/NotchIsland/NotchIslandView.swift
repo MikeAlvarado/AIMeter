@@ -117,6 +117,8 @@ struct NotchIslandRoot: View {
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.count)
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.sessions.lead?.id)
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: island.primaryID)
+        // A card growing by a step: the slab grows with it.
+        .animation(reduceMotion ? nil : .smooth(duration: 0.45), value: island.sessions.rows.map { $0.turn?.history.count ?? 0 })
         .animation(reduceMotion ? nil : .spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0), value: state.availableWing)
         .contentShape(Rectangle())
         .onHover(perform: actions.hover)

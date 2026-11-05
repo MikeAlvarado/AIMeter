@@ -1,6 +1,63 @@
 {
   "releases": [
     {
+      "version": "4.4.1",
+      "items": [
+        {
+          "symbol": "rectangle.split.3x1",
+          "platforms": [
+            "macOS"
+          ],
+          "title": {
+            "en": "The island in even columns",
+            "es": "La isla en columnas iguales",
+            "de": "Die Insel in gleichen Spalten",
+            "fr": "L’îlot en colonnes égales",
+            "ja": "アイランドを均等な列に",
+            "ko": "아일랜드를 같은 너비의 열로",
+            "pt-BR": "A ilha em colunas iguais",
+            "zh-Hans": "刘海岛按等宽列排列"
+          },
+          "detail": {
+            "en": "Open the notch island and each account's limits share its line in equal parts, two or three, each bar as wide as the next, with every reset beside its figure on one line. When a time of day wouldn't fit, the island shows the countdown instead.",
+            "es": "Abre la isla del notch y los límites de cada cuenta se reparten su línea en partes iguales, dos o tres, cada barra tan ancha como la siguiente, con cada reinicio junto a su cifra en una sola línea. Cuando una hora no cabe, la isla muestra la cuenta regresiva.",
+            "de": "Öffne die Notch-Insel, und die Limits jedes Accounts teilen sich seine Zeile in gleiche Teile, zwei oder drei, jeder Balken so breit wie der nächste, jedes Zurücksetzen in einer Zeile neben seiner Zahl. Passt eine Uhrzeit nicht hinein, zeigt die Insel stattdessen den Countdown.",
+            "fr": "Ouvrez l’îlot de l’encoche : les limites de chaque compte se partagent sa ligne en parts égales, deux ou trois, chaque barre aussi large que la suivante, chaque réinitialisation à côté de son chiffre sur une seule ligne. Quand une heure ne tient pas, l’îlot affiche le compte à rebours.",
+            "ja": "ノッチアイランドを開くと、各アカウントの上限がその行を2つまたは3つの等しい幅で分け合い、バーはすべて同じ幅になり、リセットは数値の横に1行で表示されます。時刻が収まらないときは、代わりに残り時間を表示します。",
+            "ko": "노치 아일랜드를 열면 각 계정의 한도가 그 줄을 두 개 또는 세 개의 같은 너비로 나누어 막대가 모두 같은 너비가 되고, 재설정 시각은 숫자 옆에 한 줄로 표시됩니다. 시각이 들어가지 않을 때는 남은 시간을 대신 보여 줍니다.",
+            "pt-BR": "Abra a ilha do notch e os limites de cada conta dividem a linha em partes iguais, duas ou três, cada barra tão larga quanto a seguinte, com cada reinício ao lado do número em uma só linha. Quando um horário não cabe, a ilha mostra a contagem regressiva.",
+            "zh-Hans": "打开刘海岛，每个账户的限制会把一行平均分成两份或三份，每条进度条宽度相同，每个重置时间都在数字旁边单行显示。时间放不下时，刘海岛会改为显示倒计时。"
+          }
+        },
+        {
+          "symbol": "list.bullet.rectangle",
+          "platforms": [
+            "macOS"
+          ],
+          "title": {
+            "en": "A session card that fits its steps",
+            "es": "Una tarjeta de sesión a la medida",
+            "de": "Eine Sitzungskarte, die zu ihren Schritten passt",
+            "fr": "Une carte de session à la taille de ses étapes",
+            "ja": "ステップに合わせたセッションカード",
+            "ko": "단계에 맞춘 세션 카드",
+            "pt-BR": "Um cartão de sessão do tamanho das etapas",
+            "zh-Hans": "贴合步骤的会话卡片"
+          },
+          "detail": {
+            "en": "A session's card in the island takes only the room its steps need, with no empty rows at the start of a turn. A session in a worktree goes by its repository's name.",
+            "es": "La tarjeta de una sesión en la isla ocupa solo el espacio que necesitan sus pasos, sin filas vacías al empezar un turno. Una sesión en un worktree se llama como su repositorio.",
+            "de": "Die Karte einer Sitzung in der Insel nimmt nur so viel Platz ein, wie ihre Schritte brauchen, ohne leere Zeilen am Anfang eines Durchgangs. Eine Sitzung in einem Worktree heißt wie ihr Repository.",
+            "fr": "La carte d’une session dans l’îlot ne prend que la place dont ses étapes ont besoin, sans lignes vides au début d’un tour. Une session dans un worktree porte le nom de son dépôt.",
+            "ja": "アイランドのセッションカードはステップに必要な分だけの高さになり、ターンの始めに空の行が出なくなりました。worktreeのセッションはリポジトリの名前で表示されます。",
+            "ko": "아일랜드의 세션 카드는 단계에 필요한 만큼만 공간을 차지해, 턴이 시작될 때 빈 줄이 생기지 않습니다. worktree의 세션은 저장소 이름으로 표시됩니다.",
+            "pt-BR": "O cartão de uma sessão na ilha ocupa só o espaço que as etapas precisam, sem linhas vazias no começo de uma rodada. Uma sessão em um worktree leva o nome do repositório.",
+            "zh-Hans": "刘海岛中的会话卡片只占用步骤所需的空间，一轮开始时不再出现空行。worktree 中的会话会以其仓库名称显示。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.4.0",
       "items": [
         {

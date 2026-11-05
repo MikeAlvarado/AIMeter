@@ -254,6 +254,9 @@ struct SegmentText: View {
     let segment: NotchIslandModel.Segment
     var compact: Bool
     var scale: CGFloat = 1
+    /// The countdown in place of the clock time, when the expanded
+    /// island's line wouldn't hold the time.
+    var shortReset = false
 
     var body: some View {
         HStack(spacing: 4) {
@@ -261,7 +264,7 @@ struct SegmentText: View {
                 .foregroundStyle(NotchIslandStyle.label)
             Text(segment.percent)
                 .foregroundStyle(NotchIslandStyle.tint(segment.tint))
-            if !compact, let reset = segment.reset {
+            if !compact, let reset = shortReset ? (segment.shortReset ?? segment.reset) : segment.reset {
                 // The reset glyph says what the third figure is: a
                 // time until the window turns over, not more usage.
                 Text(verbatim: "↻\(reset)")

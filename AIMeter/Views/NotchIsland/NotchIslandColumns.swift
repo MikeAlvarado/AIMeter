@@ -1,13 +1,14 @@
 #if os(macOS)
 import SwiftUI
 
-/// Where a view of `IslandColumns` goes: across the whole width, or in a
-/// column (a figure, the bar under it, or the separator before it).
+/// Where a view of `IslandColumns` goes: across the whole width, or in one
+/// of an account's cells (`of` of them on its line): its figures, the
+/// separator before them, or the bar under them.
 nonisolated enum IslandCell: Equatable {
     case span
-    case segment(Int)
-    case separator(Int)
-    case bar(Int)
+    case segment(Int, of: Int)
+    case separator(Int, of: Int)
+    case bar(Int, of: Int)
 }
 
 nonisolated private struct IslandCellKey: LayoutValueKey {
@@ -25,32 +26,32 @@ extension View {
     }
 }
 
-/// The expanded island's columns: lines stacked top to bottom (by their
-/// `islandCell` line), a span line across the whole width, the others in
-/// columns as wide as their widest figure. Its ideal width is the columns
-/// with `minimumGap` either side of each separator, what `ViewThatFits`
-/// measures to pick a size; offered more, the separators share the extra
-/// evenly, so the last column ends at the right edge; offered less, it
-/// keeps its ideal width (the smaller sizes are there for that).
+/// The expanded island's account lines, stacked top to bottom (by their
+/// `islandCell` line): a span line across the whole width, and an
+/// account's figures in cells of one width that share the line edge to
+/// edge with one gap between them, so its bars are equally wide and
+/// equally spaced whether it reports two windows or three (Mike,
+/// 2026-11-05). Its ideal width is the narrowest that gives every cell
+/// its widest figure, what `ViewThatFits` measures to pick a size;
+/// offered more, the cells grow; offered less, it keeps its ideal width
+/// (the countdown in place of the clock time is there for that).
 nonisolated struct IslandColumns: Layout {
     /// The lines one account can take: divider, header, figures, bars,
     /// status line.
     static let linesPerAccount = 5
 
-    let columns: Int
-    let minimumGap: CGFloat
+    let gap: CGFloat
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let metrics = Metrics(columns: columns, subviews: subviews)
-        let width = metrics.width(offered: proposal.width, minimumGap: minimumGap)
+        let metrics = Metrics(subviews: subviews, gap: gap)
+        let width = metrics.width(offered: proposal.width)
         let height = lines(of: subviews).reduce(0) { $0 + height(of: $1, in: subviews, metrics: metrics, width: width) }
         return CGSize(width: width, height: height)
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let metrics = Metrics(columns: columns, subviews: subviews)
-        let width = metrics.width(offered: bounds.width, minimumGap: minimumGap)
-        let x = metrics.columnX(width: width, minimumGap: minimumGap)
+        let metrics = Metrics(subviews: subviews, gap: gap)
+        let width = metrics.width(offered: bounds.width)
         var y = bounds.minY
         for line in lines(of: subviews) {
             for index in line {
@@ -58,14 +59,14 @@ nonisolated struct IslandColumns: Layout {
                 switch subview[IslandCellKey.self] {
                 case .span:
                     subview.place(at: CGPoint(x: bounds.minX, y: y), proposal: ProposedViewSize(width: width, height: nil))
-                case .segment(let column):
-                    subview.place(at: CGPoint(x: bounds.minX + x.columns[column], y: y), proposal: .unspecified)
-                case .separator(let column):
-                    subview.place(at: CGPoint(x: bounds.minX + x.separators[column], y: y), proposal: .unspecified)
-                case .bar(let column):
+                case .segment(let cell, let count):
+                    subview.place(at: CGPoint(x: bounds.minX + metrics.cellX(cell, of: count, width: width), y: y), proposal: .unspecified)
+                case .separator(let cell, let count):
+                    subview.place(at: CGPoint(x: bounds.minX + metrics.separatorX(cell, of: count, width: width), y: y), proposal: .unspecified)
+                case .bar(let cell, let count):
                     subview.place(
-                        at: CGPoint(x: bounds.minX + x.columns[column], y: y),
-                        proposal: ProposedViewSize(width: metrics.columnWidths[column], height: nil)
+                        at: CGPoint(x: bounds.minX + metrics.cellX(cell, of: count, width: width), y: y),
+                        proposal: ProposedViewSize(width: metrics.cellWidth(of: count, width: width), height: nil)
                     )
                 }
             }
@@ -86,73 +87,68 @@ nonisolated struct IslandColumns: Layout {
             switch subview[IslandCellKey.self] {
             case .span: return subview.sizeThatFits(ProposedViewSize(width: width, height: nil)).height
             case .segment, .separator: return subview.sizeThatFits(.unspecified).height
-            case .bar(let column): return subview.sizeThatFits(ProposedViewSize(width: metrics.columnWidths[column], height: nil)).height
+            case .bar(_, let count): return subview.sizeThatFits(ProposedViewSize(width: metrics.cellWidth(of: count, width: width), height: nil)).height
             }
         }.max() ?? 0
     }
 
-    /// The columns' widths and the separators', from the figures' own.
+    /// The widest figure a cell holds and the separator's width, from
+    /// which every line's cells are laid out.
     struct Metrics {
-        var columnWidths: [CGFloat]
-        var separatorWidth: CGFloat = 0
+        /// The widest content of a cell on a line of `count` cells, by count.
+        var widest: [Int: CGFloat]
+        var separatorWidth: CGFloat
+        let gap: CGFloat
 
-        init(columns: Int, subviews: Subviews) {
-            columnWidths = Array(repeating: 0, count: columns)
+        init(subviews: Subviews, gap: CGFloat) {
+            var widest: [Int: CGFloat] = [:]
+            var separatorWidth: CGFloat = 0
             for subview in subviews {
                 switch subview[IslandCellKey.self] {
-                case .segment(let column) where columnWidths.indices.contains(column):
-                    columnWidths[column] = max(columnWidths[column], subview.sizeThatFits(.unspecified).width)
+                case .segment(_, let count):
+                    widest[count] = max(widest[count] ?? 0, subview.sizeThatFits(.unspecified).width)
                 case .separator:
                     separatorWidth = max(separatorWidth, subview.sizeThatFits(.unspecified).width)
                 default:
                     break
                 }
             }
+            self.init(widest: widest, separatorWidth: separatorWidth, gap: gap)
         }
 
-        init(columnWidths: [CGFloat], separatorWidth: CGFloat) {
-            self.columnWidths = columnWidths
+        init(widest: [Int: CGFloat], separatorWidth: CGFloat, gap: CGFloat) {
+            self.widest = widest
             self.separatorWidth = separatorWidth
+            self.gap = gap
         }
 
-        /// The figures and the separators, no gap.
-        var fixed: CGFloat {
-            columnWidths.reduce(0, +) + separatorWidth * CGFloat(max(0, columnWidths.count - 1))
+        /// Between two cells: a gap, the separator, a gap.
+        private var between: CGFloat { separatorWidth + 2 * gap }
+
+        /// The narrowest width that gives every cell its widest content.
+        var ideal: CGFloat {
+            widest.map { count, width in CGFloat(count) * width + CGFloat(count - 1) * between }.max() ?? 0
         }
 
-        /// The gaps there are: one either side of each separator.
-        var gaps: Int { 2 * max(0, columnWidths.count - 1) }
-
-        func ideal(minimumGap: CGFloat) -> CGFloat {
-            fixed + CGFloat(gaps) * minimumGap
-        }
-
-        /// The width taken: what is offered when that is more than the
-        /// ideal (the gaps grow), else the ideal.
-        func width(offered: CGFloat?, minimumGap: CGFloat) -> CGFloat {
-            let ideal = ideal(minimumGap: minimumGap)
+        /// What is offered when that is more than the ideal, else the ideal.
+        func width(offered: CGFloat?) -> CGFloat {
             guard let offered, offered.isFinite, offered > ideal else { return ideal }
             return offered
         }
 
-        /// Where each column and each separator starts, for `width`.
-        func columnX(width: CGFloat, minimumGap: CGFloat) -> (columns: [CGFloat], separators: [CGFloat]) {
-            let gap = gaps > 0 ? max(minimumGap, (width - fixed) / CGFloat(gaps)) : 0
-            var columns: [CGFloat] = []
-            var separators: [CGFloat] = []
-            var x: CGFloat = 0
-            for (index, columnWidth) in columnWidths.enumerated() {
-                if index > 0 {
-                    x += gap
-                    separators.append(x)
-                    x += separatorWidth + gap
-                } else {
-                    separators.append(0)
-                }
-                columns.append(x)
-                x += columnWidth
-            }
-            return (columns, separators)
+        /// The width of each of `count` cells sharing `width`.
+        func cellWidth(of count: Int, width: CGFloat) -> CGFloat {
+            guard count > 0 else { return width }
+            return (width - CGFloat(count - 1) * between) / CGFloat(count)
+        }
+
+        func cellX(_ cell: Int, of count: Int, width: CGFloat) -> CGFloat {
+            CGFloat(cell) * (cellWidth(of: count, width: width) + between)
+        }
+
+        /// The separator before `cell`, in the middle of the space between.
+        func separatorX(_ cell: Int, of count: Int, width: CGFloat) -> CGFloat {
+            cellX(cell, of: count, width: width) - gap - separatorWidth
         }
     }
 }

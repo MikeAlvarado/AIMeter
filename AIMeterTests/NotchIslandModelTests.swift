@@ -128,6 +128,18 @@ final class NotchIslandModelTests: XCTestCase {
         XCTAssertTrue(NotchIslandModel.resetValue(for: monday.addingTimeInterval(7 * day), style: .absolute, now: monday).contains("26"))
     }
 
+    /// The expanded island's short form, for a line that won't hold the
+    /// clock time: the countdown whatever the style, credits' amount spent.
+    func testShortResetIsTheCountdownOrTheAmountSpent() {
+        let absolute = segments(make(resetStyle: .absolute))
+        XCTAssertEqual(absolute[0].shortReset, "1h 20m")
+        XCTAssertEqual(absolute[1].shortReset, "3d")
+        let credits = segments(make([input(snapshot: snapshot(model: false, credits: true, amounts: true))], fallback: .credits, showCreditsAmount: true))
+        XCTAssertEqual(credits[2].shortReset, (3.0).formatted(.currency(code: "USD")))
+        XCTAssertNotEqual(credits[2].reset, credits[2].shortReset, "the full line keeps the limit")
+        XCTAssertNil(make(resetStyle: .absolute).collapsed.left.first?.shortReset, "the wings show no reset")
+    }
+
     func testResetValuesFollowTheResetStyle() {
         XCTAssertEqual(segments(make())[0].reset, "1h 20m")
         XCTAssertEqual(segments(make())[1].reset, "3d")

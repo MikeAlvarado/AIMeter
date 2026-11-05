@@ -59,6 +59,10 @@ struct NotchIslandModel: Equatable {
         /// `ResetStyle`; a credits slot shows "$14.27 of $25.00" instead
         /// when `showCreditsAmount` is on; nil when there is nothing to say.
         let reset: String?
+        /// The short form the expanded island falls back to when a line
+        /// won't hold `reset`: the bare countdown whatever `ResetStyle`
+        /// says, or the amount spent alone for credits ("$14.27").
+        var shortReset: String? = nil
         let tint: Tint
         /// "Session: 42% used, resets in 2h 58m" — the spoken form.
         let accessibilityLabel: String
@@ -241,16 +245,19 @@ struct NotchIslandModel: Equatable {
         // The wings show only the figure (no room, and no clock to tick it);
         // the spoken label keeps the reset either way.
         var reset: String?
+        var shortReset: String?
         if let resetsAt = window.resetsAt, resetsAt > now {
             reset = compact ? nil : resetValue(for: resetsAt, style: resetStyle, now: now)
+            shortReset = compact ? nil : resetValue(for: resetsAt, style: .relative, now: now)
             spoken += ", " + UsageFormatting.resetLabel(for: resetsAt, style: resetStyle, now: now)
         } else if kind == .credits, showCreditsAmount, let amount = snapshot?.spend?.amountLabel {
             reset = compact ? nil : amount
+            shortReset = compact ? nil : (snapshot?.spend?.usedAmountLabel ?? amount)
             spoken += ", " + amount
         }
         return Segment(
             kind: kind, label: label, percent: percent, fraction: min(max(shown / 100, 0), 1), reset: reset,
-            tint: window.level(usageColors: usageColors), accessibilityLabel: spoken
+            shortReset: shortReset, tint: window.level(usageColors: usageColors), accessibilityLabel: spoken
         )
     }
 

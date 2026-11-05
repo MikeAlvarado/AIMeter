@@ -47,6 +47,15 @@ final class ClaudeCodeSessionTests: XCTestCase {
         ClaudeCodeHookEvent(hookEventName: name, sessionId: session, agentId: agent, notificationType: notification)
     }
 
+    /// A worktree goes by its repository, not its generated name.
+    func testASessionsFolderNamesItsProject() {
+        XCTAssertEqual(ClaudeCodeSessionTracker.project(ofFolder: "/Users/me/dev/midflight"), "midflight")
+        XCTAssertEqual(ClaudeCodeSessionTracker.project(ofFolder: "/Users/me/dev/midflight/.claude/worktrees/agent-ab7cb383cb000bfc7"), "midflight")
+        XCTAssertEqual(ClaudeCodeSessionTracker.project(ofFolder: "/Users/me/dev/preride/.claude/worktrees/epic-bohr-ad1393"), "preride")
+        XCTAssertEqual(ClaudeCodeSessionTracker.project(ofFolder: "/Users/me/dev/midflight/.claude/worktrees/x/packages/web"), "midflight", "a subfolder of one too")
+        XCTAssertEqual(ClaudeCodeSessionTracker.project(ofFolder: "/Users/me/worktrees/thing"), "thing", "only Claude Code's own")
+    }
+
     func testOnlyTheShapeIsDecoded() {
         let record = line(toolUse(0))
         XCTAssertEqual(record.type, "assistant")

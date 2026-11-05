@@ -19,7 +19,8 @@ public struct ClaudeCodeSessionActivity: Sendable, Identifiable {
     /// and the one Claude generated.
     public var customTitle: String?
     public var aiTitle: String?
-    /// The folder the session works in, its last component.
+    /// The folder the session works in, its last component, or the
+    /// repository's for a worktree (`ClaudeCodeSessionTracker.project`).
     public var project: String?
     public var state: State
     /// The newest record or hook event seen for it.

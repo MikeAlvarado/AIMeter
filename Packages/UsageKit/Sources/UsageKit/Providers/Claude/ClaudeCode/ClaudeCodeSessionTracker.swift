@@ -24,7 +24,7 @@ public struct ClaudeCodeSessionTracker: Sendable {
         let agent = record.agentId ?? agentID ?? ""
         // A subagent may work in a worktree: the session's own folder names it.
         if agent.isEmpty, let cwd = record.cwd, !cwd.isEmpty {
-            session.project = (cwd as NSString).lastPathComponent
+            session.project = Self.project(ofFolder: cwd)
         }
         let effect = Self.effect(of: record, sidechain: !agent.isEmpty || record.isSidechain == true)
         if effect != .none {
@@ -53,6 +53,18 @@ public struct ClaudeCodeSessionTracker: Sendable {
         sessions[id] = session
     }
 
+    /// What a session's folder is called: its last component, or for a
+    /// worktree Claude Code made (`<repo>/.claude/worktrees/<name>`, a
+    /// generated name like `agent-ab7cb383cb000bfc7`), the repository's.
+    static func project(ofFolder path: String) -> String {
+        let parts = (path as NSString).pathComponents
+        if let worktrees = parts.lastIndex(of: "worktrees"), worktrees >= 2,
+           parts[worktrees - 1] == ".claude", worktrees + 1 < parts.count {
+            return parts[worktrees - 2]
+        }
+        return (path as NSString).lastPathComponent
+    }
+
     private static func unseen(_ id: String) -> ClaudeCodeSessionActivity {
         ClaudeCodeSessionActivity(id: id, state: .finished(at: .distantPast), lastActivity: .distantPast)
     }
@@ -68,7 +80,7 @@ public struct ClaudeCodeSessionTracker: Sendable {
         }
         var session = sessions[id] ?? Self.unseen(id)
         if event.agentId == nil, session.project == nil, let cwd = event.cwd, !cwd.isEmpty {
-            session.project = (cwd as NSString).lastPathComponent
+            session.project = Self.project(ofFolder: cwd)
         }
         switch event.hookEventName {
         case "UserPromptSubmit":

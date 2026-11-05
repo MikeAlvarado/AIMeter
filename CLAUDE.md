@@ -1357,7 +1357,9 @@ the account silently freezes at its last snapshot.
   figures alone: each pet shows once, in its session's row.
   Expanded, under the accounts, a "Claude Code" section lists up to
   five sessions, each with its pet (the title, else the folder; the
-  folder after a title) and "Working for 3m", "Needs permission" or
+  folder after a title; a worktree Claude Code made goes by its repository,
+  never its generated name like `agent-ab7c…`,
+  `ClaudeCodeSessionTracker.project(ofFolder:)`) and "Working for 3m", "Needs permission" or
   "Done 2m ago": active
   ones first by the start of their turn, then those that finished in
   the last ten minutes. The session in the sneak opens up into a card
@@ -1371,10 +1373,12 @@ the account silently freezes at its last snapshot.
   name and the turn's running time, a headline of what it does right
   now ("Running a command", "On this step for 1:26"; "Needs permission"
   with what it asks; "Finished", "Done in 13s · 6 edits"), six
-  segments, the three steps before the one under way (each with its
-  time; the headline is the one under way) and a footer, every part one fixed size so nothing
-  moves as a step is added (the window holds three, the new one rolls in
-  at the bottom and the oldest leaves at the top; the segment under way
+  segments, the steps before the one under way, up to three (each with its
+  time; the headline is the one under way) and a footer of one height. The
+  steps take the room they need, so the card grows through a turn's first
+  three steps and then stays one size, the new one rolling in at the bottom
+  and the oldest leaving at the top (three rows held open from the start
+  left a hole under the first step; Mike, 2026-11-05); the segment under way
   is the accent at 38 % with a light passing over it every 2.2 s, since
   no step's end can be known). A step is a kind of action from the
   names of the tools the turn calls (`ClaudeCodeTurn.Action`: thinking,
@@ -1842,12 +1846,22 @@ the account silently freezes at its last snapshot.
   the wings stay as the header, reaching out to the body's edges, and
   every account gets a row — identity header, the full line (label, percent, `↻` reset) with a 2 pt
   bar under each segment, and a status line only when there is one —
-  all accounts in one set of columns (`AccountGrid` over the
-  `IslandColumns` layout) spanning the island edge to edge, so their windows share columns, the gaps between them are
-  spread evenly and every bar in a column has that column's width; the
+  each account's windows in cells of one width sharing its line edge to
+  edge (`AccountGrid` over the `IslandColumns` layout), one gap and a
+  separator between every two, so its bars are equally wide and equally
+  spaced whether it reports two windows or three (Mike, 2026-11-05: a
+  version that put every account in shared columns left an account with
+  no session, Ultra, starting a column late); the
   header, the accounts, the sessions and the footer share one left and
-  one right edge (`ExpandedContent.horizontalPadding`). The figures
-  step down from 12 to 11, then 10 pt when the grid would not fit. The status line:
+  one right edge (`ExpandedContent.horizontalPadding`). The island is
+  600 pt wide open (`NotchIslandGeometry.expandedWidth`) and every line
+  stays one line at 12 pt with its names in full, the reset beside its
+  figure (Mike, 2026-11-05: no reset under the bar, no smaller size, no
+  shortened name): in the absolute style the clock time when every line
+  holds it, else the whole island shows the short form
+  (`Segment.shortReset`: the countdown, which fits in every language,
+  German's "Fable 100% ↻6 T 23 Std" the widest at 155 of about 160 pt,
+  or credits' amount spent alone, "$14.27"). The status line:
   "Updated 31 min ago" past `AppConfig.staleAfter`, the offline line, the
   "Sign in again" prompt (`AppChrome.connect(.reconnect)`), or the raw
   error — plus the incident notice while the provider reports one, and a
@@ -2227,7 +2241,8 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   what the user picks for its sneak, a newer permission prompt taking
   over, what a swipe turns through and how one counts
   (`NotchIslandPicksTests`), its account rows laid out inside the width
-  the island offers, the gaps shared evenly (`NotchIslandColumnsTests`),
+  the island offers, an account's cells equally wide and equally spaced,
+  two or three (`NotchIslandColumnsTests`),
   the drawn notch and the pill on a screen without one — heights, the
   pill's gap, radii, row scale, hover region, and their invariants swept
   over every menu bar height, custom height and form
