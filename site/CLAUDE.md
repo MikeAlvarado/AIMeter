@@ -13,7 +13,8 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
 ## Layout
 
 - `index.html` — meta tags (description, Open Graph with an absolute
-  `og.png`, Twitter card, `apple-itunes-app` Smart App Banner with the
+  `og.png` and an `og.mp4` that iMessage and other link previews play,
+  Twitter card, `apple-itunes-app` Smart App Banner with the
   App Store id, icons, manifest). `%VITE_BASE_PATH%` / `%VITE_SITE_URL%`
   come from `.env` at build time.
 - `src/main.tsx` → `App.tsx` (`MotionConfig reducedMotion="user"` →
@@ -203,7 +204,12 @@ analytics, no cookies, no CDN fonts), which the privacy page states.
   (Sunset, written by the repo's `Scripts/AppIcon/render.mjs`, which
   also writes `src/assets/app-icon.png`, the icon on the drawn alerts),
   `icon-192/512.png` + `site.webmanifest`, `og.png` (1200×630, the
-  centre crop of the store header asset).
+  centre crop of the store header asset), `og.mp4` (`og:video`, the link preview that plays,
+  10.5 s at 1280×720, about 320 KB: the hero's English Limits scene cut
+  close around the island, the cursor coming to the notch, a click
+  opening every account, then the hero's headline rising in under it in
+  the site's fonts and holding; written by `scripts/og-video.sh`, run
+  again whenever the hero's videos are recorded again).
 
 ## Content rules
 
