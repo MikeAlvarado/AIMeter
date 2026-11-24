@@ -90,6 +90,9 @@ final class UsageModel {
     /// left as the user set it (see `UsageModel+Naming.swift`).
     var ordersByUrgency = false
     @ObservationIgnored var serviceStatusCheckedAt: [String: Date] = [:]
+    /// When opening the island or the popover last refreshed (see
+    /// `UsageModel+OpenRefresh.swift`).
+    @ObservationIgnored var lastOpenRefresh: Date?
     @ObservationIgnored var serviceStatusSources: [String: any ServiceStatusSource] = [:]
     /// nil in unit tests (no App Group); the last fetched status survives a
     /// relaunch through it so the popover isn't blank until the first check.

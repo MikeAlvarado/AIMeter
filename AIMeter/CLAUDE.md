@@ -750,7 +750,10 @@
   the next click did nothing and it took two to open again; with
   `dismiss` one click opens it after Settings, an account or Open
   AIMeter.
-  "Refresh All" calls `refreshAll()` (every account, concurrently). The popover
+  "Refresh All" calls `refreshAll()` (every account, concurrently);
+  the popover appearing refreshes too, at most every 15 s
+  (`UsageModel.refreshOnOpen`, see "macOS" under "Refresh & notification
+  behavior" in the repo-root CLAUDE.md). The popover
   presents **no sheets of its own**: a sheet attached to a `MenuBarExtra`
   window renders clipped and floating beside it, so "Connect", "Add
   account" and an account's "Sign in again" all go through
@@ -1018,7 +1021,9 @@
     window"), and those two (with the update
     notice, "Sign in again" and "Connect") close the island on the way,
     `NotchIslandActions.close`; Refresh runs `refreshAll()` in place
-    and leaves it open; no keyboard shortcut (the panel is never key).
+    and leaves it open (opening it with a click already refreshed, at
+    most every 15 s, `UsageModel.refreshOnOpen`, as the popover's
+    appearing does); no keyboard shortcut (the panel is never key).
     Like the popover it presents no sheets of its own.
   - **Picking the sneak** (`NotchIslandController+Picks.swift`, see
     "Notch island" in the repo-root CLAUDE.md for the rules): the views

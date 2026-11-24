@@ -632,6 +632,14 @@ the account silently freezes at its last snapshot.
   icon hidden, which cancels its `.task`, and the schedule's first run is
   a whole cadence away. The Dashboard appearing refreshes only what went
   stale (`refreshAllIfStale`), in a task its closing doesn't cancel.
+  Opening the notch island (with a click, not the peek) or the menu bar
+  popover refreshes too, as the user asking for the figures
+  (`UsageModel.refreshOnOpen`, `UsageModel+OpenRefresh.swift`; Mike,
+  2026-11-24): at most once every 15 s (`openRefreshMinimumInterval`),
+  the floor that keeps opening and closing, or an account whose fetch
+  keeps failing, from sending a sweep each time, and only the accounts
+  not fetched in those 15 s (`refreshAllIfStale(maxAge: 15)`); never in
+  demo mode.
 - Widget timeline: single entry, `.after(interval)` where `interval =
   max(displayCadence, AppConfig.widgetRefreshFloor)` (30 min). The widget's
   reload interval is deliberately floored *independent of* the user's
@@ -2228,7 +2236,9 @@ key exactly (`%@`, `%lld`, `%%`, positional `%1$@` when reordered).
   offer rules and the install script (`UpdateFeedTests`), the
   service-status throttle, aging, banner and footer-line rules
   (`ServiceStatusTests`, with a stub `ServiceStatusSource` injected
-  through `UsageModel.serviceStatusSources`), when an incident is
+  through `UsageModel.serviceStatusSources`), the 15 s floor on
+  refreshing when the island or the popover opens (`OpenRefreshTests`),
+  when an incident is
   announced, kept quiet or taken back (`IncidentAlertTests`), the menu bar label's
   text/fill/tint rules plus the style migration
   (`MenuBarLabelModelTests`), the app icon's looks, their pictures in

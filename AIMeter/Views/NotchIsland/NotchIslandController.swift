@@ -271,6 +271,11 @@ final class NotchIslandController {
             // The first time the user opens it, the icon it replaces goes.
             prefs?.markNotchIslandDiscovered()
         }
+        if interaction.level == .expanded {
+            // Opened with a click: the figures it shows are fetched again
+            // (at most every 15 s, `UsageModel+OpenRefresh.swift`).
+            model?.refreshOnOpen()
+        }
         levelChanged()
     }
 

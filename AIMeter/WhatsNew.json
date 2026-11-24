@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "4.4.2",
+      "items": [
+        {
+          "symbol": "arrow.clockwise",
+          "platforms": [
+            "macOS"
+          ],
+          "title": {
+            "en": "Fresh figures when you open",
+            "es": "Cifras al día al abrir",
+            "de": "Aktuelle Zahlen beim Öffnen",
+            "fr": "Des chiffres à jour à l’ouverture",
+            "ja": "開くたびに最新の数値",
+            "ko": "열 때마다 최신 수치",
+            "pt-BR": "Números atualizados ao abrir",
+            "zh-Hans": "打开即为最新数据"
+          },
+          "detail": {
+            "en": "Click the notch island open, or open the menu bar panel, and AIMeter checks your limits again right away. It asks at most once every 15 seconds, and only for accounts it hasn't checked in that time.",
+            "es": "Abre la isla del notch con un clic, o el panel de la barra de menús, y AIMeter vuelve a consultar tus límites en ese momento. Lo hace como mucho una vez cada 15 segundos, y solo para las cuentas que no consultó en ese tiempo.",
+            "de": "Öffne die Notch-Insel mit einem Klick oder das Menüleisten-Panel, und AIMeter fragt deine Limits sofort erneut ab. Höchstens einmal alle 15 Sekunden und nur für Accounts, die in dieser Zeit nicht abgefragt wurden.",
+            "fr": "Ouvrez l’îlot de l’encoche d’un clic, ou le panneau de la barre des menus, et AIMeter vérifie à nouveau vos limites aussitôt. Au plus une fois toutes les 15 secondes, et seulement pour les comptes qu’il n’a pas vérifiés entre-temps.",
+            "ja": "ノッチアイランドをクリックして開くか、メニューバーのパネルを開くと、AIMeterがすぐに上限を確認し直します。確認は最大15秒に1回で、その間に確認していないアカウントだけが対象です。",
+            "ko": "노치 아일랜드를 클릭해 열거나 메뉴 막대 패널을 열면 AIMeter가 바로 한도를 다시 확인합니다. 확인은 최대 15초에 한 번이며, 그 사이에 확인하지 않은 계정만 대상입니다.",
+            "pt-BR": "Abra a ilha do notch com um clique, ou o painel da barra de menus, e o AIMeter consulta seus limites de novo na hora. No máximo uma vez a cada 15 segundos, e só para as contas que ele não consultou nesse tempo.",
+            "zh-Hans": "点按打开刘海岛，或打开菜单栏面板，AIMeter 会立即重新查看你的限制。最多每 15 秒查看一次，且只查看这段时间内尚未查看的账户。"
+          }
+        }
+      ]
+    },
+    {
       "version": "4.4.1",
       "items": [
         {

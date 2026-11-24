@@ -123,9 +123,12 @@ struct MenuBarView: View {
         // and the accounts sit on cards of their own. Solid under Reduce
         // Transparency.
         .background(Theme.background.opacity(reduceTransparency ? 1 : 0.78))
-        // The login item can change in System Settings while AIMeter runs.
+        // The login item can change in System Settings while AIMeter runs;
+        // and opening the popover fetches the figures again (at most every
+        // 15 s, `UsageModel+OpenRefresh.swift`).
         .onAppear {
             loginItem.refreshStatus()
+            model.refreshOnOpen()
             AppChrome.dismissMenuBarPopover = { dismiss() }
         }
         // Its window, so a route that opens another can close it
